@@ -101,7 +101,7 @@ class DropdownClass
     }
 
     public function statuses($type){
-        $data = ListStatus::where('classification',$type)->where('is_active',1)->get()->map(function ($item) {
+        $data = ListStatus::where('type',$type)->where('is_active',1)->get()->map(function ($item) {
             return [
                 'value' => $item->id,
                 'name' => $item->name,

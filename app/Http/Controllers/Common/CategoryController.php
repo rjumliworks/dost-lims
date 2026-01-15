@@ -8,6 +8,7 @@ use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
 use App\Services\Common\Category\ViewClass;
 use App\Services\Common\Category\SaveClass;
+use App\Http\Requests\Common\CategoryRequest;
 
 class CategoryController extends Controller
 {
@@ -43,7 +44,7 @@ class CategoryController extends Controller
         }
     }
 
-    public function store(Request $request){
+    public function store(CategoryRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'category':

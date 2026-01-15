@@ -4,7 +4,7 @@
         <form class="customform">
             <BRow>
                 <BCol lg="12" class="mt-1 mb-1">
-                    <InputLabel for="classification_id" value="Laboratory" :message="form.errors.laboratory_id"/>
+                    <InputLabel for="laboratory_id" value="Laboratory" :message="form.errors.laboratory_id"/>
                     <Multiselect :options="dropdowns.laboratories" 
                     @input="handleInput('laboratory_id')" 
                     :searchable="true" v-model="form.laboratory_id" 
@@ -42,7 +42,7 @@
                     </div>
                 </BCol>
                 <BCol lg="12">
-                    <InputLabel for="name" value="Sample Name"/>
+                    <InputLabel for="name" value="Sample Name" :message="form.errors.name"/>
                     <TextInput id="name" v-model="form.name" type="text" class="form-control" placeholder="Please enter name"  :light="true"/>
                 </BCol>  
             </BRow>
@@ -73,6 +73,7 @@ export default {
                 id: null,
                 laboratory_id: null,
                 type_id: null,
+                agency_id: this.$page.props.user.data.agency,
                 category_id: null,
                 name: null,
                 option: 'name'

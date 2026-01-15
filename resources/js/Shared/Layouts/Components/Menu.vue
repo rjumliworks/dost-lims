@@ -16,7 +16,7 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/testservices" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Testsetvices') }">
+                    :class="{'active': $page.component.startsWith('Modules/Testservices') }">
                     <i class="ri-flask-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Test Services</span>
                     </Link>
