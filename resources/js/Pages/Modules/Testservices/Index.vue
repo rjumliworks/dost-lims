@@ -29,7 +29,7 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Sample Name" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.keyword" placeholder="Search Service" class="form-control" style="width: 20%;">
                                 <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Category" />
                                 <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
@@ -47,15 +47,15 @@
                     <div class="d-flex">
                         <div class="flex-grow-1">
                             <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
-                                <li class="nav-item">
-                                    <BLink @click="viewClass(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                    <i class="ri-apps-2-fill me-1 align-bottom"></i> All Customers
+                                 <li class="nav-item">
+                                    <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
+                                    <i class="ri-apps-2-fill me-1 align-bottom"></i> All Testservices 
                                     </BLink>
                                 </li>
-                                <li class="nav-item" v-for="(list,index) in dropdowns.classes" v-bind:key="index">
-                                    <BLink @click="viewClass(index,list.value)" class="nav-link py-3" :class="index2 === index ? `${list.others} active` : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                <li class="nav-item" v-for="(list,index) in dropdowns.statuses" v-bind:key="index">
+                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? list.others+' active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
                                         <i :class="icons[index]" class="me-1 align-bottom"></i>
-                                        {{ list.name }} 
+                                        {{ list.name }} <BBadge v-if="counts[index] > 0" :class="list.color" class="align-middle ms-1">{{counts[index]}}</BBadge>
                                     </BLink>
                                 </li>
                             </ul>
@@ -151,12 +151,13 @@
 <script>
 import _ from 'lodash';
 import Create from './Modals/Create.vue';
+import Testname from './Modals/AddTestname.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, Create },
-    props: ['dropdowns'],
+    props: ['counts','dropdowns'],
     data(){
         return {
             lists: [],
@@ -164,16 +165,17 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                class: null,
-                industry: null,
-                sex: null,
-                agency: null,
-                individual: null,
-                type: null
+                laboratory: null,
+                status: null
             },
+            icons: [
+                'ri-information-line',
+                'ri-checkbox-circle-line',
+                'ri-indeterminate-circle-line',
+                'ri-close-circle-line'
+            ],
             index: null,
-            selectedRow: null,
-            categories: []
+            selectedRow: null
         }
     },
     watch: {
@@ -181,6 +183,9 @@ export default {
             if (newVal !== oldVal) {
                 this.debouncedFetch();
             }
+        },
+        "filter.laboratory"(newVal){
+            this.fetch();
         },
     },
     created() {
@@ -191,15 +196,12 @@ export default {
     },
     methods: {
         fetch(page_url){
-            page_url = page_url || '/categories';
+            page_url = page_url || '/testservices';
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
-                    class: this.filter.class,
-                    industry: this.filter.industry,
-                    sex: this.filter.sex,
-                    type: this.filter.type,
-                    individual: this.filter.individual,
+                    laboratory: this.filter.laboratory,
+                    status: this.filter.status,
                     count: 10,
                     option: 'list'
                 }
@@ -216,13 +218,21 @@ export default {
         openCreate(){
             this.$refs.create.show();
         },
+        openTestname(){
+            this.$refs.testname.show();
+        },
         selectRow(index) {
             if (this.selectedRow === index) {
                 this.selectedRow = null;
             } else {
                 this.selectedRow = index;
             }
-        }
+        },
+        viewStatus(index,status){
+            this.index = index;
+            this.filter.status = status;
+            this.fetch();
+        },
     }
 }
 </script>

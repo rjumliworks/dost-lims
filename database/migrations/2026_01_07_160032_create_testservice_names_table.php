@@ -17,14 +17,16 @@ return new class extends Migration
             $table->string('name');
             $table->string('short')->nullable();
             $table->boolean('is_active')->default(1);
-            $table->tinyInteger('type_id')->unsigned()->index();
+            $table->unsignedTinyInteger('type_id');
             $table->foreign('type_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
-            $table->tinyInteger('laboratory_id')->unsigned()->index();
+            $table->unsignedTinyInteger('laboratory_id')->unsigned()->index();
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
+            $table->unsignedInteger('added_by');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['name', 'type_id', 'agency_id']);     
         });

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->decimal('fee',12,2);
+            $table->boolean('is_active')->default(1);
             $table->bigInteger('method_id')->unsigned()->index();
             $table->foreign('method_id')->references('id')->on('testservice_names')->onDelete('cascade');
             $table->bigInteger('reference_id')->unsigned()->index();
@@ -25,9 +26,10 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
-            $table->boolean('is_active')->default(1);
+            $table->unsignedInteger('added_by');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['name', 'type_id', 'agency_id']);    
+            $table->unique(['method_id', 'reference_id', 'agency_id']);    
         });
     }
 

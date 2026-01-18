@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
-use App\Services\Common\Category\ViewClass;
-use App\Services\Common\Category\SaveClass;
+use App\Services\Common\Testservice\ViewClass;
+use App\Services\Common\Testservice\SaveClass;
 
 class TestserviceController extends Controller
 {
@@ -39,8 +39,46 @@ class TestserviceController extends Controller
                 'dropdowns' => [
                     'laboratories' => $this->dropdown->laboratories(),
                     'statuses' => $this->dropdown->statuses('Testservice')
-                ]
+                ],
+                'counts' => $this->view->counts($this->dropdown->statuses('Testservice'))
             ]);
+        }
+    }
+
+    public function store(NameRequest $request){
+        $option = $request->option;
+        switch($option){
+            case 'add':
+                return $this->save->add($request);
+            break;
+            case 'status':
+                return $this->save->status($request);
+            break;
+            case 'create':
+                $result = $this->handleTransaction(function () use ($request) {
+                    return $this->save->create($request);
+                });
+                return back()->with([
+                    'data' => $result['data'],
+                    'message' => $result['message'],
+                    'info' => $result['info'],
+                    'status' => $result['status'],
+                ]);
+            break;
+            case 'fee':
+                $result = $this->handleTransaction(function () use ($request) {
+                    return $this->save->fee($request);
+                });
+                return back()->with([
+                    'data' => $result['data'],
+                    'message' => $result['message'],
+                    'info' => $result['info'],
+                    'status' => $result['status'],
+                ]);
+            break;
+            case 'method':
+                return $this->save->method($request);
+            break;
         }
     }
 }

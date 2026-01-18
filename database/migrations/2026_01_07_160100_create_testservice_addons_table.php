@@ -17,12 +17,14 @@ return new class extends Migration
             $table->decimal('fee',12,2);
             $table->string('name');
             $table->string('description');
-            $table->unsignedInteger('typeable_id');
-            $table->string('typeable_type');
-            $table->integer('agency_id')->unsigned()->index();
-            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->boolean('is_additional')->default(0);
             $table->boolean('is_active')->default(1);
+            $table->unsignedInteger('typeable_id');
+            $table->string('typeable_type');
+            $table->unsignedInteger('agency_id');
+            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
+            $table->unsignedInteger('added_by');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
