@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
+use App\Http\Requests\Common\NameRequest;
 use App\Services\Common\Testservice\ViewClass;
 use App\Services\Common\Testservice\SaveClass;
+use App\Services\Common\Testservice\UpdateClass;
 
 class TestserviceController extends Controller
 {
@@ -15,12 +17,14 @@ class TestserviceController extends Controller
 
     protected ViewClass $view;
     protected SaveClass $save;
+    protected UpdateClass $update;
     protected DropdownClass $dropdown;
 
-    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view){
+    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update){
         $this->dropdown = $dropdown;
         $this->view = $view;
         $this->save = $save;
+        $this->update = $update;
     }
 
     public function index(Request $request){
@@ -28,11 +32,11 @@ class TestserviceController extends Controller
             case 'list':
                 return $this->view->list($request);
             break;
-            case 'category':
-                return $this->view->category($request);
+            case 'search':
+                return $this->view->search($request);
             break;
-            case 'type':
-                return $this->view->type($request);
+            case 'methods':
+                return $this->view->methods($request);
             break;
             default:
             return inertia('Modules/Testservices/Index',[
@@ -49,7 +53,7 @@ class TestserviceController extends Controller
         $option = $request->option;
         switch($option){
             case 'add':
-                return $this->save->add($request);
+                return $this->save->name($request);
             break;
             case 'status':
                 return $this->save->status($request);
@@ -79,6 +83,44 @@ class TestserviceController extends Controller
             case 'method':
                 return $this->save->method($request);
             break;
+            case 'sampletype':
+                 $result = $this->handleTransaction(function () use ($request) {
+                    return $this->save->sampletype($request);
+                });
+                return back()->with([
+                    'data' => $result['data'],
+                    'message' => $result['message'],
+                    'info' => $result['info'],
+                    'status' => $result['status'],
+                ]);
+            break;
         }
+    }
+
+     public function update(NameRequest $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            switch($request->option){
+                case 'fee':
+                    return $this->update->fee($request);
+                break;
+                case 'status':
+                    return $this->update->status($request);
+                break;
+            }
+        });
+        
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
+    public function show($id){
+        $service = $this->view->view($id);
+        return inertia('Modules/Testservices/Profile/Index',[
+            'service' => $service
+        ]);
     }
 }

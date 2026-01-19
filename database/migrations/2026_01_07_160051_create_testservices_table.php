@@ -26,6 +26,8 @@ return new class extends Migration
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
+            $table->unsignedInteger('added_by');
+            $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['testname_id', 'method_id', 'agency_id']);    
         });

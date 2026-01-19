@@ -15,14 +15,14 @@
                         <div class="d-flex">
                             <div style="width: 100%;">
                                 <InputLabel for="testname" value="Test Name" :message="form.errors.testname_id"/>
-                                <Multiselect @search-change="checkCategory" 
+                                <Multiselect @search-change="checkTestname" 
                                 @input="handleInput('testname_id')"
-                                :options="categories" label="name" :searchable="true" 
-                                v-model="form.category_id" 
-                                placeholder="Select Test name" ref="multiselectC"/>
+                                :options="testnames" label="name" :searchable="true" 
+                                v-model="form.testname_id" 
+                                placeholder="Select Test name" ref="multiselectT"/>
                             </div>
                             <div class="flex-shrink-0">
-                                <b-button @click="addCategory()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1" :disabled="(form.laboratory_id && categories.length === 0) ? false : true"><i class="ri-add-circle-fill"></i></b-button>
+                                <b-button @click="openAdd(31,'Test Name')" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1" :disabled="(form.laboratory_id) ? false : true"><i class="ri-add-circle-fill"></i></b-button>
                             </div>
                         </div>
                     </BCol> 
@@ -30,7 +30,7 @@
             </form>
         </div>
 
-         <div class="card bg-light-subtle shadow-none border mt-3">
+         <div class="card bg-light-subtle shadow-none border mt-3 mb-0">
 
             <div class="card-header bg-light-subtle">
                 <div class="d-flex mb-n3">
@@ -57,7 +57,7 @@
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                             <input type="text" v-model="filter.keyword" placeholder="Search Sample Name" class="form-control" style="width: 20%;">
                             
-                            <b-button type="button" variant="primary" @click="openCreate">
+                            <b-button type="button" variant="primary" @click="openMethod">
                                 <i class="ri-add-circle-fill align-bottom me-1"></i> Add
                             </b-button>
                         </div>
@@ -75,7 +75,22 @@
                                 <td class="text-center">Fee</td>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="methods.length > 0">
+                            <tr v-for="(list,index) in methods" v-bind:key="index">
+                                <td class="text-center"> 
+                                    <input class="form-check-input me-1" v-model="form.method_id" name="method" type="radio" :value="list.id">
+                                </td>
+                                <td>
+                                    <!-- {{(list.method.short) ? list.method.short : list.method.name}} -->
+                                    <h5 class="fs-12 mb-0">{{list.method.name}}</h5>
+                                    <p v-if="list.method.short" class="fs-11 text-muted mb-0">{{ list.method.short }}</p>
+
+                                </td>
+                                <td class="text-center">{{list.reference.name}}</td>
+                                <td class="text-center">{{list.fee}}</td>
+                            </tr>
+                        </tbody>
+                        <tbody v-else>
                             <tr>
                                 <td colspan="4" class="text-center text-muted fs-12">No methods found. Please use search box.</td>
                             </tr>
@@ -90,19 +105,19 @@
             <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Submit</b-button>
         </template>
     </b-modal>
-    <AddType @selected="setType" ref="type"/>
-    <AddCategory @selected="setCategory" ref="category"/>
+    <Add @selected="setTestname" ref="add"/>
+    <Method @selected="setMethod" ref="method"/>
 </template>
 <script>
 import _ from 'lodash';
 import { useForm } from '@inertiajs/vue3';
-import AddType from './AddType.vue';
-import AddCategory from './AddCategory.vue';
+import Method from './Method.vue';
+import Add from './Add.vue';
 import Multiselect from '@/Shared/Components/Forms/Multiselect.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
-    components: { InputLabel, TextInput, Multiselect, AddCategory, AddType },
+    components: { InputLabel, TextInput, Multiselect, Method, Add },
     props: ['dropdowns'],
     data(){
         return {
@@ -113,15 +128,14 @@ export default {
                 method_id: null,
                 status_id: 31,
                 agency_id: this.$page.props.user.data.agency,
-                option: 'name'
+                option: 'create'
             }),
             filter: {
                 keyword: null,
-                type: null,
-                category: null
+                testname: null,
             },
-            types: [],
-            categories: [],
+            testnames: [],
+            methods: [],
             type: null,
             showModal: false,
             editable: false,
@@ -130,11 +144,13 @@ export default {
     watch: {
         'form.laboratory_id'(){
             this.types = [];
-            this.categories = [];
-            this.$refs.multiselectC.clear();
+            this.testnames = [];
             this.$refs.multiselectT.clear();
             this.form.type_id = null;
             this.form.category_id = null;
+        },
+        'filter.keyword'(newVal){
+            this.checkSearchMethod(newVal)
         }
     },
     methods: { 
@@ -142,7 +158,7 @@ export default {
             this.showModal = true;
         }, 
         submit(){
-            this.form.post('/categories',{
+            this.form.post('/testservices',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('message',true);
@@ -150,54 +166,56 @@ export default {
                 },
             });
         },
-        checkCategory: _.debounce(function(string) {
-            this.fetchCategory(string);
-            this.filter.category = string;
+        checkTestname: _.debounce(function(string) {
+            this.fetchTestname(string);
+            this.filter.testname = string;
         }, 300),
-        fetchCategory(code){
-            axios.get('/categories',{
+        fetchTestname(code){
+            this.types = [];
+            axios.get('/testservices',{
                 params: {
-                    option: 'category',
+                    option: 'search',
+                    laboratory_id: this.form.laboratory_id,
+                    type: 31,
+                    keyword: code
+                }
+            })
+            .then(response => {
+                this.testnames = response.data;
+            })
+            .catch(err => console.log(err));
+        },
+        openAdd(type,name){
+            this.type = type;
+            const key = this.filter.testname;
+            this.$refs.add.show(type,this.form.laboratory_id,name,key);
+        },
+        setTestname(data){
+            this.fetchTestname(data.name);
+            this.$refs.multiselectT.emitSelectedValues(data.value);
+        },
+        checkSearchMethod: _.debounce(function(string) {
+            this.fetchMethod(string);
+        }, 300),
+        fetchMethod(code){
+            axios.get('/testservices',{
+                params: {
+                    option: 'methods',
+                    count: 5,
                     laboratory_id: this.form.laboratory_id,
                     keyword: code
                 }
             })
             .then(response => {
-                this.categories = response.data;
+                this.methods = response.data.data;
             })
             .catch(err => console.log(err));
         },
-        checkType: _.debounce(function(string) {
-            (string) ? this.fetchType(string) : '';
-            this.filter.type = string;
-        }, 300),
-        fetchType(code){
-            this.types = [];
-            axios.get('/categories',{
-                params: {
-                    option: 'type',
-                    category_id: this.form.category_id,
-                    keyword: code
-                }
-            })
-            .then(response => {
-                this.types = response.data;
-            })
-            .catch(err => console.log(err));
+        setMethod(data){
+            this.fetchMethod(data.method.name);
         },
-        addCategory(){
-            this.$refs.category.show(this.form.laboratory_id,this.filter.category);
-        },
-        setCategory(data){
-            this.fetchCategory(data.name);
-            this.$refs.multiselectC.emitSelectedValues(data.value);
-        },
-        addType(){
-            this.$refs.type.show(this.form.category_id,this.filter.type);
-        },
-        setType(data){
-            this.fetchType(data.name);
-            this.$refs.multiselectT.emitSelectedValues(data.value);
+        openMethod(){
+            this.$refs.method.show(this.form.laboratory_id);
         },
         handleInput(field) {
             this.form.errors[field] = false;
@@ -206,7 +224,6 @@ export default {
             this.methods = [];
             this.form.reset();
             this.$refs.multiselect1.clear();
-            this.$refs.multiselectC.clear();
             this.$refs.multiselectT.clear();
             this.filter.keyword = null;
             this.editable = false;

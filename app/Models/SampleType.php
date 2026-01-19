@@ -38,6 +38,7 @@ class SampleType extends Model
         });
     }
 
+    public function sampleable(){ return $this->morphTo(); }
     public function names(){ return $this->hasMany(SampleName::class, 'type_id'); }
     public function category(){ return $this->belongsTo(SampleCategory::class, 'category_id'); }
     public function agency(){ return $this->belongsTo(Agency::class, 'agency_id'); }
@@ -45,4 +46,9 @@ class SampleType extends Model
 
     public function getUpdatedAtAttribute($value) { return date('M d, Y g:i a', strtotime($value));}
     public function getCreatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}
+
+    public function services()
+    {
+        return $this->morphMany('App\Models\TestserviceSample', 'sampleable');
+    }
 }

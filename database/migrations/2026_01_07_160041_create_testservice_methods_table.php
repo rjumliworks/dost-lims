@@ -22,8 +22,6 @@ return new class extends Migration
             $table->foreign('reference_id')->references('id')->on('testservice_names')->onDelete('cascade');
             $table->tinyInteger('laboratory_id')->unsigned()->index();
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
-            $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->unsignedInteger('added_by');

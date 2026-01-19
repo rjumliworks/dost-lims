@@ -22,6 +22,13 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/packages" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Packages') }">
+                    <i class="ri-archive-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Packages</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <Link href="/customers" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Customers') }">
                     <i class="ri-team-fill"></i>

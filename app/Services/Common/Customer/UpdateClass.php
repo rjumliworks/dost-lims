@@ -72,7 +72,7 @@ class UpdateClass
         ];
     }
 
-     public function status($request){
+    public function status($request){
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($request->code);
 

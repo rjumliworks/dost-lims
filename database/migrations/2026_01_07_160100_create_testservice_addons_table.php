@@ -26,6 +26,7 @@ return new class extends Migration
             $table->unsignedInteger('added_by');
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['name', 'fee','typeable_id', 'agency_id']);    
         });
     }
 

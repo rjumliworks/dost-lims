@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Testservice extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
-        'laboratory_id','testname_id','method_id','agency_id','is_active','status_id','added_by'
+        'laboratory_id','testname_id','method_id','is_active','status_id'
     ];
 
     protected static function booted()
@@ -35,6 +39,11 @@ class Testservice extends Model
     public function fees()
     {
         return $this->morphMany('App\Models\TestserviceAddon', 'typeable');
+    }
+
+    public function samples()
+    {
+        return $this->hasMany('App\Models\TestserviceSample', 'testservice_id');
     }
 
     public function status()
@@ -75,5 +84,14 @@ class Testservice extends Model
     public function getCreatedAtAttribute($value)
     {
         return date('M d, Y g:i a', strtotime($value));
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['laboratory_id','testname_id','method_id','is_active','status_id'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} the user information")
+        ->useLogName('Testservice')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

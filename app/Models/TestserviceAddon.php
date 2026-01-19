@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TestserviceAddon extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'name',
         'fee',
@@ -56,5 +60,14 @@ class TestserviceAddon extends Model
     public function getFeeAttribute($value)
     {
         return '₱'.$value;
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['name','fee','description','is_additional','is_active'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} the user information")
+        ->useLogName('Add-ons')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

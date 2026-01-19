@@ -23,6 +23,7 @@ Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
 Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
 Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);
 Route::resource('/testservices', App\Http\Controllers\Common\TestserviceController::class);
+Route::resource('/packages', App\Http\Controllers\Common\PackageController::class);
 
 
 Route::middleware(['role:Administrator'])->group(function () {

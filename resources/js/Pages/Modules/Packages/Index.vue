@@ -1,6 +1,6 @@
 <template>
-    <Head title="Test Services"/>
-    <PageHeader title="Test Service Management" pageTitle="List" />
+    <Head title="Packages"/>
+    <PageHeader title="Package Management" pageTitle="List" />
     <BRow>
         <div class="col-md-12">
             <div class="card bg-light-subtle shadow-none border">
@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">List of Test Services</span></h5>
+                            <h5 class="mb-0 fs-14"><span class="text-body">List of Packages</span></h5>
                             <p class="text-muted text-truncate-two-lines fs-12">View and manage customer profiles along with their laboratory test requests and related transactions.</p>
                         </div>
                         <div class="flex-shrink-0" style="width: 45%;">
@@ -30,7 +30,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Service" class="form-control" style="width: 20%;">
-                                <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Category" />
+                                <!-- <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Category" /> -->
                                 <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
@@ -49,13 +49,7 @@
                             <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                                  <li class="nav-item">
                                     <BLink @click="viewStatus(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                    <i class="ri-apps-2-fill me-1 align-bottom"></i> All Testservices 
-                                    </BLink>
-                                </li>
-                                <li class="nav-item" v-for="(list,index) in dropdowns.statuses" v-bind:key="index">
-                                    <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? list.others+' active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
-                                        <i :class="icons[index]" class="me-1 align-bottom"></i>
-                                        {{ list.name }} <BBadge v-if="counts[index] > 0" :class="list.color" class="align-middle ms-1">{{counts[index]}}</BBadge>
+                                    <i class="ri-apps-2-fill me-1 align-bottom"></i> All Packages
                                     </BLink>
                                 </li>
                             </ul>
@@ -73,12 +67,10 @@
                         <table class="table align-middle table-centered table-striped mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-11">
-                                    <th style="width: 3%;"></th>
-                                    <th style="width: 15%;">Testname</th>
-                                    <th class="text-center">Method</th>
+                                    <th style="width: 4%;"></th>
+                                    <th>Name</th>
+                                    <th style="width: 10%;" class="text-center">Services</th>
                                     <th style="width: 10%;" class="text-center">Fee</th>
-                                    <th style="width: 7%;" class="text-center">Status</th>
-                                    <th style="width: 5%;" class="text-center">Availability</th>
                                     <th style="width: 5%;" ></th>
                                 </tr>
                             </thead>
@@ -91,7 +83,7 @@
                                     <td class="text-center"> 
                                         {{ (meta.current_page - 1) * meta.per_page + index + 1 }}.
                                     </td>
-                                    <td class="fs-12">{{list.testname.name}}</td>
+                                    <td class="fs-12">{{list.name}}</td>
                                     <td class="text-center fs-12">
                                         <h5 class="fs-12 mb-0 text-dark">{{list.method.method.name}} <span v-if="list.method.method.short" class="text-primary">({{ list.method.method.short }})</span></h5>
                                         <p class="fs-12 text-muted mb-0"> <span class="text-muted fs-11">{{list.method.reference.name}}</span></p>
@@ -149,20 +141,18 @@
 
             </div>
         </div>
+        <Create :dropdowns="dropdowns" ref="create"/>
     </BRow>
-     <Activation @update="updateData" ref="activation"/>
-    <Create :dropdowns="dropdowns" @message="fetch()" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
 import Create from './Modals/Create.vue';
 import Multiselect from "@vueform/multiselect";
-import Activation from './Modals/Activation.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Activation },
-    props: ['counts','dropdowns'],
+    components: { PageHeader, Pagination, Multiselect, Create },
+    props: ['dropdowns'],
     data(){
         return {
             lists: [],
@@ -201,7 +191,7 @@ export default {
     },
     methods: {
         fetch(page_url){
-            page_url = page_url || '/testservices';
+            page_url = page_url || '/packages';
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
@@ -223,29 +213,13 @@ export default {
         openCreate(){
             this.$refs.create.show();
         },
-        openTestname(){
-            this.$refs.testname.show();
-        },
-        openActivation(type,data,index){
-            this.index = index;
-            this.selectedRow = index;
-            this.$refs.activation.show(type,data);
-        },
         selectRow(index) {
             if (this.selectedRow === index) {
                 this.selectedRow = null;
             } else {
                 this.selectedRow = index;
             }
-        },
-        viewStatus(index,status){
-            this.index = index;
-            this.filter.status = status;
-            this.fetch();
-        },
-        updateData(data){
-            this.lists[this.index] = data;
-        },
+        }
     }
 }
 </script>
