@@ -219,7 +219,12 @@ export default {
             }
         },
         show(){
+            this.checkedItems = [];
             this.testservices = [];
+            this.$refs.multiselectC.clear();
+            this.$refs.multiselectT.clear();
+            this.form.reset();
+            this.form.clearErrors();
             this.showModal = true;
         }, 
         submit(){
@@ -289,8 +294,8 @@ export default {
         hide(){
             this.checkedItems = [];
             this.testservices = [];
-            this.form.fee = null;
-            this.$refs.multiselectS.clear();
+            this.$refs.multiselectC.clear();
+            this.$refs.multiselectT.clear();
             this.form.reset();
             this.form.clearErrors();
             this.editable = false;
