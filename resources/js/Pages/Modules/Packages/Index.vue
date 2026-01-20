@@ -71,27 +71,24 @@
                                     <th>Name</th>
                                     <th style="width: 10%;" class="text-center">Services</th>
                                     <th style="width: 10%;" class="text-center">Fee</th>
+                                    <th style="width: 10%;" class="text-center">Status</th>
                                     <th style="width: 5%;" ></th>
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
                                 <tr v-for="(list,index) in lists" v-bind:key="index" @click="selectRow(index)" :class="{
                                     'bg-info-subtle': index === selectedRow,
-                                    'bg-warning-subtle': list.status.name == 'Pending' && index !== selectedRow,
-                                    'bg-danger-subtle': list.status.name == 'Suspended' && index !== selectedRow
+                                    'bg-danger-subtle': list.is_active === 0 && index !== selectedRow
                                 }">
                                     <td class="text-center"> 
                                         {{ (meta.current_page - 1) * meta.per_page + index + 1 }}.
                                     </td>
-                                    <td class="fs-12">{{list.name}}</td>
-                                    <td class="text-center fs-12">
-                                        <h5 class="fs-12 mb-0 text-dark">{{list.method.method.name}} <span v-if="list.method.method.short" class="text-primary">({{ list.method.method.short }})</span></h5>
-                                        <p class="fs-12 text-muted mb-0"> <span class="text-muted fs-11">{{list.method.reference.name}}</span></p>
+                                    <td class="fs-12">
+                                        <h5 class="fs-12 mb-0 text-dark">{{list.name}}</h5>
+                                        <p class="fs-12 text-muted mb-0"> <span class="text-muted fs-11">{{list.laboratory.name}}</span></p>
                                     </td>
-                                    <td class="text-center fs-12">{{list.method.fee}}</td>
-                                    <td class="text-center">
-                                        <span :class="'badge '+list.status.color">{{list.status.name}}</span>
-                                    </td>
+                                    <td class="text-center fs-12">{{ list.testservices.length }}</td>
+                                    <td class="text-center fs-12">-</td>
                                     <td class="text-center">
                                         <span v-if="list.is_active" class="fs-17 text-success"><i class="ri-checkbox-circle-fill"></i></span>
                                         <span v-else class="fs-17 text-danger"><i class="ri-close-circle-fill"></i></span>
@@ -104,9 +101,9 @@
                                                         <i class="ri-more-fill"></i>
                                                     </template>
                                                     <li>
-                                                        <Link :href="`/testservices/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-eye-fill me-2"></i> View
-                                                        </Link>
+                                                        </a>
                                                     </li>
                                                     <li>
                                                         <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
@@ -141,17 +138,21 @@
 
             </div>
         </div>
+        <View ref="view"/>
+        <Activation @update="updateData" ref="activation"/>
         <Create :dropdowns="dropdowns" ref="create"/>
     </BRow>
 </template>
 <script>
 import _ from 'lodash';
+import View from './Modals/View.vue';
 import Create from './Modals/Create.vue';
 import Multiselect from "@vueform/multiselect";
+import Activation from './Modals/Activation.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create },
+    components: { PageHeader, Pagination, Multiselect, Create, Activation, View },
     props: ['dropdowns'],
     data(){
         return {
@@ -160,8 +161,7 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                laboratory: null,
-                status: null
+                laboratory: null
             },
             icons: [
                 'ri-information-line',
@@ -196,7 +196,6 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     laboratory: this.filter.laboratory,
-                    status: this.filter.status,
                     count: 10,
                     option: 'list'
                 }
@@ -213,13 +212,24 @@ export default {
         openCreate(){
             this.$refs.create.show();
         },
+        openActivation(type,data,index){
+            this.index = index;
+            this.selectedRow = index;
+            this.$refs.activation.show(type,data);
+        },
+        openView(data){
+            this.$refs.view.show(data);
+        },
         selectRow(index) {
             if (this.selectedRow === index) {
                 this.selectedRow = null;
             } else {
                 this.selectedRow = index;
             }
-        }
+        },
+         updateData(data){
+            this.lists[this.index] = data;
+        },
     }
 }
 </script>

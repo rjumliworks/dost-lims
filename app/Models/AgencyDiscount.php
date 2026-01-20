@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class AgencyDiscount extends Model
@@ -18,5 +20,20 @@ class AgencyDiscount extends Model
     public function discount()
     {
         return $this->belongsTo('App\Models\ListDiscount', 'discount_id', 'id');
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('agency', function (Builder $builder) {
+            if (! Auth::check()) {
+                return;
+            }
+            $agencyId = Auth::user()->profile?->agency_id;
+            if (! $agencyId) {
+                abort(403, 'User has no agency assigned.');
+            }
+
+            $builder->where('agency_id', $agencyId);
+        });
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\HumanResource\Employee;
+namespace App\Services\Major\Quotation;
 
-class UpdateClass
+class SaveClass
 {
     /**
      * Create a new class instance.

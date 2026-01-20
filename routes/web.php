@@ -25,6 +25,7 @@ Route::resource('/categories', App\Http\Controllers\Common\CategoryController::c
 Route::resource('/testservices', App\Http\Controllers\Common\TestserviceController::class);
 Route::resource('/packages', App\Http\Controllers\Common\PackageController::class);
 
+Route::resource('/tsrs', App\Http\Controllers\Major\TsrController::class);
 
 Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);

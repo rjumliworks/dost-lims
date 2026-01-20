@@ -38,6 +38,9 @@ class TestserviceController extends Controller
             case 'methods':
                 return $this->view->methods($request);
             break;
+            case 'testservices':
+                return $this->view->testservices($request);
+            break;
             default:
             return inertia('Modules/Testservices/Index',[
                 'dropdowns' => [

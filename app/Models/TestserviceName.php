@@ -34,7 +34,7 @@ class TestserviceName extends Model
 
     public function type()
     {
-        return $this->belongsTo('App\Models\ListDropdown', 'type_id', 'id');
+        return $this->belongsTo('App\Models\SampleType', 'type_id', 'id');
     }
 
     public function laboratory()

@@ -6,7 +6,10 @@ use Hashids\Hashids;
 use App\Models\Testservice;
 use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
+use App\Models\SampleCategory;
+use App\Models\SampleType;
 use App\Http\Resources\Common\TestserviceResource;
+use App\Http\Resources\Common\Testservice\ListResource;
 use App\Http\Resources\DefaultResource;
 
 class ViewClass
@@ -103,4 +106,40 @@ class ViewClass
         return $data;
     }
 
+    public function testservices($request)
+    {
+        $type = $request->sampletype_id ? 'sampletype' : 'category';
+        $id   = $request->sampletype_id ?? $request->category_id;
+        
+        if ($request->filled('sampletype_id') || $request->filled('category_id')) {
+            $testservices = Testservice::with('testname', 'method.method', 'method.reference')
+            ->whereHas('samples', function ($q) use ($request) {
+                if ($request->filled('sampletype_id')) {
+                    $q->whereHasMorph(
+                        'sampleable',
+                        [SampleType::class],
+                        fn ($m) => $m->where('id', $request->sampletype_id)
+                    );
+                }elseif($request->filled('category_id')) {
+                    $q->where(function ($sub) use ($request) {
+                        $sub->whereHasMorph(
+                            'sampleable',
+                            [SampleCategory::class],
+                            fn ($m) => $m->where('id', $request->category_id)
+                        )->orWhereHasMorph(
+                            'sampleable',
+                            [SampleType::class],
+                            fn ($m) => $m->where('category_id', $request->category_id)
+                        );
+                    });
+                }
+            })
+            ->where('status_id',32)->where('is_active',1)
+            ->distinct()
+            ->get();
+        }else{
+            $testservices = [];
+        }
+        return ListResource::collection($testservices);
+    }
 }

@@ -29,6 +29,17 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/categories" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Categories') }">
+                    <i class="ri-list-check"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Categories</span>
+                    </Link>
+                </li>
+                 <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Laboratory Modules</span>
+                </li>
+                <li class="nav-item">
                     <Link href="/customers" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Customers') }">
                     <i class="ri-team-fill"></i>
@@ -36,10 +47,17 @@
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link href="/categories" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Categories') }">
-                    <i class="ri-list-check"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Categories</span>
+                    <Link href="/quotations" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Laboratory/Quotations') }">
+                    <i class="ri-price-tag-3-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Quotations</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/tsrs" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Laboratory/Tsrs') }">
+                    <i class="ri-hand-coin-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
                     </Link>
                 </li>
             </template>

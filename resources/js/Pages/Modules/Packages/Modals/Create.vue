@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 1000px;" header-class="p-3 bg-light" title="Add Package" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 1100px;" header-class="p-3 bg-light" title="Add Package" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         
          <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-3 p-3">
             <form class="customform">
@@ -31,7 +31,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-12"><span class="text-body">List of Testservices ({{ checkedItems.length }} selected)</span></h5>
+                                <h5 class="mb-0 fs-12"><span class="text-body">Selected Testservices ({{ checkedItems.length }})</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-12">Search and select the test services to be performed by the analyst for the specified sample.</p>
                             </div>
                             <div class="flex-shrink-0">
@@ -45,8 +45,8 @@
                                 <thead class="table-light thead-fixed">
                                     <tr class="fs-11">
                                         <th style="width: 5%;" class="text-center">#</th>
-                                        <th style="width: 20%;">Testname</th>
-                                        <th style="width: 46%;" class="text-center">Method</th>
+                                        <th style="width: 15%;">Testname</th>
+                                        <th class="text-center">Method</th>
                                         <th style="width: 15%;" class="text-center">Fee</th>
                                         <th style="width: 4%;"></th>
                                     </tr>
@@ -54,8 +54,8 @@
                                 <tbody v-if="checkedItems.length > 0">
                                     <tr v-for="(list,index) in checkedItems" v-bind:key="index" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
                                         <td style="width: 5%;" class="text-center fs-10">{{index+1}}</td>
-                                        <td style="width: 20%;" class="fs-10">{{list.testname}}</td>
-                                        <td style="width: 46%;" class="text-center fs-10">{{list.method}} <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span></td>
+                                        <td style="width: 15%;" class="fs-10">{{list.testname}}</td>
+                                        <td class="text-center fs-10">{{list.method}} <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span><br/><span class="text-muted">{{ list.reference }}</span></td>
                                         <td style="width: 15%;" class="text-center fs-10">{{list.fee}}</td>
                                         <td style="width: 4%;" class="text-center"> 
                                             <b-button @click="openDeleteTest(list)" variant="soft-danger" v-b-tooltip.hover title="Delete" size="sm">
@@ -74,41 +74,55 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12">
-                <hr class="text-muted mt-n1"/>
-            </div>
-            <div class="col-md-12">
-                <BRow class="g-3">
-                    <b-col lg>
-                        <div class="input-group mb-1">
-                            <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                            <Multiselect class="white" @search-change="checkCategory" style="width: 30%;" :options="categories" v-model="form.category_id" label="name" :allow-empty="false" :searchable="true" placeholder="Search Category" ref="multiselectC"/>
-                            <Multiselect class="white" @search-change="checkType" style="width: 30%;" :options="types" v-model="form.sampletype_id" label="name" :allow-empty="false" :searchable="true" placeholder="Search Type" ref="multiselectT"/>
-                            <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 30%;">
-                            <b-button type="button" variant="primary">
-                                <i class="ri-search-eye-line align-bottom me-1"></i> 
-                            </b-button>
-                        </div>
-                    </b-col>
-                </BRow>
-            </div>
-            <div class="col-md-12 mt-3">
-                <simplebar data-simplebar style="max-height: 200px">
-                    <div>
-                        <table class="table table-centered table-bordered table-nowrap mb-0">
-                            <tbody>
-                                <tr v-for="(list,index) in sortedTestservices" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
-                                    <td style="width: 7%;" class="text-center"> 
-                                        <input class="form-check-input me-1" type="checkbox" :checked="isItemChecked(list.id)" @change="toggleChecked(list,$event)">
-                                    </td>
-                                    <td style="width: 25%;" class="text-center fs-11">{{list.testname}}</td>
-                                    <td style="width: 53%;" class="text-center fs-11">{{list.method}} <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span></td>
-                                    <td style="width: 15%;" class="text-center fs-11">{{list.fee}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+        </BRow>
+        <BRow v-if="form.laboratory_id">
+            <div class="col-md-12 mt-n2 mb-n4">
+                <div class="card bg-light-subtle shadow-none border">
+                    <div class="card-header bg-light-subtle">
+                        <b-row class="mt-0 mb-n1" style="margin-top: 12px;">
+                            <b-col lg>
+                                <div class="input-group mb-1">
+                                    <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                    <Multiselect class="white" @search-change="checkCategory" style="width: 30%;" :options="categories" v-model="form.category_id" label="name" :allow-empty="false" :searchable="true" placeholder="Search Category" ref="multiselectC"/>
+                                    <Multiselect class="white" @search-change="checkType" style="width: 30%;" :options="types" v-model="form.sampletype_id" label="name" :allow-empty="false" :searchable="true" placeholder="Search Type" ref="multiselectT"/>
+                                    <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 30%;">
+                                    <b-button type="button" variant="primary">
+                                        <i class="ri-search-eye-line align-bottom me-1"></i> 
+                                    </b-button>
+                                </div>
+                            </b-col>
+                        </b-row>
                     </div>
-                </simplebar>
+                    <div class="card bg-white border-bottom shadow-none" no-body>
+                        <div class="table-responsive" style="max-height: calc(100vh - 600px); overflow: auto;">
+                            <table class="table table-nowrap table-striped align-middle mb-0">
+                                <thead class="table-light thead-fixed">
+                                    <tr class="fs-11">
+                                        <th style="width: 5%;" class="text-center">#</th>
+                                        <th style="width: 15%;">Testname</th>
+                                        <th class="text-center">Method</th>
+                                        <th style="width: 15%;" class="text-center">Fee</th>
+                                    </tr>
+                                </thead>
+                                <tbody v-if="sortedTestservices.length > 0">
+                                    <tr v-for="(list,index) in sortedTestservices" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
+                                        <td style="width: 5%;" class="text-center"> 
+                                            <input class="form-check-input me-1" type="checkbox" :checked="isItemChecked(list.id)" @change="toggleChecked(list,$event)">
+                                        </td>
+                                        <td style="width: 15%;" class="fs-10">{{list.testname}}</td>
+                                        <td class="text-center fs-10">{{list.method}} <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span><br/><span class="text-muted">{{ list.reference }}</span></td>
+                                        <td style="width: 15%;" class="text-center fs-10">{{list.fee}}</td>
+                                    </tr>
+                                </tbody>
+                                <tbody v-else>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted fs-12">Search Test services to add</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </BRow>
         <template v-slot:footer>
@@ -161,6 +175,12 @@ export default {
         totalFee(newTotalFee) {
             this.form.fee = newTotalFee;
             // this.$refs.testing.emitValue(this.form.fee);
+        },
+        "form.category_id"(newVal){
+            this.fetchTest(); 
+        },
+        "form.sampletype_id"(newVal){
+            this.fetchTest(); 
         },
         "filter.keyword"(newVal){
             this.fetchTest();
@@ -221,15 +241,15 @@ export default {
         show(){
             this.checkedItems = [];
             this.testservices = [];
-            this.$refs.multiselectC.clear();
-            this.$refs.multiselectT.clear();
+            // this.$refs.multiselectC.clear();
+            // this.$refs.multiselectT.clear();
             this.form.reset();
             this.form.clearErrors();
             this.showModal = true;
         }, 
         submit(){
             this.form.lists = this.checkedItems;
-            this.form.post('/analyses',{
+            this.form.post('/packages',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('success',true);

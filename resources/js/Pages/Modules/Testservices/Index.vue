@@ -150,7 +150,7 @@
             </div>
         </div>
     </BRow>
-     <Activation @update="updateData" ref="activation"/>
+    <Activation @update="updateData" ref="activation"/>
     <Create :dropdowns="dropdowns" @message="fetch()" ref="create"/>
 </template>
 <script>

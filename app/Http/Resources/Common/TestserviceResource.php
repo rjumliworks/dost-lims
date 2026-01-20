@@ -13,7 +13,7 @@ class TestserviceResource extends JsonResource
         $hashids = new Hashids('krad',10);
         $code = $hashids->encode($this->id);
 
-       return [
+        return [
             'code' => $code,
             'id' => $this->id,
             'typeable_id' => $this->typeable_id,
