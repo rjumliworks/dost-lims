@@ -22,6 +22,7 @@ class UserProfile extends Model
         'signature',
         'sex_id',
         'suffix_id',
+        'facility_id',
         'agency_id',
         'user_id', 
     ];
@@ -39,6 +40,7 @@ class UserProfile extends Model
     public function user()     { return $this->belongsTo(User::class); }
     public function sex()      { return $this->belongsTo(ListData::class, 'sex_id'); }
     public function suffix()   { return $this->belongsTo(ListData::class, 'suffix_id'); }
+    public function facility()   { return $this->belongsTo(AgencyFacility::class, 'facility_id'); }
     public function agency()   { return $this->belongsTo(Agency::class, 'agency_id'); }
 
     public function getFullnameAttribute()

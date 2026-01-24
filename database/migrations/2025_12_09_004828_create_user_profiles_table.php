@@ -25,6 +25,8 @@ return new class extends Migration
             $table->foreign('suffix_id')->references('id')->on('list_data')->restrictOnDelete();
             $table->unsignedSmallInteger('sex_id'); 
             $table->foreign('sex_id')->references('id')->on('list_data')->restrictOnDelete();
+            $table->unsignedTinyInteger('facility_id')->nullable();
+            $table->foreign('facility_id')->references('id')->on('agency_facilities')->onDelete('cascade');
             $table->unsignedInteger('agency_id')->nullable();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->unsignedInteger('user_id');

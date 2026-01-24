@@ -18,8 +18,6 @@ return new class extends Migration
             $table->boolean('is_primary')->default(1);
             $table->unsignedTinyInteger('laboratory_id')->nullable();
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
-            $table->unsignedTinyInteger('facility_id')->nullable();
-            $table->foreign('facility_id')->references('id')->on('agency_facilities')->onDelete('cascade');
             $table->unsignedTinyInteger('role_id');
             $table->foreign('role_id')->references('id')->on('list_roles')->onDelete('cascade');
             $table->unsignedInteger('user_id');
