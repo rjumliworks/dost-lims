@@ -42,7 +42,9 @@ class ViewClass
             ->with('fees','status')
             ->with('testname','agency.member','agency.address.region','laboratory')
             ->with('method.method','method.reference')
-            ->orderBy('created_at','DESC')->orderBy('id','ASC')
+            ->orderBy(TestserviceName::select('name')->whereColumn('testservices.testname_id', 'testservice_names.id'),'ASC')
+            ->orderBy('laboratory_id','ASC')->orderBy('id','ASC')
+            // ->orderBy('created_at','DESC')->orderBy('id','ASC')
             ->paginate($request->count)
         );
         return $data;

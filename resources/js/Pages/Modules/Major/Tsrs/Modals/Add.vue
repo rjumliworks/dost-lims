@@ -31,7 +31,7 @@ export default {
                 name: null,
                 contact_no: null,
                 customer_id: null,
-                type: 'conforme'
+                option: 'conforme'
             }),
             showModal: false
         }

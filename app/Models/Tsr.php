@@ -101,17 +101,19 @@ class Tsr extends Model
 
                 if (empty($model->agency_id)) {
                     $model->agency_id = $user->profile?->agency_id;
+                    $model->facility_id = $user->profile?->facility_id;
                 }
             }
         });
     }
 
-    public function createPayment(bool $isFree): void
+    public function createPayment(array $data): void
     {
         $this->payment()->create([
-            'status_id' => $isFree ? 8 : 6,
-            'is_free'   => $isFree,
-            'paid_at'   => $isFree ? now() : null,
+            'status_id' => $data['is_free'] ? 8 : 6,
+            'is_free'   => $data['is_free'],
+            'discount_id' => $data['discount_id'],
+            'paid_at'   => $data['is_free'] ? now() : null,
         ]);
     }
 

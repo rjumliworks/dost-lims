@@ -78,6 +78,42 @@ class ViewClass
         }
     }
 
+    public function pick($request){
+        $keyword = $request->keyword;
+        $id = $request->id;
+        $data = Customer::with('conformes','contact')->with('customer_name')
+        ->where(function($query) use ($keyword,$id) {
+            $query->where('name', 'LIKE', "%{$keyword}%")
+                ->where('id','!=',$id)
+                ->orWhereHas('customer_name', function ($query) use ($keyword,$id) {
+                    $query->where('name', 'LIKE', "%$keyword%")->whereHas('customer', function ($query) use ($id) {
+                        $query->where('id','!=',$id);
+                    });
+                });
+        })
+        ->get()->map(function ($item) {
+            $name = ($item->customer_name->has_branches) ? ($item->is_main) ? $item->customer_name->name :  $item->customer_name->name.' - '.$item->name : $item->customer_name->name;
+            return [
+                'value' => $item->id,
+                'name' => $name,
+                'email' => $item->contact->email,
+                'contact_no' => $item->contact->contact_no,
+                'conformes' => $item->conformes->map(function ($i) {
+                    return [
+                        'value' => $i->id,
+                        'name' => $i->name,
+                        'contact_no' => $i->contact_no
+                    ];
+                })
+            ];
+        });
+        if($keyword){
+            return $data;
+        }else{
+            return [];
+        }
+    }
+
     public function logs($request)
     {
         $customer = Customer::findOrFail($request->id);

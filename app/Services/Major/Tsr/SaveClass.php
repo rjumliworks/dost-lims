@@ -6,6 +6,14 @@ use App\Models\Tsr;
 
 class SaveClass
 {
+    public function validation($request){
+        return [
+            'data' => '-',
+            'message' => 'off', 
+            'info' => "You've successfully created the new customer."
+        ];
+    }
+    
     public function save($request)
     {
         $tsr = Tsr::create($request->tsrData());

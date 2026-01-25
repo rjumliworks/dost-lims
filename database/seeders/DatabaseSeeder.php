@@ -69,5 +69,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         
+        $this->call(AgencyDiscountsTableSeeder::class);
+        $this->call(AgencyFacilityLaboratoriesTableSeeder::class);
     }
 }
