@@ -48,14 +48,14 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/quotations" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Laboratory/Quotations') }">
+                    :class="{'active': $page.component.startsWith('Modules/Quotations') }">
                     <i class="ri-price-tag-3-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Quotations</span>
                     </Link>
                 </li>
                 <li class="nav-item">
                     <Link href="/tsrs" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Laboratory/Tsrs') }">
+                    :class="{'active': $page.component.startsWith('Modules/Tsrs') }">
                     <i class="ri-hand-coin-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
                     </Link>

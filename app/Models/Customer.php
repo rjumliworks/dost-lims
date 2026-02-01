@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Activitylog\Models\Activity;
@@ -51,6 +52,11 @@ class Customer extends Model
         });
     }
 
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
+
     public function conformes()
     {
         return $this->hasMany('App\Models\CustomerConforme', 'customer_id');
@@ -64,6 +70,11 @@ class Customer extends Model
     public function customer_name()
     {
         return $this->belongsTo('App\Models\CustomerName', 'name_id', 'id');
+    }
+
+    public function wallet()
+    {
+        return $this->hasOne('App\Models\Wallet', 'customer_id');
     }
 
     public function contact()

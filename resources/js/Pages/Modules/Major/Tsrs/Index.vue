@@ -81,8 +81,8 @@
                                     <th style="width: 7%;" class="text-center">Payment</th>
                                     <th style="width: 15%;" class="text-center">Date Request</th>
                                     <th style="width: 13%;" class="text-center">Due Date</th>
-                                    <th style="width: 8%;" class="text-center">Status</th>
-                                    <th style="width: 10%;" ></th>
+                                    <th style="width: 7%;" class="text-center">Status</th>
+                                    <th style="width: 4%;"></th>
                                 </tr>
                             </thead>
                               <!-- :class="{
@@ -129,14 +129,46 @@
                                         <span :class="'badge '+list.status.color">{{list.status.name}}</span>
                                     </td>
                                     <td class="text-end">
-                                        <a :href="`/tsrs/${list.qr}`" target="_blank">
+                                        <!-- <a :href="`/tsrs/${list.qr}`" target="_blank">
                                             <b-button :variant="(filter.status) ? 'soft-info' : 'info'"  class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
                                             </b-button>
                                         </a>
                                         <b-button @click="openPrint(list.qr)" v-if="list.status.name != 'Pending'" :variant="(filter.status) ? 'soft-success' : 'success'" class="me-1" v-b-tooltip.hover title="Print" size="sm">
                                             <i class="ri-printer-fill align-bottom"></i>
-                                        </b-button>
+                                        </b-button> -->
+                                        <div class="d-flex gap-3 justify-content-center">
+                                            <div class="dropdown">
+                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                    <template #button-content> 
+                                                        <i class="ri-more-fill"></i>
+                                                    </template>
+                                                    <li>
+                                                         <a :href="`/tsrs/${list.reference}`" target="_blank" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-eye-line me-2"></i> View
+                                                         </a>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-printer-line me-2"></i>Print
+                                                        </a>
+                                                    </li>
+                                                    <!-- <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-calendar-fill me-2"></i>Update Date
+                                                        </a>
+                                                    </li> -->
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                            <span v-if="list.is_active"><i class="ri-lock-2-fill me-2"></i> Deactivate</span>
+                                                            <span v-else><i class="ri-lock-unlock-line me-2"></i> Activate</span>
+                                                        </a>
+                                                    </li>
+                                                </BDropdown>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>

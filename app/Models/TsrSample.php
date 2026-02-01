@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Model;
 
 class TsrSample extends Model
@@ -18,6 +19,11 @@ class TsrSample extends Model
         'tsr_id',
         'completed_at'
     ];
+
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
 
     public function tsr()
     {

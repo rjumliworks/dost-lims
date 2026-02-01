@@ -34,7 +34,7 @@ class TsrController extends Controller
     public function index(Request $request){
         switch($request->option){
             case 'lists':
-                
+                return $this->view->lists($request);
             break;
             case 'print':
                 return $this->view->print($request);
@@ -81,6 +81,17 @@ class TsrController extends Controller
     }
 
     public function show($id){
-
+        return inertia('Modules/Major/Tsrs/Profile/Index',[
+            'tsr' => $this->view->view($id),
+            'analyses' => $this->view->analyses($id),
+            'dropdowns' => [
+                'laboratories' => $this->agency->laboratories(),
+                'services' => $this->agency->services(),
+                'discounts' => $this->agency->discounts(),
+                'agencies' => $this->agency->all(),
+                'statuses' => $this->dropdown->statuses('Request'),
+                'purposes' => $this->dropdown->dropdowns('Purpose','n/a'),
+            ],
+        ]);
     }
 }

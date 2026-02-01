@@ -3,11 +3,11 @@
         <form class="customform">
             <BRow>
                 <BCol lg="12">
-                    <i class="ri-user-2-fill me-1"></i><InputLabel value="Name" :message="form.errors.name"/>
+                    <InputLabel value="Name" :message="form.errors.name"/>
                     <TextInput v-model="form.name" type="text" class="form-control" placeholder="Please enter name" :light="true"/>
                 </BCol>   
                 <BCol lg="12">
-                    <i class="ri-phone-fill me-1"></i><InputLabel value="Contact" :message="form.errors.contact_no"/>
+                    <InputLabel value="Contact" :message="form.errors.contact_no"/>
                     <TextInput v-model="form.contact_no" type="text" class="form-control" placeholder="Please enter contact" :light="true"/>
                 </BCol>  
             </BRow>     
@@ -31,7 +31,7 @@ export default {
                 name: null,
                 contact_no: null,
                 customer_id: null,
-                option: 'conforme'
+                type: 'conforme'
             }),
             showModal: false
         }

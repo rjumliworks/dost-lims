@@ -52,7 +52,7 @@
 
         <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mt-3 mb-0 p-3">
             <form class="customform">
-                <div class="row" :class="(!is_referral) ? 'mt-2 mb-3' : ''">
+                <div class="row g-2" :class="(!is_referral) ? 'mt-2 mb-3' : 'mt-2'">
                     <BCol lg="8" style="margin-top: 0px; margin-bottom: -12px;" class="fs-12">Is TSR classified as a referral?</BCol>
                     <BCol lg="4" style="margin-top: 0px; margin-bottom: -12px;">
                         <div class="row">
@@ -71,19 +71,21 @@
                         </div>
                     </BCol>
                     <BCol lg="12" v-if="is_referral">
-                        <hr class="text-muted mt-4 mb-n1"/>
+                        <hr class="text-muted mb-n1"/>
                     </BCol>
-                    <BCol :lg="(agency_id == my_agency ) ? 6 : 12" class="mt-2" v-if="is_referral">
-                        <InputLabel for="region" value="Agency"/>
+                    <BCol :lg="(agency_id == my_agency ) ? 6 : 12" class="mt-2 mb-1" v-if="is_referral">
+                        <InputLabel for="region" value="Agency" :message="errors.agency_id"/>
                         <Multiselect 
+                        @input="handleInput('agency_id')"
                         :options="dropdowns.agencies" 
                         v-model="agency_id"
                         :searchable="true" label="name"
                         placeholder="Select Agency"/>
                     </BCol>
-                    <BCol lg="6" class="mt-2" v-if="is_referral && my_agency == agency_id">
-                        <InputLabel for="province" value="Province"/>
+                    <BCol lg="6" class="mt-2 mb-1" v-if="is_referral && my_agency == agency_id">
+                        <InputLabel for="province" value="Province" :message="errors.province_code"/>
                         <Multiselect 
+                        @input="handleInput('province_code')"
                         :options="provinces" 
                         v-model="province_code"
                         :searchable="true" label="name"
@@ -106,7 +108,7 @@ import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
     components: { InputLabel, TextInput, Multiselect },
-    props: ['dropdowns','my_agency'],
+    props: ['dropdowns','my_agency','errors'],
     data(){
         return {
             showModal: false,
@@ -141,6 +143,9 @@ export default {
                 this.provinces = response.data;
             })
             .catch(err => console.log(err));
+        },
+        handleInput(field) {
+            this.errors[field] = false;
         },
         hide(){
             this.showModal = false;
