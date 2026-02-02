@@ -77,7 +77,19 @@ class TsrController extends Controller
     }
 
     public function update(UpdateRequest $request){
-
+        $result = $this->handleTransaction(function () use ($request) {     
+            switch($request->option){
+                case 'Cancel':
+                    return $this->update->cancel($request);
+                break;       
+            }      
+        });   
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
     }
 
     public function show($id){

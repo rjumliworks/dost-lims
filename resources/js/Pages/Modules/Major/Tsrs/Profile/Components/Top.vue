@@ -38,7 +38,7 @@
                                 <div class="text-muted" v-if="selected.status.name === 'Pending' || selected.status.name === 'For Payment'" @click="openEdit(selected,index)" style="cursor: pointer;">  
                                     <i class="ri-edit-box-fill fs-16"></i> Update
                                 </div>
-                                <div class="text-muted" v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openCancel(selected.qr)" style="cursor: pointer;">  
+                                <div class="text-muted" v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openCancel(selected.reference)" style="cursor: pointer;">  
                                     <i class="ri-delete-bin-fill fs-16"></i> Cancel
                                 </div>
                                 <div class="text-muted" v-if="selected.status.name === 'For Payment' && selected.customer.wallet != null && selected.customer.wallet.available != '₱0.00'" @click="openWallet(selected.id,selected.customer,selected.payment)" style="cursor: pointer;">  

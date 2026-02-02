@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Executive;
 
 use Hashids\Hashids;
-use App\Models\UserProfile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest

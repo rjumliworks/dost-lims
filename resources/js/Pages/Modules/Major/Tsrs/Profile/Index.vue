@@ -13,7 +13,7 @@
                 </div>
                 <div class="file-manager-sidebar" style="margin-right: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
-                       
+                        <Sidebar :selected="tsr.data" :total="totalFee"/>
                     </simplebar>
                 </div>
 
@@ -23,31 +23,32 @@
     <Message ref="message" />
 </template>
 <script>
-    import Top from './Components/Top.vue';
-    import Message from './Modals/Message.vue';
-    import simplebar from "simplebar-vue";
-    import PageHeader from '@/Shared/Components/PageHeader.vue';
-    export default {
-        layout: null,
-        components: {
-            PageHeader,
-            simplebar,
-            Top,
-            Message
-        },
-        props: ['tsr','analyses','dropdowns'],
-        computed: {
-            totalFee() {
-                if (!this.analyses.data|| typeof this.analyses.data !== 'object') return 0;
+import Top from './Components/Top.vue';
+import Sidebar from './Components/Sidebar.vue';
+import Message from './Modals/Message.vue';
+import simplebar from "simplebar-vue";
+import PageHeader from '@/Shared/Components/PageHeader.vue';
+export default {
+    layout: null,
+    components: {
+        PageHeader,
+        simplebar,
+        Top,
+        Sidebar,
+        Message
+    },
+    props: ['tsr','analyses','dropdowns'],
+    computed: {
+        totalFee() {
+            if (!this.analyses.data|| typeof this.analyses.data !== 'object') return 0;
 
-                return Object.values(this.analyses.data).reduce((sum, a) => {
-                const cleaned = Number(String(a.fee).replace(/[₱,]/g, ''));
-                return sum + cleaned;
-                }, 0);
-            }
-        },
-    }
-
+            return Object.values(this.analyses.data).reduce((sum, a) => {
+            const cleaned = Number(String(a.fee).replace(/[₱,]/g, ''));
+            return sum + cleaned;
+            }, 0);
+        }
+    },
+}
 </script>
 <style scoped>
     .auth-page-wrapper .auth-page-content {
