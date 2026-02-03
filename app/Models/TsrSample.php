@@ -30,9 +30,14 @@ class TsrSample extends Model
         return $this->belongsTo('App\Models\Tsr', 'tsr_id', 'id');
     }
 
-    public function sample()
+    public function sampletype()
     {
-        return $this->belongsTo('App\Models\ListName', 'sampletype_id', 'id');
+        return $this->belongsTo('App\Models\SampleType', 'sampletype_id', 'id');
+    }
+
+    public function samplename()
+    {
+        return $this->belongsTo('App\Models\SampleName', 'samplename_id', 'id');
     }
 
     public function report()

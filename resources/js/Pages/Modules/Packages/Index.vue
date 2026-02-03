@@ -16,7 +16,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-14"><span class="text-body">List of Packages</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">View and manage customer profiles along with their laboratory test requests and related transactions.</p>
+                            <p class="text-muted text-truncate-two-lines fs-12">Manage bundled test service packages for faster test selection and ordering.</p>
                         </div>
                         <div class="flex-shrink-0" style="width: 45%;">
                            

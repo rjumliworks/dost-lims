@@ -71,5 +71,8 @@ class DatabaseSeeder extends Seeder
         
         $this->call(AgencyDiscountsTableSeeder::class);
         $this->call(AgencyFacilityLaboratoriesTableSeeder::class);
+        $this->call(SampleCategoriesTableSeeder::class);
+        $this->call(SampleTypesTableSeeder::class);
+        $this->call(SampleNamesTableSeeder::class);
     }
 }

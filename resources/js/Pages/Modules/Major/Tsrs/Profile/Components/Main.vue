@@ -1,0 +1,217 @@
+<template>
+    <BRow>
+        <div class="col-md-12">
+            <div class="card bg-light-subtle shadow-none border">
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2.5rem;width:2.5rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-flask-fill text-primary fs-22"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-14"><span class="text-body">List of Samples Received</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">Generate and track quotations for lab services requested by customers.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <div class="form-check form-switch form-switch-right form-switch-md mt-2">
+                                <label for="navbarscrollspy-showcode" class="form-label text-muted">Show Analyses</label>
+                                <input class="form-check-input code-switcher" v-model="showAnalyses" type="checkbox" id="navbarscrollspy-showcode">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-light overflow-hidden mb-0" v-if="selected.status.name == 'Ongoing'">
+                    <div class="card-body">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-0"><b class="text-secondary">Overall Progress: {{analysisCounts.percentage}}% of analyses completed successfully</b></h6>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <h6 class="mb-0">{{analysisCounts.completed}} of {{ analysisCounts.total }} completed</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress  bg-secondary-subtle">
+                        <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" :aria-valuenow="analysisCounts.percentage" aria-valuemin="0" aria-valuemax="100" :style="'width: '+analysisCounts.percentage+'%'"></div>
+                    </div>
+                </div>
+                <div class="car-body bg-white border-bottom shadow-none">
+                    <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
+                        <b-col lg>
+                          
+                            <div class="input-group mb-1">
+                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                 <input type="text" placeholder="Search Sample" class="form-control" style="width: 40%;">
+                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openService()" class="input-group-text" v-b-tooltip.hover title="Add Service" style="cursor: pointer;"> 
+                                    <i class="ri-add-circle-fill text-primary search-icon me-1"></i>Add-ons
+                                </span>
+                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openAnalysis()" class="input-group-text" v-b-tooltip.hover title="Add Analysis" style="cursor: pointer;"> 
+                                    <i class="ri-flask-fill text-primary search-icon me-1"></i>Add Service
+                                </span>
+                                <b-button v-if="selected.status.name == 'Pending'" type="button" variant="primary" @click="addSample()">
+                                    <i class="ri-add-circle-fill align-bottom me-1"></i>Add Sample
+                                </b-button>
+                                 <b-button type="button" variant="danger" @click="printAll()">
+                                    <i class="ri-printer-fill align-bottom"></i>
+                                </b-button>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </div>
+                <div class="card bg-white border-bottom shadow-none" no-body>
+                    <div class="table-responsive" :style="containerStyle">
+                        <table class="table table-nowrap table-striped align-middle mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" width="4%" class="text-center">
+                                        <input class="form-check-input fs-16" v-model="mark" type="checkbox" value="option" />
+                                    </th>
+                                    <th :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="5%">#</th>
+                                    <th width="20%">Sample Name</th>
+                                    <th width="63%">Description</th>
+                                    <th v-if="selected.status.name != 'Pending'" width="4%" class="text-center">Status</th>
+                                    <th width="7%"></th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="selected.samples.length > 0">
+                                <template v-for="(list,index) in selected.samples" v-bind:key="index">
+                                    <tr :class="(showAnalyses) ? 'bg-info-subtle' : ''">
+                                        <td v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'"  width="4%" class="text-center">
+                                            <input type="checkbox" v-model="list.selected" class="form-check-input" />
+                                        </td>
+                                        <td :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">{{index+1}}</td>
+                                        <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
+                                            <h5 class="fs-13 mb-0 fw-semibold text-primary">{{(list.code) ? list.code : 'Not yet available'}}</h5>
+                                            <p class="fs-13 text-muted mb-0">{{list.samplename}}</p>
+                                        </td>
+                                        <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
+                                            <i>{{list.customer_description}}</i>, {{list.description}}
+                                        </td>
+                                        <td v-if="selected.status.name != 'Pending' && selected.status.name != 'For Payment'" width="4%" class="text-center">
+                                            <span class="fs-12" v-if="list.analyses.filter(item => item.status.name == 'Completed').length != list.analyses.length">{{list.analyses.filter(item => item.status.name == "Completed").length}} / {{list.analyses.length}}</span>
+                                            <span v-else><i class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover :title="list.analyses.filter(item => item.status.name == 'Completed').length+'/'+list.analyses.length"></i></span>
+                                        </td>
+                                        <td width="7%" class="text-end">
+                                            <template v-if="showAnalyses">
+                                                <div class="d-flex gap-3 justify-content-center">
+                                                <div class="dropdown">
+                                                    <BDropdown variant="link" strategy="fixed" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                        <template #button-content> 
+                                                            <i class="ri-more-fill"></i>
+                                                        </template>
+                                                        <li>
+                                                            <Link :href="`/customers/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-eye-line me-2"></i> View
+                                                            </Link>
+                                                        </li>
+                                                        <li>
+                                                            <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-pencil-line me-2"></i>Edit
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a @click="openSampleCopy(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                <i class="ri-file-copy-2-line me-2"></i>Copy
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <a @click="openSampleRemove(list)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                                <span class="text-danger"><i class="ri-delete-bin-fill me-2"></i> Remove</span>
+                                                            </a>
+                                                        </li>
+                                                    </BDropdown>
+                                                </div>
+                                            </div>
+                                            </template>
+                                            <template v-else>
+
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                             <tbody v-else>
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted fs-12">No samples found. Please add at least one sample to proceed with the TSR.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </BRow>
+    <Create ref="sample"/>
+    <Remove ref="remove"/>
+</template>
+<script>
+import Create from '../Modals/Main/Sample/Create.vue';
+import Remove from '../Modals/Main/Sample/Remove.vue';
+export default {
+    props:['selected','services','analyses'],
+    components: { Create, Remove },
+    data(){
+        return {
+            currentUrl: window.location.origin,
+            samples : [],
+            sample: {},
+            showAnalyses: true,
+            view: false,
+            mark: false,
+        }
+    },
+    computed: {
+        analysisCounts() {
+            let completed = 0;
+            let notCompleted = 0;
+
+            this.selected.samples.forEach(sample => {
+                sample.analyses.forEach(analysis => {
+                    if (analysis.status.id === 12) {
+                    completed++;
+                    } else {
+                    notCompleted++;
+                    }
+                });
+            });
+            const total = completed + notCompleted;
+            const percentage = total > 0 ? (completed / total) * 100 : 0;
+
+            return { completed,notCompleted,total,percentage: percentage.toFixed(2) };
+        },
+        containerStyle() {
+            let offset = 300;
+            if (this.selected.status.name === 'Ongoing') {offset = 360;}
+            return {
+                maxHeight: `calc(100vh - ${offset}px)`,
+                overflow: 'auto'
+            };
+        }
+    },
+    methods: { 
+        addSample(){
+            this.mark = false;
+            this.$refs.sample.show(this.selected.id,this.selected.laboratory.id);
+        },
+        addService(){
+
+        },
+        addAddons(){
+
+        },
+        openSampleEdit(){
+
+        },
+        openSampleView(){
+            
+        },
+        openSampleRemove(data){
+            this.$refs.remove.show(data,this.selected.id);
+        }
+    }
+}
+</script>

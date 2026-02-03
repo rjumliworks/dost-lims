@@ -6,6 +6,8 @@ use App\Models\Testservice;
 use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
 use App\Models\SampleType;
+use App\Http\Resources\Common\TestserviceResource;
+use App\Http\Resources\Common\Testservice\ListsResource;
 
 class SaveClass
 {
@@ -54,6 +56,26 @@ class SaveClass
             'data' => $sample,
             'message' => 'Sample type added was successful!', 
             'info' => "You've successfully added sample type."
+        ];
+    }
+
+    public function status($request){
+        $data = Testservice::find($request->id);
+        $data->status_id = $request->status_id;
+        $data->is_active = ($request->status_id == 32) ? 1 : 0;
+        $data->save();
+
+        $data =  new ListsResource(
+            Testservice::where('id',$data->id)
+            ->with('status')
+            ->with('testname','laboratory')
+            ->with('method.method','method.reference')
+            ->first()
+        );
+        return [
+            'data' => $data,
+            'message' => 'Testservice creation was successful!', 
+            'info' => "You've successfully created the new testservice."
         ];
     }
 }

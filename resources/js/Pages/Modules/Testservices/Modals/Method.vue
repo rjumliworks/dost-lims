@@ -149,6 +149,7 @@ export default {
         hide(){
             this.$refs.multiselectM.clear();
             this.$refs.multiselectR.clear();
+            this.$refs.testing.empty();
             this.form.fee = null;
             this.showModal = false;
         }

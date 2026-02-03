@@ -1,6 +1,6 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 600px;" header-class="p-3 bg-light" title="Add Sample Name" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
-            
+    <b-modal v-model="showModal" header-class="p-3 bg-light" title="Add Sample Name" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+        <!-- style="--vz-modal-width: 600px;"  -->
         <form class="customform">
             <BRow>
                 <BCol lg="12" class="mt-1 mb-1">
@@ -13,9 +13,9 @@
                             v-model="form.category_id" 
                             placeholder="Select Category" ref="multiselectC"/>
                         </div>
-                        <div class="flex-shrink-0">
+                        <!-- <div class="flex-shrink-0">
                             <b-button @click="addCategory()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1" :disabled="(form.laboratory_id && categories.length === 0) ? false : true"><i class="ri-add-circle-fill"></i></b-button>
-                        </div>
+                        </div> -->
                     </div>
                 </BCol>
                 <BCol lg="12" class="mt-1 mb-1">
@@ -29,9 +29,9 @@
                             v-model="form.sampletype_id" 
                             placeholder="Select Sample type" ref="multiselectT"/>
                         </div>
-                        <div class="flex-shrink-0">
+                        <!-- <div class="flex-shrink-0">
                             <b-button @click="addType()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1" :disabled="(form.laboratory_id && types.length === 0) ? false : true"><i class="ri-add-circle-fill"></i></b-button>
-                        </div>
+                        </div> -->
                     </div>
                 </BCol> 
             </BRow>

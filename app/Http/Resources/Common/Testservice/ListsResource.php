@@ -1,17 +1,22 @@
 <?php
 
-namespace App\Http\Resources\Common;
+namespace App\Http\Resources\Common\Testservice;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TestserviceResource extends JsonResource
+class ListsResource extends JsonResource
 {
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
     public function toArray(Request $request): array
     {
         return [
-            'reference' => $this->reference,
             'id' => $this->id,
+            'reference' => $this->reference,
             'typeable_id' => $this->typeable_id,
             'is_fixed' => $this->is_fixed,
             'is_active' => $this->is_active,
@@ -19,11 +24,8 @@ class TestserviceResource extends JsonResource
             'method' => $this->method,
             'reference' => $this->reference,
             'fee' => $this->fee,
-            'added' => $this->added,
             'status' => $this->status,
             'laboratory' => $this->laboratory,
-            'added' => $this->added,
-            'fees' => $this->fees,
             'samples' => $this->samples,
             'created_at' => $this->created_at
         ];

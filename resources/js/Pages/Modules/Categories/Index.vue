@@ -16,7 +16,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-14"><span class="text-body">List of Category</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">View and manage customer profiles along with their laboratory test requests and related transactions.</p>
+                            <p class="text-muted text-truncate-two-lines fs-12">Manage categories containing sample types and sample names for identifying samples and test services.</p>
                         </div>
                         <div class="flex-shrink-0" style="width: 45%;">
                            
@@ -49,7 +49,7 @@
                             <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                                 <li class="nav-item">
                                     <BLink @click="viewClass(null,null)" class="nav-link py-3 active" data-bs-toggle="tab" role="tab" aria-selected="true">
-                                    <i class="ri-apps-2-fill me-1 align-bottom"></i> All Customers
+                                    <i class="ri-apps-2-fill me-1 align-bottom"></i> All Categories
                                     </BLink>
                                 </li>
                                 <li class="nav-item" v-for="(list,index) in dropdowns.classes" v-bind:key="index">
@@ -75,7 +75,7 @@
                                 <tr class="fs-11">
                                     <th style="width: 3%;"></th>
                                     <th>Sample Name</th>
-                                    <th style="width: 15%;" class="text-center">Sample Type</th>
+                                    <th style="width: 25%;" class="text-center">Sample Type</th>
                                     <th style="width: 15%;" class="text-center">Category</th>
                                     <th style="width: 15%;" class="text-center">Laboratory</th>
                                     <th style="width: 7%;" class="text-center">Status</th>
@@ -91,7 +91,7 @@
                                         {{ (meta.current_page - 1) * meta.per_page + index + 1 }}.
                                     </td>
                                     <td>
-                                        <h5 class="fs-13 mb-0 text-dark">{{list.name}}</h5>
+                                        <h5 class="fs-12 mb-0 text-dark">{{list.name}}</h5>
                                     </td>
                                     <td class="text-center fs-12">{{list.type}}</td>
                                     <td class="text-center fs-12">{{list.category}}</td>

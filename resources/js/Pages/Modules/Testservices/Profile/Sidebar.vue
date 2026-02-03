@@ -17,7 +17,7 @@
             </div>
         </div>
         <div class="card-body bg-white rounded-bottom border-bottom">
-            <p class="mb-0 text-primary fs-12 fw-semibold">Service Information</p>
+            <p class="mb-0 text-primary fs-12 fw-semibold">Service Details</p>
         </div>
         <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 380px); overflow: auto;">
             <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
@@ -25,12 +25,12 @@
                     <div class="d-flex">
                         <div class="flex-shrink-0 avatar-xs">
                             <span class="avatar-title bg-light p-1 rounded-circle">
-                                <i class="ri-information-fill" :class="service.data.status.others"></i>
+                                <i class="ri-function-fill text-primary"></i>
                             </span>
                         </div>
                         <div class="flex-grow-1 ms-2">
-                            <h6 class="mb-0 fs-12">{{service.data.status.name}}</h6>
-                            <p class="fs-11 mb-0 text-muted">Status</p>
+                            <h6 class="mb-0 fs-12">{{service.data.method.method.name}}</h6>
+                            <p class="fs-11 mb-0 text-muted">Method</p>
                         </div>
                     </div>
                 </li> 
@@ -38,13 +38,25 @@
                     <div class="d-flex">
                         <div class="flex-shrink-0 avatar-xs">
                             <span class="avatar-title bg-light p-1 rounded-circle">
-                                <i v-if="service.data.is_active" class="ri-checkbox-circle-fill text-success"></i>
-                                <i v-else class="ri-close-circle-fill text-danger"></i>
+                                <i class="ri-file-paper-fill text-primary"></i>
                             </span>
                         </div>
                         <div class="flex-grow-1 ms-2">
-                            <h6 class="mb-0 fs-12">{{ (service.data.is_active) ? 'Available' : 'Not Available' }}</h6>
-                            <p class="fs-11 mb-0 text-muted">Availability</p>
+                            <h6 class="mb-0 fs-12">{{service.data.method.method.short}}</h6>
+                            <p class="fs-11 mb-0 text-muted">Short Method</p>
+                        </div>
+                    </div>
+                </li> 
+                <li class="list-group-item px-0">
+                    <div class="d-flex">
+                        <div class="flex-shrink-0 avatar-xs">
+                            <span class="avatar-title bg-light p-1 rounded-circle">
+                                <i class="ri-file-text-fill  text-primary"></i>
+                            </span>
+                        </div>
+                        <div class="flex-grow-1 ms-2">
+                            <h6 class="mb-0 fs-12">{{ service.data.method.reference.name }}</h6>
+                            <p class="fs-11 mb-0 text-muted">Reference</p>
                         </div>
                     </div>
                 </li>
@@ -70,32 +82,33 @@
                     <span v-else @click="addTag()" style="cursor: pointer;" class="badge bg-light text-dark">Add Tag now</span>
                 </div> -->
             <hr class="text-muted"/>
-                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">User Information</p>
+                <p class="ms-3 mb-0 text-primary fs-12 fw-semibold">Status Details</p>
             <hr class="text-muted mb-1"/>
             <ul class="list-group list-group-flush border-dashed mb-n4 mt-n3 p-3">
                 <li class="list-group-item px-0">
                     <div class="d-flex">
                         <div class="flex-shrink-0 avatar-xs">
                             <span class="avatar-title bg-light p-1 rounded-circle">
-                                <i class="ri-user-fill text-primary"></i>
+                                <i class="ri-information-fill" :class="service.data.status.others"></i>
                             </span>
                         </div>
                         <div class="flex-grow-1 ms-2">
-                            <h6 class="mb-0 fs-12">{{service.data.added.profile.fullname}}</h6>
-                            <p class="fs-11 mb-0 text-muted">Added By</p>
+                            <h6 class="mb-0 fs-12">{{service.data.status.name}}</h6>
+                            <p class="fs-11 mb-0 text-muted">Status</p>
                         </div>
                     </div>
-                </li>
+                </li> 
                 <li class="list-group-item px-0">
                     <div class="d-flex">
                         <div class="flex-shrink-0 avatar-xs">
                             <span class="avatar-title bg-light p-1 rounded-circle">
-                                <i class="ri-calendar-fill text-primary"></i>
+                                <i v-if="service.data.is_active" class="ri-checkbox-circle-fill text-success"></i>
+                                <i v-else class="ri-close-circle-fill text-danger"></i>
                             </span>
                         </div>
                         <div class="flex-grow-1 ms-2">
-                            <h6 class="mb-0 fs-12">{{ service.data.created_at }}</h6>
-                            <p class="fs-11 mb-0 text-muted">Date Created</p>
+                            <h6 class="mb-0 fs-12">{{ (service.data.is_active) ? 'Available' : 'Not Available' }}</h6>
+                            <p class="fs-11 mb-0 text-muted">Availability</p>
                         </div>
                     </div>
                 </li>

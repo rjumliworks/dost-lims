@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
+use Spatie\Activitylog\Models\Activity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +36,13 @@ class Testservice extends Model
                 }
             }
         });
+    }
+
+    protected $appends = ['reference'];
+
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
     }
 
     public function fees()
@@ -86,10 +95,19 @@ class Testservice extends Model
         return date('M d, Y g:i a', strtotime($value));
     }
 
+    public function activities()
+    {
+        return Activity::with(['causer:id','causer.profile:user_id,firstname,lastname,middlename,suffix_id']) // 👈 eager load here
+        ->where(function ($query) {
+            $query->where('subject_type', Testservice::class)->where('subject_id', $this->id);
+        })
+        ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+    }
+
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
         ->logOnly(['laboratory_id','testname_id','method_id','is_active','status_id'])
-        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} the user information")
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName} the testservice information")
         ->useLogName('Testservice')
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();

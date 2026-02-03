@@ -29,14 +29,33 @@ class ViewClass
         return $data;
     }
 
-    public function type($request){
+    public function type($request)
+    {
         $keyword = $request->keyword;
-        $data = SampleType::where('category_id',$request->category_id)
-        ->where('name', 'LIKE', "%{$keyword}%")->where('is_active',1)->get()->map(function ($item) {
-            return [
+        $withNames = filter_var($request->with, FILTER_VALIDATE_BOOLEAN);
+
+        $query = SampleType::where('category_id', $request->category_id)
+            ->where('name', 'LIKE', "%{$keyword}%")
+            ->where('is_active', 1);
+
+        if ($withNames) {
+            $query->with('names:id,name,type_id');
+        }
+
+        $data = $query->get()->map(function ($item) use ($withNames) {
+            $response = [
                 'value' => $item->id,
-                'name' => $item->name
+                'name'  => $item->name,
             ];
+            if ($withNames) {
+                $response['names'] = $item->names->map(function ($name) {
+                    return [
+                        'value' => $name->id,  
+                        'name'  => $name->name,
+                    ];
+                });
+            }
+            return $response;
         });
         return $data;
     }

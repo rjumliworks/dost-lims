@@ -79,7 +79,7 @@
                         <div class="col-md-12">
                             <div class="d-flex mt-3">
                                 <div class="flex-shrink-0 avatar-xs align-self-center me-3">
-                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-account-circle-fill"></i>
+                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-hotel-fill"></i>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden">
@@ -112,7 +112,7 @@
                         <div class="col-md-12">
                             <div class="d-flex">
                                 <div class="flex-shrink-0 avatar-xs align-self-center me-3">
-                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-qr-code-fill"></i>
+                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-price-tag-3-fill"></i>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 overflow-hidden">

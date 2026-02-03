@@ -16,7 +16,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-14"><span class="text-body">List of Test Services</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">View and manage customer profiles along with their laboratory test requests and related transactions.</p>
+                            <p class="text-muted text-truncate-two-lines fs-12">Manage the complete list of laboratory test services with full configuration and details.</p>
                         </div>
                         <div class="flex-shrink-0" style="width: 45%;">
                            
@@ -112,7 +112,7 @@
                                                         <i class="ri-more-fill"></i>
                                                     </template>
                                                     <li>
-                                                        <Link :href="`/testservices/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <Link :href="`/testservices/${list.reference}`" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-eye-fill me-2"></i> View
                                                         </Link>
                                                     </li>
@@ -127,13 +127,16 @@
                                                             <i class="ri-calendar-fill me-2"></i>Update Date
                                                         </a>
                                                     </li> -->
-                                                    <li><hr class="dropdown-divider"></li>
-                                                    <li>
-                                                        <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
-                                                            <span v-if="list.is_active"><i class="ri-lock-2-fill me-2"></i> Deactivate</span>
-                                                            <span v-else><i class="ri-lock-unlock-line me-2"></i> Activate</span>
-                                                        </a>
-                                                    </li>
+                                                    <template v-if="$page.props.roles?.includes('Technical Manager')">
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li> 
+                                                            <a @click="openView(list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                                <span v-if="list.status.name == 'Pending'" class="text-success"><i class="ri-checkbox-circle-fill me-2"></i> Approved</span>
+                                                                <span v-else-if="list.status.name == 'Suspended'"><i class="ri-checkbox-circle-fill me-2"></i> Reactivate</span>
+                                                                <span v-else-if="list.status.name == 'Approved'" class="text-danger"><i class="ri-close-circle-fill me-2"></i> Suspended</span>
+                                                            </a>
+                                                        </li>
+                                                    </template>
                                                 </BDropdown>
                                             </div>
                                         </div>
@@ -150,18 +153,20 @@
             </div>
         </div>
     </BRow>
+    <View @update="updateData" ref="view"/>
     <Activation @update="updateData" ref="activation"/>
     <Create :dropdowns="dropdowns" @message="fetch()" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
+import View from './Modals/View.vue';
 import Create from './Modals/Create.vue';
 import Multiselect from "@vueform/multiselect";
 import Activation from './Modals/Activation.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Activation },
+    components: { PageHeader, Pagination, Multiselect, Create, Activation, View },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -225,6 +230,10 @@ export default {
         },
         openTestname(){
             this.$refs.testname.show();
+        },
+        openView(data,index){
+            this.index = index;
+            this.$refs.view.show(data);
         },
         openActivation(type,data,index){
             this.index = index;

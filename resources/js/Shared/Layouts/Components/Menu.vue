@@ -9,7 +9,7 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                 </Link>
             </li>
-            <template v-if="$page.props.roles.includes('Customer Relation Officer')">
+            <template v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Laboratory Modules</span>
@@ -55,7 +55,7 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/tsrs" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Tsrs') }">
+                    :class="{'active': $page.component.startsWith('Modules/Major/Tsrs') }">
                     <i class="ri-hand-coin-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
                     </Link>

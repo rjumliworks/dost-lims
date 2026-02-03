@@ -9,7 +9,7 @@
             <Top :selected="tsr.data" :analyses="analyses.data.length" :dropdowns="dropdowns"/>
             <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
                 <div class="file-manager-content w-100 p-4 pb-0" ref="box" style="margin-left: 20px;">
-                   
+                    <Main :selected="tsr.data" :services="dropdowns.services" :analyses="analyses.data" />
                 </div>
                 <div class="file-manager-sidebar" style="margin-right: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
@@ -24,6 +24,7 @@
 </template>
 <script>
 import Top from './Components/Top.vue';
+import Main from './Components/Main.vue';
 import Sidebar from './Components/Sidebar.vue';
 import Message from './Modals/Message.vue';
 import simplebar from "simplebar-vue";
@@ -35,7 +36,8 @@ export default {
         simplebar,
         Top,
         Sidebar,
-        Message
+        Message,
+        Main
     },
     props: ['tsr','analyses','dropdowns'],
     computed: {

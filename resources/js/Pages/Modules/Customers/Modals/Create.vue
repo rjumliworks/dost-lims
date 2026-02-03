@@ -62,11 +62,11 @@
                         <BRow>
                             <BCol :lg="(form.classification_id == 9) ? 3 : 6" class="mt- mb-1">
                                 <InputLabel for="classification_id" value="Classification" :message="form.errors.classification_id"/>
-                                <Multiselect :options="dropdowns.classes" label="name" v-model="form.classification_id" placeholder="Select Classification" @input="handleInput('classification_id')"/>
+                                <Multiselect :options="dropdowns.classes" label="name" :searchable="true" v-model="form.classification_id" placeholder="Select Classification" @input="handleInput('classification_id')"/>
                             </BCol>
                             <BCol v-if="form.classification_id != 9" :lg="(form.sex_id == 71 || form.sex_id == 70) ? '3' : '6'" class="mt-0 mb-1">
                                 <InputLabel for="sex_id" value="Sex" :message="form.errors.sex_id"/>
-                                <Multiselect :options="dropdowns.sexs" label="name" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')" />
+                                <Multiselect :options="dropdowns.sexs" label="name" :searchable="true" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')" />
                             </BCol>
                             <BCol v-if="form.classification_id == 9" lg="3" class="mt-0 mb-1">
                                 <InputLabel for="sex_id" value="Sex" :message="form.errors.sex_id"/>

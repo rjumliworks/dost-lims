@@ -18,9 +18,9 @@
                                             <div class="hstack gap-3 flex-wrap">
                                                 <div><i class="ri-building-line align-bottom me-1"></i>{{ service.data.laboratory.name }}</div>
                                                 <div class="vr" style="width: 1px;"></div>
-                                                <div><span class="text-muted">Method : </span>{{ service.data.method.method.name }}</div>
+                                                <div><span class="text-muted">Created By : </span>{{ service.data.added.profile.fullname }}</div>
                                                 <div class="vr" style="width: 1px;"></div>
-                                                <div><span class="text-muted">Reference : </span>{{ service.data.method.reference.name  }}</div>
+                                                <div><span class="text-muted">Created Date : </span>{{ service.data.created_at  }}</div>
                                                
                                             </div>
                                         </div>
@@ -34,14 +34,14 @@
                                             <i class="ri-close-circle-fill fs-16"></i> Close
                                         </div>
                                     </Link>
-                                    <div class="vr" v-if="$page.props.roles[0] == 'Technical Manager'" style="width: 1px;"></div>
-                                    <div v-if="service.data.status.name === 'Pending' && $page.props.roles[0] == 'Technical Manager'">  
+                                    <div class="vr" v-if="['Technical Manager'].some(role => $page.props.roles.includes(role))" style="width: 1px;"></div>
+                                    <div v-if="service.data.status.name === 'Pending'">  
                                         <b-button @click="submit(32)" variant="primary" block><i class="ri-save-fill me-1"></i> Approved</b-button>
                                     </div>
                                     <div v-else-if="service.data.status.name === 'Approved'">  
                                         <b-button @click="submit(33)" variant="danger" block><i class="ri-save-fill me-1"></i> Suspend</b-button>
                                     </div>
-                                    <div v-else-if="service.data.status.name === 'Suspended' && $page.props.roles[0] == 'Technical Manager'">  
+                                    <div v-else-if="service.data.status.name === 'Suspended'">  
                                         <b-button @click="submit(32)" variant="success" block><i class="ri-save-fill me-1"></i> Reactive</b-button>
                                     </div>
                                 </div>
@@ -53,9 +53,17 @@
             </b-card>
         </b-col>
     </b-row>
+    <Submit ref="submit"/>
 </template>
 <script>
+import Submit from './Modals/Submit.vue';
 export default {
+    components: { Submit },
     props: ['service'],
+    methods: {
+        submit(id){
+            this.$refs.submit.show(id,this.service.data.reference);
+        }
+    }
 }
 </script>

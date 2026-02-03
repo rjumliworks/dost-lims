@@ -10,7 +10,9 @@ use App\Models\SampleCategory;
 use App\Models\SampleType;
 use App\Http\Resources\Common\TestserviceResource;
 use App\Http\Resources\Common\Testservice\ListResource;
+use App\Http\Resources\Common\Testservice\ListsResource;
 use App\Http\Resources\DefaultResource;
+use App\Http\Resources\ActivityResource;
 
 class ViewClass
 {
@@ -22,7 +24,7 @@ class ViewClass
     }
 
     public function list($request){
-        $data = TestserviceResource::collection(
+        $data = ListsResource::collection(
             Testservice::query()
             ->when($request->laboratory, function ($query, $laboratory) {
                 $query->where('laboratory_id',$laboratory);
@@ -39,12 +41,11 @@ class ViewClass
                     });
                 });
             })
-            ->with('fees','status')
-            ->with('testname','agency.member','agency.address.region','laboratory')
+            ->with('status')
+            ->with('testname','laboratory')
             ->with('method.method','method.reference')
             ->orderBy(TestserviceName::select('name')->whereColumn('testservices.testname_id', 'testservice_names.id'),'ASC')
-            ->orderBy('laboratory_id','ASC')->orderBy('id','ASC')
-            // ->orderBy('created_at','DESC')->orderBy('id','ASC')
+            ->orderBy('laboratory_id','ASC')->orderBy('created_at','DESC')->orderBy('id','ASC')
             ->paginate($request->count)
         );
         return $data;
@@ -143,5 +144,12 @@ class ViewClass
             $testservices = [];
         }
         return ListResource::collection($testservices);
+    }
+
+    public function activitylogs($request)
+    {
+        $test = Testservice::findOrFail(\Auth::user()->id);
+        $data = $test->activities()->paginate(15);
+        return ActivityResource::collection($data);
     }
 }

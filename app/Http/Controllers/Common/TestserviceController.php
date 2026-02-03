@@ -41,6 +41,9 @@ class TestserviceController extends Controller
             case 'testservices':
                 return $this->view->testservices($request);
             break;
+            case 'activity-logs':
+                return $this->view->activitylogs($request);
+            break;
             default:
             return inertia('Modules/Testservices/Index',[
                 'dropdowns' => [
@@ -59,7 +62,15 @@ class TestserviceController extends Controller
                 return $this->save->name($request);
             break;
             case 'status':
-                return $this->save->status($request);
+                $result = $this->handleTransaction(function () use ($request) {
+                    return $this->save->status($request);
+                });
+                return back()->with([
+                    'data' => $result['data'],
+                    'message' => $result['message'],
+                    'info' => $result['info'],
+                    'status' => $result['status'],
+                ]);
             break;
             case 'create':
                 $result = $this->handleTransaction(function () use ($request) {
