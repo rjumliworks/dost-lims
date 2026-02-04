@@ -2,35 +2,32 @@
 
 namespace App\Services\Major\Analysis;
 
+use App\Models\SampleType;
 use App\Models\Testservice;
-use App\Http\Resources\Operation\TestserviceResource;
+use App\Http\Resources\Major\Analysis\TestserviceResource;
 
 class ViewClass
 {
     public function testservices($request){
         $keyword = $request->keyword;
-        if($request->sampletype_id){
+        $sampletypes = $request->sampletypes;
+        if(count($sampletypes) > 0){
             $data = TestserviceResource::collection(
                 Testservice::query()
-                ->when($request->sampletype_id, function ($query, $sampletype) {
-                    $query->where('sampletype_id',$sampletype);
+                ->with('method.method','method.reference','laboratory')
+                ->whereHas('samples', function ($q) use ($sampletypes) {
+                    $q->whereIn('sampleable_id', $sampletypes)->where('sampleable_type', SampleType::class);
                 })
                 ->when($request->ids, function ($query, $ids) {
                     $query->whereNotIn('id', $ids);
                 })
-                // ->when($this->agency, function ($query, $agency) {
-                //     $query->where('agency_id',$agency);
-                // })
-                 ->where('agency_id',$this->agency)
-                ->with('sampletype','agency.member','agency.address.region','laboratory')
-                ->with('method.method','method.reference')
-                // ->with('testname')
                 ->withWhereHas('testname', function ($query) use ($keyword){
                     $query->when($keyword, function ($query, $keyword) {
                         $query->where('name', 'LIKE', "%{$keyword}%")->orWhere('short', 'LIKE', "%{$keyword}%");
                     });
                 })
-                ->where('is_active',1)
+                ->where('laboratory_id',$request->laboratory_id)
+                // ->where('is_active',1)
                 ->get()
             );
         }else{

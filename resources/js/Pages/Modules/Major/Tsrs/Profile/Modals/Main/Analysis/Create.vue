@@ -64,7 +64,7 @@
                     <b-col lg>
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                            <Multiselect class="white" @search-change="checkSearchSample" style="width: 45%;" :options="sampletypes" v-model="sampletype" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
+                            <!-- <Multiselect class="white" @search-change="checkSearchSample" style="width: 45%;" :options="sampletypes" v-model="sampletype" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/> -->
                             <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 40%;">
                             <b-button type="button" variant="primary">
                                 <i class="ri-search-eye-line align-bottom me-1"></i> 
@@ -120,28 +120,13 @@ export default {
             }),
             filter: {
                 keyword: null,
-                sampletype: null
             },
-            sampletypes: [],
-            sampletype: null,
             testservices: [],
             selected: {},
             checkedItems: [],
+            sampletypes: [],
             type: null,
             showModal: false
-        }
-    },
-    watch: {
-        sampletype(){
-            this.testservices = [];
-            this.fetchTest();
-        },
-        totalFee(newTotalFee) {
-            this.form.fee = newTotalFee;
-            // this.$refs.testing.emitValue(this.form.fee);
-        },
-        "filter.keyword"(newVal){
-            this.fetchTest();
         }
     },
     computed: {
@@ -165,83 +150,57 @@ export default {
             const itemId = item.id;
 
             if (isChecked) {
-                // Add item to checkedItems if not already present
-                if (!this.checkedItems.some(checkedItem => checkedItem.id === itemId)) {
+                if (!this.checkedItems.some(i => i.id === itemId)) {
                     this.checkedItems.push(item);
-                    // Remove item from testservices
-                    const testIndex = this.testservices.findIndex(test => test.id === itemId);
-                    if (testIndex !== -1) {
-                        this.testservices.splice(testIndex, 1);
+
+                    const index = this.testservices.findIndex(t => t.id === itemId);
+                    if (index !== -1) {
+                        this.testservices.splice(index, 1);
                     }
                 }
             } else {
-                // Remove item from checkedItems if present
-                const checkedIndex = this.checkedItems.findIndex(checkedItem => checkedItem.id === itemId);
-                if (checkedIndex !== -1) {
-                    this.checkedItems.splice(checkedIndex, 1);
-                    // Restore item to testservices if it was unchecked
-                    const itemToRestore = this.checkedItems.find(item => item.id === itemId);
-                    if (itemToRestore) {
-                        this.testservices.push(itemToRestore);
-                    }
+                const index = this.checkedItems.findIndex(i => i.id === itemId);
+
+                if (index !== -1) {
+                    // ✅ save before removing
+                    const removedItem = this.checkedItems[index];
+
+                    this.checkedItems.splice(index, 1);
+                    this.testservices.push(removedItem);
                 }
             }
         },
         isItemChecked(item) {
             return this.checkedItems.some(checkedItem => checkedItem.id === item);
         },
-        openDeleteTest(data){
-            const index = this.checkedItems.findIndex(test => test.id === data.id);
+        openDeleteTest(data) {
+            const index = this.checkedItems.findIndex(item => item.id === data.id);
+
             if (index !== -1) {
+                const removedItem = this.checkedItems[index];
+
                 this.checkedItems.splice(index, 1);
+                this.testservices.push(removedItem);
             }
         },
         show(data,laboratory){
             this.testservices = [];
-            this.form.samples = data
-            this.selected = data;
-            console.log(data);
+            this.form.samples = data.map(item => item.sampletype.id);
+            this.selected = data.map(item => item.sampletype.id);
+            this.sampletypes = data.map(item => item.sampletype.id);
             this.form.laboratory_id = laboratory;
+            this.fetchTest();
             this.showModal = true;
         }, 
-        submit(){
-            this.form.lists = this.checkedItems;
-            this.form.post('/analyses',{
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    this.$emit('success',true);
-                    this.hide();
-                },
-            });
-        },
         amount(val){
             this.form.fee = val;
         },
-        checkSearchSample: _.debounce(function(string) {
-            (string) ? this.fetchSample(string) : '';
-            this.filter.sampletype = string;
-        }, 300),
-        fetchSample(code){
-            this.sampletypes = [];
-            axios.get('/testservices',{
-                params: {
-                    option: 'search',
-                    laboratory_id: this.form.laboratory_id,
-                    type: 30,
-                    keyword: code
-                }
-            })
-            .then(response => {
-                this.sampletypes = response.data;
-            })
-            .catch(err => console.log(err));
-        },
         fetchTest(code){
-            axios.get('/testservices',{
+            axios.get('/analyses',{
                 params: {
                     option: 'testservices',
                     laboratory_id: this.form.laboratory_id,
-                    sampletype_id: this.sampletype,
+                    sampletypes: this.sampletypes,
                     ids: this.checkedItems.map(item => item.id),
                     keyword: this.filter.keyword,
                 }
@@ -251,8 +210,15 @@ export default {
             })
             .catch(err => console.log(err));
         },
-        handleInput(field) {
-            this.form.errors[field] = false;
+        submit(){
+            this.form.lists = this.checkedItems;
+            this.form.post('/analyses',{
+                preserveScroll: true,
+                onSuccess: (response) => {
+                    this.$emit('success',true);
+                    this.hide();
+                },
+            });
         },
         hide(){
             this.checkedItems = [];

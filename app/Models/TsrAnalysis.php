@@ -20,7 +20,7 @@ class TsrAnalysis extends Model
     public function testservice(){ return $this->belongsTo('App\Models\Testservice', 'testservice_id', 'id');}
 
     public function addfee(){ return $this->morphOne('App\Models\TsrService', 'typeable');}  
-    public function remarkable(){ return $this->morphOne('App\Models\TsrRemarks', 'remarkable');} 
+    public function remarkable(){ return $this->morphOne('App\Models\TsrRemark', 'remarkable');} 
 
     public function getStartAtAttribute($value){ return ($value) ? date('M d, Y', strtotime($value)) : null;}
     public function getEndAtAttribute($value){ return ($value) ? date('M d, Y', strtotime($value)) : null;}

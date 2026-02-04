@@ -132,6 +132,61 @@
                                             </template>
                                         </td>
                                     </tr>
+                                    <tr v-if="list.analyses.length > 0 && showAnalyses" class="bg-info-subtle">
+                                        <td colspan="5">
+                                            <table class="table table-nowrap border align-middle mb-0">
+                                                <thead class="table-light thead-fixed">
+                                                    <tr class="fs-10">
+                                                        <th class="text-center" width="5%">#</th>
+                                                        <th width="20%">Test Name</th>
+                                                        <th class="text-center" width="50%">Method Reference</th>
+                                                        <th class="text-center" width="12%">Fee</th>
+                                                        <th class="text-center" width="13%">Status</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody v-if="list.analyses.length > 0">
+                                                    <tr v-for="(list,index) in list.analyses" v-bind:key="index" 
+                                                    :class="list.status?.name === 'Cancelled' ? 'bg-danger-subtle' : 'bg-light-subtle'">
+                                                        <td class="text-center"> 
+                                                            {{index + 1}}
+                                                        </td>
+                                                        <td>
+                                                            <h5 class="fs-12 mb-0">{{list.testname}}</h5>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <h5 class="fs-12 mb-0">{{list.method}}</h5>
+                                                            <p class="fs-11 text-muted mb-0">{{list.reference}}</p>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <h5 class="fs-12 mb-0">{{list.fee}}</h5>
+                                                            <span v-if="list.addfee" class="text-muted fs-11">({{list.addfee.fee}} x {{list.addfee.quantity}}) = {{list.addfee.total}}</span>
+                                                        
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span :class="'badge '+list.status.color+' '+list.status.others">{{list.status.name}}</span>
+                                                        </td>
+                                                        <td>
+                                                            <b-button @click="openAnalysisView(list)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
+                                                                <i class="ri-eye-fill align-bottom"></i>
+                                                            </b-button>
+                                                            <b-button @click="openAdditional(list.additional,list.id)" v-if="selected.status.name == 'Pending' && list.additional.length > 0 && list.addfee == null" variant="soft-success" class="me-1" v-b-tooltip.hover title="Add" size="sm">
+                                                                <i class="ri-add-circle-fill align-bottom"></i>
+                                                            </b-button>
+                                                            <b-button v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openAnalysisDelete(list)" variant="soft-danger" v-b-tooltip.hover title="Delete" size="sm">
+                                                                <i class="ri-delete-bin-fill align-bottom"></i>
+                                                            </b-button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody v-else>
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">No analysis found</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
                                 </template>
                             </tbody>
                              <tbody v-else>
