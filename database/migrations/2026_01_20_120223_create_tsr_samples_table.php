@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->string('code')->nullable();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->longText('customer_description');
             $table->longText('description')->nullable();
             $table->boolean('is_completed')->default(0);
@@ -24,6 +24,8 @@ return new class extends Migration
             $table->foreign('samplename_id')->references('id')->on('sample_names')->onDelete('cascade');
             $table->unsignedInteger('sampletype_id');
             $table->foreign('sampletype_id')->references('id')->on('sample_types')->onDelete('cascade');
+            $table->unsignedInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('sample_categories')->onDelete('cascade');
             $table->unsignedBigInteger('tsr_id');
             $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
             $table->date('completed_at')->nullable();

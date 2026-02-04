@@ -4,9 +4,15 @@ namespace App\Services\Major\Sample;
 
 use App\Models\TsrSample;
 use App\Models\TsrPayment;
+use App\Services\Major\Sample\ReportClass;
 
 class SaveClass
 {
+    public function __construct(ReportClass $report)
+    {
+        $this->report = $report;
+    }
+
     public function save($request){
         $count = (int) $request->count;
         for ($i = 0; $i < $count; $i++) {
@@ -17,6 +23,24 @@ class SaveClass
             'data' => true,
             'message' => 'Sample Added Successfully', 
             'info' => "The sample has been added and is now linked to this TSR."
+        ];
+    }
+
+    public function update($request){
+        $data = TsrSample::findOrFail($request->id);
+        $data->name = $request->name;
+        $data->samplename_id = (int) $request->samplename_id;
+        $data->sampletype_id = (int) $request->sampletype_id;
+        $data->category_id = (int) $request->category_id;
+        $data->customer_description = $request->customer_description;
+        $data->description = $request->description;
+        if($data->save()){
+            $this->report->update($data->tsr_id);
+        }
+        return [
+            'data' => $data->toArray(),
+            'message' => 'Sample Updated Successfully', 
+            'info' => "The sample details have been updated and saved to the TSR."
         ];
     }
 

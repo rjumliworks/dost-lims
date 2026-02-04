@@ -1,12 +1,12 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 850px;" header-class="p-3 bg-light" :title="(!editable) ? 'Add Sampletype' : 'Edit Sampletype'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 850px;" header-class="p-3 bg-light" :title="(!action) ? 'Add Sampletype' : action+' Sampletype'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow class="g-3 mt-3">
                 <BCol lg="12" v-if="action == 'copy'" class="mt-0 mb-2">
                     <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow" role="alert"><i class="ri-error-warning-line label-icon"></i>
                         <div class="d-flex mb-n2">
                             <div class="flex-shrink-0 me-3">
-                                <TextInput id="name" v-model="form.count" type="text" class="form-control" style="width: 45px; text-align: center;" :light="true"/>
+                                <TextInput id="name" v-model="form.count" type="text" class="form-control" style="width: 40px; text-align: center;" :light="true"/>
                             </div>
                             <div class="flex-grow-1 mt-2"> 
                                 <span>Please specify how many copies of the sample you want to add with its details.</span>
@@ -15,7 +15,7 @@
                     </div>
                 </BCol>
                 <BCol lg="12" v-if="action == 'copy'">
-                    <hr class="text-muted mt-n3"/>
+                    <hr class="text-muted mt-n3 mb-4"/>
                 </BCol>
                 <BCol lg="6" class="mt-n3 mb-3">
                     <InputLabel for="testname" value="Category"/>
@@ -57,10 +57,13 @@
                 </BCol>
             </BRow>
         </form>
-           
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
-            <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Submit</b-button>
+            <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>
+                <span v-if="action == 'Edit'">Update</span>
+                <span v-else-if="action == 'Copy'">Copy</span>
+                <span v-else>Submit</span>
+            </b-button>
         </template>
     </b-modal>
 </template>
@@ -83,6 +86,7 @@ export default {
                 customer_description: null,
                 samplename_id: null,
                 sampletype_id: null,
+                category_id: null,
                 laboratory_id: null,
                 tsr_id: null,
                 count: 1,
@@ -99,25 +103,58 @@ export default {
     },
     watch: {
         "sampletype"(newVal){
-            if(newVal){
-                this.form.sampletype_id = this.sampletype.value;
-                this.names = this.sampletype.names;
-            }else{
-                this.form.sampletype_id = null;
-                this.names = [];
+            if(this.action == null){
+                if(newVal){
+                    this.form.sampletype_id = this.sampletype.value;
+                    this.names = this.sampletype.names;
+                }else{
+                    this.form.sampletype_id = null;
+                    this.names = [];
+                }
             }
         }
     },
     methods: { 
         show(id, laboratory){
+            this.empty();
             this.editable = false;
-            this.form.reset();
-            this.categories = [];
-            this.types = [];
             this.action = null;
             this.form.tsr_id = id;
             this.form.laboratory_id = laboratory;
             this.showModal = true;
+        },
+        edit(id, laboratory, data){
+            this.empty();
+            this.action = 'Edit';
+            this.form.id = data.id;
+            this.form.name = data.name;
+            this.form.description = data.description;
+            this.form.customer_description = data.customer_description;
+            this.form.tsr_id = id;
+            this.form.laboratory_id = laboratory;
+            this.setSample(data.category,data.sampletype,data.samplename);
+            this.showModal = true;
+        },
+        copy(id, laboratory, data){
+            this.empty();
+            this.action = 'Copy';
+            this.form.tsr_id = id;
+            this.form.name = data.name;
+            this.form.description = data.description;
+            this.form.customer_description = data.customer_description;
+            this.form.laboratory_id = laboratory;
+            this.setSample(data.category,data.sampletype,data.samplename);
+            this.showModal = true;
+        },
+        setSample(category, type, name) {
+            this.categories = [{ value: category.id, name: category.name }];
+            this.types = [this.sampletype = { value: type.id, name: type.name }];
+            this.names = [{ value: name.id, name: name.name }];
+            
+            this.category = category.id;
+            this.form.category_id = category.id;
+            this.form.sampletype_id = type.id;
+            this.form.samplename_id = name.id;
         },
         checkCategory: _.debounce(function(string) {
             (string) ? this.fetchCategory(string) : '';
@@ -154,7 +191,8 @@ export default {
             .catch(err => console.log(err));
         },
         submit(){
-            if(this.editable){
+            this.form.category_id = this.category;
+            if(this.action == 'edit'){
                 this.form.put('/samples/update',{
                     preserveScroll: true,
                     onSuccess: () => this.hide(),
@@ -169,12 +207,17 @@ export default {
         handleInput(field) {
             this.form.errors[field] = false;
         },
-        hide(){
+        empty(){
+            this.category = null;
+            this.sampletype = null;
             this.form.reset();
-            this.editable = false;
-            this.action = null;
-            this.types = [];
             this.categories = [];
+            this.types = [];
+            this.names = [];
+        },
+        hide(){
+            this.action = null;
+            this.editable = false;
             this.showModal = false;
         }
     }

@@ -48,7 +48,7 @@
                                 <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openService()" class="input-group-text" v-b-tooltip.hover title="Add Service" style="cursor: pointer;"> 
                                     <i class="ri-add-circle-fill text-primary search-icon me-1"></i>Add-ons
                                 </span>
-                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openAnalysis()" class="input-group-text" v-b-tooltip.hover title="Add Analysis" style="cursor: pointer;"> 
+                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="addService()" class="input-group-text" v-b-tooltip.hover title="Add Analysis" style="cursor: pointer;"> 
                                     <i class="ri-flask-fill text-primary search-icon me-1"></i>Add Service
                                 </span>
                                 <b-button v-if="selected.status.name == 'Pending'" type="button" variant="primary" @click="addSample()">
@@ -85,7 +85,7 @@
                                         <td :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">{{index+1}}</td>
                                         <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
                                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{(list.code) ? list.code : 'Not yet available'}}</h5>
-                                            <p class="fs-13 text-muted mb-0">{{list.samplename}}</p>
+                                            <p class="fs-13 text-muted mb-0">{{list.samplename.name}}</p>
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                             <i>{{list.customer_description}}</i>, {{list.description}}
@@ -103,9 +103,9 @@
                                                             <i class="ri-more-fill"></i>
                                                         </template>
                                                         <li>
-                                                            <Link :href="`/customers/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <a @click="openSampleView(list)" class="dropdown-item d-flex align-items-center" role="button">
                                                                 <i class="ri-eye-line me-2"></i> View
-                                                            </Link>
+                                                            </a>
                                                         </li>
                                                         <li>
                                                             <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
@@ -113,7 +113,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a @click="openSampleCopy(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <a @click="openSampleCopy(list)" class="dropdown-item d-flex align-items-center" role="button">
                                                                 <i class="ri-file-copy-2-line me-2"></i>Copy
                                                             </a>
                                                         </li>
@@ -145,15 +145,19 @@
             </div>
         </div>
     </BRow>
-    <Create ref="sample"/>
-    <Remove ref="remove"/>
+    <ViewSample ref="view"/>
+    <CreateSample ref="sample"/>
+    <RemoveSample ref="remove"/>
+    <AddAnalysis @success="mark = false" ref="analysis"/>
 </template>
 <script>
-import Create from '../Modals/Main/Sample/Create.vue';
-import Remove from '../Modals/Main/Sample/Remove.vue';
+import ViewSample from '../Modals/Main/Sample/View.vue';
+import CreateSample from '../Modals/Main/Sample/Create.vue';
+import RemoveSample from '../Modals/Main/Sample/Remove.vue';
+import AddAnalysis from '../Modals/Main/Analysis/Create.vue';
 export default {
     props:['selected','services','analyses'],
-    components: { Create, Remove },
+    components: { CreateSample, RemoveSample, ViewSample, AddAnalysis },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -192,22 +196,51 @@ export default {
             };
         }
     },
+    watch: {
+        mark(){
+            if(this.mark){
+                this.selected.samples.forEach(item => {
+                    item.selected = true;
+                });
+            }else{
+                this.selected.samples.forEach(item => {
+                    item.selected = false;
+                });
+            }
+        },
+        'selected.samples': {
+            deep: true,
+            handler() {
+                this.samples = this.selected.samples
+                    .filter(item => item.selected)
+                    .map(item => ({
+                        id: item.id,
+                        category: item.category,
+                        sampletype: item.sampletype,
+                    }));
+            }
+        }
+    },
     methods: { 
         addSample(){
             this.mark = false;
             this.$refs.sample.show(this.selected.id,this.selected.laboratory.id);
         },
         addService(){
-
+            (this.samples.length > 0) ? this.$refs.analysis.show(this.samples,this.selected.laboratory.id) : '';
         },
         addAddons(){
 
         },
-        openSampleEdit(){
-
+        openSampleEdit(sample){
+            this.$refs.sample.edit(this.selected.id,this.selected.laboratory.id,sample);
         },
-        openSampleView(){
-            
+        openSampleView(sample){
+            this.$refs.view.show(sample);
+        },
+        openSampleCopy(sample){
+            this.mark = false;
+            this.$refs.sample.copy(this.selected.id,this.selected.laboratory.id,sample);
         },
         openSampleRemove(data){
             this.$refs.remove.show(data,this.selected.id);

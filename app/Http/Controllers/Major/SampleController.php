@@ -39,4 +39,17 @@ class SampleController extends Controller
         ]);
     }
 
+    public function update(Request $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            return $this->save->update($request);
+        });
+        
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
 }
