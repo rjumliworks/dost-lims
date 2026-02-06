@@ -54,7 +54,7 @@
                                 <b-button v-if="selected.status.name == 'Pending'" type="button" variant="primary" @click="addSample()">
                                     <i class="ri-add-circle-fill align-bottom me-1"></i>Add Sample
                                 </b-button>
-                                 <b-button type="button" variant="danger" @click="printAll()">
+                                 <b-button type="button" variant="success" @click="printAll()">
                                     <i class="ri-printer-fill align-bottom"></i>
                                 </b-button>
                             </div>
@@ -69,7 +69,7 @@
                                     <th v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" width="4%" class="text-center">
                                         <input class="form-check-input fs-16" v-model="mark" type="checkbox" value="option" />
                                     </th>
-                                    <th :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="5%">#</th>
+                                    <th :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">#</th>
                                     <th width="20%">Sample Name</th>
                                     <th width="63%">Description</th>
                                     <th v-if="selected.status.name != 'Pending'" width="4%" class="text-center">Status</th>
@@ -97,35 +97,35 @@
                                         <td width="7%" class="text-end">
                                             <template v-if="showAnalyses">
                                                 <div class="d-flex gap-3 justify-content-center">
-                                                <div class="dropdown">
-                                                    <BDropdown variant="link" strategy="fixed" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
-                                                        <template #button-content> 
-                                                            <i class="ri-more-fill"></i>
-                                                        </template>
-                                                        <li>
-                                                            <a @click="openSampleView(list)" class="dropdown-item d-flex align-items-center" role="button">
-                                                                <i class="ri-eye-line me-2"></i> View
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
-                                                                <i class="ri-pencil-line me-2"></i>Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a @click="openSampleCopy(list)" class="dropdown-item d-flex align-items-center" role="button">
-                                                                <i class="ri-file-copy-2-line me-2"></i>Copy
-                                                            </a>
-                                                        </li>
-                                                        <li><hr class="dropdown-divider"></li>
-                                                        <li>
-                                                            <a @click="openSampleRemove(list)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
-                                                                <span class="text-danger"><i class="ri-delete-bin-fill me-2"></i> Remove</span>
-                                                            </a>
-                                                        </li>
-                                                    </BDropdown>
+                                                    <div class="dropdown">
+                                                        <BDropdown variant="link" strategy="fixed" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                            <template #button-content> 
+                                                                <i class="ri-more-fill"></i>
+                                                            </template>
+                                                            <li>
+                                                                <a @click="openSampleView(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                    <i class="ri-eye-line me-2"></i> View
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                    <i class="ri-pencil-line me-2"></i>Edit
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a @click="openSampleCopy(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                    <i class="ri-file-copy-2-line me-2"></i>Copy
+                                                                </a>
+                                                            </li>
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a @click="openSampleRemove(list)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                                    <span class="text-danger"><i class="ri-delete-bin-fill me-2"></i> Remove</span>
+                                                                </a>
+                                                            </li>
+                                                        </BDropdown>
+                                                    </div>
                                                 </div>
-                                            </div>
                                             </template>
                                             <template v-else>
 
@@ -141,8 +141,8 @@
                                                         <th width="20%">Test Name</th>
                                                         <th class="text-center" width="50%">Method Reference</th>
                                                         <th class="text-center" width="12%">Fee</th>
-                                                        <th class="text-center" width="13%">Status</th>
-                                                        <th></th>
+                                                        <th class="text-center" width="10%">Status</th>
+                                                        <th width="10%"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody v-if="list.analyses.length > 0">
@@ -160,8 +160,9 @@
                                                         </td>
                                                         <td class="text-center">
                                                             <h5 class="fs-12 mb-0">{{list.fee}}</h5>
-                                                            <span v-if="list.addfee" class="text-muted fs-11">({{list.addfee.fee}} x {{list.addfee.quantity}}) = {{list.addfee.total}}</span>
-                                                        
+                                                            <span v-if="list.addfee.length > 0" class="text-muted fs-11">
+                                                            {{ addfeeText(list.addfee) }}
+                                                            </span>
                                                         </td>
                                                         <td class="text-center">
                                                             <span :class="'badge '+list.status.color+' '+list.status.others">{{list.status.name}}</span>
@@ -170,10 +171,10 @@
                                                             <b-button @click="openAnalysisView(list)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                                 <i class="ri-eye-fill align-bottom"></i>
                                                             </b-button>
-                                                            <b-button @click="openAdditional(list.additional,list.id)" v-if="selected.status.name == 'Pending' && list.additional.length > 0 && list.addfee == null" variant="soft-success" class="me-1" v-b-tooltip.hover title="Add" size="sm">
+                                                            <b-button @click="openAnalysisAddons(list.additional,list.id)" v-if="selected.status.name == 'Pending' && list.additional.length > 0 && list.addfee.length == 0" variant="soft-success" class="me-1" v-b-tooltip.hover title="Add-ons" size="sm">
                                                                 <i class="ri-add-circle-fill align-bottom"></i>
                                                             </b-button>
-                                                            <b-button v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openAnalysisDelete(list)" variant="soft-danger" v-b-tooltip.hover title="Delete" size="sm">
+                                                            <b-button v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openAnalysisRemove(list)" variant="soft-danger" v-b-tooltip.hover title="Delete" size="sm">
                                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                                             </b-button>
                                                         </td>
@@ -204,15 +205,24 @@
     <CreateSample ref="sample"/>
     <RemoveSample ref="remove"/>
     <AddAnalysis @success="mark = false" ref="analysis"/>
+    <RemoveAnalysis ref="removeanalysis"/>
+    <AdditionalAnalysis ref="additionalanalysis"/>
+    <ViewAnalysis ref="viewanalysis"/>
 </template>
 <script>
 import ViewSample from '../Modals/Main/Sample/View.vue';
 import CreateSample from '../Modals/Main/Sample/Create.vue';
 import RemoveSample from '../Modals/Main/Sample/Remove.vue';
 import AddAnalysis from '../Modals/Main/Analysis/Create.vue';
+import ViewAnalysis from '../Modals/Main/Analysis/View.vue';
+import RemoveAnalysis from '../Modals/Main/Analysis/Remove.vue';
+import AdditionalAnalysis from '../Modals/Main/Analysis/Additional.vue';
 export default {
     props:['selected','services','analyses'],
-    components: { CreateSample, RemoveSample, ViewSample, AddAnalysis },
+    components: { 
+        CreateSample, RemoveSample, ViewSample, 
+        AddAnalysis, RemoveAnalysis, AdditionalAnalysis, ViewAnalysis 
+    },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -249,7 +259,7 @@ export default {
                 maxHeight: `calc(100vh - ${offset}px)`,
                 overflow: 'auto'
             };
-        }
+        },
     },
     watch: {
         mark(){
@@ -277,6 +287,25 @@ export default {
         }
     },
     methods: { 
+        addfeeText(fees) {
+            if (!fees || fees.length === 0) return '';
+            const total = fees.reduce((sum, fee) => {
+                const feeValue = Number(fee.total.toString().replace(/[₱,]/g, ''));
+                return sum + feeValue;
+            }, 0);
+            const details = fees
+                .map(fee => {
+                    const feeVal = Number(fee.fee.toString().replace(/[₱,]/g, ''));
+                    return `(${feeVal} x ${fee.quantity}) = ${Number(fee.total.toString().replace(/[₱,]/g, ''))}`;
+                })
+                .join(', '); 
+                // ${details} → 
+            return `(with ${this.formatMoney(total)} additional fees)`;
+        },
+        formatMoney(value) {
+            let val = (value/1).toFixed(2).replace(',', '.')
+            return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
         addSample(){
             this.mark = false;
             this.$refs.sample.show(this.selected.id,this.selected.laboratory.id);
@@ -299,6 +328,15 @@ export default {
         },
         openSampleRemove(data){
             this.$refs.remove.show(data,this.selected.id);
+        },
+        openAnalysisView(data){
+            this.$refs.viewanalysis.show(data);
+        },
+        openAnalysisAddons(data,id){
+            this.$refs.additionalanalysis.show(data,id,this.selected.id);
+        },
+        openAnalysisRemove(data){
+            this.$refs.removeanalysis.show(data,this.selected.id);
         }
     }
 }

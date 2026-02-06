@@ -42,11 +42,18 @@ export default {
     props: ['tsr','analyses','dropdowns'],
     computed: {
         totalFee() {
-            if (!this.analyses.data|| typeof this.analyses.data !== 'object') return 0;
+            if (!this.analyses.data || typeof this.analyses.data !== 'object') return 0;
 
             return Object.values(this.analyses.data).reduce((sum, a) => {
-            const cleaned = Number(String(a.fee).replace(/[₱,]/g, ''));
-            return sum + cleaned;
+                const mainFee = Number(String(a.fee || 0).replace(/[₱,]/g, ''));
+                let addFeeTotal = 0;
+                if (Array.isArray(a.addfee) && a.addfee.length > 0) {
+                    addFeeTotal = a.addfee.reduce((subSum, f) => {
+                        const feeTotal = Number(String(f.total || 0).replace(/[₱,]/g, ''));
+                        return subSum + feeTotal;
+                    }, 0);
+                }
+                return sum + mainFee + addFeeTotal;
             }, 0);
         }
     },

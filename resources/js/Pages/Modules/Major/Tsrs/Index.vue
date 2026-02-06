@@ -76,7 +76,7 @@
                                 <tr class="fs-11">
                                     <th style="width: 4%;"></th>
                                     <th>Customer</th>
-                                    <th style="width: 7%;" class="text-center">Progress</th>
+                                    <!-- <th style="width: 7%;" class="text-center">Progress</th> -->
                                     <th style="width: 10%;" class="text-center">Total</th>
                                     <th style="width: 7%;" class="text-center">Payment</th>
                                     <th style="width: 15%;" class="text-center">Date Request</th>
@@ -110,9 +110,9 @@
                                         <h5 v-else class="fs-13 mb-0 text-muted">Not yet available</h5>
                                         <p class="fs-12 text-muted mb-0">{{list.customer}}</p>
                                     </td>
-                                    <td>
+                                    <!-- <td>
                                         <apexchart v-b-tooltip.hover :title="list.analyses+'%'" class="apex-charts" height="30" dir="ltr" :series="[list.analyses]" :options="{ ...chartOptions }"></apexchart>
-                                    </td>
+                                    </td> -->
                                     <td class="text-center">{{list.payment.total}}</td>
                                     <td class="text-center">
                                         <i v-if="list.payment.is_paid" class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover :title="list.payment.status.name"></i>

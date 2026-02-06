@@ -185,7 +185,7 @@ export default {
         },
         show(data,laboratory){
             this.testservices = [];
-            this.form.samples = data.map(item => item.sampletype.id);
+            this.form.samples = data.map(item => item.id);
             this.selected = data.map(item => item.sampletype.id);
             this.sampletypes = data.map(item => item.sampletype.id);
             this.form.laboratory_id = laboratory;
@@ -224,7 +224,7 @@ export default {
             this.checkedItems = [];
             this.testservices = [];
             this.form.fee = null;
-            this.$refs.multiselectS.clear();
+            // this.$refs.multiselectS.clear();
             this.form.reset();
             this.form.clearErrors();
             this.editable = false;

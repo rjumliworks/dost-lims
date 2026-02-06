@@ -3,6 +3,7 @@
 namespace App\Services\Major\Analysis;
 
 use App\Models\Tsr;
+use App\Models\TsrService;
 use App\Models\TsrSample;
 use App\Models\TsrPayment;
 use App\Models\TsrAnalysis;
@@ -30,6 +31,63 @@ class SaveClass
             'data' => $total,
             'message' => 'Analysis added was successful!', 
             'info' => "You've successfully created the new analysis."
+        ];
+    }
+
+    public function fee($request){
+        $data = TsrAnalysis::findOrFail($request->id);
+        $grandTotal = 0;
+
+        foreach($request->services as $service){
+            $fee = str_replace(['₱', ','], '', $service['fee']);
+            $quantity = $service['quantity'];
+            $total = $fee * $quantity;
+            $data->addfee()->create([
+                'service_id' => $service['id'],
+                'fee' => $fee,
+                'total' => $total,
+                'quantity' => $quantity,
+                'is_additional' => 1
+            ]);
+            $grandTotal += $total;
+        }
+        $total = $this->updateTotal($request->tsr_id, $grandTotal);
+        return [
+            'data' => $total,
+            'message' => 'Additional Fee Added Successfully', 
+            'info' => "Additional fee has been added and linked to this TSR as an add-on."
+        ];
+    }
+
+    public function delete($request){
+        $id = $request->id;
+        $tsr_id = $request->tsr_id;
+        $data = TsrAnalysis::find($id);
+        $fee = (float) trim(str_replace(',','',$data->fee),'₱ ');
+        if($data->delete()){
+            $service = TsrService::where('typeable_type','App\Models\TsrAnalysis')->where('typeable_id',$id)->first();
+            $total_service = ($service) ? (float) trim(str_replace(',','',$service->total),'₱ ') : 0;
+            $payment = TsrPayment::with('discounted')->where('tsr_id',$tsr_id)->first();
+            $subtotal = (float) trim(str_replace(',','',$payment->subtotal),'₱ ');
+            $total = (float) trim(str_replace(',','',$payment->total),'₱ ');
+            if($payment->discount_id === 1){
+                $discount = 0;
+                $subtotal = $subtotal - $fee - $total_service;
+                $total = $total - $fee - $total_service;
+            }else{
+                $subtotal = $subtotal - $fee - $total_service;
+                $discount = (float) (($payment->discounted->value/100) * $subtotal);
+                $total =  ((float) $subtotal - (float) $discount);
+            }
+            $payment->subtotal = $subtotal;
+            $payment->discount = $discount;
+            $payment->total = $total;
+            $payment->save();
+        }
+        return [
+            'data' => $payment,
+            'message' => 'Test service was removed successful!', 
+            'info' => "You've successfully remove the sample."
         ];
     }
 

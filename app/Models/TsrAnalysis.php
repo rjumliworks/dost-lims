@@ -19,7 +19,7 @@ class TsrAnalysis extends Model
     public function analyst(){ return $this->belongsTo('App\Models\User', 'analyst_id', 'id');}
     public function testservice(){ return $this->belongsTo('App\Models\Testservice', 'testservice_id', 'id');}
 
-    public function addfee(){ return $this->morphOne('App\Models\TsrService', 'typeable');}  
+    public function addfee(){ return $this->morphMany('App\Models\TsrService', 'typeable');}  
     public function remarkable(){ return $this->morphOne('App\Models\TsrRemark', 'remarkable');} 
 
     public function getStartAtAttribute($value){ return ($value) ? date('M d, Y', strtotime($value)) : null;}
@@ -27,7 +27,17 @@ class TsrAnalysis extends Model
     public function getCreatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}
     public function getUpdatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}
 
-     public function getActivitylogOptions(): LogOptions {
+    public function setFeeAttribute($value)
+    {
+        $this->attributes['fee'] = trim(str_replace(',','',$value),'₱');
+    }
+
+    public function getFeeAttribute($value)
+    {
+        return '₱'.number_format($value,2,'.',',');
+    }
+
+    public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
         ->logOnly( [
           'status_id','analyst_id','sample_id','testservice_id','fee','start_at','end_at'

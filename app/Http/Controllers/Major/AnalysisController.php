@@ -40,12 +40,12 @@ class AnalysisController extends Controller
                 // case 'service':
                 //     return $this->save->service($request);
                 // break;
-                // case 'fee':
-                //     return $this->save->fee($request);
-                // break;
-                // case 'delete':
-                //     return $this->save->delete($request);
-                // break;
+                case 'fee':
+                    return $this->save->fee($request);
+                break;
+                case 'delete':
+                    return $this->save->delete($request);
+                break;
                 default:
                     return $this->save->save($request);
             }

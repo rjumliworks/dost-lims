@@ -161,6 +161,21 @@ export default {
             this.services = services;
             this.showModal = true;
         },
+        addfeeText(fees) {
+            if (!fees || fees.length === 0) return '';
+            const total = fees.reduce((sum, fee) => {
+                const feeValue = Number(fee.total.toString().replace(/[₱,]/g, ''));
+                return sum + feeValue;
+            }, 0);
+            const details = fees
+                .map(fee => {
+                    const feeVal = Number(fee.fee.toString().replace(/[₱,]/g, ''));
+                    return `(${feeVal} x ${fee.quantity}) = ${Number(fee.total.toString().replace(/[₱,]/g, ''))}`;
+                })
+                .join(', '); 
+                // ${details} → 
+            return `(with ${this.formatMoney(total)} additional fees)`;
+        },
         formatMoney(value) {
             let val = (value/1).toFixed(2).replace(',', '.')
             return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")

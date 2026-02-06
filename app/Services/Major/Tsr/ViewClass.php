@@ -197,7 +197,7 @@ class ViewClass
 
         $data = new ViewResource(
             Tsr::query()
-            ->with('samples.report','samples.sampletype','samples.samplename','samples.category','samples.analyses.remarkable','samples.analyses.addfee.service','samples.analyses.testservice.testname','samples.analyses.testservice.method.method','samples.analyses.testservice.method.reference','samples.analyses.testservice.fees','samples.analyses.testservice.sampletype')
+            ->with('samples.report','samples.sampletype','samples.samplename','samples.category','samples.analyses.remarkable','samples.analyses.addfee.service','samples.analyses.testservice.testname','samples.analyses.testservice.method.method','samples.analyses.testservice.method.reference','samples.analyses.testservice.fees')
             ->with('services.service')
             ->with('referral.agency.member','referral.province')
             ->with('received:id','received.profile:id,firstname,lastname,user_id')

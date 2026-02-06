@@ -18,7 +18,6 @@ class AnalysisResource extends JsonResource
             'status' => $this->status,
             'code' => $this->sample->code,
             'sample' => $this->sample->name,
-            'sampletype' => $this->testservice->sampletype->name,
             'testname' => $this->testservice->testname->name,
             'method' => $this->testservice->method->method->name,
             'reference' => $this->testservice->method->reference->name,

@@ -6,9 +6,9 @@
                     style="width: 50px; height: 50px;">
                     <i class="ri-delete-bin-2-fill text-danger fs-24"></i>
                 </span>
-                <h4 class="mb-2 mt-2 text-danger fw-semibold fs-14">Remove Sample from Technical Service Request</h4>
-                <p class="text-muted mb-0 mt-4 fs-12">Please confirm if you wish to remove this sample.</p>
-                <p class="text-muted mb-4 fs-12"> Removing this sample will also remove all associated test services selected for it.</p>
+                <h4 class="mb-2 mt-2 text-danger fw-semibold fs-14">Remove Test service from Technical Service Request</h4>
+                <p class="text-muted mb-0 mt-4 fs-12">Please confirm if you wish to remove this test service.</p>
+                <p class="text-muted mb-4 fs-12"> Removing this test service will also remove all associated test services selected for it.</p>
             </div>
         </div>
         <div class="hstack gap-2 justify-content-center mb-3">
@@ -41,7 +41,7 @@ export default {
             this.showModal = true;
         },
         submit(){
-            this.form.post('/samples',{
+            this.form.post('/analyses',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.hide();

@@ -33,7 +33,7 @@ class NameRequest extends FormRequest
             //  'method_id' => 'sometimes|required|unique:testservice_methods,method_id,NULL,'.$this->id.',reference_id,'.$this->reference_id,
         }else if($this->option == 'fee'){
             return [
-                'name' => 'sometimes|required|string|unique:testservice_addons,name,NULL,'.$this->id.',fee,'.$this->fee.',agency_id,'.$this->agency_id.',typeable_id,'.$this->typeable_id,
+                // 'name' => 'sometimes|required|string|unique:testservice_addons,name,NULL,'.$this->id.',fee,'.$this->fee.',agency_id,'.$this->agency_id.',typeable_id,'.$this->typeable_id,
                 'fee' => ['required', new NotZeroPeso]
             ];
         }else{
