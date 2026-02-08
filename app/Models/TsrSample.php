@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Hashids\Hashids;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class TsrSample extends Model
@@ -85,5 +86,10 @@ class TsrSample extends Model
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
+    }
+
+    public function getCodeAttribute($value)
+    {
+        return Str::after($value, '-');
     }
 }

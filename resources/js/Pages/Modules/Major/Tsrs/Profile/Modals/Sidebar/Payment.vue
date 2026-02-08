@@ -104,7 +104,7 @@
                             <th scope="row">1</th>
                             <td class="text-start">
                                 <span class="fw-medium">Laboratory Test Services</span>
-                                <p class="text-muted mb-0">Includes various laboratory analyses conducted as requested by the client</p>
+                                <p class="text-muted fs-11 mb-0">Includes various laboratory analyses conducted as requested by the client</p>
                             </td>
                             <td class="text-end">{{formatMoney(total)}}</td>
                         </tr>
@@ -112,7 +112,7 @@
                             <th scope="row">2</th>
                                 <td class="text-start">
                                     <span class="fw-medium">{{list.service.name}}</span>
-                                    <p class="text-muted mb-0">{{list.service.description}}</p>
+                                    <p class="text-muted fs-11 mb-0">{{list.service.description}}</p>
                                 </td>
                             <td class="text-end">{{list.total}}</td>
                         </tr>

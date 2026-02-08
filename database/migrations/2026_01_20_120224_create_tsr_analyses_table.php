@@ -21,8 +21,10 @@ return new class extends Migration
             $table->foreign('testservice_id')->references('id')->on('testservices')->onDelete('cascade');
             $table->unsignedBigInteger('sample_id');
             $table->foreign('sample_id')->references('id')->on('tsr_samples')->onDelete('cascade');
-            $table->unsignedInteger('analyst_id')->nullable();
-            $table->foreign('analyst_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedInteger('started_by')->nullable();
+            $table->foreign('started_by')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedInteger('ended_by')->nullable();
+            $table->foreign('ended_by')->references('id')->on('users')->onDelete('cascade');
             $table->date('start_at')->nullable();
             $table->date('end_at')->nullable();
             $table->timestamps();

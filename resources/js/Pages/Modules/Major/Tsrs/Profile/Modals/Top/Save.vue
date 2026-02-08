@@ -61,7 +61,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             form: useForm({
-                id: null,
+                reference: null,
                 status_id: 2,
                 due_at: null,
                 is_government: null,
@@ -74,9 +74,9 @@ export default {
         }
     },
     methods: { 
-        show(id,industry,facility){
+        show(reference,industry,facility){
             this.keyword = null;
-            this.form.id = id;
+            this.form.reference = reference;
             this.facility = facility;
             this.form.industry = industry;
             this.showModal = true;

@@ -34,6 +34,51 @@ class SaveClass
         ];
     }
 
+    public function service($request){
+        $data = Tsr::findOrFail($request->id);
+        $data->services()->create([
+            'service_id' => $request->service['value'],
+            'fee' => $request->service['fee'],
+            'quantity' => $request->quantity,
+            'total' => $request->total,
+        ]);
+        $total = $this->updateTotal($request->id,$request->total);
+        return [
+            'data' => $total,
+            'message' => 'Additional Service Added Successfully', 
+            'info' => "The selected service has been added and linked to this TSR as an add-on."
+        ];
+    }
+
+     public function removeService($request){
+        $data = TsrService::find($request->id);
+        $fee = (float) trim(str_replace(',','',$data->total),'₱ ');
+        if($data->delete()){
+            $payment = TsrPayment::with('discounted')->where('tsr_id',$request->tsr_id)->first();
+            $subtotal = (float) trim(str_replace(',','',$payment->subtotal),'₱ ');
+            $total = (float) trim(str_replace(',','',$payment->total),'₱ ');
+            if($payment->discount_id === 1){
+                $discount = 0;
+                $subtotal = $subtotal - $fee;
+                $total = $total - $fee;
+            }else{
+                $subtotal = $subtotal - $fee;
+                $discount = (float) (($payment->discounted->value/100) * $subtotal);
+                $total =  ((float) $subtotal - (float) $discount);
+            }
+            $payment->subtotal = $subtotal;
+            $payment->discount = $discount;
+            $payment->total = $total;
+            $payment->save();
+        }
+
+        return [
+            'data' => $total,
+            'message' => 'Additional Service Removed Successfully',
+            'info' => 'The selected additional service has been removed from this TSR.'
+        ];
+    }
+
     public function fee($request){
         $data = TsrAnalysis::findOrFail($request->id);
         $grandTotal = 0;
@@ -56,6 +101,37 @@ class SaveClass
             'data' => $total,
             'message' => 'Additional Fee Added Successfully', 
             'info' => "Additional fee has been added and linked to this TSR as an add-on."
+        ];
+    }
+
+    public function removefee($request){
+        $data= TsrService::where('id', $request->id)->where('is_additional', 1)->firstOrFail();
+        $fee = (float) trim(str_replace(',','',$data->total),'₱ ');
+        if($data->delete()){
+            $service = TsrService::where('typeable_type','App\Models\TsrAnalysis')->where('typeable_id',$request->id)->first();
+            $total_service = ($service) ? (float) trim(str_replace(',','',$service->total),'₱ ') : 0;
+            $payment = TsrPayment::with('discounted')->where('tsr_id',$request->tsr_id)->first();
+            $subtotal = (float) trim(str_replace(',','',$payment->subtotal),'₱ ');
+            $total = (float) trim(str_replace(',','',$payment->total),'₱ ');
+            if($payment->discount_id === 1){
+                $discount = 0;
+                $subtotal = $subtotal - $fee - $total_service;
+                $total = $total - $fee - $total_service;
+            }else{
+                $subtotal = $subtotal - $fee - $total_service;
+                $discount = (float) (($payment->discounted->value/100) * $subtotal);
+                $total =  ((float) $subtotal - (float) $discount);
+            }
+            $payment->subtotal = $subtotal;
+            $payment->discount = $discount;
+            $payment->total = $total;
+            $payment->save();
+        }
+
+        return [
+            'data' => $total,
+            'message' => 'Additional Fee removed Successfully', 
+            'info' => "Additional fee has been remove and unlinked to this TSR as an add-on."
         ];
     }
 

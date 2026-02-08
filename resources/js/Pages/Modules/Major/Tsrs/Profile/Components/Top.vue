@@ -46,7 +46,7 @@
                                 </div>
                                 <div class="vr" style="width: 1px;"></div>
                                 <div v-if="selected.status.name === 'Pending'">  
-                                    <b-button @click="openSave(selected.id)" variant="primary" block :disabled="(analyses == 0) ? true : false"><i class="ri-save-fill me-1"></i> Save</b-button>
+                                    <b-button @click="openSave(selected.reference)" variant="primary" block :disabled="!allSamplesHaveAnalyses"><i class="ri-save-fill me-1"></i> Save</b-button>
                                 </div>
                                  <div v-if="selected.status.name !== 'Pending'" @click="openPrint(selected.qr)">  
                                     <b-button variant="primary" block><i class="ri-printer-fill me-1"></i> Print</b-button>
@@ -75,6 +75,13 @@ import Update from '../Modals/Top/Update.vue';
 export default {
     components: { Save, Wallet, Edit, Cancel, Update, Copy },
     props:['selected','analyses','dropdowns'],
+    computed: {
+        allSamplesHaveAnalyses() {
+        if (!this.selected.samples || !this.selected.samples.length) return false;
+        
+        return this.selected.samples.every(sample => sample.analyses && sample.analyses.length > 0);
+        }
+    },
     methods: {
         openSave(id){
             this.$refs.save.show(id,this.selected.customer.industry,this.selected.facility);

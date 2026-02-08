@@ -16,6 +16,8 @@ return new class extends Migration
             $table->increments('id');
             $table->bigInteger('next_sequence')->default(1);
             $table->integer('year');
+            $table->unsignedSmallInteger('type_id'); 
+            $table->foreign('type_id')->references('id')->on('list_data')->restrictOnDelete();
             $table->unsignedTinyInteger('facility_id');
             $table->foreign('facility_id')->references('id')->on('agency_facilities')->onDelete('cascade');
             $table->unsignedInteger('agency_id');
@@ -23,7 +25,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('laboratory_id');
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['agency_id', 'laboratory_id', 'year'], 'agency_lab_year');
+            $table->unique(['agency_id','facility_id','laboratory_id', 'year','type_id'], 'agency_lab_year');
         });
     }
 

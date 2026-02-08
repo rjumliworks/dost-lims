@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tsr_samples', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('code')->nullable();
+            $table->string('code')->unique()->nullable();
             $table->string('name')->nullable();
             $table->longText('customer_description');
             $table->longText('description')->nullable();

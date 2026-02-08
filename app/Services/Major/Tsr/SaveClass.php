@@ -21,7 +21,7 @@ class SaveClass
         if($request->is_referral){
             $tsr->createReferral($request->referralData());
         }
-
+        $tsr = Tsr::find($tsr->id);
         return [
             'data' => $tsr->reference,
             'message' => 'TS Request creation was successful!', 

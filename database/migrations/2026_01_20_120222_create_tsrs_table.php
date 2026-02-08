@@ -33,6 +33,7 @@ return new class extends Migration
             $table->foreign('received_by')->references('id')->on('users')->onDelete('cascade');
             $table->boolean('is_referral')->default(0);
             $table->boolean('is_onsite')->default(0);
+            $table->boolean('is_first')->default(0);
             $table->date('due_at')->nullable();
             $table->timestamps();
         });

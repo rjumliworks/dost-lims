@@ -141,7 +141,7 @@
             </tr>
             <tr v-if="selected.services.length > 0">
                 <td style="border-right: none; border-left: none; cursor: pointer;" @click="openService()">
-                    <span class="fw-semibold fs-12 ms-2">Add-ons</span>
+                    <span class="fw-semibold fs-12 ms-2">Add-ons Details</span>
                     <i class="ri-information-fill fs-20 mb-n2 mt-n1 text-primary float-end" style="cursor: pointer;"></i>
                 </td>
             </tr>
@@ -162,7 +162,7 @@
             </tr> -->
             <tr>
                 <td style="border-right: none; border-left: none; cursor: pointer;" @click="openPayment()">
-                    <span class="fw-semibold fs-12 ms-2">Payment Information</span>
+                    <span class="fw-semibold fs-12 ms-2">Payment Details</span>
                     <span class="float-end text-muted">{{selected.payment.total}}</span>
                     <!-- <i v-if="selected.payment.status.name == 'Paid'" class="ri-checkbox-circle-fill fs-20 mb-n2 mt-n1 text-success float-end"></i>
                     <i v-else class="ri-close-circle-fill fs-20 mb-n2 mt-n1 text-danger float-end"></i> -->

@@ -27,6 +27,7 @@ class Tsr extends Model
         'due_at',
         'is_referral',
         'is_onsite',
+        'is_first',
         'created_at'
     ];
 
@@ -72,7 +73,8 @@ class Tsr extends Model
             'received_by',
             'due_at',
             'is_referral',
-            'is_onsite'
+            'is_onsite',
+            'is_first'
         ])
         ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
         ->useLogName('TSR')

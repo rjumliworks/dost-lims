@@ -10,6 +10,7 @@ use App\Services\DropdownClass;
 use App\Services\Major\Tsr\SaveClass;
 use App\Services\Major\Tsr\ViewClass;
 use App\Services\Major\Tsr\UpdateClass;
+use App\Services\Major\Tsr\ConfirmClass;
 use App\Http\Requests\Major\Tsr\CreateRequest;
 use App\Http\Requests\Major\Tsr\UpdateRequest;
 
@@ -20,14 +21,16 @@ class TsrController extends Controller
     protected ViewClass $view;
     protected SaveClass $save;
     protected UpdateClass $update;
+    protected ConfirmClass $confirm;
     protected AgencyClass $agency;
     protected DropdownClass $dropdown;
 
-    public function __construct(AgencyClass $agency, DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update){
+    public function __construct(AgencyClass $agency, ConfirmClass $confirm, DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update){
         $this->dropdown = $dropdown;
         $this->agency = $agency;
         $this->view = $view;
         $this->save = $save;
+        $this->confirm = $confirm;
         $this->update = $update;
     }
 
@@ -79,6 +82,9 @@ class TsrController extends Controller
     public function update(UpdateRequest $request){
         $result = $this->handleTransaction(function () use ($request) {     
             switch($request->option){
+                case 'Confirm':
+                    return $this->confirm->save($request);
+                break;
                 case 'Cancel':
                     return $this->update->cancel($request);
                 break;       

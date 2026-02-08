@@ -206,9 +206,8 @@ export default {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.names = [];
-                    this.$emit('message',true);
+                    this.$emit('success',this.$page.props.flash.data);
                     this.hide();
-                    this.multiselectKey += 1;
                     this.$refs.confirm.hide();
                 }
             });

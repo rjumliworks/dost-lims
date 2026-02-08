@@ -8,7 +8,7 @@
     centered
     no-close-on-backdrop
   >
-    <div class="mb-3" v-for="(item, index) in services" :key="index">
+    <div class="mb-3 fs-11" v-for="(item, index) in services" :key="index">
       <b-form-checkbox
         v-model="item.selected"
         @change="onServiceToggle(item)"
@@ -38,11 +38,7 @@
 
 <script>
 import { useForm } from '@inertiajs/vue3';
-import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
-import TextInput from '@/Shared/Components/Forms/TextInput.vue';
-import Textarea from '@/Shared/Components/Forms/Textarea.vue';
 export default {
-    components: { InputLabel, TextInput, Textarea },
     data(){
         return {
             currentUrl: window.location.origin,

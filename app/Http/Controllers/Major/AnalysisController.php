@@ -37,9 +37,12 @@ class AnalysisController extends Controller
     public function store(AnalysisRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
-                // case 'service':
-                //     return $this->save->service($request);
-                // break;
+                case 'service':
+                    return $this->save->service($request);
+                break;
+                case 'removefee':
+                    return $this->save->removefee($request);
+                break;
                 case 'fee':
                     return $this->save->fee($request);
                 break;
@@ -51,6 +54,47 @@ class AnalysisController extends Controller
             }
         });
 
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
+    public function update(Request $request){
+        $request->validate([
+            'start_at' => ['required_if:option,start'],
+            'end_at' => ['required_if:option,end'],
+            'date' => ['required_if:option,group'],
+            'reason' => ['required_if:option,cancel']
+        ]);
+        $result = $this->handleTransaction(function () use ($request) {
+            switch($request->option){
+                // case 'start':
+                //     return $this->update->start($request);
+                // break;
+                // case 'end':
+                //     return $this->update->end($request);
+                // break;
+                // case 'tagging':
+                //     return $this->update->tagging($request);
+                // break;
+                // case 'group':
+                //     return $this->update->group($request);
+                // break;
+                // case 'cancel':
+                //     return $this->update->cancel($request);
+                // break;
+                // case 'delete':
+                //     return $this->save->removeService($request);
+                // break;
+                case 'removeservice':
+                    return $this->save->removeService($request);
+                break;
+            }
+        });
+        
         return back()->with([
             'data' => $result['data'],
             'message' => $result['message'],

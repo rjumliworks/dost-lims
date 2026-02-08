@@ -45,13 +45,13 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                  <input type="text" placeholder="Search Sample" class="form-control" style="width: 40%;">
-                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openService()" class="input-group-text" v-b-tooltip.hover title="Add Service" style="cursor: pointer;"> 
+                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="addAddons()" class="input-group-text fs-12" v-b-tooltip.hover title="Add Service" style="cursor: pointer;"> 
                                     <i class="ri-add-circle-fill text-primary search-icon me-1"></i>Add-ons
                                 </span>
-                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="addService()" class="input-group-text" v-b-tooltip.hover title="Add Analysis" style="cursor: pointer;"> 
+                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="addService()" class="input-group-text fs-12" v-b-tooltip.hover title="Add Analysis" style="cursor: pointer;"> 
                                     <i class="ri-flask-fill text-primary search-icon me-1"></i>Add Service
                                 </span>
-                                <b-button v-if="selected.status.name == 'Pending'" type="button" variant="primary" @click="addSample()">
+                                <b-button v-if="selected.status.name == 'Pending'" type="button" variant="primary" class="fs-12" @click="addSample()">
                                     <i class="ri-add-circle-fill align-bottom me-1"></i>Add Sample
                                 </b-button>
                                  <b-button type="button" variant="success" @click="printAll()">
@@ -208,8 +208,10 @@
     <RemoveAnalysis ref="removeanalysis"/>
     <AdditionalAnalysis ref="additionalanalysis"/>
     <ViewAnalysis ref="viewanalysis"/>
+    <Service :services="services" ref="service"/>
 </template>
 <script>
+import Service from '../Modals/Main/Service.vue';
 import ViewSample from '../Modals/Main/Sample/View.vue';
 import CreateSample from '../Modals/Main/Sample/Create.vue';
 import RemoveSample from '../Modals/Main/Sample/Remove.vue';
@@ -221,7 +223,8 @@ export default {
     props:['selected','services','analyses'],
     components: { 
         CreateSample, RemoveSample, ViewSample, 
-        AddAnalysis, RemoveAnalysis, AdditionalAnalysis, ViewAnalysis 
+        AddAnalysis, RemoveAnalysis, AdditionalAnalysis, ViewAnalysis,
+        Service 
     },
     data(){
         return {
@@ -253,7 +256,7 @@ export default {
             return { completed,notCompleted,total,percentage: percentage.toFixed(2) };
         },
         containerStyle() {
-            let offset = 300;
+            let offset = 325;
             if (this.selected.status.name === 'Ongoing') {offset = 360;}
             return {
                 maxHeight: `calc(100vh - ${offset}px)`,
@@ -314,7 +317,7 @@ export default {
             (this.samples.length > 0) ? this.$refs.analysis.show(this.samples,this.selected.laboratory.id) : '';
         },
         addAddons(){
-
+            this.$refs.service.show(this.selected.id);
         },
         openSampleEdit(sample){
             this.$refs.sample.edit(this.selected.id,this.selected.laboratory.id,sample);
@@ -330,7 +333,7 @@ export default {
             this.$refs.remove.show(data,this.selected.id);
         },
         openAnalysisView(data){
-            this.$refs.viewanalysis.show(data);
+            this.$refs.viewanalysis.show(data,this.selected.id);
         },
         openAnalysisAddons(data,id){
             this.$refs.additionalanalysis.show(data,id,this.selected.id);

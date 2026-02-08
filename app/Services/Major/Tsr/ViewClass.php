@@ -197,7 +197,19 @@ class ViewClass
 
         $data = new ViewResource(
             Tsr::query()
-            ->with('samples.report','samples.sampletype','samples.samplename','samples.category','samples.analyses.remarkable','samples.analyses.addfee.service','samples.analyses.testservice.testname','samples.analyses.testservice.method.method','samples.analyses.testservice.method.reference','samples.analyses.testservice.fees')
+            ->with('samples.report',
+                'samples.sampletype',
+                'samples.samplename',
+                'samples.category',
+                'samples.analyses.started',
+                'samples.analyses.ended',
+                'samples.analyses.remarkable',
+                'samples.analyses.addfee.service',
+                'samples.analyses.testservice.testname',
+                'samples.analyses.testservice.method.method',
+                'samples.analyses.testservice.method.reference',
+                'samples.analyses.testservice.fees'
+            )
             ->with('services.service')
             ->with('referral.agency.member','referral.province')
             ->with('received:id','received.profile:id,firstname,lastname,user_id')
@@ -217,7 +229,7 @@ class ViewClass
 
         $data = AnalysisResource::collection(
             TsrAnalysis::query()
-            ->with('sample','status','analyst','addfee.service')
+            ->with('sample','status','started','ended','addfee.service')
             ->with('testservice.testname','testservice.method.method','testservice.method.reference','testservice.fees')
             ->whereHas('sample',function ($query) use ($id){
                 $query->whereHas('tsr',function ($query) use ($id){

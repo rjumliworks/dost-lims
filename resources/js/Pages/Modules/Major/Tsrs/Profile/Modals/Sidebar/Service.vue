@@ -39,7 +39,7 @@ export default {
                 id: null,
                 quantity: null,
                 tsr_id: null,
-                option: 'service'
+                option: 'removeservice'
             }),
             selected: {
                 status:{}, services: []
