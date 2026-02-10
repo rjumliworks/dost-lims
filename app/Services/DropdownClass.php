@@ -7,6 +7,7 @@ use App\Models\AgencyFacility;
 use App\Models\ListRole;
 use App\Models\ListData;
 use App\Models\ListStatus;
+use App\Models\ListDiscount;
 use App\Models\ListDropdown;
 use App\Models\ListIndustry;
 use App\Models\ListLaboratory;
@@ -18,6 +19,16 @@ use App\Models\SampleCategory;
 
 class DropdownClass
 {  
+     public function discounts(){
+        $data = ListDiscount::where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name.' ('.$item->value.'%)'
+            ];
+        });
+        return $data;
+    }
+
     public function industries(){
         $data = ListIndustry::where('is_active',1)->get()->map(function ($item) {
             return [

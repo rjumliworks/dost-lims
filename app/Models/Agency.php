@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Model;
 
 class Agency extends Model
@@ -16,6 +17,13 @@ class Agency extends Model
         'type_id',
         'member_id'
     ];
+
+    protected $appends = ['reference'];
+    
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
 
     public function member()
     {
@@ -45,6 +53,11 @@ class Agency extends Model
     public function configuration()
     {
         return $this->hasOne('App\Models\AgencyConfiguration', 'agency_id');
+    }
+
+    public function fees()
+    {
+        return $this->morphMany('App\Models\TestserviceAddon', 'typeable');
     }
 
     public function getUpdatedAtAttribute($value)

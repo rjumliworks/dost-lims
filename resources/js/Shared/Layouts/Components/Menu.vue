@@ -69,22 +69,15 @@
                 <li class="nav-item">
                     <Link href="/users" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Executive/Users') }">
-                    <i class="ri-team-line"></i>
+                    <i class="ri-team-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Users</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link href="/facilities" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Executive/Facilities') }">
-                    <i class="ri-building-line"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Facilities</span>
-                    </Link>
-                </li>
-                <li class="nav-item">
-                    <Link href="/discounts" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Executive/Discounts') }">
-                    <i class="ri-price-tag-3-line"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Discounts</span>
+                    <Link href="/agencies" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/Agencies') }">
+                    <i class="ri-building-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Agencies</span>
                     </Link>
                 </li>
                 <li class="menu-title">

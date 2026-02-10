@@ -31,7 +31,7 @@ Route::resource('/analyses', App\Http\Controllers\Major\AnalysisController::clas
 
 Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);
-    Route::resource('/facilities', App\Http\Controllers\Executive\FacilityController::class);
+    Route::resource('/agencies', App\Http\Controllers\Executive\AgencyController::class);
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
     Route::resource('/discounts', App\Http\Controllers\Executive\DiscountController::class);
 });

@@ -3,11 +3,21 @@
 namespace App\Services\Major\Tsr;
 
 use Hashids\Hashids;
+use App\Models\UserRole;
 use App\Models\Tsr;
+use App\Models\TsrReport;
 use App\Models\TsrAnalysis;
+use App\Models\TsrPayment;
+use App\Models\Wallet;
+use App\Models\WalletTransaction;
+use App\Models\AgencyConfiguration;
+use App\Models\AgencyFacilitySignatory;
 use App\Http\Resources\Major\Tsr\ListResource;
 use App\Http\Resources\Major\Tsr\ViewResource;
 use App\Http\Resources\Major\Tsr\AnalysisResource;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class ViewClass
 {
@@ -241,6 +251,63 @@ class ViewClass
         );
         return $data;
     }
+
+    public function print($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->id);
+
+        $tsrinfo = Tsr::where('id',$id)->with('laboratory')->first();
+        $tsr = TsrReport::where('tsr_id',$id)->value('information');
+        $secret = TsrReport::where('tsr_id',$id)->value('secret_key');
+        $lab = json_decode($tsr);
+
+        $signatory = AgencyFacilitySignatory::with('cashier.profile')->where('facility_id',$tsrinfo->facility_id)->first();
+
+        $head = UserRole::with('user:id','user.profile:id,user_id,firstname,middlename,lastname')
+       ->where('laboratory_id',$tsrinfo->laboratory->id)->whereHas('role',function ($query){
+            $query->where('name','Technical Manager');
+        })->where('is_active',1)->where('agency_id',$this->agency)->first();
+
+        $url = $_SERVER['HTTP_HOST'].'/verification/'.$request->id;
+        $qrCode = new QrCode($url);
+        $qrCode->setSize(300);
+        $pngWriter = new PngWriter();
+        $qrCodeImageString = $pngWriter->write($qrCode)->getString();
+        $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+        $wallet = Wallet::where('customer_id',$tsrinfo->customer_id)->value('available');
+        $payment = TsrPayment::select('id','total','payment_id')->with('type:id,name')->where('tsr_id',$tsrinfo->id)->first();
+        $transaction = WalletTransaction::where('transacable_id',$tsrinfo->id)->where('transacable_type','App\Models\Tsr')->first();
+        $array = [
+            'qrCodeImage' => $base64Image,
+            'configuration' => AgencyConfiguration::with('agency.member')->where('agency_id',\Auth::user()->profile->agency_id)->first(),
+            'tsr' => json_decode($tsr),
+            'cashier' => $signatory->cashier->profile->firstname.' '.$signatory->cashier->profile->middlename[0].'. '.$signatory->cashier->profile->lastname,
+            'manager' => ($head) ? $head->user->profile->firstname.' '.$head->user->profile->middlename[0].'. '.$head->user->profile->lastname : '',
+            'user' => \Auth::user()->profile->firstname.' '.\Auth::user()->profile->middlename[0].'. '.\Auth::user()->profile->lastname,
+            'color' => ($tsrinfo->laboratory) ? $tsrinfo->laboratory->color : 'black',
+            'wallet' => ($wallet) ?  $wallet : '0.00',
+            'payment' => $payment,
+            'transaction' => $transaction,
+            'secret' => $secret
+        ]; 
+
+        $pdf = \PDF::loadView('reports.tsr',$array)->setPaper('a4', 'portrait');
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF();
+        $canvas = $dompdf->getCanvas();
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+            $copies = 3;
+            $totalPagesPerCopy = $pageCount / $copies;
+            $currentPageInCopy = ($pageNumber - 1) % $totalPagesPerCopy + 1;
+            $text = "PAGE $currentPageInCopy OF $totalPagesPerCopy";
+            $font = $fontMetrics->get_font("Helvetica", "normal");
+            $size = 7;
+            $width = $fontMetrics->get_text_width($text, $font, $size);
+            $canvas->text(106 - $width, 796, $text, $font, $size);
+        });
+        return $pdf->stream($lab->code.'.pdf');
+    }
+
 
     public function region(){
         return \Auth::user()->profile?->agency?->address?->region_code;
