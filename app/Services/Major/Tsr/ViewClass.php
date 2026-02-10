@@ -211,6 +211,7 @@ class ViewClass
                 'samples.analyses.testservice.fees'
             )
             ->with('services.service')
+            ->with('mode','release:id','release.mode','release.user.profile')
             ->with('referral.agency.member','referral.province')
             ->with('received:id','received.profile:id,firstname,lastname,user_id')
             ->with('agency','laboratory:id,name','status:id,name,color,others')

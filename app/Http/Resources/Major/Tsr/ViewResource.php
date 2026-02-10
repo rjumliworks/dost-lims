@@ -20,6 +20,8 @@ class ViewResource extends JsonResource
             'customer' => new CustomerResource($this->customer),
             'samples' => SampleResource::collection($this->samples),
             'conforme' => $this->conforme->name, 
+            'mode' => $this->mode,
+            'release' => $this->release,
             'conforme_id' => $this->conforme->id, 
             'conforme_no' => $this->conforme->contact_no, 
             'received' => $this->received->profile->firstname.' '.$this->received->profile->lastname,

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->date('released_at')->nullable();
+            $table->unsignedSmallInteger('release_id')->nullable(); 
+            $table->foreign('release_id')->references('id')->on('list_data')->onDelete('cascade');
             $table->unsignedTinyInteger('type_id')->nullable();
             $table->foreign('type_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
             $table->unsignedinteger('user_id')->nullable();

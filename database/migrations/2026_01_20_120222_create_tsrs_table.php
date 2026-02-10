@@ -19,6 +19,8 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->unsignedBigInteger('conforme_id');
             $table->foreign('conforme_id')->references('id')->on('customer_conformes')->onDelete('cascade');
+            $table->unsignedSmallInteger('release_id'); 
+            $table->foreign('release_id')->references('id')->on('list_data')->onDelete('cascade');
             $table->unsignedTinyInteger('purpose_id');
             $table->foreign('purpose_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
             $table->unsignedTinyInteger('status_id');

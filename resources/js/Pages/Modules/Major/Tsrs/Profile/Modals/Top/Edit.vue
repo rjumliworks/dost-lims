@@ -45,7 +45,7 @@
             <hr class="text-muted mb-2"/>
             <div class="row customform g-2 mt-n2">
                 
-                <BCol lg="12" class="mt-2">
+                <BCol lg="6" class="mt-2">
                     <InputLabel for="region" value="Laboratory" :message="form.errors.laboratory_id"/>
                     <Multiselect 
                     :options="dropdowns.laboratories" 
@@ -53,6 +53,15 @@
                     @input="handleInput('laboratory_id')"
                     label="name"
                     placeholder="Select Laboratory"/>
+                </BCol>
+                  <BCol lg="6" class="mt-2">
+                    <InputLabel for="region" value="Mode of Release" :message="form.errors.release_id"/>
+                    <Multiselect 
+                    :options="dropdowns.releases" 
+                    v-model="form.release_id"
+                    @input="handleInput('release_id')"
+                    label="name"
+                    placeholder="Select Mode"/>
                 </BCol>
                 <!-- <BCol lg="6" class="mt-2">
                     <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
@@ -111,6 +120,7 @@ export default {
             selected: null,
             form: useForm({
                 id: null,
+                release_id: null,
                 purpose_id: null,
                 discount_id: null,
                 conforme: null,
@@ -142,6 +152,7 @@ export default {
             this.form.created_at = this.formatToDateInput(this.selected.created_at);
             this.form.due_at = this.formatToDateInput(this.selected.due_at);
             this.form.purpose_id = (data.purpose) ? data.purpose.id : null;
+            this.form.release_id = (data.mode) ? data.mode.id : null;
             this.form.discount_id = data.payment.discount_id;
             this.form.laboratory_id = this.selected.laboratory.id;
             this.showModal = true;

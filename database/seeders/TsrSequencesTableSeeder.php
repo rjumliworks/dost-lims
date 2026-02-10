@@ -46,14 +46,14 @@ class TsrSequencesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'next_sequence' => 1,
+                'next_sequence' => 3,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 3,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
+                'updated_at' => '2026-02-08 12:56:57',
             ),
             3 => 
             array (
@@ -94,14 +94,14 @@ class TsrSequencesTableSeeder extends Seeder
             6 => 
             array (
                 'id' => 7,
-                'next_sequence' => 1,
+                'next_sequence' => 4,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 3,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
+                'updated_at' => '2026-02-08 12:56:57',
             ),
             7 => 
             array (

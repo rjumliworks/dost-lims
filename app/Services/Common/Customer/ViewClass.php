@@ -54,7 +54,7 @@ class ViewClass
 
         $data = new ViewResource(
             Customer::query()
-            ->with('conformes')
+            ->with('conformes','payors')
             ->with('customer_name:id,name','classification:id,name','industry:id,name','type:id,name','sex:id,name','led:id,name')
             ->with('address.region:code,name,region','address.province:code,name','address.municipality:code,name','address.barangay:code,name')
             ->where('id',$id)->first()

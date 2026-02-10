@@ -29,6 +29,7 @@ class CreateRequest extends FormRequest
                 'customer'      => 'sometimes|array',
                 'conforme'      => 'sometimes|array',
                 'conforme_id'   => 'sometimes|integer',
+                'release_id'    => 'sometimes|integer',
                 'purpose_id'    => 'sometimes|integer',
                 'laboratory_id' => 'sometimes|integer',
                 'discount_id'   => 'sometimes|integer',
@@ -45,6 +46,7 @@ class CreateRequest extends FormRequest
                 'conforme'      => 'sometimes|array',
                 'conforme_id'   => 'sometimes|integer',
                 'purpose_id'    => 'sometimes|integer',
+                'release_id'    => 'sometimes|integer',
                 'laboratory_id' => 'sometimes|integer',
                 'discount_id'   => 'sometimes|integer',
             ];
@@ -60,6 +62,7 @@ class CreateRequest extends FormRequest
             'laboratory_id' => $this->laboratory_id,
             'discount_id' => $this->discount_id,
             'purpose_id' => $this->purpose_id,
+            'release_id' => $this->release_id,
             'is_onsite'   => $this->boolean('is_onsite'),
             'created_at'  => $this->created_at
                 ? Carbon::parse($this->created_at)->setTime(8, 0)

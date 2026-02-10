@@ -71,6 +71,9 @@ class CustomerController extends Controller
                 case 'conforme':
                     return $this->save->conforme($request);
                 break;
+                case 'payor':
+                    return $this->save->payor($request);
+                break;
             }
         });
 

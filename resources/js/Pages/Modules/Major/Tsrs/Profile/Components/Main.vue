@@ -72,7 +72,7 @@
                                     <th :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">#</th>
                                     <th width="20%">Sample Name</th>
                                     <th width="63%">Description</th>
-                                    <th v-if="selected.status.name != 'Pending'" width="4%" class="text-center">Status</th>
+                                    <th v-if="selected.status.name != 'Pending' && selected.status.name != 'For Payment'" width="4%" class="text-center">Status</th>
                                     <th width="7%"></th>
                                 </tr>
                             </thead>

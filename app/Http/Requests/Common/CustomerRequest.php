@@ -53,10 +53,15 @@ class CustomerRequest extends FormRequest
                 'latitude' => 'sometimes|required',
                 // 'is_new' => 'required'
             ];
-        }else{
+        }else if($this->option == 'conforme'){
             return [
                 'name' => 'required|string',
                 'contact_no' => 'required|numeric|digits:11',
+            ];
+        }else{
+            return [
+                'name' => 'required|string',
+                'tin' => 'nullable',
             ];
         }
     }

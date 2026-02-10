@@ -20,17 +20,20 @@
                                 <hr class="text-muted" style="margin-top: 10px; margin-bottom: 12px;"/>
                             </BCol>
                             <BCol lg="6" class="mt-n1" v-if="form.customer">
-                                <i class="ri-mail-fill me-1"></i><InputLabel value="Email" :message="form.errors.email"/>
+                                <!-- <i class="ri-mail-fill me-1"></i> -->
+                                <InputLabel value="Email" :message="form.errors.email"/>
                                 <TextInput v-model="form.email" type="text" class="form-control" placeholder="Please enter email"/>
                             </BCol>   
                             <BCol lg="6" class="mt-n1" v-if="form.customer">
-                                <i class="ri-phone-fill me-1"></i><InputLabel value="Mobile Number" :message="form.errors.contact_no"/>
+                                <!-- <i class="ri-phone-fill me-1"></i> -->
+                                <InputLabel value="Mobile Number" :message="form.errors.contact_no"/>
                                 <TextInput v-model="form.contact_no" type="text" class="form-control" placeholder="Please enter contact"/>
                             </BCol> 
                             <BCol :lg="(form.conforme) ? 6 : 12" class="mt-0 mb-2" v-if="form.customer">
                                 <div class="d-flex">
                                     <div style="width: 100%;">
-                                        <i class="ri-user-2-fill me-1"></i><InputLabel for="conforme" value="Conforme" :message="form.errors.conforme"/>
+                                        <!-- <i class="ri-user-2-fill me-1"></i> -->
+                                        <InputLabel for="conforme" value="Conforme" :message="form.errors.conforme"/>
                                         <Multiselect 
                                         :options="form.customer.conformes" 
                                         v-model="form.conforme" 
@@ -46,7 +49,8 @@
                                 </div>
                             </BCol> 
                             <BCol lg="6" v-if="(form.conforme) ? true : false" class="mt-0">
-                                <i class="ri-phone-fill me-1"></i><InputLabel for="due" value="Mobile Number" :message="form.errors.conforme"/>
+                                <!-- <i class="ri-phone-fill me-1"></i> -->
+                                <InputLabel for="due" value="Mobile Number" :message="form.errors.conforme"/>
                                 <TextInput v-model="form.conforme.contact_no" type="text" class="form-control" placeholder="Please enter name" @input="handleInput('conforme')"/>
                             </BCol>
                         </BRow>
@@ -56,8 +60,9 @@
                 <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mt-3 p-3">
                     <form class="customform">
                         <BRow>
-                            <BCol lg="12" class="mt-n1">
-                                <i class="ri-flask-fill me-1"></i><InputLabel for="region" value="Laboratory" :message="form.errors.laboratory_id"/>
+                            <BCol lg="6" class="mt-n1">
+                                <!-- <i class="ri-flask-fill me-1"></i> -->
+                                <InputLabel for="region" value="Laboratory" :message="form.errors.laboratory_id"/>
                                 <Multiselect 
                                 :options="dropdowns.laboratories" 
                                 v-model="form.laboratory" object
@@ -65,8 +70,19 @@
                                 :searchable="true" label="name"
                                 placeholder="Select Laboratory"/>
                             </BCol>
+                             <BCol lg="6" class="mt-n1">
+                                <!-- <i class="ri-hand-coin-fill me-1"></i> -->
+                                <InputLabel for="region" value="Purpose" :message="form.errors.purpose_id"/>
+                                <Multiselect 
+                                :options="dropdowns.purposes" 
+                                v-model="form.purpose_id"
+                                @input="handleInput('purpose_id')"
+                                :searchable="true" label="name"
+                                placeholder="Select Purpose"/>
+                            </BCol>
                             <BCol lg="6" class="mt-1 mb-1">
-                                <i class="ri-price-tag-3-fill me-1"></i><InputLabel for="region" value="Discount" :message="form.errors.discount_id"/>
+                                <!-- <i class="ri-price-tag-3-fill me-1"></i> -->
+                                <InputLabel for="region" value="Discount" :message="form.errors.discount_id"/>
                                 <Multiselect 
                                 :options="dropdowns.discounts" 
                                 v-model="form.discount_id"
@@ -75,13 +91,14 @@
                                 placeholder="Select Discount"/>
                             </BCol>
                             <BCol lg="6" class="mt-1 mb-1">
-                                <i class="ri-hand-coin-fill me-1"></i><InputLabel for="region" value="Purpose" :message="form.errors.purpose_id"/>
+                                <!-- <i class="ri-hand-coin-fill me-1"></i> -->
+                                <InputLabel for="region" value="Mode of Release" :message="form.errors.release_id"/>
                                 <Multiselect 
-                                :options="dropdowns.purposes" 
-                                v-model="form.purpose_id"
-                                @input="handleInput('purpose_id')"
+                                :options="dropdowns.releases" 
+                                v-model="form.release_id"
+                                @input="handleInput('release_id')"
                                 :searchable="true" label="name"
-                                placeholder="Select Purpose"/>
+                                placeholder="Select Release"/>
                             </BCol>
                         </BRow>
                     </form>
@@ -123,6 +140,7 @@ export default {
                 conforme: null,
                 laboratory: null,
                 laboratory_id: null,
+                release_id: null,
                 purpose_id: null,
                 discount_id: null,
                 is_referral: null,

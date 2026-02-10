@@ -103,6 +103,34 @@ class ListDataTableSeeder extends Seeder
                 'type' => 'Sequence',
                 'is_active' => 1,
             ),
+            12 => 
+            array (
+                'id' => 13,
+                'name' => 'Pick-up',
+                'type' => 'Release',
+                'is_active' => 1,
+            ),
+            13 => 
+            array (
+                'id' => 14,
+                'name' => 'Email',
+                'type' => 'Release',
+                'is_active' => 1,
+            ),
+            14 => 
+            array (
+                'id' => 15,
+                'name' => 'Internal',
+                'type' => 'Release',
+                'is_active' => 1,
+            ),
+            15 => 
+            array (
+                'id' => 16,
+                'name' => 'Pick-up & Email',
+                'type' => 'Release',
+                'is_active' => 1,
+            ),
         ));
         
         

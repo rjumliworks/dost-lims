@@ -20,6 +20,7 @@ class Tsr extends Model
         'facility_id',
         'agency_id',
         'status_id',
+        'release_id',
         'purpose_id',
         'customer_id',
         'conforme_id',
@@ -44,6 +45,7 @@ class Tsr extends Model
 
     public function status(){ return $this->belongsTo('App\Models\ListStatus', 'status_id', 'id');}
     public function purpose(){ return $this->belongsTo('App\Models\ListDropdown', 'purpose_id', 'id');}
+    public function mode(){ return $this->belongsTo('App\Models\ListData', 'release_id', 'id');}
     public function customer(){ return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');}
     public function conforme(){ return $this->belongsTo('App\Models\CustomerConforme', 'conforme_id', 'id');}
     public function received(){ return $this->belongsTo('App\Models\User', 'received_by', 'id');}

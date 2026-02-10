@@ -20,6 +20,20 @@
                                     <h5 class="mb-0 fs-14"><span class="text-body">TSR and Conforme Records</span></h5>
                                     <p class="text-muted text-truncate-two-lines fs-12">A comprehensive list of all TSRs (Test Service Requests) and Conformes, including their statuses and associated details.</p>
                                 </div>
+                                <template v-if="type == 'Conformes'">
+                                    <div class="flex-shrink-0">
+                                        <BButton @click="addConforme()" variant="danger" class="btn-sm waves-effect waves-light mt-1">
+                                            Add Conforme
+                                        </BButton>
+                                    </div>
+                                </template>
+                                <template v-if="type == 'Payors'">
+                                    <div class="flex-shrink-0">
+                                        <BButton @click="addPayor()" variant="danger" class="btn-sm waves-effect waves-light mt-1">
+                                            Add Payor
+                                        </BButton>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                         
@@ -27,7 +41,7 @@
                             <div class="step-arrow-nav mt-0">
                                 <ul class="nav nav-pills nav-justified custom-nav" role="tablist">
                                     <li class="nav-item" role="presentation" v-for="(menu, index) in menus" v-bind:key="index">
-                                        <button class="nav-link fs-12 p-3" :class="(index == 0) ? 'active' : ''" 
+                                        <button @click="type = menu" class="nav-link fs-12 p-3" :class="(index == 0) ? 'active' : ''" 
                                             :id="menu+'-tab'" data-bs-toggle="pill" :data-bs-target="'#'+menu" 
                                             type="button" role="tab" :aria-controls="menu" aria-selected="true">
                                             {{menu}}
@@ -46,6 +60,7 @@
                                                 <div :key="index" class="tab-content">
                                                     <Lists :id="customer.data.id" v-if="menu == 'TSRs'"/>
                                                     <Conforme :lists="customer.data.conformes" v-if="menu == 'Conformes'"/>
+                                                    <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/>
                                                     <Logs :id="customer.data.id" v-if="menu == 'Logs'"/>
                                                 </div>
                                             </transition>
@@ -60,6 +75,8 @@
             </b-row>
         </b-col>
     </b-row>
+    <AddPayor ref="payor"/>
+    <AddConforme ref="conforme"/>
 </template>
 <script>
 import Top from './Top.vue';
@@ -67,17 +84,29 @@ import Count from './Count.vue';
 import Sidebar from './Sidebar.vue';
 import Logs from './Components/Logs.vue';
 import Lists from './Components/Lists.vue';
+import Payor from './Components/Payor.vue';
 import Conforme from './Components/Conforme.vue';
+import AddConforme from './Modals/Conforme.vue';
+import AddPayor from './Modals/Payor.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     props:['customer'],
-    components: { PageHeader, Top, Count, Sidebar, Lists, Conforme, Logs },
+    components: { PageHeader, Top, Count, Sidebar, Lists, Conforme, Payor, Logs, AddConforme, AddPayor },
     data(){
         return {
             menus: [
-                'TSRs','Conformes','Logs'
+                'TSRs','Conformes','Payors','Logs'
             ],
+            type: null,
             index: null,
+        }
+    },
+    methods: { 
+        addPayor(){
+            this.$refs.payor.show(this.customer.data.id);
+        },
+        addConforme(){
+            this.$refs.conforme.show(this.customer.data.id);
         }
     }
 }

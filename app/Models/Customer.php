@@ -62,6 +62,11 @@ class Customer extends Model
         return $this->hasMany('App\Models\CustomerConforme', 'customer_id');
     }
 
+    public function payors()
+    {
+        return $this->hasMany('App\Models\CustomerPayor', 'customer_id');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');

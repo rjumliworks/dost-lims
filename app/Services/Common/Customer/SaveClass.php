@@ -4,6 +4,7 @@ namespace App\Services\Common\Customer;
 
 use App\Models\Customer;
 use App\Models\CustomerName;
+use App\Models\CustomerPayor;
 use App\Models\CustomerConforme;
 use App\Models\AgencyConfiguration;
 
@@ -20,8 +21,24 @@ class SaveClass
 
         return [
             'data' => $conforme,
-            'message' => 'Conforme was updated!', 
-            'info' => "You've successfully updated the conforme."
+            'message' => 'Conforme was created!', 
+            'info' => "You've successfully created the conforme."
+        ];
+    }
+
+    public function payor($request){
+        $data = CustomerPayor::create($request->all());
+        $customer = CustomerPayor::findOrFail($data->id);
+        $payor = [
+            'value' => $customer->id,
+            'name' => $customer->name,
+            'tin' => $customer->tin
+        ];
+
+        return [
+            'data' => $payor,
+            'message' => 'Payor was created!', 
+            'info' => "You've successfully created the conforme."
         ];
     }
 

@@ -51,6 +51,7 @@ class TsrController extends Controller
                     'agencies' => $this->agency->all(),
                     'statuses' => $this->dropdown->statuses('Request'),
                     'purposes' => $this->dropdown->dropdowns('Purpose','n/a'),
+                    'releases' => $this->dropdown->datas('Release'),
                     'regions' => $this->dropdown->regions(),
                 ],
                 // 'facility' => \Auth::user()->profile->facility_id,
@@ -109,6 +110,7 @@ class TsrController extends Controller
                 'agencies' => $this->agency->all(),
                 'statuses' => $this->dropdown->statuses('Request'),
                 'purposes' => $this->dropdown->dropdowns('Purpose','n/a'),
+                'releases' => $this->dropdown->datas('Release'),
             ],
         ]);
     }

@@ -33,6 +33,7 @@ class ViewResource extends JsonResource
             'sex' => $this->sex,
             'address' => new AddressResource($this->address),
             'conformes' => $this->conformes,
+            'payors' => $this->payors,
             'created_at' => $this->created_at
         ];
     }
