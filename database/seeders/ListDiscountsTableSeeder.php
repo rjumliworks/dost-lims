@@ -186,7 +186,7 @@ class ListDiscountsTableSeeder extends Seeder
                 'is_active' => 1,
                 'created_at' => '2024-03-27 11:14:39',
                 'updated_at' => '2024-03-27 11:14:39',
-            )
+            ),
         ));
         
         

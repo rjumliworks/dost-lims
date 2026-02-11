@@ -64,8 +64,8 @@
                                         <div class="carousel-content">
                                             <transition mode="out-in">
                                                 <div :key="index" class="tab-content">
-                                                    <Laboratories :lists=[] v-if="menu == 'Laboratories'"/>
-                                                    <Facilities :lists="selected.data.facilities" v-if="menu == 'Facilities'"/>
+                                                    <Laboratories :id="selected.data.id" :lists="labs" v-if="menu == 'Laboratories'"/>
+                                                    <Facilities :lists="selected.data.facilities" :laboratories="laboratories" v-if="menu == 'Facilities'"/>
                                                     <Discounts :lists="selected.data.discounts" v-if="menu == 'Discounts'"/>
                                                     <Services :lists="selected.data.fees" v-if="menu == 'Fees'"/>
                                                     <!-- <Lists :id="customer.data.id" v-if="menu == 'TSRs'"/>
@@ -102,14 +102,14 @@ import Facility from './Modals/Facility.vue';
 import Discount from './Modals/Discount.vue';
 import Fee from './Modals/Fee.vue';
 export default {
-    props:['selected','laboratories','discounts','regions'],
+    props:['selected','laboratories','discounts','regions','labs'],
     components: { PageHeader, Top, Sidebar, Discounts, Facilities, Laboratories, Services, Logs, Facility, Discount, Fee },
     data(){
         return {
             menus: [
-                'Laboratories','Facilities','Discounts','Fees','Activity Logs'
+                'Discounts','Facilities','Laboratories','Fees','Activity Logs'
             ],
-            type: 'Laboratories',
+            type: 'Discounts',
             index: null,
         }
     },

@@ -1,54 +1,66 @@
 <template>
    <div class="table-responsive table-card" style="height: calc(100vh - 404px);">
-       <simplebar data-simplebar style="height: calc(100vh - 410px);">
-           <table class="table table-nowrap align-middle mb-0">
-                <thead class="bg-primary text-white">
-                    <tr class="fs-10">
-                        <th style="width: 4%;"></th>
-                        <th style="width: 20%;">Name</th>
-                        <th style="width: 25%;" class="text-center">Contact no.</th>
-                        <th style="width: 16%;" class="text-center">Created At</th>
-                        <th style="width: 15%;" class="text-center">Updated At</th>
-                        <th style="width: 10%;" class="text-center"></th>
-                    </tr>
-                </thead>
-                <tbody v-if="lists.length > 0">
-                    <tr v-for="(list,index) in lists" v-bind:key="index" class="fs-12">
-                        <td>{{ index + 1 }}.</td>
-                        <td>{{list.name}}</td>
-                        <td class="text-center">{{list.contact_no}}</td>
-                        <td class="text-center">{{list.created_at}}</td>
-                        <td class="text-center">{{list.updated_at}}</td>
-                        <td class="text-end">
-                            <b-button @click="openEdit(list)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
-                                <i class="ri-pencil-fill align-bottom"></i>
-                            </b-button>
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody v-else>
-                    <tr>
-                        <td colspan="6" class="text-center text-muted">No records found.</td>
-                    </tr>
-               </tbody>
-           </table>
-       </simplebar>
+        <table class="table table-nowrap align-middle mb-0">
+            <thead class="bg-primary text-white thead-fixed">
+                <tr class="fs-10">
+                    <th style="width: 4%;"></th>
+                    <th>Name</th>
+                    <th style="width: 15%;" class="text-center">Short</th>
+                    <th style="width: 5%;" class="text-center"></th>
+                </tr>
+            </thead>
+            <tbody v-if="lists.length > 0">
+                <tr v-for="(list,index) in lists" v-bind:key="index" class="fs-12">
+                    <td>{{ index + 1 }}.</td>
+                    <td>{{list.name}}</td>
+                    <td class="text-center">{{list.short}}</td>
+                    <td class="text-end">
+                        <div class="d-flex gap-3 justify-content-center"> 
+                            <div class="dropdown">
+                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                    <template #button-content> 
+                                        <i class="ri-more-fill"></i>
+                                    </template>
+                                    <li>
+                                        <a @click="openUpdate(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                            <i class="ri-edit-2-fill me-2"></i> Update
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a @click="openFees(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                            <i class="ri-flask-fill me-2"></i> Additional Fees
+                                        </a>
+                                    </li>
+                                </BDropdown>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody v-else>
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No records found.</td>
+                </tr>
+            </tbody>
+        </table>
    </div>
+   <Fee :id="id" ref="fee"/>
 </template>
 <script>
+import Fee from './Modals/Laboratory/Fee.vue';
 export default {
-    props: ['lists'],
+    props: ['lists','id'],
+    components: { Fee },
     data(){
         return {
-            currentUrl: window.location.origin,
-            filter: { 
-                keyword: null
-            }
+            index: null
         }
     },
     methods: {
-        openEdit(list){
-            this.$refs.conforme.show(list);
+        openFees(data,index){
+            this.index = index;
+            this.$refs.fee.show(data);
         }
     }
 }

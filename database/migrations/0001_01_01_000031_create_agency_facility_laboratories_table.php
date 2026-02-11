@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('agency_facility_laboratories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->tinyIncrements('id');
-            $table->unsignedTinyInteger('facility_id');
-            $table->foreign('facility_id')->references('id')->on('agency_facilities')->onDelete('cascade');
             $table->unsignedTinyInteger('laboratory_id');
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
+            $table->unsignedTinyInteger('facility_id');
+            $table->foreign('facility_id')->references('id')->on('agency_facilities')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['laboratory_id','facility_id']); 
         });
     }
 

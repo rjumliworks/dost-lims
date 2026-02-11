@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('agency_facility_signatories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->tinyIncrements('id');
-            $table->unsignedInteger('accountant_id');
+            $table->unsignedInteger('accountant_id')->nullable();
             $table->foreign('accountant_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedInteger('cashier_id');
+            $table->unsignedInteger('cashier_id')->nullable();
             $table->foreign('cashier_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedTinyInteger('facility_id');
+            $table->unsignedTinyInteger('facility_id')->unique();
             $table->foreign('facility_id')->references('id')->on('agency_facilities')->onDelete('cascade');
             $table->timestamps();
         });

@@ -15,6 +15,11 @@ class AgencyFacility extends Model
         return $this->hasMany('App\Models\AgencyFacilityLaboratory', 'facility_id');
     }
 
+    public function signatories()
+    {
+        return $this->hasOne('App\Models\AgencyFacilitySignatory', 'facility_id');
+    }
+
     public function agency()
     {
         return $this->belongsTo('App\Models\Agency', 'agency_id', 'id');

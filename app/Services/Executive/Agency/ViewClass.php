@@ -33,9 +33,17 @@ class ViewClass
 
         $data = new AgencyResource(
             Agency::with('member','type','configuration',
-            'facilities.region','facilities.province','facilities.municipality','facilities.barangay',
-            'address','fees','discounts.discount')->where('id',$id)->first()
+            'facilities.region','facilities.province','facilities.municipality','facilities.barangay','facilities.laboratories.laboratory.fees',
+            'facilities.signatories','facilities.signatories.accountant.profile','facilities.signatories.cashier.profile',
+            'address','fees','discounts.discount')
+            ->where('id',$id)->first()
         );
-        return $data;
+
+        $laboratories = $data->facilities
+        ->flatMap->laboratories
+        ->pluck('laboratory')
+        ->unique('id')
+        ->values();
+        return [$data,$laboratories];
     }
 }

@@ -14,7 +14,10 @@
                 <tbody v-if="lists.length > 0">
                     <tr v-for="(list,index) in lists" v-bind:key="index" class="fs-12">
                         <td>{{ index + 1 }}.</td>
-                        <td>{{list.name}}</td>
+                        <td>
+                            <h5 class="fs-12 mb-0 text-dark">{{list.name}}</h5>
+                            <p class="fs-11 text-muted mb-0">{{ list.description }}</p>
+                        </td>
                         <td class="text-center">{{list.fee}}</td>
                         <td class="text-center fs-12">
                             <span v-if="list.is_active" class="badge bg-success">Active</span>

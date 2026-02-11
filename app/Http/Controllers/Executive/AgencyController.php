@@ -57,6 +57,15 @@ class AgencyController extends Controller
                 case 'facility':
                     return $this->save->facility($request);
                 break;
+                case 'signatory':
+                    return $this->save->signatory($request);
+                break;
+                case 'laboratory':
+                    return $this->save->laboratory($request);
+                break;
+                case 'addfee':
+                    return $this->save->addfee($request);
+                break;
             }
         });
 
@@ -71,7 +80,8 @@ class AgencyController extends Controller
     public function show($id){
         $data = $this->view->view($id);
         return inertia('Executive/Agencies/Profile/Index',[
-            'selected' => $data,
+            'selected' => $data[0],
+            'labs' => $data[1],
             'laboratories' => $this->dropdown->laboratories(),
             'discounts' =>  $this->dropdown->discounts(),
             'regions' => $this->dropdown->regions(),

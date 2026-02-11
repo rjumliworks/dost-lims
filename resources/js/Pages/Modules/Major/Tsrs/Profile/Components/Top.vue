@@ -3,7 +3,7 @@
         <b-card no-body>
             <div class="bg-info-subtle">
                 <b-card-body class="pb-0 px-4">
-                     <b-row class="mb-3">
+                    <b-row class="mb-3">
                         <b-col md>
                             <b-row class="align-items-center g-3">
                                 <b-col md>

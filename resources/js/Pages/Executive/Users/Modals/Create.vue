@@ -279,7 +279,7 @@ export default {
                 this.form.put('/users/update',{
                     preserveScroll: true,
                     onSuccess: (response) => {
-                        // this.$emit('update',this.$page.props.flash.data.data);
+                        this.$emit('update',this.$page.props.flash.data.data);
                         this.form.reset();
                         this.hide();
                     }

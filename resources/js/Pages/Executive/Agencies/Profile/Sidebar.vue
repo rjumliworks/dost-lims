@@ -65,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 411px); overflow: auto;">
+        <div class="card bg-white rounded-bottom shadow-none mb-0" style="height: calc(100vh - 406px); overflow: auto;">
             <simplebar data-simplebar style="max-height: 400px" v-if="selected.data.configuration.form">
                 <div class="row p-3 mt-2 ms-0 me-0">
                     <div class="col-md-12">

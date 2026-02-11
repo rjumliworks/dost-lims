@@ -144,6 +144,11 @@ class User extends Authenticatable  implements MustVerifyEmail
         return date('F d, Y g:i a', strtotime($value));
     }
 
+    public function primaryRole()
+    {
+        return $this->hasOne(UserRole::class)->where('is_primary', 1)->where('is_active', 1);
+    }
+
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
         ->logOnly(['username','kradworkz','is_active','must_change'])

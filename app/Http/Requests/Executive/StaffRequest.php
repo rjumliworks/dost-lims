@@ -23,6 +23,7 @@ class StaffRequest extends FormRequest
             'sex_id' => 'sometimes|required',
             'mobile' => 'sometimes|required|numeric|digits:11|unique:user_profiles,mobile,'.$this->profile_id,
             'facility_id' => 'sometimes|required',
+            'agency_id' => 'sometimes|required',
             'role_id' => 'sometimes|required',
         ];
     }

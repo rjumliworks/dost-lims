@@ -2,7 +2,7 @@
    <div class="table-responsive table-card" style="height: calc(100vh - 404px);">
        <simplebar data-simplebar style="height: calc(100vh - 410px);">
            <table class="table table-nowrap align-middle mb-0">
-                <thead class="bg-primary text-white">
+                <thead class="bg-primary text-white thead-fixed">
                     <tr class="fs-10">
                         <th style="width: 4%;"></th>
                         <th>Name</th>

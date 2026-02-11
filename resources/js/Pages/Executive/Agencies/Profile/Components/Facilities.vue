@@ -2,7 +2,7 @@
    <div class="table-responsive table-card" style="height: calc(100vh - 404px);">
        <simplebar data-simplebar style="height: calc(100vh - 410px);">
            <table class="table table-nowrap align-middle mb-0">
-                <thead class="bg-primary text-white">
+                <thead class="bg-primary text-white thead-fixed">
                     <tr class="fs-10">
                         <th style="width: 4%;"></th>
                         <th>Name</th>
@@ -42,18 +42,18 @@
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                            <a @click="addSignatory(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                 <i class="ri-quill-pen-fill me-2"></i> Set Signatories
                                             </a>
                                         </li>
                                         <li>
-                                            <a @click="openActivation('verification',list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                            <a @click="addLaboratory(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                 <i class="ri-flask-fill me-2"></i> Set Laboratories
                                             </a>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                            <a class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
                                                 <span v-if="list.is_active"><i class="ri-lock-2-fill me-2"></i>Deactivate Facility</span>
                                                 <span v-else><i class="ri-lock-unlock-line me-2"></i>Activate Facility</span>
                                             </a>
@@ -72,23 +72,28 @@
            </table>
        </simplebar>
    </div>
+   <Signatory ref="signatory"/>
+   <Laboratory :laboratories="laboratories" ref="laboratory"/>
 </template>
 <script>
-import Create from './Modals/Facility/Create.vue';
+import Signatory from './Modals/Facility/Signatory.vue';
+import Laboratory from './Modals/Facility/Laboratory.vue';
 export default {
-    props: ['lists'],
-    components: { Create }, 
+    props: ['lists','laboratories'],
+    components: { Signatory, Laboratory },
     data(){
         return {
-            currentUrl: window.location.origin,
-            filter: { 
-                keyword: null
-            }
+            index: null
         }
     },
     methods: {
-        openEdit(list){
-            this.$refs.conforme.show(list);
+        addSignatory(data,index){
+            this.index = index;
+            this.$refs.signatory.show(data);
+        },
+        addLaboratory(data,index){
+            this.index = index;
+            this.$refs.laboratory.show(data);
         }
     }
 }

@@ -22,22 +22,22 @@ class AgencyFacilitiesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'name' => 'Regional Standard and Testing Laboratory',
+                'name' => 'Regional Standards and Testing Laboratories',
                 'short' => 'RSTL',
                 'is_regional' => 1,
                 'is_separated' => 0,
                 'is_psto' => 0,
-                'address' => 'Pettit Barracks',
-                'longitude' => '122.079713',
-                'latitude' => '6.90335',
                 'is_active' => 1,
+                'address' => 'Pettit Barracks',
+                'longitude' => '122.079735',
+                'latitude' => '6.903356',
                 'barangay_code' => '097332064',
                 'municipality_code' => '097332000',
                 'province_code' => '097300000',
                 'region_code' => '090000000',
                 'agency_id' => 14,
-                'created_at' => '2026-01-03 09:15:50',
-                'updated_at' => '2026-01-03 09:15:50',
+                'created_at' => '2026-02-11 15:02:16',
+                'updated_at' => '2026-02-11 15:02:16',
             ),
         ));
         

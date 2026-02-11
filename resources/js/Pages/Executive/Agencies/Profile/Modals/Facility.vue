@@ -113,7 +113,7 @@ export default {
                 short: null,
                 is_psto: null,
                 is_regional: null,
-                is_separated: null,
+                is_separated: false,
                 address: null,
                 region_code: null,
                 province_code: null,

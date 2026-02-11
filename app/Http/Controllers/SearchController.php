@@ -31,7 +31,7 @@ class SearchController extends Controller
                 return $this->dropdown->units($request->code);
             break;
             case 'users':
-                return $this->dropdown->users($request->keyword,$request->is_regular);
+                return $this->dropdown->users($request->keyword,$request->agency);
             break;
             case 'vehicles':
                 return $this->dropdown->vehicles($request->keyword);

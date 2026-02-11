@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name',100);
             $table->string('short',20);
             $table->boolean('is_regional');
-            $table->boolean('is_separated');
+            $table->boolean('is_separated')->default(0);
             $table->boolean('is_psto');
             $table->boolean('is_active')->default(1);
             $table->string('address');
@@ -34,7 +34,9 @@ return new class extends Migration
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['name','agency_id']); 
         });
+        
     }
 
     /**

@@ -4,6 +4,8 @@ namespace App\Services\Profile;
 
 use App\Models\User;
 use App\Http\Resources\UserResource;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -16,8 +18,22 @@ class SaveClass
             Storage::disk('public')->delete($user->profile->avatar);
         }
 
-        $imagePath = $request->file('image')->store('profile-pictures', 'public');
-        $user->profile->avatar = $imagePath;
+        $image = $request->file('image');
+
+        $manager = new ImageManager(new Driver());
+
+        // Read image
+        $img = $manager->read($image);
+
+        // Resize + convert to webp
+        $img->cover(300, 300); // better than fit() in v3
+        $webp = $img->toWebp(80);
+
+        $filename = 'avatar_' . $user->username . '_' . time() . '.webp';
+        $path = 'profile-pictures/' . $filename;
+        Storage::disk('public')->put($path, $webp);
+        
+        $user->profile->avatar = $path;
         $user->profile->save();
 
         return [

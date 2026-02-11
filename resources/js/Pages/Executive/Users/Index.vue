@@ -126,7 +126,7 @@
                                                 <i class="ri-star-fill fs-13 align-bottom"></i>
                                             </button>
                                             <div class="dropdown">
-                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
                                                     <template #button-content> 
                                                         <i class="ri-more-fill"></i>
                                                     </template>
@@ -173,7 +173,7 @@
             </div>
         </div>
     </BRow>
-    <Create :dropdowns="dropdowns" ref="create"/>
+    <Create :dropdowns="dropdowns" @update="fetch()" ref="create"/>
     <Role :dropdowns="dropdowns" ref="role"/>
     <Update @update="updateData" ref="update"/>
     <Activation @update="updateData" ref="activation"/>
@@ -187,7 +187,6 @@ import Activation from './Modals/Activation.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
-import { formToJSON } from 'axios';
 export default {
     components: { PageHeader, Pagination, Multiselect, Activation, Update, Role, Create },
     props: ['dropdowns'],

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\Agency;
 use App\Models\AgencyFacility;
 use App\Models\ListRole;
@@ -211,6 +212,27 @@ class DropdownClass
             return [
                 'value' => $item->code,
                 'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
+     public function users($keyword,$agency){
+        $data =  User::with('profile','primaryRole.role')
+        ->when($keyword, function ($query) use ($keyword,$agency){
+            $query->whereHas('profile', function ($q) use ($keyword,$agency) {
+                $q->where('lastname', 'like', '%' . $keyword . '%')
+                ->where('agency_id',$agency);
+            });
+        })
+        ->limit(5)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->profile->lastname . ', ' . $item->profile->firstname . ' ' . $item->profile->middlename[0] . '.',
+                'role' => optional($item->primaryRole?->role)->name,
+                'avatar' => ($item->profile && $item->profile->avatar && $item->profile->avatar !== 'noavatar.jpg')
+                ? asset('storage/' . $item->profile->avatar) 
+                : asset('images/avatars/avatar.jpg'), 
             ];
         });
         return $data;
