@@ -9,6 +9,7 @@ use App\Traits\HandlesTransaction;
 use App\Http\Requests\Common\NameRequest;
 use App\Services\Common\Testservice\ViewClass;
 use App\Services\Common\Testservice\SaveClass;
+use App\Services\Common\Testservice\UploadClass;
 use App\Services\Common\Testservice\UpdateClass;
 
 class TestserviceController extends Controller
@@ -18,13 +19,15 @@ class TestserviceController extends Controller
     protected ViewClass $view;
     protected SaveClass $save;
     protected UpdateClass $update;
+    protected UploadClass $upload;
     protected DropdownClass $dropdown;
 
-    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update){
+    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update, UploadClass $upload){
         $this->dropdown = $dropdown;
         $this->view = $view;
         $this->save = $save;
         $this->update = $update;
+        $this->upload = $upload;
     }
 
     public function index(Request $request){
@@ -107,6 +110,12 @@ class TestserviceController extends Controller
                     'info' => $result['info'],
                     'status' => $result['status'],
                 ]);
+            break;
+            case 'preview':
+                return $this->upload->preview($request);
+            break;
+            case 'upload':
+                return $this->upload->save($request);
             break;
         }
     }

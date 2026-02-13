@@ -29,9 +29,15 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Service" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.keyword" placeholder="Search Service" class="form-control" style="width: 15%;">
                                 <!-- <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Category" /> -->
-                                <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
+                                <Multiselect class="white" style="width: 18%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
+                                <span @click="openUpload()" class="input-group-text" v-b-tooltip.hover title="Upload" style="cursor: pointer;"> 
+                                    <i class="ri-upload-cloud-fill search-icon"></i>
+                                </span>
+                                <span @click="openDownload()" class="input-group-text" v-b-tooltip.hover title="Download" style="cursor: pointer;"> 
+                                    <i class="ri-file-excel-2-fill search-icon"></i>
+                                </span>
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -155,18 +161,20 @@
     </BRow>
     <View @update="updateData" ref="view"/>
     <Activation @update="updateData" ref="activation"/>
+    <Upload :dropdowns="dropdowns" ref="upload"/>
     <Create :dropdowns="dropdowns" @message="fetch()" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
 import View from './Modals/View.vue';
 import Create from './Modals/Create.vue';
+import Upload from './Modals/Upload.vue';
 import Multiselect from "@vueform/multiselect";
 import Activation from './Modals/Activation.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Activation, View },
+    components: { PageHeader, Pagination, Multiselect, Create, Activation, View, Upload },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -239,6 +247,9 @@ export default {
             this.index = index;
             this.selectedRow = index;
             this.$refs.activation.show(type,data);
+        },
+        openUpload(){
+            this.$refs.upload.show();
         },
         selectRow(index) {
             if (this.selectedRow === index) {

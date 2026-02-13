@@ -76,7 +76,7 @@
                                     <th style="width: 3%;"></th>
                                     <th>Sample Name</th>
                                     <th style="width: 25%;" class="text-center">Sample Type</th>
-                                    <th style="width: 15%;" class="text-center">Category</th>
+                                    <th style="width: 25%;" class="text-center">Category</th>
                                     <th style="width: 15%;" class="text-center">Laboratory</th>
                                     <th style="width: 7%;" class="text-center">Status</th>
                                     <th style="width: 4%;" ></th>

@@ -80,5 +80,10 @@ class DatabaseSeeder extends Seeder
         $this->call(UserProfilesTableSeeder::class);
         $this->call(UserRolesTableSeeder::class);
         $this->call(AgencyFacilitySignatoriesTableSeeder::class);
+        $this->call(TestserviceNamesTableSeeder::class);
+        $this->call(TestserviceMethodsTableSeeder::class);
+        $this->call(TestservicesTableSeeder::class);
+        $this->call(TestserviceAddonsTableSeeder::class);
+        $this->call(TestserviceSamplesTableSeeder::class);
     }
 }

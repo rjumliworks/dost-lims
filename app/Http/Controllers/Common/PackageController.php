@@ -8,6 +8,7 @@ use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
 use App\Services\Common\Package\ViewClass;
 use App\Services\Common\Package\SaveClass;
+use App\Http\Requests\Common\PackageRequest;
 
 class PackageController extends Controller
 {
@@ -38,7 +39,7 @@ class PackageController extends Controller
         }
     }
 
-    public function store(Request $request){
+    public function store(PackageRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'create':
