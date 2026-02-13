@@ -118,6 +118,83 @@ class SampleCategoriesTableSeeder extends Seeder
                 'created_at' => '2026-02-12 14:01:13',
                 'updated_at' => '2026-02-12 14:01:13',
             ),
+            9 => 
+            array (
+                'id' => 10,
+                'name' => 'Mass',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:30:23',
+                'updated_at' => '2026-02-13 16:30:23',
+            ),
+            10 => 
+            array (
+                'id' => 11,
+                'name' => 'Temperature',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:36:16',
+                'updated_at' => '2026-02-13 16:36:16',
+            ),
+            11 => 
+            array (
+                'id' => 12,
+                'name' => 'Hygrometry',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:42:27',
+                'updated_at' => '2026-02-13 16:42:27',
+            ),
+            12 => 
+            array (
+                'id' => 13,
+                'name' => 'Volume',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:44:31',
+                'updated_at' => '2026-02-13 16:44:31',
+            ),
+            13 => 
+            array (
+                'id' => 14,
+                'name' => 'Pressure',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:51:25',
+                'updated_at' => '2026-02-13 16:51:25',
+            ),
+            14 => 
+            array (
+                'id' => 15,
+                'name' => 'Electrical',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:54:27',
+                'updated_at' => '2026-02-13 16:54:27',
+            ),
+            15 => 
+            array (
+                'id' => 16,
+                'name' => 'Length',
+                'is_active' => 1,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-02-13 16:57:17',
+                'updated_at' => '2026-02-13 16:57:17',
+            ),
         ));
         
         

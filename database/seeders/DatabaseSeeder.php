@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
         $this->call(AgenciesTableSeeder::class);
         $this->call(AgencyAddressesTableSeeder::class);
         $this->call(AgencyConfigurationsTableSeeder::class);
-        // $this->call(AgencyFacilitiesTableSeeder::class);
+        $this->call(AgencyFacilitiesTableSeeder::class);
 
         \DB::table('user_roles')->insert([
             'user_id' => 1,
@@ -70,15 +70,17 @@ class DatabaseSeeder extends Seeder
         ]);
 
         
-        // $this->call(AgencyDiscountsTableSeeder::class);
-        // $this->call(AgencyFacilityLaboratoriesTableSeeder::class);
-        // $this->call(SampleCategoriesTableSeeder::class);
-        // $this->call(SampleTypesTableSeeder::class);
-        // $this->call(SampleNamesTableSeeder::class);
-        // $this->call(TsrSequencesTableSeeder::class);
+        $this->call(AgencyDiscountsTableSeeder::class);
+        $this->call(AgencyFacilityLaboratoriesTableSeeder::class);
+    
         $this->call(UsersTableSeeder::class);
         $this->call(UserProfilesTableSeeder::class);
         $this->call(UserRolesTableSeeder::class);
+
+         $this->call(SampleCategoriesTableSeeder::class);
+        $this->call(SampleTypesTableSeeder::class);
+        $this->call(SampleNamesTableSeeder::class);
+        $this->call(TsrSequencesTableSeeder::class);
         $this->call(AgencyFacilitySignatoriesTableSeeder::class);
         $this->call(TestserviceNamesTableSeeder::class);
         $this->call(TestserviceMethodsTableSeeder::class);

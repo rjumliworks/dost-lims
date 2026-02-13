@@ -42,6 +42,11 @@ class SampleName extends Model
     public function agency(){ return $this->belongsTo(Agency::class, 'agency_id'); }
     public function user(){ return $this->belongsTo(User::class, 'user_id'); }
 
+       public function services()
+    {
+        return $this->morphMany('App\Models\TestserviceSample', 'sampleable');
+    }
+
     public function getUpdatedAtAttribute($value) { return date('M d, Y g:i a', strtotime($value));}
     public function getCreatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}
 }

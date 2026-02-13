@@ -6,6 +6,7 @@ use App\Imports\TestImport;
 use App\Models\Testservice;
 use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
+use App\Models\SampleName;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UploadClass
@@ -16,9 +17,7 @@ class UploadClass
         foreach($rows as $row){ 
             if($row[0] != 'Sample Type'){
                 $information[] = [
-                     '1' => $row[0],
-                      '2' => $row[1],
-                       '3' => ($row[2] == '') ? $row[2] : $sampletype,
+                    'samples' => explode(', ', $row[2]),
                     'testname' => $row[3],
                     'code' => $row[4],
                     'method' => $row[5],
@@ -26,7 +25,6 @@ class UploadClass
                     'fee' => str_replace(['₱', ','], '', $row[7])
                 ];
             }
-            $sampletype = $row[2];
         }
         return $information;
     }
@@ -47,7 +45,8 @@ class UploadClass
         $results = [
             'success' => [],
             'failed' => [],
-            'duplicate' => []
+            'duplicate' => [],
+            'unknown' => []
         ];
         $index= 0;
         $rows = $request->lists;
@@ -64,6 +63,8 @@ class UploadClass
                     [
                         'name' => $testName,
                         'type_id' => 31,
+                        'agency_id' => auth()->user()->profile->agency_id
+                    ],[
                         'laboratory_id' => $request->laboratory_id,
                     ]
                 );
@@ -71,8 +72,10 @@ class UploadClass
                 $method = TestserviceName::firstOrCreate(
                     [
                         'name' => $methodName,
-                        'short' => $methodCode,
                         'type_id' => 28,
+                        'agency_id' => auth()->user()->profile->agency_id
+                    ],[
+                        'short' => $methodCode,
                         'laboratory_id' => $request->laboratory_id,
                     ]
                 );
@@ -80,21 +83,23 @@ class UploadClass
                 $reference = TestserviceName::firstOrCreate([
                     'name' => $referenceName,
                     'type_id' => 29,
+                    'agency_id' => auth()->user()->profile->agency_id
+                ],[
                     'laboratory_id' => $request->laboratory_id,
                 ]);
 
                 $methodCombo = TestserviceMethod::firstOrCreate(
-    [
-        'method_id' => $method->id,
-        'reference_id' => $reference->id,
-        'agency_id' => auth()->user()->profile->agency_id,
-    ],
-    [
-        'laboratory_id' => $request->laboratory_id,
-        'fee' => $fee,
-        'added_by' => auth()->id(),
-    ]
-);
+                    [
+                        'method_id' => $method->id,
+                        'reference_id' => $reference->id,
+                        'agency_id' => auth()->user()->profile->agency_id,
+                    ],
+                    [
+                        'laboratory_id' => $request->laboratory_id,
+                        'fee' => $fee,
+                        'added_by' => auth()->id(),
+                    ]
+                );
 
                 // Check if this testservice already exists
                 $existing = Testservice::where([
@@ -112,12 +117,26 @@ class UploadClass
                 }
 
                 // Create new testservice
-                Testservice::create([
+                $service = Testservice::create([
                     'testname_id' => $parameter->id,
                     'method_id' => $methodCombo->id,
                     'laboratory_id' => $request->laboratory_id,
                     'status_id' => 32
                 ]);
+                if($service){
+                    foreach ($row['samples'] as $name) {
+                        $sampleRecord = SampleName::where('name', $name)->first();
+
+                        if ($sampleRecord) {
+                            // Laravel automatically sets sampleable_id and sampleable_type here
+                            $sampleRecord->services()->create([
+                                'testservice_id' => $service->id
+                            ]);
+                        }else{
+                            $results['unknown'][] = $name;
+                        }
+                    }
+                }
 
                 $results['success'][] = [
                     'row' => $index + 1,

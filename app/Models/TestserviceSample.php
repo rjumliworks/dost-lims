@@ -7,10 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TestserviceSample extends Model
 {
-    protected $fillable = [
-        'testservice_id'
-    ];
-
+    protected $fillable = ['testservice_id', 'sampleable_id', 'sampleable_type'];
     protected static function booted()
     {
         static::creating(function ($model) {

@@ -30,8 +30,8 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Sample Name" class="form-control" style="width: 20%;">
-                                <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Category" />
-                                <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Laboratory" />
+                                <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.category" label="name" :searchable="true" placeholder="Select Category" />
+                                <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -164,12 +164,8 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                class: null,
-                industry: null,
-                sex: null,
-                agency: null,
-                individual: null,
-                type: null
+                laboratory: null,
+                category: null
             },
             index: null,
             selectedRow: null,
@@ -181,6 +177,9 @@ export default {
             if (newVal !== oldVal) {
                 this.debouncedFetch();
             }
+        },
+        "filter.laboratory"(newVal){
+            this.fetch();
         },
     },
     created() {
@@ -195,11 +194,7 @@ export default {
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
-                    class: this.filter.class,
-                    industry: this.filter.industry,
-                    sex: this.filter.sex,
-                    type: this.filter.type,
-                    individual: this.filter.individual,
+                    laboratory: this.filter.laboratory,
                     count: 10,
                     option: 'list'
                 }

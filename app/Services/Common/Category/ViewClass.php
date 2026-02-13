@@ -11,6 +11,13 @@ class ViewClass
 {
     public function list($request){
         $data = SampleName::with('type:id,name,category_id','type.category:id,name,laboratory_id','type.category.laboratory')
+        ->when($request->laboratory, function ($query, $laboratory) {
+            $query->whereHas('type', function ($query) use ($laboratory){
+                $query->whereHas('category', function ($query) use ($laboratory){
+                    $query->where('laboratory_id',$laboratory);
+                });
+            });
+        })
         ->latest()
         ->paginate($request->count ?? 20);
 

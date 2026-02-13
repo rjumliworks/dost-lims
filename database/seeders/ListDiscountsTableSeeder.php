@@ -187,6 +187,20 @@ class ListDiscountsTableSeeder extends Seeder
                 'created_at' => '2024-03-27 11:14:39',
                 'updated_at' => '2024-03-27 11:14:39',
             ),
+            12 => 
+            array (
+                'id' => 13,
+            'name' => 'Discount for Rubber (50)',
+                'value' => '50',
+                'from' => NULL,
+                'to' => NULL,
+                'based_id' => 14,
+                'type_id' => 12,
+                'subtype_id' => 10,
+                'is_active' => 1,
+                'created_at' => '2024-03-27 11:14:39',
+                'updated_at' => '2024-03-27 11:14:39',
+            ),
         ));
         
         
