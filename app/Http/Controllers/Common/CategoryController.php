@@ -34,6 +34,9 @@ class CategoryController extends Controller
             case 'type':
                 return $this->view->type($request);
             break;
+            case 'name':
+                return $this->view->name($request);
+            break;
             default:
             return inertia('Modules/Categories/Index',[
                 'dropdowns' => [

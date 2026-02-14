@@ -6,6 +6,7 @@ use App\Models\Testservice;
 use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
 use App\Models\SampleType;
+use App\Models\SampleName;
 use App\Http\Resources\Common\TestserviceResource;
 use App\Http\Resources\Common\Testservice\ListsResource;
 
@@ -49,9 +50,16 @@ class SaveClass
     }
 
     public function sampletype($request){
-        
-        $data = SampleType::findOrFail($request->sampletype_id);
-        $sample = $data->services()->create($request->all());
+        $names = $request->samplenames;
+        if(count($request->samplenames) > 0){
+            foreach($names as $name){
+                $data = SampleName::findOrFail($name);
+                $sample = $data->services()->create($request->all());
+            }
+        }else{
+            $data = SampleType::findOrFail($request->sampletype_id);
+            $sample = $data->services()->create($request->all());
+        }
         return [
             'data' => $sample,
             'message' => 'Sample type added was successful!', 

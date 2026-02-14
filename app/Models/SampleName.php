@@ -38,6 +38,7 @@ class SampleName extends Model
         });
     }
 
+    public function sampleable(){ return $this->morphTo(); }
     public function type(){ return $this->belongsTo(SampleType::class, 'type_id'); }
     public function agency(){ return $this->belongsTo(Agency::class, 'agency_id'); }
     public function user(){ return $this->belongsTo(User::class, 'user_id'); }

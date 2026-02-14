@@ -1,5 +1,5 @@
 <template lang="">
-    <Head title="Customer Profile"/>
+    <Head title="Test Service Profile"/>
     <Top :service="service"/>
     <b-row class="g-3">
         <Sidebar :service="service"/>

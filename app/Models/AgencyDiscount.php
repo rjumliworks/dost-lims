@@ -32,7 +32,7 @@ class AgencyDiscount extends Model
             if ($user->hasRole('Administrator')) {
                 return;
             }
-            $agencyId = $user()->profile?->agency_id;
+            $agencyId = $user->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
             }

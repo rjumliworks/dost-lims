@@ -30,7 +30,9 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Service" class="form-control" style="width: 15%;">
-                                <!-- <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.type" label="name" :searchable="true" placeholder="Select Category" /> -->
+                                <Multiselect class="white" style="width: 15%;" :options="names" v-model="filter.name" label="name" :searchable="true" placeholder="Select Name" />
+                                <Multiselect class="white" style="width: 15%;" :options="types" v-model="filter.type" label="name" :searchable="true" placeholder="Select Type" />
+                                <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.category" label="name" :searchable="true" placeholder="Select Category" />
                                 <Multiselect class="white" style="width: 18%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <span @click="openUpload()" class="input-group-text" v-b-tooltip.hover title="Upload" style="cursor: pointer;"> 
                                     <i class="ri-upload-cloud-fill search-icon"></i>
@@ -184,6 +186,9 @@ export default {
             filter: {
                 keyword: null,
                 laboratory: null,
+                category: null,
+                type: null,
+                name: null,
                 status: null
             },
             icons: [
@@ -192,6 +197,9 @@ export default {
                 'ri-indeterminate-circle-line',
                 'ri-close-circle-line'
             ],
+            categories: [],
+            types: [],
+            names: [],
             index: null,
             selectedRow: null
         }
@@ -203,6 +211,23 @@ export default {
             }
         },
         "filter.laboratory"(newVal){
+            this.fetch();
+            this.fetchCategory();
+        },
+        "filter.category"(newVal){
+            if(newVal){
+                this.fetch();
+                this.fetchType();
+            }else{
+                this.filter.type = null;
+                this.types = [];
+            }
+        },
+        "filter.type"(newVal){
+            this.fetch();
+            this.fetchName();
+        },
+        "filter.name"(newVal){
             this.fetch();
         },
     },
@@ -219,6 +244,9 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     laboratory: this.filter.laboratory,
+                    category: this.filter.category,
+                    type: this.filter.type,
+                    name: this.filter.name,
                     status: this.filter.status,
                     count: 10,
                     option: 'list'
@@ -230,6 +258,42 @@ export default {
                     this.meta = response.data.meta;
                     this.links = response.data.links;          
                 }
+            })
+            .catch(err => console.log(err));
+        },
+        fetchCategory(){
+            axios.get('/categories',{
+                params: {
+                    option: 'category',
+                    laboratory_id: this.filter.laboratory,
+                }
+            })
+            .then(response => {
+                this.categories = response.data;
+            })
+            .catch(err => console.log(err));
+        },
+        fetchType(){
+            axios.get('/categories',{
+                params: {
+                    option: 'type',
+                    category_id: this.filter.category,
+                }
+            })
+            .then(response => {
+                this.types = response.data;
+            })
+            .catch(err => console.log(err));
+        },
+        fetchName(){
+            axios.get('/categories',{
+                params: {
+                    option: 'name',
+                    sampletype_id: this.filter.type,
+                }
+            })
+            .then(response => {
+                this.names = response.data;
             })
             .catch(err => console.log(err));
         },

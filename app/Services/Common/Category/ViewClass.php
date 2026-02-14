@@ -42,7 +42,7 @@ class ViewClass
         $withNames = filter_var($request->with, FILTER_VALIDATE_BOOLEAN);
 
         $query = SampleType::where('category_id', $request->category_id)
-            ->where('name', 'LIKE', "%{$keyword}%")
+            // ->where('name', 'LIKE', "%{$keyword}%")
             ->where('is_active', 1);
 
         if ($withNames) {
@@ -62,6 +62,20 @@ class ViewClass
                     ];
                 });
             }
+            return $response;
+        });
+        return $data;
+    }
+
+    public function name($request)
+    {
+        $query = SampleName::where('type_id', $request->sampletype_id)->where('is_active', 1);
+
+        $data = $query->get()->map(function ($item) {
+            $response = [
+                'value' => $item->id,
+                'name'  => $item->name,
+            ];
             return $response;
         });
         return $data;

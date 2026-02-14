@@ -8,6 +8,7 @@ use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
 use App\Models\SampleCategory;
 use App\Models\SampleType;
+use App\Models\SampleName;
 use App\Http\Resources\Common\TestserviceResource;
 use App\Http\Resources\Common\Testservice\ListResource;
 use App\Http\Resources\Common\Testservice\ListsResource;
@@ -26,6 +27,59 @@ class ViewClass
     public function list($request){
         $data = ListsResource::collection(
             Testservice::query()
+            ->when($request->category, function ($query, $category) {
+                $query->whereHas('samples', function ($q) use ($category) {
+                    $q->where(function ($inner) use ($category) {
+                        $inner->whereHasMorph(
+                            'sampleable',
+                            [SampleType::class],
+                            function ($morph) use ($category) {
+                                $morph->where('category_id', $category);
+                            }
+                        )->orWhereHasMorph(
+                            'sampleable',
+                            [SampleName::class],
+                            function ($morph) use ($category) {
+                                $morph->whereHas('type', function ($type) use ($category) {
+                                    $type->where('category_id', $category);
+                                });
+                            }
+                        );
+                    });
+                });
+            })
+            ->when($request->type, function ($query, $type) {
+                $query->whereHas('samples', function ($q) use ($type) {
+                    $q->where(function ($inner) use ($type) {
+                        $inner->whereHasMorph(
+                            'sampleable',
+                            [SampleType::class],
+                            function ($morph) use ($type) {
+                                $morph->where('id', $type);
+                            }
+                        )->orWhereHasMorph(
+                            'sampleable',
+                            [SampleName::class],
+                            function ($morph) use ($type) {
+                                $morph->where('type_id', $type);
+                            }
+                        );
+                    });
+                });
+            })
+            ->when($request->name, function ($query, $name) {
+                $query->whereHas('samples', function ($q) use ($name) {
+
+                    $q->whereHasMorph(
+                        'sampleable',
+                        [SampleName::class],
+                        function ($morph) use ($name) {
+                            $morph->where('id', $name);
+                        }
+                    );
+
+                });
+            })
             ->when($request->laboratory, function ($query, $laboratory) {
                 $query->where('laboratory_id',$laboratory);
             })

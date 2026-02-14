@@ -6,7 +6,7 @@ use App\Imports\TestImport;
 use App\Models\Testservice;
 use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
-use App\Models\SampleName;
+use App\Models\SampleType;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UploadClass
@@ -17,7 +17,7 @@ class UploadClass
         foreach($rows as $row){ 
             if($row[0] != 'Sample Type'){
                 $information[] = [
-                    'samples' => explode(', ', $row[2]),
+                    'types' => explode(', ', $row[1]),
                     'testname' => $row[3],
                     'code' => $row[4],
                     'method' => $row[5],
@@ -124,8 +124,8 @@ class UploadClass
                     'status_id' => 32
                 ]);
                 if($service){
-                    foreach ($row['samples'] as $name) {
-                        $sampleRecord = SampleName::where('name', $name)->first();
+                    foreach ($row['types'] as $name) {
+                        $sampleRecord = SampleType::where('name', $name)->first();
 
                         if ($sampleRecord) {
                             // Laravel automatically sets sampleable_id and sampleable_type here

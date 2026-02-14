@@ -64,6 +64,7 @@ class CreateRequest extends FormRequest
             'purpose_id' => $this->purpose_id,
             'release_id' => $this->release_id,
             'is_onsite'   => $this->boolean('is_onsite'),
+            'is_referral' => $this->boolean('is_referral'),
             'created_at'  => $this->created_at
                 ? Carbon::parse($this->created_at)->setTime(8, 0)
                 : now(),

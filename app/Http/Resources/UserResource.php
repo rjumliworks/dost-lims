@@ -17,7 +17,7 @@ class UserResource extends JsonResource
             ? asset('storage/' . $this->profile->avatar) 
             : asset('images/avatars/avatar.jpg'), 
             'avatar_name' => $this->profile->avatar,
-            'name' => $this->profile->firstname.' '.$this->profile->lastname,
+            'name' => ucwords($this->profile->firstname.' '.$this->profile->lastname),
             'firstname' => $this->profile->firstname,
             'lastname' => $this->profile->lastname,
             'middlename' => $this->profile->middlename,
