@@ -237,7 +237,7 @@
         </tbody>
     </table>
     <Payment ref="payment"/>
-    <Service ref="service"/>
+    <Service :services="services" :lists="selected.services" ref="service"/>
     <Referral ref="referral"/>
     <Information ref="information"/>
 </template>
@@ -248,13 +248,13 @@ import Referral from '../Modals/Sidebar/Referral.vue';
 import Information from '../Modals/Sidebar/Information.vue';
 export default {
     components: { Payment, Service, Referral, Information },
-    props: ['selected','total'],
+    props: ['selected','total','services'],
     methods: {
         openPayment(){
             this.$refs.payment.show(this.selected.payment,this.selected.services,this.total);
         },
         openService(){
-            this.$refs.service.show(this.selected.services,this.selected.status,this.selected.id);
+            this.$refs.service.show(this.selected.status,this.selected.id);
         },
         openReferral(){
             this.$refs.referral.show(this.selected.referral);

@@ -88,55 +88,73 @@
                     </div>
                 </div>
             </div>
-       </div>
-        <div class="table-responsive fs-12">
-            <div class="table-responsive">
-                <table class="table text-center table-nowrap align-middle mb-0">
-                    <thead>
-                        <tr class="table-active">
-                            <th scope="col" style="width: 50px;">#</th>
-                            <th scope="col"></th>
-                            <th scope="col" class="text-end">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="products-list">
-                        <tr>
-                            <th scope="row">1</th>
-                            <td class="text-start">
-                                <span class="fw-medium">Laboratory Test Services</span>
-                                <p class="text-muted fs-11 mb-0">Includes various laboratory analyses conducted as requested by the client</p>
-                            </td>
-                            <td class="text-end">{{formatMoney(total)}}</td>
-                        </tr>
-                        <tr v-for="(list,index) in services" v-bind:key="index">
-                            <th scope="row">2</th>
-                                <td class="text-start">
-                                    <span class="fw-medium">{{list.service.name}}</span>
-                                    <p class="text-muted fs-11 mb-0">{{list.service.description}}</p>
-                                </td>
-                            <td class="text-end">{{list.total}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="border-top border-top-dashed mt-2 mb-3">
-                <table class="table table-borderless table-nowrap align-middle table-sm mb-0 ms-auto" style="width:250px">
-                    <tbody>
-                        <tr>
-                            <td>Sub Total</td>
-                            <td class="text-end">{{selected.subtotal}}</td>
-                        </tr>
-                        <tr>
-                            <td>Discount <small v-if="selected.discounted.name != 'Regular'" class="text-muted">({{selected.discounted.name}})</small></td>
-                            <td class="text-end">{{selected.discount}}</td>
-                        </tr>
-                        
-                        <tr class="border-top border-top-dashed fs-13">
-                            <th scope="row">Total Amount</th>
-                            <th class="text-end">{{selected.total}}</th>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="col-md-12 mt-3 mb-n4">
+                <div class="card bg-light-subtle shadow-none border">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex" style="margin-bottom: -18px;">
+                            <div class="flex-shrink-0 me-3">
+                                <div style="height:2rem;width:2rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-price-tag-2-fill text-primary fs-20"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 mt-n1 fs-12"><span class="text-body">Service Billing Summary</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">Overview of services availed, including paid and outstanding charges.</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="card-body bg-white rounded-bottom">
+                        <div class="table-responsive table-card rounded-bottom">
+                            <table class="table align-middle table-centered mb-0">
+                                <thead class="table-light thead-fixed">
+                                    <tr class="fs-11">
+                                        <th class="text-center" style="width: 7%">#</th>
+                                        <th>Services</th>
+                                        <th class="text-end" style="width: 18%;">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center fs-12">1</td>
+                                        <td class="text-start">
+                                            <span class="fw-medium fs-12">Laboratory Test Services</span>
+                                            <p class="text-muted fs-11 mb-0" style="margin-top: -3px;">Includes various laboratory analyses conducted as requested by the client</p>
+                                        </td>
+                                        <td class="text-end">{{formatMoney(total)}}</td>
+                                    </tr>
+                                    <tr v-for="(list,index) in services" v-bind:key="index">
+                                        <td class="text-center fs-12">2</td>
+                                        <td class="text-start">
+                                            <span class="fw-medium fs-12">{{list.service.name}}</span>
+                                            <p class="text-muted fs-11 mb-0" style="margin-top: -3px;">{{list.service.description}}</p>
+                                        </td>
+                                        <td class="text-end">{{list.total}}</td>
+                                    </tr>
+                                    <tr class="bg-light-subtle">
+                                        <td></td>
+                                        <td class="fs-12 fw-semibold text-end">Sub Total</td>
+                                        <td class="text-end">{{selected.subtotal}}</td>
+                                    </tr>
+                                    <tr class="bg-light-subtle">
+                                        <td></td>
+                                        <td class="fs-12 fw-semibold text-end">Discount <small v-if="selected.discounted.name != 'Regular'" class="text-muted">({{selected.discounted.name}})</small></td>
+                                        <td class="text-end">{{selected.discount}}</td>
+                                    </tr>
+                                    
+                                    <tr class="border-top border-top-dashed bg-primary fs-13">
+                                        <th></th>
+                                        <th class="fs-12 fw-semibold text-white text-end">Total Amount</th>
+                                        <th class="text-end text-white">{{selected.total}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+        
+                </div>
             </div>
         </div>
     </b-modal>

@@ -13,7 +13,7 @@
                 </div>
                 <div class="file-manager-sidebar" style="margin-right: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
-                        <Sidebar :selected="tsr.data" :total="totalFee"/>
+                        <Sidebar :selected="tsr.data" :services="dropdowns.services" :total="totalFee"/>
                     </simplebar>
                 </div>
 
