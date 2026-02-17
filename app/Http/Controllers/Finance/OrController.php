@@ -26,14 +26,14 @@ class OrController extends Controller
 
     public function index(Request $request){
         switch($request->option){
-            case 'lists':
+            case 'list':
                 return $this->view->list($request);
             break;
             case 'print':
                 return $this->view->print($request);
             break;
             default :
-            return inertia('Finance/Cashiering/Receipts2/Index',[
+            return inertia('Finance/Cashiering/Receipts/Index',[
                 'dropdowns' => [
                     'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
                     'statuses' => $this->dropdown->statuses('Payment'),

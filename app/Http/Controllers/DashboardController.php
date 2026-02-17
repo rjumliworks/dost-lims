@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
 
 class DashboardController extends Controller
 {   
+    protected CashierClass $cashier;
+    protected DropdownClass $dropdown;
+    protected AccountantClass $accountant;
+    
     public function __construct(
+        CashierClass $cashier,
         DropdownClass $dropdown,
         AccountantClass $accountant
     ){
+        $this->cashier = $cashier;
         $this->dropdown = $dropdown;
         $this->accountant = $accountant;
     }
@@ -39,6 +46,18 @@ class DashboardController extends Controller
                                 'reminders' => $this->accountant->reminders(),
                                 'tsrs' => $this->accountant->forpayment($request),
                                 'collections' => $this->dropdown->dropdowns('Collection Type','Laboratory'),
+                                'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
+                            ]
+                        ]);
+                    break;
+                    case 'Cashier':
+                        return inertia('Finance/Cashiering/Dashboard/Index',[
+                            'dropdowns' => [
+                                'reminders' => $this->accountant->reminders(),
+                                'orseries' => $this->cashier->orseries(),
+                                'receipts' => $this->cashier->receipts(),
+                                'deposits' => $this->dropdown->dropdowns('Deposit Type','n/a'),
+                                'collections' => $this->dropdown->dropdowns('Collection Type','Non-laboratory'),
                                 'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
                             ]
                         ]);

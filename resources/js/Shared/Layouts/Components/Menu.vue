@@ -88,35 +88,35 @@
                 </li>
                  <li class="nav-item" v-if="$page.props.roles.length > 1">
                     <Link href="/cashier" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Finance/Cashiering/Dashboard') }">
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Dashboard') }">
                     <i class="ri-apps-2-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Cashiering</span>
                     </Link>
                 </li>
                 <li class="nav-item">
                     <Link href="/receipts" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Finance/Cashiering/Receipts') }">
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Receipts') }">
                     <i class="ri-price-tag-2-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Receipts</span>
                     </Link>
                 </li>
                 <li class="nav-item" v-if="$page.props.show">
                     <Link href="/nonlabreceipts" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Finance/Cashiering/Nonlab') }">
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Nonlab') }">
                     <i class="ri-price-tag-2-line"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Other Receipts</span>
                     </Link>
                 </li>
                 <li class="nav-item">
                     <Link href="/orseries" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Finance/Cashiering/Orseries') }">
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Orseries') }">
                     <i class="ri-coupon-line"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">OR Series</span>
                     </Link>
                 </li>
                 <li class="nav-item" v-if="$page.props.show">
                     <Link href="/names" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Finance/Cashiering/Names') }">
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Names') }">
                     <i class="ri-account-circle-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Names</span>
                     </Link>
