@@ -15,7 +15,6 @@ use App\Models\AgencyFacilitySignatory;
 use App\Http\Resources\Major\Tsr\ListResource;
 use App\Http\Resources\Major\Tsr\ViewResource;
 use App\Http\Resources\Major\Tsr\AnalysisResource;
-use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
 
@@ -266,14 +265,19 @@ class ViewClass
         $head = UserRole::with('user:id','user.profile:id,user_id,firstname,middlename,lastname')
        ->where('laboratory_id',$tsrinfo->laboratory->id)->whereHas('role',function ($query){
             $query->where('name','Technical Manager');
-        })->where('is_active',1)->where('agency_id',$this->agency)->first();
+        })->where('is_active',1)->first();
 
         $url = $_SERVER['HTTP_HOST'].'/verification/'.$request->id;
-        $qrCode = new QrCode($url);
-        $qrCode->setSize(300);
-        $pngWriter = new PngWriter();
-        $qrCodeImageString = $pngWriter->write($qrCode)->getString();
+        $result = new Builder(
+            writer: new PngWriter(),
+            data: $url,
+            size: 300,
+            margin: 10,
+        );
+
+        $qrCodeImageString = $result->build()->getString();
         $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+
         $wallet = Wallet::where('customer_id',$tsrinfo->customer_id)->value('available');
         $payment = TsrPayment::select('id','total','payment_id')->with('type:id,name')->where('tsr_id',$tsrinfo->id)->first();
         $transaction = WalletTransaction::where('transacable_id',$tsrinfo->id)->where('transacable_type','App\Models\Tsr')->first();

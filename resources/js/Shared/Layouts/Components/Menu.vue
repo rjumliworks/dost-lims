@@ -61,6 +61,26 @@
                     </Link>
                 </li>
             </template>
+             <tempalte v-if="['Accountant'].some(role => $page.props.roles.includes(role))">
+                <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Accountant</span>
+                </li>
+                <li class="nav-item" v-if="$page.props.roles.length > 1">
+                    <Link href="/accounting" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Finance/Accounting/Dashboard') }">
+                    <i class="ri-apps-2-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Accounting</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/orderofpayments" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Finance/Accounting/OrderPayments') }">
+                    <i class="ri-hand-coin-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Order of Payments</span>
+                    </Link>
+                </li>
+            </tempalte>
             <template v-if="$page.props.roles.includes('Administrator')">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

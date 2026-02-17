@@ -57,6 +57,11 @@ class Customer extends Model
         return (new Hashids('krad', 10))->encode($this->id);
     }
 
+    public function payorable()
+    {
+        return $this->morphOne('App\Models\FinanceOp', 'payorable');
+    }
+
     public function conformes()
     {
         return $this->hasMany('App\Models\CustomerConforme', 'customer_id');

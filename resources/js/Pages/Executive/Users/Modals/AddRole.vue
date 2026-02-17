@@ -23,7 +23,7 @@
                 
                  <BCol lg="12" v-if="has_lab" class="mt-0">
                     <InputLabel for="laboratory_id" value="Laboratory" :message="form.errors.laboratory_id"/>
-                    <Multiselect :options="dropdowns.laboratories" label="name" v-model="form.laboratory_id" placeholder="Select Laboratory" ref="multiselect3"/>
+                    <Multiselect :options="filteredLaboratories" label="name" v-model="form.laboratory_id" placeholder="Select Laboratory" ref="multiselect3"/>
                 </BCol>
             </BRow>
         </form>
@@ -58,28 +58,61 @@ export default {
     },
     computed: {
         filteredRoles() {
-            if (!this.dropdowns.roles || !this.user?.roles) return this.dropdowns.roles || [];
-
-            // active role names of the user
-            const activeUserRoles = this.user.roles
-            .filter(r => r.is_active === 1)
-            .map(r => r.name);
+            if (!this.dropdowns.roles || !this.user?.roles) {
+                return this.dropdowns.roles || [];
+            }
 
             return this.dropdowns.roles
-            .map(group => {
-                const filteredOptions = group.options.filter(
-                role => !activeUserRoles.includes(role.name)
-                );
+                .map(group => {
 
-                // remove empty groups
-                if (filteredOptions.length === 0) return null;
+                    const filteredOptions = group.options.filter(role => {
 
-                return {
-                label: group.label,
-                options: filteredOptions
-                };
-            })
-            .filter(Boolean);
+                        // find if user already has this role active
+                        const existingRole = this.user.roles.find(
+                            r => r.name === role.name && r.is_active === 1
+                        );
+
+                        if (!existingRole) {
+                            // user doesn't have it → allow
+                            return true;
+                        }
+
+                        // user has it
+                        // allow if role supports lab assignment
+                        if (role.has_lab === 1) {
+                            return true;
+                        }
+
+                        // otherwise hide it
+                        return false;
+                    });
+
+                    if (filteredOptions.length === 0) return null;
+
+                    return {
+                        label: group.label,
+                        options: filteredOptions
+                    };
+                })
+                .filter(Boolean);
+        },
+        filteredLaboratories() {
+            if (!this.has_lab || !this.form.role || !this.user?.roles) {
+                return this.dropdowns.laboratories || [];
+            }
+            const selectedRoleId = this.form.role.value;
+            console.log(selectedRoleId);
+            const assignedLabIds = this.user.roles
+                .filter(r => 
+                    r.role_id === selectedRoleId &&
+                    r.is_active === 1 &&
+                    r.laboratory !== null
+                )
+                .map(r => r.laboratory_id);
+                console.log(this.user.roles);
+            return this.dropdowns.laboratories.filter(
+                lab => !assignedLabIds.includes(lab.value)
+            );
         }
     },
     watch: { 

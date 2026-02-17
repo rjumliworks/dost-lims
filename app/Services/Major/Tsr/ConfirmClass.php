@@ -10,7 +10,8 @@ use App\Models\TsrSequence;
 class ConfirmClass
 {
     public function save($request){
-        $tsr = Tsr::with('payment','samples')->where('id',$request->id)->first();
+        $tsr_id = $request->id;
+        $tsr = Tsr::with('payment','samples')->where('id',$tsr_id)->first();
         if ($tsr->code) {
             return [
                 'data' => $tsr,
@@ -34,7 +35,7 @@ class ConfirmClass
             ]);
         }
 
-        $this->report($request->id);
+        $this->report($tsr_id);
 
         if($request->is_government){
             $tsr->status_id = 3;
@@ -66,7 +67,7 @@ class ConfirmClass
             'analyses.testservice.method.method','analyses.testservice.testname','analyses.addfee.service'
         )->whereHas('tsr',function ($query) use ($id) {
             $query->where('id',$id);
-        })->get();
+        })->get(); 
 
         $groupedData = [];
         foreach ($samples as $row) {
@@ -82,15 +83,17 @@ class ConfirmClass
                 $key = $sampleCode . "_" . $testName . "_" . $testMethod;
                 
                 if (!isset($groupedData[$key])) {
-                    if($analysis['addfee']){
-                        $fee = [
-                            'name' => $analysis['addfee']['service']['name'],
-                            'fee' => $analysis['addfee']['service']['fee'],
-                            'quantity' => $analysis['addfee']['quantity'],
-                            'total' => $analysis['addfee']['total']
-                        ];
+                    if(isset($analysis['addfee']) && count($analysis['addfee'])){
+                        foreach ($analysis['addfee'] as $item) {
+                            $fees[] = [
+                                'name' => $item['service']['name'],
+                                'fee' => $item['service']['fee'],
+                                'quantity' => $item['quantity'],
+                                'total' => $analysis['total']
+                            ];
+                        }
                     }else{
-                        $fee = null;
+                        $fees = null;
                     }
                     $groupedData[$key] = [
                         "samplecode" => ($index == 0) ? $sampleCode : '',
@@ -102,7 +105,7 @@ class ConfirmClass
                         "methodShort" => $testMethodShort,
                         "count" => 0,
                         "fee" => $analysis['fee'],
-                        'additional' => $fee
+                        'additional' => $fees
                     ];
                 }
                 $groupedData[$key]["count"] += 1;

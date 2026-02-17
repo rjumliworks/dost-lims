@@ -104,7 +104,7 @@ class ListRolesTableSeeder extends Seeder
                 'id' => 9,
                 'name' => 'Laboratory Aide',
                 'description' => 'This user role is assigned for the manner of disposal.',
-                'has_lab' => 0,
+                'has_lab' => 1,
                 'is_lab' => 1,
                 'is_active' => 1,
                 'sequence' => 8,

@@ -327,6 +327,34 @@ class UserRolesTableSeeder extends Seeder
                 'created_at' => '2026-02-11 17:00:33',
                 'updated_at' => '2026-02-11 17:00:33',
             ),
+            22 => 
+            array (
+                'id' => 23,
+                'is_active' => 1,
+                'is_primary' => 1,
+                'laboratory_id' => 3,
+                'role_id' => 3,
+                'user_id' => 3,
+                'added_by' => 1,
+                'removed_by' => NULL,
+                'removed_at' => NULL,
+                'created_at' => '2026-02-16 09:48:12',
+                'updated_at' => '2026-02-16 09:48:12',
+            ),
+            23 => 
+            array (
+                'id' => 24,
+                'is_active' => 1,
+                'is_primary' => 1,
+                'laboratory_id' => 2,
+                'role_id' => 3,
+                'user_id' => 4,
+                'added_by' => 1,
+                'removed_by' => NULL,
+                'removed_at' => NULL,
+                'created_at' => '2026-02-16 10:29:38',
+                'updated_at' => '2026-02-16 10:29:38',
+            ),
         ));
         
         

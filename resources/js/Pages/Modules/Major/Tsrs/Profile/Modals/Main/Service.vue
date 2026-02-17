@@ -6,7 +6,7 @@
                     <InputLabel for="region" value="Service"/>
                     <Multiselect 
                     label="label"
-                    :options="services" 
+                    :options="filteredServices" 
                     object
                     v-model="form.service"
                     placeholder="Select Service"/>
@@ -65,7 +65,7 @@ import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import Multiselect from "@vueform/multiselect";
 export default {
     components: { Multiselect, TextInput, InputLabel},
-    props: ['services'],
+    props: ['services','selected'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -80,6 +80,15 @@ export default {
         }
     },
     computed: {
+        filteredServices() {
+            if (!this.selected || this.selected.length === 0) {
+                return this.services;
+            }
+            const selectedIds = this.selected.map(item => item.service_id);
+            return this.services.filter(service => 
+                !selectedIds.includes(service.value)
+            );
+        },
         total() {
             if(this.form.service){
                 const total = this.form.service.fee.replace(/₱|,/g, '') * this.form.quantity;
@@ -109,8 +118,7 @@ export default {
             return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         hide(){
-            this.form.name = null;
-            this.form.contact_no = null;
+            this.form.reset();
             this.showModal = false;
         }
     }

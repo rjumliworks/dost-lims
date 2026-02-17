@@ -56,6 +56,7 @@ class Tsr extends Model
     public function transaction(){ return $this->morphOne('App\Models\WalletTransaction', 'transacable');}
     public function remarkable(){ return $this->morphOne('App\Models\TsrRemark', 'remarkable');}
     public function services(){ return $this->morphMany('App\Models\TsrService', 'typeable');}
+    public function itemable(){ return $this->morphOne('App\Models\FinanceOpItem', 'itemable');}
     
     public function getDueAtAttribute($value){ return ($value) ? date('F d, Y', strtotime($value)) : null;}
     public function getUpdatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}

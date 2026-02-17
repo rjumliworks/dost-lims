@@ -2609,6 +2609,26 @@ class TestserviceSamplesTableSeeder extends Seeder
                 'created_at' => '2026-02-14 10:40:16',
                 'updated_at' => '2026-02-14 10:40:16',
             ),
+            259 => 
+            array (
+                'id' => 260,
+                'sampleable_id' => 37,
+                'sampleable_type' => 'App\\Models\\SampleType',
+                'testservice_id' => 199,
+                'added_by' => 2,
+                'created_at' => '2026-02-16 09:02:21',
+                'updated_at' => '2026-02-16 09:02:21',
+            ),
+            260 => 
+            array (
+                'id' => 261,
+                'sampleable_id' => 37,
+                'sampleable_type' => 'App\\Models\\SampleType',
+                'testservice_id' => 200,
+                'added_by' => 2,
+                'created_at' => '2026-02-16 09:02:28',
+                'updated_at' => '2026-02-16 09:02:28',
+            ),
         ));
         
         

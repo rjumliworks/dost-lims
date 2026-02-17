@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class AgencyConfiguration extends Model
@@ -11,6 +13,25 @@ class AgencyConfiguration extends Model
         'form' => 'array',
         'contact' => 'array',
     ];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('agency', function (Builder $builder) {
+            if (! Auth::check()) {
+                return;
+            }
+            $user = Auth::user();
+            if ($user->hasRole('Administrator')) {
+                return;
+            }
+            $agencyId = $user->profile?->agency_id;
+            if (! $agencyId) {
+                abort(403, 'User has no agency assigned.');
+            }
+
+            $builder->where('agency_id', $agencyId);
+        });
+    }
     
     protected $fillable = [
         'laboratories','form','contact','samplecode_year','show_others','strict_mode','agency_id'

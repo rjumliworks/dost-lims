@@ -3,9 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\DropdownClass;
+use App\Services\Dashboard\AccountantClass;
 
 class DashboardController extends Controller
-{
+{   
+    public function __construct(
+        DropdownClass $dropdown,
+        AccountantClass $accountant
+    ){
+        $this->dropdown = $dropdown;
+        $this->accountant = $accountant;
+    }
+
     public function index(Request $request){
         if(!\Auth::check()){
             return inertia('Auth/Login');
@@ -14,7 +24,40 @@ class DashboardController extends Controller
             if($user->must_change) {
                 return inertia('Auth/Activation');
             }
-            return inertia('Modules/Dashboard/Index');
+            if(\Auth::user()->role === 'Administrator'){
+                return inertia('Modules/Executive/Dashboard/Index');
+            }else{
+                $role = \Auth::user()
+                ->myroles()
+                ->where('is_primary', 1)
+                ->with('role')
+                ->first()?->role->name;
+                switch($role){
+                    case 'Accountant':
+                        return inertia('Finance/Accounting/Dashboard/Index',[
+                            'dropdowns' => [
+                                'reminders' => $this->accountant->reminders(),
+                                'tsrs' => $this->accountant->forpayment($request),
+                                'collections' => $this->dropdown->dropdowns('Collection Type','Laboratory'),
+                                'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
+                            ]
+                        ]);
+                    break;
+                    default:
+                    return inertia('Modules/Dashboard/Index',[
+                        // 'dropdowns' => [
+                        //     'info' => $this->cro->info($request),
+                        //     'info1' => $this->cro->info1($request),
+                        //     'info2' => $this->cro->info2($request),
+                        //     'counts' => $this->cro->counts($request),
+                        //     'reminders' => $this->cro->reminders($request),
+                        //     'notices' => $this->cro->notices($request),
+                        //     'statuses' => $this->cro->statuses($request),
+                        //     'laboratories' => $this->dropdown->laboratories($request),
+                        // ]
+                    ]);
+                }
+            }
         }
     }
 }

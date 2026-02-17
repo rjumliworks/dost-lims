@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::middleware(['auth','verified'])->group(function () {
-    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/', [App\Http\Controllers\DashboardController::class, 'index']);
 });
+Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
-
 
 Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
 Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);
@@ -28,6 +28,10 @@ Route::resource('/packages', App\Http\Controllers\Common\PackageController::clas
 Route::resource('/tsrs', App\Http\Controllers\Major\TsrController::class);
 Route::resource('/samples', App\Http\Controllers\Major\SampleController::class);
 Route::resource('/analyses', App\Http\Controllers\Major\AnalysisController::class);
+
+Route::middleware(['role:Accountant,Cashier'])->group(function () {
+    Route::resource('/orderofpayments', App\Http\Controllers\Finance\OpController::class);
+});
 
 Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/users', App\Http\Controllers\Executive\UserController::class);

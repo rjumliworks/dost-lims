@@ -57,7 +57,6 @@ class SaveClass
             $data->laboratory_id = $request->laboratory_id;
             $data->user_id = $request->id;
             $data->added_by = \Auth::user()->id;
-            $data->agency_id = $request->agency_id;
             $data->is_active = 1;
             $data->save();
             $id = $data->id;

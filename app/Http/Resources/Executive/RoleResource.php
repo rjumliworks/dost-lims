@@ -15,8 +15,10 @@ class RoleResource extends JsonResource
 
         return [
             'code' => $code,
+            'role_id' => $this->role->id,
             'name' => $this->role->name,
             'laboratory' => $this->laboratory?->name,
+            'laboratory_id' => $this->laboratory?->id,
             'added' => $this->added?->profile->fullname,
             'removed' => ($this->removed) ? $this->removed?->profile->fullname : '-',
             'removed_at' => $this->removed_at,

@@ -28,7 +28,6 @@ return new class extends Migration
             $table->foreign('removed_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamp('removed_at')->nullable();
             $table->timestamps();
-            $table->unique(['user_id', 'role_id']);
         });
     }
 

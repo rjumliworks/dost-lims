@@ -208,7 +208,7 @@
     <RemoveAnalysis ref="removeanalysis"/>
     <AdditionalAnalysis ref="additionalanalysis"/>
     <ViewAnalysis ref="viewanalysis"/>
-    <Service :services="services" ref="service"/>
+    <Service :selected="selected.services" :services="services" ref="service"/>
 </template>
 <script>
 import Service from '../Modals/Main/Service.vue';

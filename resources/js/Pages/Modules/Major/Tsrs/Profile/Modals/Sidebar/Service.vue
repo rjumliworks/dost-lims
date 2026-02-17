@@ -65,7 +65,7 @@
             </div>
         </BRow>
     </b-modal>
-    <Service :services="services" ref="service"/>
+    <Service :selected="lists" :services="services" ref="service"/>
     <Remove ref="remove"/>
 </template>
 <script>

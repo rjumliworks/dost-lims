@@ -32,7 +32,7 @@
                 </BCol>
                 <BCol lg="12">
                     <div class="mt-2">
-                        <Map @set="handleCoordinates" ref="map" class="leaflet-map"/>
+                        <Map @set="handleCoordinates" ref="map" class="leaflet-map" style="height: 200px;"/>
                     </div>
                 </BCol>
             </BRow>

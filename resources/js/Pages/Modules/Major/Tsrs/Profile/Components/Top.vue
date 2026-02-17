@@ -48,7 +48,7 @@
                                 <div v-if="selected.status.name === 'Pending'">  
                                     <b-button @click="openSave(selected.reference)" variant="primary" block :disabled="!allSamplesHaveAnalyses"><i class="ri-save-fill me-1"></i> Save</b-button>
                                 </div>
-                                 <div v-if="selected.status.name !== 'Pending'" @click="openPrint(selected.qr)">  
+                                 <div v-if="selected.status.name !== 'Pending'" @click="openPrint(selected.reference)">  
                                     <b-button variant="primary" block><i class="ri-printer-fill me-1"></i> Print</b-button>
                                 </div>
                             </div>

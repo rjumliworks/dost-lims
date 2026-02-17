@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class AgencyFacilitySignatory extends Model
 {
     protected $fillable = [
-        'accountant_id','cashier_id','facility_id'
+        'accountant_id','cashier_id','facility_id','is_cashier'
     ];
 
     public function accountant()
