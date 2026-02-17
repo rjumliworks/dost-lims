@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::middleware(['auth','verified'])->group(function () {
-    // Route::get('/', [App\Http\Controllers\DashboardController::class, 'index']);
+    Route::get('/', [App\Http\Controllers\DashboardController::class, 'index']);
 });
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
@@ -31,6 +31,10 @@ Route::resource('/analyses', App\Http\Controllers\Major\AnalysisController::clas
 
 Route::middleware(['role:Accountant,Cashier'])->group(function () {
     Route::resource('/orderofpayments', App\Http\Controllers\Finance\OpController::class);
+    Route::resource('/receipts', App\Http\Controllers\Finance\OrController::class);
+    Route::resource('/nonlabreceipts', App\Http\Controllers\Finance\NonlabController::class);
+    Route::get('/orseries', [App\Http\Controllers\Finance\CashieringController::class, 'orseries']);
+    Route::get('/names', [App\Http\Controllers\Finance\CashieringController::class, 'names']);
 });
 
 Route::middleware(['role:Administrator'])->group(function () {

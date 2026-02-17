@@ -16,6 +16,12 @@ class OpController extends Controller
 {
     use HandlesTransaction;
 
+    protected ViewClass $view;
+    protected SaveClass $save;
+    protected PrintClass $print;
+    protected UpdateClass $update;
+    protected DropdownClass $dropdown;
+
     public function __construct(
         DropdownClass $dropdown,
         SaveClass $save,
@@ -61,7 +67,7 @@ class OpController extends Controller
                     return $this->save->op($request);
                 break;
                 case 'delete':
-                    return $this->op->delete($request);
+                    // return $this->op->delete($request);
                 break;
             }
         });
@@ -78,7 +84,7 @@ class OpController extends Controller
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'op':
-                    return $this->op->update($request);
+                    // return $this->op->update($request);
                 break;
                 case 'remove':
                     return $this->update->remove($request);
