@@ -80,7 +80,7 @@
                                         <th style="width: 10%;" class="text-center">Date</th>
                                         <th style="width: 12%;" class="text-center">Handle By</th>
                                         <!-- <th style="width: 7%;" class="text-center">Status</th> -->
-                                        <th style="width: 7%;" ></th>
+                                        <th style="width: 4%;" ></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,12 +100,48 @@
                                         <td class="text-center fs-12">{{list.date}}</td>
                                         <td class="text-center fs-12">{{list.created}}</td>
                                         <td class="text-end">
-                                            <b-button @click="openView(list)" variant="info" class="me-1" v-b-tooltip.hover title="View" size="sm">
+                                            <!-- <b-button @click="openView(list)" variant="info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
                                             </b-button>
                                             <b-button @click="openPrint(list.or_id)" variant="success" class="me-1" v-b-tooltip.hover title="Print" size="sm">
                                                 <i class="ri-printer-fill align-bottom"></i>
-                                            </b-button>
+                                            </b-button> -->
+                                            <div class="d-flex gap-3 justify-content-center">
+                                            <div class="dropdown">
+                                                <BDropdown variant="link"  strategy="fixed" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                    <template #button-content> 
+                                                        <i class="ri-more-fill"></i>
+                                                    </template>
+                                                    <li>
+                                                         <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-eye-line me-2"></i> View
+                                                         </a>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-pencil-line me-2"></i>Edit
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openPrint(list.or_id)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-printer-line me-2"></i>Print
+                                                        </a>
+                                                    </li>
+                                                    <!-- <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-calendar-fill me-2"></i>Update Date
+                                                        </a>
+                                                    </li> -->
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openCancel(list.ornumber,list.or_id)" class="dropdown-item d-flex align-items-center" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                            <span class="text-danger"><i class="ri-lock-2-fill me-2"></i> Cancel</span>
+                                                        </a>
+                                                    </li>
+                                                </BDropdown>
+                                            </div>
+                                        </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -119,15 +155,19 @@
             </div>
         </BRow>
         <View @update="fetch()" ref="view"/>
+        <Edit @update="updateList" ref="edit"/>
+        <Cancel ref="cancel"/>
     </template>
 <script>
 import _ from 'lodash';
+import Edit from './Modals/Edit.vue';
 import View from './Modals/View.vue';
+import Cancel from './Modals/Cancel.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, View },
+    components: { PageHeader, Pagination, Multiselect, View, Edit, Cancel },
     props: ['dropdowns','counts'],
     data(){
         return {
@@ -170,7 +210,7 @@ export default {
                     status: this.filter.status,
                     mode: this.filter.mode,
                     count: 10,
-                    option: 'lists'
+                    option: 'list'
                 }
             })
             .then(response => {
@@ -185,6 +225,13 @@ export default {
         openView(data){
             this.$refs.view.show(data);
         },
+        openEdit(data,index){
+            this.index = index;
+            this.$refs.edit.show(data);
+        },
+        openCancel(or,id){
+            this.$refs.cancel.show(or,id);
+        },
         viewPayment(index,mode){
             this.index = index;
             this.filter.mode = mode;
@@ -193,6 +240,9 @@ export default {
         openPrint(id){
             window.open(this.currentUrl + '/receipts?option=print&id='+id);
         },
+        updateList(data){
+            this.lists[this.index].detail = data;
+        }
     }
 }
 </script>

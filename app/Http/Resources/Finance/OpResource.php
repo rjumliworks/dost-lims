@@ -16,7 +16,7 @@ class OpResource extends JsonResource
             'total' => $this->total,
             'customer_id' => $this->payorable_id,
             'is_lab' => ($this->payorable_type == 'App\Models\Customers') ? true : false ,
-            'or' => $this->or,
+            'or' => $this->activeReceipt,
             'items' => $this->items,
             'payorable' => new PayorResource($this->payorable),
             'payment' => $this->payment,

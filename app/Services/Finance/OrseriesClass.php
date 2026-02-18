@@ -20,18 +20,18 @@ class OrseriesClass
             $query->where('name', 'LIKE', "%{$keyword}%");
         })
         ->when(true, function ($query) {
-            if ($this->province) {
-                // Province is set: match province_code
-                $query->whereHas('user.myroles', function ($q) {
-                    $q->whereNotNull('province_code')
-                      ->where('province_code', $this->province);
-                });
-            } else {
-                // Province is not set: exclude users with any role that has a province_code
-                $query->whereDoesntHave('user.myroles', function ($q) {
-                    $q->whereNotNull('province_code');
-                });
-            }
+            // if ($this->province) {
+            //     // Province is set: match province_code
+            //     $query->whereHas('user.myroles', function ($q) {
+            //         $q->whereNotNull('province_code')
+            //           ->where('province_code', $this->province);
+            //     });
+            // } else {
+            //     // Province is not set: exclude users with any role that has a province_code
+            //     $query->whereDoesntHave('user.myroles', function ($q) {
+            //         $q->whereNotNull('province_code');
+            //     });
+            // }
         })
         ->where('user_id',\Auth::user()->id) // only this user see
         ->orderBy('is_active','DESC')
@@ -41,9 +41,7 @@ class OrseriesClass
 
     public function save($request){
         $data = FinanceOrseries::create(array_merge($request->all(),[
-            'user_id' => \Auth::user()->id,
-            'is_finished' => 0,
-            'agency_id' => $this->agency
+            'is_finished' => 0
         ]));
            
         return [

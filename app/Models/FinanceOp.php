@@ -62,6 +62,8 @@ class FinanceOp extends Model
         return $this->morphTo();
     }
 
+    public function remarkable(){ return $this->morphOne('App\Models\FinanceRemark', 'remarkable');}
+
     public function items()
     {
         return $this->hasMany('App\Models\FinanceOpItem', 'op_id');
@@ -69,7 +71,13 @@ class FinanceOp extends Model
 
     public function or()
     {
-        return $this->hasOne('App\Models\FinanceReceipt', 'op_id');
+        return $this->hasMany('App\Models\FinanceReceipt', 'op_id');
+    }
+
+    public function activeReceipt()
+    {
+        return $this->hasOne(\App\Models\FinanceReceipt::class, 'op_id')
+            ->where('is_cancelled', 0);
     }
 
     public function createdby()

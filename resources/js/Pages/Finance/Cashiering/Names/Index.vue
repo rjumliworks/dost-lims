@@ -105,7 +105,7 @@ export default {
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
-                    count: Math.floor((window.innerHeight-350)/58),
+                    count: 10,
                     option: 'names'
                 }
             })

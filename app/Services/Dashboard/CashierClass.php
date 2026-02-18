@@ -14,7 +14,7 @@ class CashierClass
     }
     
     public function orseries(){
-        $data = FinanceOrseries::where('is_active',1)->where('agency_id',$this->agency)
+        $data = FinanceOrseries::where('is_active',1)
         // ->where('user_id',\Auth::user()->id)
         ->when($this->agency != 14, function ($query) {
             $query->where('user_id', \Auth::user()->id);
@@ -42,10 +42,8 @@ class CashierClass
             ->with('createdby:id','createdby.profile:id,firstname,lastname,user_id')
             ->with('op.payorable','op.collection','op.payment')
             ->with('detail','transaction')
-            ->when($this->agency, function ($query,$agency) {
-                $query->where('agency_id',$agency);
-            })
             ->orderBy('updated_at','DESC')
+            ->where('is_cancelled',0)
             ->limit(5)->get()
         );
         return $data;

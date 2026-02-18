@@ -16,6 +16,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('number')->unique();
             $table->boolean('is_deposit')->default(0);
+            $table->boolean('is_cancelled')->default(0);
             $table->bigInteger('op_id')->unsigned()->index();
             $table->foreign('op_id')->references('id')->on('finance_ops')->onDelete('cascade');
             $table->integer('orseries_id')->unsigned()->index();

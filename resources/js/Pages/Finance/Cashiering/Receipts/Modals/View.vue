@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 800px;" header-class="p-3 bg-light" title="Payment Overview" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 850px;" header-class="p-3 bg-light" title="Payment Overview" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div class="row align-items-center g-3">
             <div class="col-md-12">
                 <div>

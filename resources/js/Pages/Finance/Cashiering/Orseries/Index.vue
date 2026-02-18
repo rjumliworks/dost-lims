@@ -81,7 +81,7 @@
                                     </td>
                                     <td>
                                         <h5 class="fs-13 mb-0 text-dark">{{list.name}}</h5>
-                                        <p class="fs-12 text-muted mb-0">{{list.user.profile.firstname}} {{list.user.profile.middlename[0]}}. {{list.user.profile.lastname}}</p>
+                                        <p class="fs-12 text-muted mb-0">{{list.user.profile.fullname}}</p>
                                     </td>
                                     <td class="text-center">{{list.start}}</td>
                                     <td class="text-center">{{list.next}}</td>

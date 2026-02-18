@@ -7,7 +7,7 @@
                     <div class="hstack gap-3 fs-13 flex-wrap mt-0">
                         <div>
                             <span class="text-muted"><i class="ri-user-fill me-1"></i></span> 
-                            <span class="fw-medium">{{selected.user.profile.firstname}} {{selected.user.profile.lastname}}</span>
+                            <span class="fw-medium">{{selected.user.profile.fullname}}</span>
                         </div>
                         <div class="vr" style="width: 1px;"></div>
                         <div><span class="text-muted"><i class="ri-calendar-2-fill me-1"></i></span> 

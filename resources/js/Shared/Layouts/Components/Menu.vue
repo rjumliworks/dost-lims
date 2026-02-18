@@ -48,7 +48,7 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/quotations" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Quotations') }">
+                    :class="{'active': $page.component.startsWith('Modules/Major/Quotations') }">
                     <i class="ri-price-tag-3-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Quotations</span>
                     </Link>

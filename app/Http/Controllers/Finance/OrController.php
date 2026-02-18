@@ -6,6 +6,7 @@ use App\Traits\HandlesTransaction;
 use App\Services\DropdownClass;
 use App\Services\Finance\Or\ViewClass;
 use App\Services\Finance\Or\SaveClass;
+use App\Services\Finance\Or\UpdateClass;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Finance\OrRequest;
 use Illuminate\Http\Request;
@@ -16,12 +17,14 @@ class OrController extends Controller
 
     protected ViewClass $view;
     protected SaveClass $save;
+    protected UpdateClass $update;
     protected DropdownClass $dropdown;
 
-    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view){
+    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update){
         $this->dropdown = $dropdown;
         $this->view = $view;
         $this->save = $save;
+        $this->update = $update;
     }
 
     public function index(Request $request){
@@ -45,6 +48,26 @@ class OrController extends Controller
     public function store(OrRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             return $this->save->or($request);
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
+    public function update(Request $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            switch($request->option){
+                case 'detail':
+                    return $this->update->detail($request);
+                break;
+                case 'cancel':
+                    return $this->update->cancel($request);
+                break;
+            }
         });
 
         return back()->with([

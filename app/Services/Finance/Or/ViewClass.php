@@ -24,7 +24,10 @@ class ViewClass
             ->with('payment','collection','status')
             ->with(['items' => function ($query) {
                 $query->with('itemable:id,code')->where('itemable_type', 'App\Models\Tsr');
-            }, 'or:id,op_id,number','or.detail','or.wallet'])
+            },  
+                'activeReceipt:id,op_id,number',
+                'activeReceipt.detail',
+                'activeReceipt.wallet'])
             ->when($request->status, function ($query, $status) {
                 $query->where('status_id',$status);
             })

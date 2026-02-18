@@ -52,9 +52,9 @@ class ViewClass
             })
             ->whereIn('status_id',[2,3,4])
             ->whereIn('customer_id',$request->customer_id)
-             ->when($this->facility, function ($query) {
-                $query->where('facility_id', $this->facility);
-            })
+            //  ->when($this->facility, function ($query) {
+            //     $query->where('facility_id', $this->facility);
+            // })
             ->orderBy('created_at','DESC')
             ->get()
         );

@@ -139,7 +139,7 @@
                                         </b-button> -->
                                         <div class="d-flex gap-3 justify-content-center">
                                             <div class="dropdown">
-                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
                                                     <template #button-content> 
                                                         <i class="ri-more-fill"></i>
                                                     </template>
@@ -149,7 +149,7 @@
                                                          </a>
                                                     </li>
                                                     <li>
-                                                        <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <a @click="openPrint(list.reference)" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-printer-line me-2"></i>Print
                                                         </a>
                                                     </li>

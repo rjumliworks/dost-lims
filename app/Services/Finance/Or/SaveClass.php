@@ -3,6 +3,7 @@
 namespace App\Services\Finance\Or;
 
 use App\Models\Wallet;
+use App\Models\Tsr;
 use App\Models\TsrPayment;
 use App\Models\FinanceOp;
 use App\Models\FinanceName;
@@ -30,9 +31,7 @@ class SaveClass
                 'orseries_id' => $request->orseries['value'],  
                 'op_id' => $request->selected['id'],
                 // 'payor_id' => $request->selected['customer_id'],
-                'deposit_id' => $request->deposit_id,
-                'created_by' => \Auth::user()->id,
-                'agency_id' => \Auth::user()->myroles[0]->agency_id
+                'deposit_id' => $request->deposit_id
             ]);
             if($data){
                 $items = $request->selected['items'];

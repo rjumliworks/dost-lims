@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class FinanceReceipt extends Model
 {
@@ -13,7 +15,8 @@ class FinanceReceipt extends Model
         'deposit_id',
         'created_by',
         'agency_id',
-        'is_deposited'
+        'is_deposited',
+        'is_cancelled'
     ];
 
     public function getNumberAttribute($value)
@@ -59,5 +62,33 @@ class FinanceReceipt extends Model
     public function getCreatedAtAttribute($value)
     {
         return date('F d, Y', strtotime($value));
+    }
+
+    public function remarkable(){ return $this->morphOne('App\Models\FinanceRemark', 'remarkable');}
+
+    protected static function booted()
+    {
+        static::addGlobalScope('agency', function (Builder $builder) {
+            if (! Auth::check()) {
+                return;
+            }
+            $agencyId = Auth::user()->profile?->agency_id;
+            if (! $agencyId) {
+                abort(403, 'User has no agency assigned.');
+            }
+
+            $builder->where('agency_id', $agencyId);
+        });
+
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $user = Auth::user();
+                $model->created_by = $user->id;
+
+                if (empty($model->agency_id)) {
+                    $model->agency_id = $user->profile?->agency_id;
+                }
+            }
+        });
     }
 }

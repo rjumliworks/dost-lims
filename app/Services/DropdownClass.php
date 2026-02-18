@@ -17,6 +17,8 @@ use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
 use App\Models\LocationBarangay;
 use App\Models\SampleCategory;
+use App\Models\Customer;
+use App\Models\FinanceName;
 
 class DropdownClass
 {  
@@ -236,5 +238,39 @@ class DropdownClass
             ];
         });
         return $data;
+    }
+
+    public function payors($request){
+        $keyword = $request->keyword;
+        if($request->type == 'external'){
+            $data = Customer::with('customer_name')
+            ->where(function($query) use ($keyword) {
+                $query->where('name', 'LIKE', "%{$keyword}%")
+                    ->orWhereHas('customer_name', function ($query) use ($keyword) {
+                        $query->where('name', 'LIKE', "%$keyword%");
+                    });
+            })
+            ->limit(5)->get()->map(function ($item) {
+                $name = ($item->name != 'Main') ? ' - '.$item->name : '' ;
+                return [
+                    'value' => $item->id,
+                    'name' => $item->customer_name->name.$name
+                ];
+            });
+        }else{
+            $data = FinanceName::where('name', 'LIKE', "%{$keyword}%")->limit(5)->get()
+            ->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'name' => $item->name
+                ];
+            });
+        }
+
+        if($keyword){
+            return $data;
+        }else{
+            return [];
+        }
     }
 }
