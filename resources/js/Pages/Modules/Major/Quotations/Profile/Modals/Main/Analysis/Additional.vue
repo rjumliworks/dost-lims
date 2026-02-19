@@ -45,7 +45,7 @@ export default {
             selected: null,
             form: useForm({
                 id: null,
-                tsr_id: null,
+                quotation_id: null,
                 services: [],
                 option: 'fee'
             }),
@@ -61,8 +61,8 @@ export default {
         }
     },
     methods: { 
-        show(data,id,tsr){
-            this.form.tsr_id = tsr;
+        show(data,id,quotation){
+            this.form.quotation_id = quotation;
             this.form.id = id;
             this.services = data.map(service => ({
                 ...service,
@@ -93,7 +93,7 @@ export default {
                 return;
             }
 
-            this.form.post('/analyses',{
+            this.form.post('/quotations',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('success',true);

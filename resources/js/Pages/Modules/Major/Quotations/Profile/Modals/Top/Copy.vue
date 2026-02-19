@@ -2,7 +2,7 @@
     <b-modal v-model="showModal" hide-footer hide-header title="Cancel Request" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div class="text-center">
             <div class="mt-4">
-               <h4 class="mb-3">Duplicate TSR Request</h4>
+               <h4 class="mb-3">Duplicate Quotation Request</h4>
             <p class="text-muted mb-4">
                 This will create a copy including its test samples and services, with the status reset to Pending.
             </p>
@@ -40,10 +40,10 @@ export default {
             this.showModal = true;
         },
         submit(){
-            this.form.post('/tsrs',{
+            this.form.post('/quotations',{
                 preserveScroll: true,
                 onSuccess: (response) => {
-                    window.location.href = `/tsrs/${this.$page.props.flash.data}`;
+                    window.location.href = `/quotations/${this.$page.props.flash.data}`;
                 },
             });
         },

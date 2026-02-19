@@ -1,10 +1,10 @@
 <template>
-    <b-modal v-if="selected" v-model="showModal" style="--vz-modal-width: 600px;" header-class="p-3 bg-light" title="Edit TSR" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-if="selected" v-model="showModal" style="--vz-modal-width: 700px;" header-class="p-3 bg-light" title="Edit Quotation" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <div class="row g-2">
                 <BCol lg="12">
                     <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-11" role="alert">
-                        <i class="ri-alert-line label-icon"></i><strong>Warning</strong> - Only TSR's with <b>Pending</b> or <b>For Payment</b> status can be updated.
+                        <i class="ri-alert-line label-icon"></i><strong>Warning</strong> - Only Quotation with <b>Pending</b> status can be updated.
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </BCol>
@@ -63,10 +63,6 @@
                     label="name"
                     placeholder="Select Mode"/>
                 </BCol>
-                <!-- <BCol lg="6" class="mt-2">
-                    <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
-                    <TextInput v-model="form.due_at" type="date" class="form-control" placeholder="Please enter email" @input="handleInput('due_at')" :light="true"/>
-                </BCol> -->
                 <BCol lg="6" class="mt-1">
                     <InputLabel for="region" value="Discount" :message="form.errors.discount_id"/>
                     <Multiselect 
@@ -88,13 +84,9 @@
                 <BCol lg="12" class="mt-0">
                     <hr class="text-muted"/>
                 </BCol>
-                <BCol :lg="(selected.status.name == 'For Payment') ? 6 : 12" class="mt-n2">
+                <BCol lg="12" class="mt-n2">
                     <InputLabel for="due" value="Requested Date" :message="form.errors.created_at"/>
                     <TextInput v-model="form.created_at" type="date" class="form-control" @input="handleInput('created_at')" :light="true"/>
-                </BCol>
-                <BCol v-if="selected.status.name == 'For Payment'" lg="6" class="mt-n2">
-                    <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
-                    <TextInput v-model="form.due_at" type="date" class="form-control" @input="handleInput('due_at')" :light="true"/>
                 </BCol>
             </div>
             </form>
@@ -122,13 +114,13 @@ export default {
                 id: null,
                 release_id: null,
                 purpose_id: null,
+                release_id: null,
                 discount_id: null,
                 conforme: null,
-                due_at: null,
                 created_at: null,
                 customer: null,
                 laboratory_id: null,
-                option: 'Update'
+                option: 'update'
             }),
             customers: [],
             showModal: false
@@ -153,7 +145,7 @@ export default {
             this.form.due_at = this.formatToDateInput(this.selected.due_at);
             this.form.purpose_id = (data.purpose) ? data.purpose.id : null;
             this.form.release_id = (data.mode) ? data.mode.id : null;
-            this.form.discount_id = data.payment.discount_id;
+            this.form.discount_id = data.discounted.id;
             this.form.laboratory_id = this.selected.laboratory.id;
             this.showModal = true;
         },
@@ -162,7 +154,7 @@ export default {
             return parts; // en-CA always returns YYYY-MM-DD in local timezone
         },
         submit(){
-            this.form.put('/tsrs/update',{
+            this.form.put('/quotations/update',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('update',this.$page.props.flash.data.data);

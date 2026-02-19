@@ -1,12 +1,11 @@
 <template lang="">
-
-    <Head :title="(quotation.data.code) ? quotation.data.code : quotation.data.customer.name" />
+    <Head title="Quotation"/>
     <div v-if="quotation.data.status?.name === 'Cancelled'" class="overlay-cancelled">
         <div class="overlay-text">TS REQUEST IS CANCELLED</div>
     </div>
     <div class="auth-page-wrapper d-flex min-vh-100">
         <div :class="{ 'cancelled-wrapper': quotation.data.status?.name === 'Cancelled' }" class="auth-page-content">
-            <Top :selected="quotation.data" :analyses="analyses.data.length" :dropdowns="dropdowns"/>
+            <Top :selected="quotation.data" :analyses="analyses.data" :dropdowns="dropdowns"/>
             <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
                 <div class="file-manager-content w-100 p-4 pb-0" ref="box" style="margin-left: 20px;">
                     <Main :selected="quotation.data" :services="dropdowns.services" :analyses="analyses.data" />

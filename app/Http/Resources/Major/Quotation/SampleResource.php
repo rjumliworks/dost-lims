@@ -12,13 +12,17 @@ class SampleResource extends JsonResource
         return [
             'id' => $this->id,
             'reference' => $this->reference,
+            'code' => $this->code,
             'name' => $this->name,
-            'sample' => $this->sample,
+            'sampletype' => $this->sampletype, 
+            'samplename' => $this->samplename, 
+            'category' => $this->category, 
             'customer_description' => $this->customer_description,
             'description' => $this->description,
             'analyses' => AnalysisResource::collection($this->analyses),
-            'created_at' => $this->created_at,
-            'selected' => false
+            'selected' => false,
+            'quotation_id' => ($this->quotation) ? $this->quotation->id : null,
+            'created_at' => ($this->quotation) ? $this->created_at : null
         ];
     }
 }

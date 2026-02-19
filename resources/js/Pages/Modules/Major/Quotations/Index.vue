@@ -96,9 +96,9 @@
                                 <tr class="ribbon-box" v-for="(list,index) in lists" v-bind:key="index" @click="selectRow(index)" 
                                     :class="filter.status === null ? {
                                         'bg-success-subtle': list.status.name === 'Completed',
-                                        'bg-info-subtle': list.status.name === 'Ongoing',
-                                        'bg-warning-subtle': list.status.name === 'Payment',
-                                        'bg-danger-subtle': list.status.name === 'Cancelled'
+                                        'bg-warning-subtle': list.status.name === 'Pending',
+                                        'bg-danger-subtle': list.status.name === 'Cancelled',
+                                        'bg-dark-subtle fw-semibold': selectedRow === index
                                     } : ''">
                                      
                                     <td class="text-center"> 
@@ -110,9 +110,9 @@
                                         <h5 v-else class="fs-13 mb-0 text-muted">Not yet available</h5>
                                         <p class="fs-12 text-muted mb-0">{{list.customer}}</p>
                                     </td>
-                                    <td class="text-center">{{list.laboratory.name}}</td>
-                                    <td class="text-center">{{list.received}}</td>
-                                    <td class="text-center">{{list.created_at}}</td>
+                                    <td class="text-center fs-12">{{list.laboratory.name}}</td>
+                                    <td class="text-center fs-12">{{list.received}}</td>
+                                    <td class="text-center fs-12">{{list.created_at}}</td>
                                     <td class="text-center">
                                         <span :class="'badge '+list.status.color">{{list.status.name}}</span>
                                     </td>
@@ -346,6 +346,9 @@ export default {
         updateData(data){
             this.lists[this.index] = data;
         },
+        selectRow(index) {
+            this.selectedRow = (this.selectedRow == index) ? null : index;
+        },
         filterAddress(){
             this.$refs.filter.show();
         },
@@ -360,7 +363,7 @@ export default {
             this.location.barangay     = data?.form?.barangay?.value     ?? null;
             this.fetch();
         },
-       refresh() {
+        refresh() {
             this.location.region       = null;
             this.location.province     = null;
             this.location.municipality = null;

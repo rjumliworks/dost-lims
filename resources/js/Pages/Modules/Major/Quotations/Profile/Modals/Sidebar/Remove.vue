@@ -26,7 +26,7 @@ export default {
         return {
             form: useForm({
                id: null,
-               tsr_id: null,
+               quotation_id: null,
                option: 'removeservice'
             }),
             selected: null,
@@ -36,12 +36,12 @@ export default {
     methods: { 
         show(data,id){
             this.form.id = data.id;
-            this.form.tsr_id = id;
+            this.form.quotation_id = id;
             this.selected = data;
             this.showModal = true;
         },
         submit(){
-            this.form.put('/analyses/update',{
+            this.form.put('/quotations/update',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.hide();

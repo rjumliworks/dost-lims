@@ -98,7 +98,8 @@
                                         'bg-success-subtle': list.status.name === 'Completed',
                                         'bg-info-subtle': list.status.name === 'Ongoing',
                                         'bg-warning-subtle': list.status.name === 'Payment',
-                                        'bg-danger-subtle': list.status.name === 'Cancelled'
+                                        'bg-danger-subtle': list.status.name === 'Cancelled',
+                                        'bg-dark-subtle fw-semibold': selectedRow === index
                                     } : ''">
                                      
                                     <td class="text-center"> 

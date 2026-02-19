@@ -58,13 +58,15 @@ class CreateRequest extends FormRequest
                 'description' => 'nullable',
                 'tsr_id' => 'sometimes|required',
             ];
+        }else{
+            return [];
         }
     }
 
     public function quotationData(): array
     {
         return [
-            'status_id'   => 6,
+            'status_id'   => 14,
             'customer_id' => data_get($this->customer, 'value'),
             'conforme_id' => data_get($this->conforme, 'value') ?? $this->conforme_id,
             'laboratory_id' => $this->laboratory_id,

@@ -16,6 +16,10 @@ class Quotation extends Model
     protected $appends = ['reference'];
     protected $fillable = [
         'code',
+        'total',
+        'subtotal',
+        'discount',
+        'discount_id',
         'laboratory_id',
         'facility_id',
         'agency_id',
@@ -56,7 +60,7 @@ class Quotation extends Model
     public function getUpdatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}
     public function getCreatedAtAttribute($value){ return date('F d, Y g:i a', strtotime($value));}
 
-     public function getSubtotalAttribute($value)
+    public function getSubtotalAttribute($value)
     {
         return '₱'.number_format($value,2,'.',',');
     }
@@ -71,10 +75,34 @@ class Quotation extends Model
         return '₱'.number_format($value,2,'.',',');
     }
 
+    public function setSubtotalAttribute($value)
+    {
+        $this->attributes['subtotal'] = $this->cleanMoney($value);
+    }
+
+    public function setDiscountAttribute($value)
+    {
+        $this->attributes['discount'] = $this->cleanMoney($value);
+    }
+
+    public function setTotalAttribute($value)
+    {
+        $this->attributes['total'] = $this->cleanMoney($value);
+    }
+
+    private function cleanMoney($value)
+    {
+        return str_replace(['₱', ',', ' '], '', $value);
+    }
+
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
         ->logOnly([
             'code',
+            'total',
+            'subtotal',
+            'discount',
+            'discount_id',
             'laboratory_id',
             'facility_id',
             'agency_id',

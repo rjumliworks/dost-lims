@@ -22,10 +22,6 @@
                                 <div><i class="ri-calendar-line align-bottom me-1"></i> Date Added : 
                                     <span class="fw-medium"> {{ selected.created_at }}</span>
                                 </div>
-                                <div class="vr" style="width: 1px;"></div>
-                                <div>Status : 
-                                    <span :class="'ms-1 fs-11 badge '+selected.status.color+' '+selected.status.others">{{selected.status.name}}</span>
-                                </div>
                                 <!-- <div class="vr" style="width: 1px;"></div>
                                 <div>Serial No. : 
                                     <span v-if="selected.serial_no" class="fw-medium">{{selected.serial_no}}</span>
@@ -75,36 +71,7 @@
             </div>
         </div>
 
-        <div class="row g-2 mt-n1 mb-1" v-if="selected.status.name != 'Pending'">
-            <div class="col-sm-6">
-                <div class="p-1 border border-dashed bg-white rounded">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar-sm me-2">
-                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-2-fill"></i></div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="text-muted mb-0 fs-12">Start Date :</p>
-                            <h5 class="mb-0 fs-12">{{(selected.start_at) ? selected.start_at : '-'}}</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="p-1 border border-dashed bg-white rounded">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar-sm me-2">
-                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-2-fill"></i></div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="text-muted mb-0 fs-12">End Date :</p>
-                            <h5 class="mb-0 fs-12">{{(selected.end_at) ? selected.end_at : '-'}}</h5>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="table-responsive mt-2 mb-2" v-if="selected.status.name == 'Pending' && selected.addfee.length > 0">
+        <div class="table-responsive mt-2 mb-2" v-if="selected.addfee?.length > 0">
             <simplebar data-simplebar style="max-height: 200px;">
                 <table class="table table-bordered table-nowrap align-middle mb-0">
                     <thead class="table-primary thead-fixed">

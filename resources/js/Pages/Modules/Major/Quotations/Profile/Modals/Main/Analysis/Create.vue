@@ -116,7 +116,7 @@ export default {
                 fee: null,
                 lists: [],
                 samples: [],
-                option: 'analyses'
+                option: 'analysis'
             }),
             filter: {
                 keyword: null,
@@ -212,7 +212,7 @@ export default {
         },
         submit(){
             this.form.lists = this.checkedItems;
-            this.form.post('/analyses',{
+            this.form.post('/quotations',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('success',true);

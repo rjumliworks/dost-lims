@@ -105,7 +105,7 @@ export default {
             this.showModal = true;
         },
         submit(){
-            this.form.post('/analyses',{
+            this.form.post('/quotations',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('total',response.props.flash.data);

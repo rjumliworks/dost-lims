@@ -12,7 +12,7 @@ class QuotationAnalysis extends Model
 
     public function addfee()
     {
-        return $this->morphOne('App\Models\QuotationService', 'typeable');
+        return $this->morphMany('App\Models\QuotationService', 'typeable');
     }   
 
     public function sample()

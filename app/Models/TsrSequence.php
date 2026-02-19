@@ -68,6 +68,43 @@ class TsrSequence extends Model
         });
     }
 
+    public static function getQuoCode($typeId)
+    {
+        return \DB::transaction(function () use ($typeId) {
+            $user = Auth::user();
+            $agencyId = $user->profile?->agency_id;
+            $facilityId = $user->profile?->facility_id;
+            $year = date('Y');
+            
+            $sequence = TsrSequence::where([
+                'agency_id' => $agencyId,
+                'facility_id' => $facilityId,
+                'year' => $year,
+                'type_id' => $typeId
+            ])->lockForUpdate()->first();
+
+            if (!$sequence) {
+                $sequence = TsrSequence::create([
+                    'agency_id' => $agencyId,
+                    'facility_id' => $facilityId,
+                    'laboratory_id' => 1,
+                    'year' => $year,
+                    'type_id' => $typeId,
+                    'next_sequence' => 1,
+                ]);
+            }
+            $next = $sequence->next_sequence;
+            $sequence->next_sequence = $next + 1;
+            $sequence->save();
+
+            $sequence->load('agency');
+            $agencyCode = $sequence->agency->code ?? 'XXX';
+
+            $seqStr = str_pad($next, 4, '0', STR_PAD_LEFT);
+            return "QUO-{$agencyCode}-{$year}-{$seqStr}";
+        });
+    }
+
     protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {

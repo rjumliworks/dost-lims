@@ -26,8 +26,8 @@ export default {
         return {
             form: useForm({
                id: null,
-               tsr_id: null,
-               option: 'delete'
+               quotation_id: null,
+               option: 'sampledelete'
             }),
             selected: null,
             showModal: false
@@ -36,12 +36,12 @@ export default {
     methods: { 
         show(data,id){
             this.form.id = data.id;
-            this.form.tsr_id = id;
+            this.form.quotation_id = id;
             this.selected = data;
             this.showModal = true;
         },
         submit(){
-            this.form.post('/samples',{
+            this.form.post('/quotations',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.hide();

@@ -80,38 +80,38 @@
             page-break-after: always;
         }
         .letter-p {
-    position: relative;
-    font-size: 100px;
-    font-weight: bold;
-    display: inline-block;
-    color: black;
-  }
+        position: relative;
+        font-size: 100px;
+        font-weight: bold;
+        display: inline-block;
+        color: black;
+    }
 
-  /* First line */
-  .letter-p::before {
-    content: '';
-    position: absolute;
-    width: 60%; /* adjust length */
-    height: 5px; /* line thickness */
-    background-color: red; /* line color */
-    top: 20%; /* vertical position */
-    left: 20%; /* horizontal start */
-    transform: rotate(-10deg); /* optional tilt */
-  }
+    /* First line */
+    .letter-p::before {
+        content: '';
+        position: absolute;
+        width: 60%; /* adjust length */
+        height: 5px; /* line thickness */
+        background-color: red; /* line color */
+        top: 20%; /* vertical position */
+        left: 20%; /* horizontal start */
+        transform: rotate(-10deg); /* optional tilt */
+    }
 
-  /* Second line */
-  .letter-p::after {
-    content: '';
-    position: absolute;
-    width: 50%;
-    height: 5px;
-    background-color: blue;
-    top: 50%;
-    left: 25%;
-    transform: rotate(5deg);
-  }
-    </style>
-</head>
+    /* Second line */
+    .letter-p::after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        height: 5px;
+        background-color: blue;
+        top: 50%;
+        left: 25%;
+        transform: rotate(5deg);
+    }
+        </style>
+    </head>
 <?php 
 
     $form = $configuration['form'] = $configuration['form'];

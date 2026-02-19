@@ -6,19 +6,11 @@
                     style="width: 50px; height: 50px;">
                     <i class="ri-delete-bin-2-fill text-danger fs-24"></i>
                 </span>
-                <h4 class="mb-2 mt-2 text-danger fw-semibold fs-14">Cancel Technical Service Request</h4>
-                <p class="text-muted mb-0 mt-4 fs-12">Please confirm if you wish to cancel this TSR request.</p>
-                <p class="text-muted mb-4 fs-12">Once cancelled, the Technical Service Request cannot be recovered.</p>
+                <h4 class="mb-2 mt-2 text-danger fw-semibold fs-14">Cancel Quotation</h4>
+                <p class="text-muted mb-0 mt-4 fs-12">Please confirm if you wish to cancel this Quotation.</p>
+                <p class="text-muted mb-4 fs-12">Once cancelled, the Quotation cannot be recovered.</p>
             </div>
         </div>
-        <BRow class="justify-content-center mt-n2">
-            <BCol lg="11">
-                <label class="form-label fs-12 mb-n2 text-muted">
-                    Reason for cancellation <span class="text-danger">*</span>
-                </label>
-                <textarea id="attribute"  :class="{ 'is-invalid': form.errors.reason }" v-model="form.reason" maxlength="250" rows="2" type="text" class="form-control mb-4" style="background-color: #f5f6f7;"/>
-            </BCol>
-        </BRow>
         <div class="hstack gap-2 justify-content-center mb-3">
             <button @click="hide()" class="btn btn-light btn-md" type="button">
                 <div class="btn-content"> Close</div>
@@ -29,16 +21,13 @@
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
-import { reference } from '@popperjs/core';
 export default {
     data(){
         return {
             currentUrl: window.location.origin,
             form: useForm({
                reference: null,
-               status_id: 5,
-               reason: null,
-               option: 'Cancel'
+               option: 'cancel'
             }),
             showModal: false
         }
@@ -49,7 +38,7 @@ export default {
             this.showModal = true;
         },
         submit(){
-            this.form.put('/tsrs/update',{
+            this.form.put('/quotations/update',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.form.reset();

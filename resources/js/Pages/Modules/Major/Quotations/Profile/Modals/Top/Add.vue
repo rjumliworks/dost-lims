@@ -26,19 +26,18 @@ export default {
     components: { InputLabel, TextInput },
     data(){
         return {
-            currentUrl: window.location.origin,
             form: useForm({
                 name: null,
                 contact_no: null,
                 customer_id: null,
-                type: 'conforme'
+                option: 'conforme'
             }),
             showModal: false
         }
     },
     methods: { 
         show(customer){
-            this.form.customer_id = customer.value;
+            this.form.customer_id = customer;
             this.showModal = true;
         },
         submit(){

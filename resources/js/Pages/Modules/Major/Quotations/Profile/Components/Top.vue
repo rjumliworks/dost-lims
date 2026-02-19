@@ -1,7 +1,7 @@
 <template>
     <b-col lg="12">
         <b-card no-body>
-            <div class="bg-info-subtle">
+            <div class="bg-warning-subtle">
                 <b-card-body class="pb-0 px-4">
                     <b-row class="mb-3">
                         <b-col md>
@@ -15,8 +15,6 @@
                                             <div><i class="ri-account-circle-fill align-bottom me-1"></i>{{selected.conforme}}</div>
                                             <div class="vr"></div>
                                             <div><i class="ri-phone-fill align-bottom me-1"></i>{{selected.conforme_no}}</div>
-                                            <div class="vr" v-if="selected.status.name === 'Pending' || selected.status.name === 'For Payment'"></div>
-                                            <div v-if="selected.status.name === 'Pending' || selected.status.name === 'For Payment'"><i class="ri-wallet-3-fill align-bottom me-1"></i>{{ (selected.customer.wallet != null) ? selected.customer.wallet.available : 'No Balance'}}</div>
                                         </div>
                                     </div>
                                 </b-col>
@@ -24,25 +22,22 @@
                         </b-col>
                         <b-col md="auto">
                             <div class="hstack gap-4 flex-wrap mt-2">
-                                <Link href="/tsrs">
+                                <Link href="/quotations">
                                     <div class="text-muted" @click="hide()">  
                                         <i class="ri-close-circle-fill fs-16"></i> Close
                                     </div>
                                 </Link>
-                                 <div class="text-muted" @click="makeCopy(selected)" style="cursor: pointer;">  
-                                    <i class="ri-edit-box-fill fs-16"></i> Make a Copy
-                                </div>
-                                <div class="text-muted" v-if="selected.status.name === 'Ongoing' && selected.laboratory.id === 3 && $page.props.user.data.agency_id === 11 && selected.payment.status.name == 'Contract'" @click="openUpdate(selected,index)" style="cursor: pointer;">  
-                                    <i class="ri-edit-box-fill fs-16"></i> Update Discount 
-                                </div>
-                                <div class="text-muted" v-if="selected.status.name === 'Pending' || selected.status.name === 'For Payment'" @click="openEdit(selected,index)" style="cursor: pointer;">  
-                                    <i class="ri-edit-box-fill fs-16"></i> Update
-                                </div>
-                                <div class="text-muted" v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openCancel(selected.reference)" style="cursor: pointer;">  
+                                <div class="text-muted" v-if="selected.status.name == 'Pending'" @click="openCancel(selected.reference)" style="cursor: pointer;">  
                                     <i class="ri-delete-bin-fill fs-16"></i> Cancel
                                 </div>
-                                <div class="text-muted" v-if="selected.status.name === 'For Payment' && selected.customer.wallet != null && selected.customer.wallet.available != '₱0.00'" @click="openWallet(selected.id,selected.customer,selected.payment)" style="cursor: pointer;">  
-                                    <i class="ri-wallet-3-fill fs-16"></i> Use Wallet
+                                <div class="text-muted" v-if="selected.status.name === 'Pending'" @click="openEdit(selected,index)" style="cursor: pointer;">  
+                                    <i class="ri-edit-box-fill fs-16"></i> Update
+                                </div>
+                                <div class="text-muted" @click="makeCopy(selected)" style="cursor: pointer;">  
+                                    <i class="ri-edit-box-fill fs-16"></i> Make a Copy
+                                </div>
+                                <div class="text-muted" @click="openSubmit(selected)" style="cursor: pointer;">  
+                                    <i class="ri-file-list-fill fs-16"></i> Convert to TSR
                                 </div>
                                 <div class="vr" style="width: 1px;"></div>
                                 <div v-if="selected.status.name === 'Pending'">  
@@ -60,8 +55,8 @@
     </b-col>
     <Copy ref="copy"/>
     <Save ref="save"/>
-    <Wallet ref="wallet"/>
     <Cancel ref="cancel"/>
+    <Submit ref="submit"/>
     <Update :dropdowns="dropdowns" ref="update"/>
     <Edit :dropdowns="dropdowns" ref="edit"/>
 </template>
@@ -70,10 +65,10 @@ import Copy from '../Modals/Top/Copy.vue';
 import Edit from '../Modals/Top/Edit.vue';
 import Save from '../Modals/Top/Save.vue';
 import Cancel from '../Modals/Top/Cancel.vue';
-import Wallet from '../Modals/Top/Wallet.vue';
 import Update from '../Modals/Top/Update.vue';
+import Submit from '../Modals/Top/Submit.vue';
 export default {
-    components: { Save, Wallet, Edit, Cancel, Update, Copy },
+    components: { Save, Edit, Cancel, Update, Copy, Submit },
     props:['selected','analyses','dropdowns'],
     computed: {
         allSamplesHaveAnalyses() {
@@ -86,11 +81,8 @@ export default {
         openSave(id){
             this.$refs.save.show(id,this.selected.customer.industry,this.selected.facility);
         },
-        openWallet(id,customer,payment){
-            this.$refs.wallet.show(id,customer,payment);
-        },
         openPrint(id){
-            window.open('/tsrs?option=print&id='+id);
+            window.open('/quotations?option=print&id='+id);
         },
         openEdit(selected){
             this.$refs.edit.show(selected);
@@ -100,6 +92,9 @@ export default {
         },
         openUpdate(selected){
             this.$refs.update.show(selected);
+        },
+        openSubmit(data){
+            this.$refs.submit.show(data,this.analyses);
         },
         makeCopy(data){
             this.$refs.copy.show(data);

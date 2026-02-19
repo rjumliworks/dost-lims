@@ -23,21 +23,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="card bg-light overflow-hidden mb-0" v-if="selected.status.name == 'Ongoing'">
-                    <div class="card-body">
-                        <div class="d-flex">
-                            <div class="flex-grow-1">
-                                <h6 class="mb-0"><b class="text-secondary">Overall Progress: {{analysisCounts.percentage}}% of analyses completed successfully</b></h6>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <h6 class="mb-0">{{analysisCounts.completed}} of {{ analysisCounts.total }} completed</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="progress  bg-secondary-subtle">
-                        <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" :aria-valuenow="analysisCounts.percentage" aria-valuemin="0" aria-valuemax="100" :style="'width: '+analysisCounts.percentage+'%'"></div>
-                    </div>
-                </div>
                 <div class="car-body bg-white border-bottom shadow-none">
                     <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
                         <b-col lg>
@@ -54,9 +39,6 @@
                                 <b-button v-if="selected.status.name == 'Pending'" type="button" variant="primary" class="fs-12" @click="addSample()">
                                     <i class="ri-add-circle-fill align-bottom me-1"></i>Add Sample
                                 </b-button>
-                                 <b-button type="button" variant="success" @click="printAll()">
-                                    <i class="ri-printer-fill align-bottom"></i>
-                                </b-button>
                             </div>
                         </b-col>
                     </b-row>
@@ -66,33 +48,28 @@
                         <table class="table table-nowrap table-striped align-middle mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-11">
-                                    <th v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" width="4%" class="text-center">
+                                    <th v-if="selected.status.name == 'Pending'" width="4%" class="text-center">
                                         <input class="form-check-input fs-16" v-model="mark" type="checkbox" value="option" />
                                     </th>
                                     <th :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">#</th>
                                     <th width="20%">Sample Name</th>
                                     <th width="63%">Description</th>
-                                    <th v-if="selected.status.name != 'Pending' && selected.status.name != 'For Payment'" width="4%" class="text-center">Status</th>
                                     <th width="7%"></th>
                                 </tr>
                             </thead>
                             <tbody v-if="selected.samples.length > 0">
                                 <template v-for="(list,index) in selected.samples" v-bind:key="index">
                                     <tr :class="(showAnalyses) ? 'bg-info-subtle' : ''">
-                                        <td v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'"  width="4%" class="text-center">
+                                        <td v-if="selected.status.name == 'Pending'"  width="4%" class="text-center">
                                             <input type="checkbox" v-model="list.selected" class="form-check-input" />
                                         </td>
-                                        <td :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">{{index+1}}</td>
+                                        <td width="3%">{{index+1}}</td>
                                         <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
-                                            <h5 class="fs-13 mb-0 fw-semibold text-primary">{{(list.code) ? list.code : 'Not yet available'}}</h5>
-                                            <p class="fs-13 text-muted mb-0">{{list.samplename.name}}</p>
+                                            <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.samplename.name}}</h5>
+                                            <p class="fs-12 text-muted mb-0">{{list.sampletype.name}}</p>
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                             <i>{{list.customer_description}}</i>, {{list.description}}
-                                        </td>
-                                        <td v-if="selected.status.name != 'Pending' && selected.status.name != 'For Payment'" width="4%" class="text-center">
-                                            <span class="fs-12" v-if="list.analyses.filter(item => item.status.name == 'Completed').length != list.analyses.length">{{list.analyses.filter(item => item.status.name == "Completed").length}} / {{list.analyses.length}}</span>
-                                            <span v-else><i class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover :title="list.analyses.filter(item => item.status.name == 'Completed').length+'/'+list.analyses.length"></i></span>
                                         </td>
                                         <td width="7%" class="text-end">
                                             <template v-if="showAnalyses">
@@ -139,9 +116,8 @@
                                                     <tr class="fs-10">
                                                         <th class="text-center" width="5%">#</th>
                                                         <th width="20%">Test Name</th>
-                                                        <th class="text-center" width="50%">Method Reference</th>
+                                                        <th class="text-center" width="60%">Method Reference</th>
                                                         <th class="text-center" width="12%">Fee</th>
-                                                        <th class="text-center" width="10%">Status</th>
                                                         <th width="10%"></th>
                                                     </tr>
                                                 </thead>
@@ -164,9 +140,6 @@
                                                             {{ addfeeText(list.addfee) }}
                                                             </span>
                                                         </td>
-                                                        <td class="text-center">
-                                                            <span :class="'badge '+list.status.color+' '+list.status.others">{{list.status.name}}</span>
-                                                        </td>
                                                         <td>
                                                             <b-button @click="openAnalysisView(list)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                                 <i class="ri-eye-fill align-bottom"></i>
@@ -182,7 +155,7 @@
                                                 </tbody>
                                                 <tbody v-else>
                                                     <tr>
-                                                        <td colspan="5" class="text-center">No analysis found</td>
+                                                        <td colspan="4" class="text-center">No analysis found</td>
                                                     </tr>
                                                 </tbody>
                                             </table>

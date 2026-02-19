@@ -22,7 +22,7 @@
                                 <h5 class="mb-0 mt-n1 fs-12"><span class="text-body">List of Additional Services</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Tracks attendance times and logs any changes for accurate records.</p>
                             </div>
-                            <div class="flex-shrink-0">
+                            <div class="flex-shrink-0" v-if="selected.status.name == 'Pending'">
                                 <BButton @click="addAddons()" variant="danger" class="btn-sm waves-effect waves-light" style="margin-top: -1px;">
                                     <i class="ri-add-circle-fill search-icon me-1"></i> Add-ons
                                 </BButton>
@@ -38,7 +38,7 @@
                                         <th class="text-center" style="width: 10%;">Days</th>
                                         <th class="text-center" style="width: 15%;">Fee</th>
                                         <th class="text-center" style="width: 15%;">Total</th>
-                                        <th  style="width: 7%;"></th>
+                                        <th  style="width: 7%;" v-if="selected.status.name == 'Pending'"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -50,8 +50,8 @@
                                         <td class="text-center">{{ list.quantity }}</td>
                                         <td class="text-center">{{ list.fee }}</td>
                                         <td class="text-center">{{ list.total }}</td>
-                                        <td class="text-end">
-                                            <b-button v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openRemove(list)" variant="soft-danger" v-b-tooltip.hover title="Delete" size="sm">
+                                        <td class="text-end" v-if="selected.status.name == 'Pending'">
+                                            <b-button @click="openRemove(list)" variant="soft-danger" v-b-tooltip.hover title="Delete" size="sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </b-button>
                                         </td>
@@ -76,7 +76,7 @@ export default {
     props: ['services','lists'],
     data(){
         return {
-            tsr_id: null,
+            quotation_id: null,
             selected: {
                 status:{}
             },
@@ -84,17 +84,16 @@ export default {
         }
     },
     methods: { 
-        show(status,tsr){
-            this.tsr_id = tsr;
+        show(status,quotation){
+            this.quotation_id = quotation;
             this.selected.status = status;
             this.showModal = true;
         },
         openRemove(data){
-            this.$refs.remove.show(data,this.tsr_id);
+            this.$refs.remove.show(data,this.quotation_id);
         },
         addAddons(){
-            console.log(this.tsr_id);
-            this.$refs.service.show(this.tsr_id);
+            this.$refs.service.show(this.quotation_id);
         },
         hide(){
             this.showModal = false;

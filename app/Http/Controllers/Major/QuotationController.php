@@ -64,6 +64,33 @@ class QuotationController extends Controller
                 case 'validation':
                     return $this->save->validation($request);
                 break;
+                case 'copy':
+                    return $this->save->copy($request);
+                break;
+                case 'sample':
+                    return $this->save->sample($request);
+                break;
+                case 'analysis':
+                    return $this->save->analysis($request);
+                break;
+                case 'analysisdelete':
+                    return $this->save->analysisdelete($request);
+                break;
+                case 'sampledelete':
+                    return $this->save->sampledelete($request);
+                break;
+                case 'removefee':
+                    return $this->save->removefee($request);
+                break;
+                case 'fee':
+                    return $this->save->fee($request);
+                break;
+                case 'service':
+                    return $this->save->service($request);
+                break;
+                case 'tsr':
+                    return $this->save->tsr($request);
+                break;
                 default:
                     return $this->save->save($request);
             }
@@ -80,9 +107,18 @@ class QuotationController extends Controller
     public function update(UpdateRequest $request){
         $result = $this->handleTransaction(function () use ($request) {     
             switch($request->option){
-                case 'Cancel':
+                case 'removeservice':
+                    return $this->save->removeService($request);
+                break;  
+                case 'cancel':
                     return $this->update->cancel($request);
-                break;       
+                break;     
+                case 'update':
+                    return $this->update->quotation($request);
+                break;  
+                case 'save': 
+                    return $this->update->save($request);
+                break;
             }      
         });   
         return back()->with([
