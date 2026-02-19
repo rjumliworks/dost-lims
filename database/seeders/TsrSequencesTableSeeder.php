@@ -22,14 +22,14 @@ class TsrSequencesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'next_sequence' => 1,
+                'next_sequence' => 10,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 1,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
+                'updated_at' => '2026-02-18 14:07:48',
             ),
             1 => 
             array (
@@ -46,14 +46,14 @@ class TsrSequencesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'next_sequence' => 3,
+                'next_sequence' => 4,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 3,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-02-08 12:56:57',
+                'updated_at' => '2026-02-16 13:21:17',
             ),
             3 => 
             array (
@@ -70,14 +70,14 @@ class TsrSequencesTableSeeder extends Seeder
             4 => 
             array (
                 'id' => 5,
-                'next_sequence' => 1,
+                'next_sequence' => 7,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 1,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
+                'updated_at' => '2026-02-18 11:51:40',
             ),
             5 => 
             array (
@@ -94,14 +94,14 @@ class TsrSequencesTableSeeder extends Seeder
             6 => 
             array (
                 'id' => 7,
-                'next_sequence' => 4,
+                'next_sequence' => 5,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 3,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-02-08 12:56:57',
+                'updated_at' => '2026-02-16 13:21:17',
             ),
             7 => 
             array (
@@ -166,50 +166,14 @@ class TsrSequencesTableSeeder extends Seeder
             12 => 
             array (
                 'id' => 13,
-                'next_sequence' => 1,
+                'next_sequence' => 4,
                 'year' => 2026,
                 'type_id' => 12,
                 'facility_id' => 1,
                 'agency_id' => 14,
                 'laboratory_id' => 1,
                 'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
-            ),
-            13 => 
-            array (
-                'id' => 14,
-                'next_sequence' => 1,
-                'year' => 2026,
-                'type_id' => 12,
-                'facility_id' => 1,
-                'agency_id' => 14,
-                'laboratory_id' => 2,
-                'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
-            ),
-            14 => 
-            array (
-                'id' => 15,
-                'next_sequence' => 1,
-                'year' => 2026,
-                'type_id' => 12,
-                'facility_id' => 1,
-                'agency_id' => 14,
-                'laboratory_id' => 3,
-                'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
-            ),
-            15 => 
-            array (
-                'id' => 16,
-                'next_sequence' => 1,
-                'year' => 2026,
-                'type_id' => 12,
-                'facility_id' => 1,
-                'agency_id' => 14,
-                'laboratory_id' => 4,
-                'created_at' => '2026-01-01 09:12:03',
-                'updated_at' => '2026-01-01 09:12:03',
+                'updated_at' => '2026-02-19 13:19:37',
             ),
         ));
         
