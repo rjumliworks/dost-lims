@@ -71,15 +71,15 @@ class AnalysisController extends Controller
         ]);
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
-                // case 'start':
-                //     return $this->update->start($request);
-                // break;
-                // case 'end':
-                //     return $this->update->end($request);
-                // break;
-                // case 'tagging':
-                //     return $this->update->tagging($request);
-                // break;
+                case 'start':
+                    return $this->update->start($request);
+                break;
+                case 'end':
+                    return $this->update->end($request);
+                break;
+                case 'tagging':
+                    return $this->update->tagging($request);
+                break;
                 // case 'group':
                 //     return $this->update->group($request);
                 // break;

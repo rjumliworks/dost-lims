@@ -248,7 +248,6 @@
                             <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
                             P
                         </span>
-                        {{-- <span style="font-family: DejaVu Sans;">&#8369;</span> --}}
                         {{trim($sample['fee'],'₱ ')}}
                         
                     </td>
@@ -294,10 +293,18 @@
                         </td>
                         <td>{{ $service['quantity'] }}</td>
                         <td style="text-align: right;">
-                            <span style="font-family: DejaVu Sans;">&#8369;</span>{{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])), 2, ".", ",") }}
+                            <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                P
+                            </span> {{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])), 2, ".", ",") }}
                         </td>
                         <td style="text-align: right;">
-                            <span style="font-family: DejaVu Sans;">&#8369;</span>{{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])) * $service['quantity'], 2, ".", ",") }}
+                            <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                P
+                            </span> {{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])) * $service['quantity'], 2, ".", ",") }}
                         </td>
                     </tr>
                 @endforeach

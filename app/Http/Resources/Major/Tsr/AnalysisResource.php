@@ -19,6 +19,7 @@ class AnalysisResource extends JsonResource
             'code' => $this->sample->code,
             'testname' => $this->testservice->testname->name,
             'method' => $this->testservice->method->method->name,
+            'method_short' => $this->testservice->method->method->short,
             'reference' => $this->testservice->method->reference->name,
             'started' => ($this->started) ? $this->started->profile->firstname.' '.$this->started->profile->lastname : '-',
             'ended' => ($this->ended) ? $this->ended->profile->firstname.' '.$this->ended->profile->lastname : '-',

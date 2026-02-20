@@ -15,31 +15,6 @@
                     <span data-key="t-menu">Laboratory Modules</span>
                 </li>
                 <li class="nav-item">
-                    <Link href="/testservices" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Testservices') }">
-                    <i class="ri-flask-fill"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Test Services</span>
-                    </Link>
-                </li>
-                <li class="nav-item">
-                    <Link href="/packages" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Packages') }">
-                    <i class="ri-archive-fill"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Packages</span>
-                    </Link>
-                </li>
-                <li class="nav-item">
-                    <Link href="/categories" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Categories') }">
-                    <i class="ri-list-check"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Categories</span>
-                    </Link>
-                </li>
-                 <li class="menu-title">
-                    <i class="ri-more-fill" aria-expanded="false"></i>
-                    <span data-key="t-menu">Laboratory Modules</span>
-                </li>
-                <li class="nav-item">
                     <Link href="/customers" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Customers') }">
                     <i class="ri-team-fill"></i>
@@ -61,26 +36,53 @@
                     </Link>
                 </li>
             </template>
-             <tempalte v-if="['Accountant'].some(role => $page.props.roles.includes(role))">
+            <template v-if="['Laboratory Analyst', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
-                    <span data-key="t-menu">Accountant</span>
+                    <span data-key="t-menu">Analysts Modules</span>
                 </li>
-                <li class="nav-item" v-if="$page.props.roles.length > 1">
-                    <Link href="/accounting" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Finance/Accounting/Dashboard') }">
-                    <i class="ri-apps-2-fill"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Accounting</span>
+                <li class="nav-item">
+                    <Link href="/samples" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Major/Samples') }">
+                    <i class="ri-todo-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Sample Register</span>
                     </Link>
                 </li>
                 <li class="nav-item">
-                    <Link href="/orderofpayments" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Finance/Accounting/OrderPayments') }">
-                    <i class="ri-hand-coin-fill"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Order of Payments</span>
+                    <Link href="/testreports" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Laboratory/Testreports') }">
+                    <i class="ri-file-paper-2-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Test Reports</span>
                     </Link>
                 </li>
-            </tempalte>
+            </template>
+            <template v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
+                <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Directory Modules</span>
+                </li>
+                <li class="nav-item">
+                    <Link href="/testservices" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Testservices') }">
+                    <i class="ri-flask-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Test Services</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/packages" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Packages') }">
+                    <i class="ri-archive-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Packages</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/categories" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Categories') }">
+                    <i class="ri-list-check"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Categories</span>
+                    </Link>
+                </li>
+            </template>
             <template v-if="['Cashier'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
@@ -121,6 +123,55 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Names</span>
                     </Link>
                 </li>
+            </template>
+            <tempalte v-if="['Accountant'].some(role => $page.props.roles.includes(role))">
+                <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Accountant</span>
+                </li>
+                <li class="nav-item" v-if="$page.props.roles.length > 1">
+                    <Link href="/accounting" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Finance/Accounting/Dashboard') }">
+                    <i class="ri-apps-2-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Accounting</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/orderofpayments" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Finance/Accounting/OrderPayments') }">
+                    <i class="ri-hand-coin-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Order of Payments</span>
+                    </Link>
+                </li>
+            </tempalte>
+            <template v-if="$page.props.show">
+                <template v-if="['Customer Relation Officer','Releasing Officer','Laboratory Analyst','Calibration Officer','Technical Manager','Laboratory Head'].some(role => $page.props.roles.includes(role))">
+                    <li class="menu-title">
+                        <i class="ri-more-fill" aria-expanded="false"></i>
+                        <span data-key="t-menu">Other Modules</span>
+                    </li>
+                    <li class="nav-item">
+                        <Link href="/calendars" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/Others/Calendars') }">
+                        <i class="ri-calendar-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Calendar</span>
+                        </Link>
+                    </li>
+                    <li class="nav-item">
+                        <Link href="/equipments" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/Others/Equipments') }">
+                        <i class="ri-tools-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Equipments</span>
+                        </Link>
+                    </li> 
+                    <li class="nav-item">
+                        <Link href="/inventory" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/Others/Inventory') }">
+                        <i class="ri-archive-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Inventory</span>
+                        </Link>
+                    </li> 
+                </template>
             </template>
             <template v-if="$page.props.roles.includes('Administrator')">
                 <li class="menu-title">

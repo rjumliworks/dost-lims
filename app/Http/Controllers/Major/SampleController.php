@@ -20,6 +20,19 @@ class SampleController extends Controller
         $this->disposal = $disposal;
     }
 
+    public function index(Request $request){
+        switch($request->option){
+            case 'list':
+                return $this->view->list($request);
+            break;
+            default :
+                return inertia('Modules/Major/Samples/Index',[
+                    'counts' => $this->view->counts(),
+                    'laboratories' => $this->view->laboratories()
+                ]);
+        }
+    }
+
     public function store(SampleRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
@@ -49,6 +62,13 @@ class SampleController extends Controller
             'message' => $result['message'],
             'info' => $result['info'],
             'status' => $result['status'],
+        ]);
+    }
+
+    public function show($id){
+        return inertia('Modules/Major/Samples/View',[
+            'sample' => $this->view->sample($id),
+            'analysts' => $this->view->analysts()
         ]);
     }
 

@@ -73,12 +73,15 @@ class ViewClass
                 $query->where(function ($q) use ($keyword) {
                     $q->where('code', 'LIKE', "%{$keyword}%")
                     ->orWhereHas('customer', function ($q) use ($keyword) {
-                        $q->where('name', 'LIKE', "%{$keyword}%")
-                            ->orWhereHas('customer_name', function ($q) use ($keyword) {
-                                $q->where('name', 'LIKE', "%{$keyword}%");
-                            });
+                        $q->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
+                        ->whereRaw("
+                            CASE
+                                WHEN customers.is_main = 1 THEN customer_names.name
+                                ELSE CONCAT(customer_names.name, ' - ', customers.name)
+                            END LIKE ?
+                        ", ["%{$keyword}%"]);
+                        });
                     });
-                });
             })
             ->with(['samples' => function ($query){
                 $query->select('id','tsr_id');
