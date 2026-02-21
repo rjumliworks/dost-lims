@@ -11,7 +11,6 @@ use App\Http\Resources\AuthenticationResource;
 class ViewClass
 {
     public function authenticationlogs($request){
-        dd('wew');
         $data = AuthenticationLog::with('user.profile')->where('user_id',\Auth::user()->id)->paginate($request->count);
         return AuthenticationResource::collection($data);
     }

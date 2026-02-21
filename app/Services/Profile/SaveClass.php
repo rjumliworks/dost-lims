@@ -14,12 +14,7 @@ class SaveClass
     public function save($request){
 
         $user = User::find(\Auth::user()->id);
-        if ($user->profile->avatar) {
-            Storage::disk('public')->delete($user->profile->avatar);
-        }
-
         $image = $request->file('image');
-
         $manager = new ImageManager(new Driver());
 
         // Read image
@@ -29,11 +24,10 @@ class SaveClass
         $img->cover(300, 300); // better than fit() in v3
         $webp = $img->toWebp(80);
 
-        $filename = 'avatar_' . $user->username . '_' . time() . '.webp';
-        $path = 'profile-pictures/' . $filename;
-        Storage::disk('public')->put($path, $webp);
+        $filename = $user->username.'.webp';
+        $s3Path = $image->storeAs('lims/avatars', $filename, 's3');
         
-        $user->profile->avatar = $path;
+        $user->profile->avatar = $s3Path;
         $user->profile->save();
 
         return [
