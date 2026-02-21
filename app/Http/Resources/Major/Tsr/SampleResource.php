@@ -27,6 +27,7 @@ class SampleResource extends JsonResource
             'report' => $this->report,
             'selected' => false,
             'tsr_id' => ($this->tsr) ? $this->tsr->id : null,
+            'tsr_code' => ($this->tsr) ? $this->tsr->code : null,
             'due_at' => ($this->tsr) ? $this->tsr->due_at : null,
             'created_at' => ($this->tsr) ? $this->created_at : null
         ];

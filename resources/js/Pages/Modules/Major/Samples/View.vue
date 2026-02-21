@@ -18,6 +18,8 @@
                                                         <span v-else class="mt-n5 fs-11 badge bg-warning">Ongoing</span> -->
                                                     </h4>
                                                     <div class="hstack gap-3 flex-wrap">
+                                                        <div><span class="text-muted">TSR Code : </span><span class="fw-medium">{{sample.data.tsr_code}}</span></div>
+                                                        <div class="vr" style="width: 1px;"></div>
                                                         <div><span class="text-muted">Received Date : </span><span class="fw-medium">{{sample.data.created_at}}</span></div>
                                                         <div class="vr" style="width: 1px;"></div>
                                                         <div><span class="text-muted">Due Date :</span> <span class="fw-medium">{{sample.data.due_at}}</span></div>
@@ -69,14 +71,14 @@
                                     <table class="table table-nowrap table-striped align-middle mb-0">
                                         <thead class="table-light thead-fixed">
                                             <tr class="fs-11">
-                                                <th class="text-center" style="width: 5%;" v-if="!sample.data.is_completed">
+                                                <th class="text-center" style="width: 4%;" v-if="!sample.data.is_completed">
                                                     <input class="form-check-input fs-16" v-model="mark" type="checkbox" value="option" />
                                                 </th>
-                                                <th class="text-center" style="width: 5%;" v-else>#</th>
+                                                <th class="text-center" style="width: 4%;" v-else>#</th>
                                                 <th style="width: 15%;">Test Name</th>
                                                 <th class="text-center">Method Reference</th>
-                                                <th class="text-center" style="width: 17%;">Start</th>
-                                                <th class="text-center" style="width: 17%;">End</th>
+                                                <th class="text-center" style="width: 10%;">Start</th>
+                                                <th class="text-center" style="width: 10%;">End</th>
                                                 <th class="text-center" style="width: 7%;">Status</th>
                                                 <th class="text-end" style="width: 4%;"></th>
                                             </tr>
@@ -96,7 +98,8 @@
                                                     <p class="text-muted mb-0 fs-11">{{list.sample}}</p>
                                                 </td>
                                                 <td class="text-center">
-                                                    <h5 class="fs-12 mb-0">{{(list.method_short) ? list.method_short : list.method}}</h5>
+                                                    <h5 class="fs-12 mb-0">{{list.method}}</h5>
+                                                    <!-- <h5 class="fs-12 mb-0">{{(list.method_short) ? list.method_short : list.method}}</h5> -->
                                                     <p class="text-muted fs-11 mb-0">{{list.reference}}</p>
                                                 </td>
                                                 <td class="text-center">

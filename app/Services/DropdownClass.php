@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Tsr;
 use App\Models\User;
 use App\Models\Agency;
 use App\Models\AgencyFacility;
@@ -267,6 +268,24 @@ class DropdownClass
             });
         }
 
+        if($keyword){
+            return $data;
+        }else{
+            return [];
+        }
+    }
+
+    public function tsrsamples($keyword){
+        $data =  Tsr::when($keyword, function ($query) use ($keyword){
+            $query->where('code', 'LIKE', "%{$keyword}%")->whereIn('status_id',[3,4]);
+        })
+        ->limit(5)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->code
+            ];
+        });
+        
         if($keyword){
             return $data;
         }else{

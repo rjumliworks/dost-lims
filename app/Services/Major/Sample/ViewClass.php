@@ -20,7 +20,7 @@ class ViewClass
                 'analyses.sample',
                 'analyses.started.profile','analyses.ended.profile'
             )
-            ->with('tsr:id,due_at','disposal.disposal','disposal.user.profile','disposal.sample')
+            ->with('tsr:id,due_at,code','disposal.disposal','disposal.user.profile','disposal.sample')
             ->where('id',$id)
             ->orderBy('created_at','ASC')
             ->first()
@@ -40,7 +40,7 @@ class ViewClass
             ->with('disposal')
             ->withWhereHas('tsr',function ($query) use ($code){
                 $query->whereNotIn('status_id',[1,2]);
-                $query->select('id','due_at','created_at')->whereIn('laboratory_id',$this->labs());
+                $query->select('id','due_at','code','created_at')->whereIn('laboratory_id',$this->labs());
                 $query->when($code, function ($query) use ($code){
                     $query->where('code', 'LIKE', "%{$code}%");
                 });

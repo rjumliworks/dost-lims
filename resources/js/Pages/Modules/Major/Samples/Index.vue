@@ -29,7 +29,8 @@
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Sample" class="form-control" style="width: 30%;">
                                 <input type="text" v-model="filter.sample" placeholder="Search Sample name" class="form-control">
-                                <Multiselect class="white" style="width: 20%;" :options="laboratories" :searchable="true" v-model="filter.code" label="name" placeholder="Filter Laboratory" />
+                                <Multiselect class="white" @search-change="checkTsr" style="width: 15%;" :options="tsrs" :searchable="true" v-model="filter.code" label="name" placeholder="Search Code" />
+                                <Multiselect v-if="this.$page.props.roles.length > 1" class="white" style="width: 13%;" :options="laboratories" :searchable="true" v-model="filter.laboratory" label="name" placeholder="Filter Laboratory" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -81,9 +82,9 @@
                                     <th style="width: 10%;" class="text-center">Analyses</th>
                                     <th style="width: 15%;" class="text-center">Received Date</th>
                                     <th style="width: 15%;" class="text-center">Due Date</th>
-                                    <th style="width: 10%" class="text-center">Status</th>
                                     <th style="width: 15%;" class="text-center">Manner of Disposal</th>
                                     <th style="width: 10%;" class="text-center">Disposed Date</th>
+                                    <th style="width: 10%" class="text-center">Status</th>
                                     <th style="width: 7%;" ></th>
                                 </tr>
                             </thead>
@@ -99,18 +100,18 @@
                                     </td>
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary">{{list.code}}</h5>
-                                        <p class="fs-13 text-muted mb-0">{{list.name}}</p>
+                                        <p class="fs-13 text-muted mb-0">{{list.samplename.name}}</p>
                                     </td>
                                     <td class="text-center">{{ countCompleted(list.analyses) }} of {{ list.analyses.length }} </td>
                                     <td class="text-center">{{ list.created_at }}</td>
                                     <td class="text-center">{{ list.due_at }}</td>
+                                    <td class="text-center">{{ (list.is_disposed) ? list.disposal.disposal : '-' }}</td>
+                                    <td class="text-center">{{ (list.is_disposed) ? list.disposal.disposed_at : '-' }}</td>
                                     <td class="text-center">
                                         <span v-if="list.is_completed" class="badge bg-success">Completed</span>
                                         <span v-else-if="countOngoing(list.analyses) > 0" class="badge bg-info">Ongoing</span>
                                         <span v-else class="badge bg-warning">Pending</span>
                                     </td>
-                                    <td class="text-center">{{ (list.is_disposed) ? list.disposal.disposal : '-' }}</td>
-                                    <td class="text-center">{{ (list.is_disposed) ? list.disposal.disposed_at : '-' }}</td>
                                     <td class="text-end">
                                         <a :href="`/samples/${list.reference}`" target="_blank" @click="selectedIndex = index">
                                             <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
@@ -147,7 +148,7 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                month: null,
+                laboratory: null,
                 code: null,
                 sample: null,
                 status: null
@@ -166,7 +167,7 @@ export default {
         "filter.keyword"(newVal){
             this.checkSearchStr(newVal);
         },
-        "filter.month"(newVal){
+        "filter.code"(){
             this.fetch();
         },
         "filter.code"(newVal){
@@ -211,7 +212,7 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     laboratory: this.filter.laboratory,
-                    code: (this.filter.code) ? this.filter.code.name : null,
+                    code: this.filter.code,
                     sample: this.filter.sample,
                     status: this.filter.status,
                     count: (this.filter.code) ? null : 10,
@@ -227,6 +228,9 @@ export default {
             })
             .catch(err => console.log(err));
         },
+        checkTsr: _.debounce(function(string) {
+            (string) ? this.fetchTsrs(string) : '';
+        }, 300),
         fetchTsrs(code){
             axios.get('/search',{
                 params: {
