@@ -31,6 +31,7 @@
                                 <input type="text" v-model="filter.sample" placeholder="Search Sample name" class="form-control">
                                 <Multiselect class="white" @search-change="checkTsr" style="width: 15%;" :options="tsrs" :searchable="true" v-model="filter.code" label="name" placeholder="Search Code" />
                                 <Multiselect v-if="this.$page.props.roles.length > 1" class="white" style="width: 13%;" :options="laboratories" :searchable="true" v-model="filter.laboratory" label="name" placeholder="Filter Laboratory" />
+                                <Multiselect class="white" style="width: 13%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -83,9 +84,9 @@
                                     <th style="width: 15%;" class="text-center">Received Date</th>
                                     <th style="width: 15%;" class="text-center">Due Date</th>
                                     <th style="width: 15%;" class="text-center">Manner of Disposal</th>
-                                    <th style="width: 10%;" class="text-center">Disposed Date</th>
-                                    <th style="width: 10%" class="text-center">Status</th>
-                                    <th style="width: 7%;" ></th>
+                                    <th style="width: 12%;" class="text-center">Disposed Date</th>
+                                    <th style="width: 12%" class="text-center">Status</th>
+                                    <th style="width: 4%;" ></th>
                                 </tr>
                             </thead>
                             <tbody class="fs-12">
@@ -113,11 +114,47 @@
                                         <span v-else class="badge bg-warning">Pending</span>
                                     </td>
                                     <td class="text-end">
-                                        <a :href="`/samples/${list.reference}`" target="_blank" @click="selectedIndex = index">
+                                        <!-- <a :href="`/samples/${list.reference}`" target="_blank" @click="selectedIndex = index">
                                             <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
                                             </b-button>
-                                        </a>
+                                        </a> -->
+                                        <div class="d-flex gap-3 justify-content-center">
+                                            <div class="dropdown">
+                                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                                    <template #button-content> 
+                                                        <i class="ri-more-fill"></i>
+                                                    </template>
+                                                    <li>
+                                                        <a :href="`/samples/${list.reference}`" target="_blank" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-eye-line me-2"></i> View
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openDetails(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-information-line me-2"></i>Details
+                                                        </a>
+                                                    </li>
+                                                    <!-- <li>
+                                                        <a @click="openPrint(list.reference)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-printer-line me-2"></i>Print
+                                                        </a>
+                                                    </li> -->
+                                                    <!-- <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-calendar-fill me-2"></i>Update Date
+                                                        </a>
+                                                    </li> -->
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li>
+                                                        <a @click="save(11,'start',list.id)" class="dropdown-item d-flex align-items-center"  href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                            <span class="text-success"><i class="ri-checkbox-circle-fill me-2"></i>Start Analysis</span>
+                                                        </a>
+                                                    </li>
+                                                </BDropdown>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -130,17 +167,19 @@
             </div>
         </div>
     </BRow>
-    <!-- <Update @update="updateList" ref="update"/> -->
+    <View ref="view"/>
+    <Update @update="updateList" ref="update"/>
 </template>
 <script>
 import _ from 'lodash';
-// import Update from './Modals/Update.vue';
+import View from './Modals/View/Sample.vue';
+import Update from './Modals/Update.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect },
-    props: ['counts','laboratories'],
+    components: { PageHeader, Pagination, Multiselect, Update, View },
+    props: ['counts','laboratories','years'],
     data(){
         return {
             lists: [],
@@ -151,7 +190,8 @@ export default {
                 laboratory: null,
                 code: null,
                 sample: null,
-                status: null
+                status: null,
+                year: new Date().getFullYear(),
             },
             tsrs: [],
             statuses: [
@@ -167,10 +207,10 @@ export default {
         "filter.keyword"(newVal){
             this.checkSearchStr(newVal);
         },
-        "filter.code"(){
+        "filter.code"(newVal){
             this.fetch();
         },
-        "filter.code"(newVal){
+        "filter.year"(newVal){
             this.fetch();
         },
         "filter.sample"(newVal){
@@ -215,6 +255,7 @@ export default {
                     code: this.filter.code,
                     sample: this.filter.sample,
                     status: this.filter.status,
+                    year: this.filter.year,
                     count: (this.filter.code) ? null : 10,
                     option: 'list'
                 }
@@ -307,7 +348,11 @@ export default {
         },
         openUpdate(){
             this.$refs.update.show(this.samples);
+        },
+        openDetails(data){
+            this.$refs.view.show(data);
         }
+
     }
 }
 </script>

@@ -80,9 +80,9 @@ class AnalysisController extends Controller
                 case 'tagging':
                     return $this->update->tagging($request);
                 break;
-                // case 'group':
-                //     return $this->update->group($request);
-                // break;
+                case 'group':
+                    return $this->update->group($request);
+                break;
                 // case 'cancel':
                 //     return $this->update->cancel($request);
                 // break;

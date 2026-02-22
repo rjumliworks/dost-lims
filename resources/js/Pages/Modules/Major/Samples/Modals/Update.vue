@@ -21,7 +21,7 @@
                             {{index + 1 }}.
                         </td>
                         <td>
-                            <span class="fs-13 mb-0 fw-semibold text-primary me-1">{{list.code}}</span><span class="text-muted fs-13">({{ list.name }})</span>
+                            <span class="fs-13 mb-0 fw-semibold text-primary me-1">{{list.code}}</span><span class="text-muted fs-13">({{ list.samplename.name }})</span>
                         </td>
                     </tr>
                 </tbody>
@@ -45,6 +45,7 @@ export default {
             form: useForm({
                 date: null,
                 lists: [],
+                type: 'Sample Code',
                 option: 'group'
             }),
             keyword: null,

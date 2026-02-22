@@ -14,6 +14,10 @@ class SampleController extends Controller
 {
     use HandlesTransaction;
 
+    protected $view;
+    protected $save;
+    protected $disposal;
+
     public function __construct(ViewClass $view, SaveClass $save, DisposalClass $disposal){
         $this->view = $view;
         $this->save = $save;

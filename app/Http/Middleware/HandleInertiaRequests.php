@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\User;
+use App\Models\Target;
 use App\Models\AgencyConfiguration;
 use App\Http\Resources\UserResource;
 
@@ -24,6 +25,7 @@ class HandleInertiaRequests extends Middleware
             'user' => (\Auth::check()) ? new UserResource(User::with('profile')->where('id',\Auth::user()->id)->first()) : null,
             'roles' => (\Auth::check()) ? \Auth::user()->roles()->where('user_roles.is_active', 1)->pluck('name') : null,
             'show' => AgencyConfiguration::value('show_others'),
+            'years' => Target::distinct()->pluck('year'),
             'flash' => [
                 'data'    => session('data') ?? null,
                 'message' => session('message') ?? null,

@@ -102,4 +102,81 @@ class UpdateClass
             'info' => "You've successfully updated the analysis."
         ];
     }
+
+    public function group($request){
+        if($request->type == 'Sample Code'){
+            $analyses = TsrAnalysis::whereIn('sample_id', $request->lists)->get();
+            foreach ($analyses as $analysis) {
+                if (is_null($analysis->start_at)) {
+                    $analysis->start_at = $request->date;
+                    $analysis->status_id = 11; 
+                    $analysis->started_by = \Auth::user()->id;
+                } else {
+                    $analysis->ended_by = \Auth::user()->id;
+                    $analysis->end_at = $request->date;
+                    $analysis->status_id = 12; 
+                }
+                $analysis->save();
+            }
+            foreach ($request->lists as $sample) {
+                $tsr_id = TsrSample::find($sample)?->tsr_id;
+                $count = TsrAnalysis::whereHas('sample',function ($query) use ($tsr_id){
+                    $query->whereHas('tsr',function ($query) use ($tsr_id){
+                        $query->where('id',$tsr_id);
+                    });
+                })->whereIn('status_id',[10,11])->count();
+                if($count === 0){
+                    $tsr = TsrSample::where('id',$request->sample_id)->update([
+                        'is_completed' => 1,
+                        'completed_at' => $request->date
+                    ]); 
+                    $tsr = Tsr::where('id',$tsr_id)->update(['status_id' => 4]); 
+                }
+            }
+            foreach($request->lists as $sampleId) {
+                if (!TsrAnalysis::where('sample_id', $sampleId)->where('status_id', '!=', 12)->exists()) {
+                    TsrSample::where('id', $sampleId)->update(['is_completed' => true, 'completed_at' => $request->date]);
+                }
+            }
+            $samples = SampleResource::collection(TsrSample::whereIn('id',$request->lists)->get());
+        }else{
+            foreach ($request->lists as $list) {
+                $analysis = TsrAnalysis::where('id',$list)->first();
+                if (is_null($analysis->start_at)) {
+                    $analysis->start_at = $request->date;
+                    $analysis->status_id = 11; 
+                    $analysis->started_by = \Auth::user()->id;
+                } else {
+                    $analysis->ended_by = \Auth::user()->id;
+                    $analysis->end_at = $request->date;
+                    $analysis->status_id = 12; 
+                }
+                if($analysis->save()){
+                    $tsr_id = TsrSample::find($analysis->sample_id)?->tsr_id;
+                    $count = TsrAnalysis::whereHas('sample',function ($query) use ($tsr_id){
+                        $query->whereHas('tsr',function ($query) use ($tsr_id){
+                            $query->where('id',$tsr_id);
+                        });
+                    })->whereIn('status_id',[10,11])->count();
+                    if($count === 0){
+                        $tsr = TsrSample::where('id',$analysis->sample_id)->update([
+                            'is_completed' => 1,
+                            'completed_at' => $request->date
+                        ]); 
+                        $tsr = Tsr::where('id',$tsr_id)->update(['status_id' => 4]); 
+                    }
+                    if (!TsrAnalysis::where('id', $list)->where('status_id', '!=', 12)->exists()) {
+                        TsrSample::where('id', $analysis->sample_id)->update(['is_completed' => true, 'completed_at' => $request->date]);
+                    }
+                }
+            }
+            $samples = '';
+        }
+
+        return [
+            'data' => $samples,
+            'message' => 'Analysis was updated!', 
+            'info' => "You've successfully updated the analysis."
+        ];
+    }
 }

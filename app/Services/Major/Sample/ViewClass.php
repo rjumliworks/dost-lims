@@ -49,11 +49,15 @@ class ViewClass
                 $query->where('code', 'LIKE', "%{$keyword}%")->orWhere('name', 'LIKE', "%{$keyword}%");
             })
             ->when($request->sample, function ($query, $sample) {
-                $query->where('name', 'LIKE', "%{$sample}%");
+                $query->where('name', 'LIKE', "%{$sample}%")
+                ->orWhereHas('samplename', function ($q2) use ($sample) {
+                    $q2->where('name', 'LIKE', "%{$sample}%");
+                });
             })
             ->when($request->has('status'), function ($query) use ($request) {
                 $query->where('is_completed', $request->status);
             })
+            ->whereYear('created_at',$request->year)
             ->orderBy('created_at','DESC')
             ->paginate($request->count)
         );
