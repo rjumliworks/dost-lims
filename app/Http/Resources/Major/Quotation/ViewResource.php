@@ -37,6 +37,7 @@ class ViewResource extends JsonResource
             'is_onsite' => $this->is_onsite,
             'services' => $this->services,
             'referral' => $this->referral,
+            'is_referral' => $this->is_referral,
             'terms' => json_decode($this->terms,true),
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,

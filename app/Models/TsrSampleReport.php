@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,13 @@ class TsrSampleReport extends Model
         'cro_id',
         'tm_id'
     ];
+
+    protected $appends = ['reference'];
+ 
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
 
     public function sample()
     {

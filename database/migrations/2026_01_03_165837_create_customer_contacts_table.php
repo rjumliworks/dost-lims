@@ -18,8 +18,10 @@ return new class extends Migration
             $table->longText('email');
             $table->longText('contact_no');
             $table->longText('tin')->nullable();
-            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->string('otp')->nullable();
+            $table->unsignedBigInteger('customer_id')->unique();
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->timestamp('otp_expires_at')->nullable();
             $table->timestamps();
         });
     }

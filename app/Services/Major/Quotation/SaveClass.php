@@ -9,6 +9,7 @@ use App\Models\Quotation;
 use App\Models\QuotationSample;
 use App\Models\QuotationAnalysis;
 use App\Models\QuotationService;
+use App\Models\QuotationReferral;
 
 class SaveClass
 {

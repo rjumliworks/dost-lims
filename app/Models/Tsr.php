@@ -88,9 +88,15 @@ class Tsr extends Model
     protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {
-            if (! Auth::check()) {
+            if (! auth()->guard('web')->check()) {
+                $customerId = auth()->guard('customer')->id(); // returns logged-in customer id
+
+                if ($customerId) {
+                    $builder->where('customer_id', $customerId);
+                }
                 return;
             }
+
             $agencyId = Auth::user()->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');

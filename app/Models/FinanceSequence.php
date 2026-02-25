@@ -18,14 +18,14 @@ class FinanceSequence extends Model
             $facilityId = $user->profile?->facility_id;
             $year = date('Y');
             
-            $sequence = TsrSequence::where([
+            $sequence = FinanceSequence::where([
                 'agency_id' => $agencyId,
                 'facility_id' => $facilityId,
                 'year' => $year
             ])->lockForUpdate()->first();
 
             if (!$sequence) {
-                $sequence = TsrSequence::create([
+                $sequence = FinanceSequence::create([
                     'agency_id' => $agencyId,
                     'facility_id' => $facilityId,
                     'year' => $year,

@@ -114,11 +114,6 @@
                                         <span v-else class="badge bg-warning">Pending</span>
                                     </td>
                                     <td class="text-end">
-                                        <!-- <a :href="`/samples/${list.reference}`" target="_blank" @click="selectedIndex = index">
-                                            <b-button variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
-                                                <i class="ri-eye-fill align-bottom"></i>
-                                            </b-button>
-                                        </a> -->
                                         <div class="d-flex gap-3 justify-content-center">
                                             <div class="dropdown">
                                                 <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
@@ -132,14 +127,14 @@
                                                     </li>
                                                     <li>
                                                         <a @click="openDetails(list)" class="dropdown-item d-flex align-items-center" role="button">
-                                                            <i class="ri-information-line me-2"></i>Details
+                                                            <i class="ri-information-line me-2"></i>Sample Details
                                                         </a>
                                                     </li>
-                                                    <!-- <li>
-                                                        <a @click="openPrint(list.reference)" class="dropdown-item d-flex align-items-center" role="button">
-                                                            <i class="ri-printer-line me-2"></i>Print
+                                                    <li v-if="list.disposal">
+                                                        <a @click="openDisposal(list.disposal)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-delete-bin-6-line me-2"></i>Disposal Details
                                                         </a>
-                                                    </li> -->
+                                                    </li>
                                                     <!-- <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
@@ -168,17 +163,19 @@
         </div>
     </BRow>
     <View ref="view"/>
+    <Disposal ref="disposal"/>
     <Update @update="updateList" ref="update"/>
 </template>
 <script>
 import _ from 'lodash';
 import View from './Modals/View/Sample.vue';
 import Update from './Modals/Update.vue';
+import Disposal from './Modals/View/Disposal.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Update, View },
+    components: { PageHeader, Pagination, Multiselect, Update, View, Disposal },
     props: ['counts','laboratories','years'],
     data(){
         return {
@@ -351,8 +348,10 @@ export default {
         },
         openDetails(data){
             this.$refs.view.show(data);
+        },
+        openDisposal(data){
+            this.$refs.disposal.show(data);
         }
-
     }
 }
 </script>

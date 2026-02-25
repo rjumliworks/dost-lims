@@ -36,7 +36,7 @@
                                 <div class="text-muted" @click="makeCopy(selected)" style="cursor: pointer;">  
                                     <i class="ri-edit-box-fill fs-16"></i> Make a Copy
                                 </div>
-                                <div class="text-muted" @click="openSubmit(selected)" style="cursor: pointer;">  
+                                <div class="text-muted" v-if="selected.status.name != 'Pending'" @click="openSubmit(selected)" style="cursor: pointer;">  
                                     <i class="ri-file-list-fill fs-16"></i> Convert to TSR
                                 </div>
                                 <div class="vr" style="width: 1px;"></div>

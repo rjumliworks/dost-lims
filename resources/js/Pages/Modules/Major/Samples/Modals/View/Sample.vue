@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 800px;" hide-footer header-class="p-3 bg-light" title="Sample Information" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 800px;" hide-footer header-class="p-3 bg-light" title="Sample Details" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         
         <template v-if="selected">
             <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">

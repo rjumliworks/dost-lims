@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Services\Major\Analysis\ViewClass;
 use App\Services\Major\Analysis\SaveClass;
 use App\Services\Major\Analysis\UpdateClass;
+use App\Services\Major\Analysis\TaggingClass;
 use App\Http\Requests\Major\AnalysisRequest;
 
 class AnalysisController extends Controller
@@ -18,16 +19,23 @@ class AnalysisController extends Controller
     protected SaveClass $save;
     protected UpdateClass $update;
 
-    public function __construct(ViewClass $view, SaveClass $save, UpdateClass $update){
+    public function __construct(ViewClass $view, SaveClass $save, UpdateClass $update, TaggingClass $tagging){
         $this->view = $view;
         $this->save = $save;
         $this->update = $update;
+        $this->tagging = $tagging;
     }
 
     public function index(Request $request){
         switch($request->option){
             case 'testservices':
                 return $this->view->testservices($request);
+            break;
+            case 'tagging':
+                return $this->tagging->list($request);
+            break;
+            case 'view':
+                return $this->tagging->view($request);
             break;
             default:
             return '';

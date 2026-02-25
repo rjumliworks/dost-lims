@@ -10,8 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
     use LogsActivity;
 
@@ -34,9 +35,10 @@ class Customer extends Model
     protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {
-            if (! Auth::check()) {
+            if (! auth()->guard('web')->check()) {
                 return;
             }
+
             $agencyId = Auth::user()->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
@@ -125,26 +127,6 @@ class Customer extends Model
     public function agency()
     {
         return $this->belongsTo('App\Models\Agency', 'agency_id', 'id');
-    }
-
-    public function setContactNoAttribute($value)
-    {
-        $this->attributes['contact_no'] = Crypt::encryptString($value);
-    }
-
-    public function getContactNoAttribute($value)
-    {
-        return Crypt::decryptString($value);
-    }
-
-    public function setEmailAttribute($value)
-    {
-        $this->attributes['email'] = Crypt::encryptString($value);
-    }
-
-    public function getEmailAttribute($value)
-    {
-        return Crypt::decryptString($value);
     }
 
     public function getUpdatedAtAttribute($value)

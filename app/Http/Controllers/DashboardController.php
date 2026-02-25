@@ -4,20 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Services\Dashboard\AnalystClass;
 use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
 
 class DashboardController extends Controller
 {   
+    protected AnalystClass $analyst;
     protected CashierClass $cashier;
     protected DropdownClass $dropdown;
     protected AccountantClass $accountant;
     
     public function __construct(
+        AnalystClass $analyst,
         CashierClass $cashier,
         DropdownClass $dropdown,
         AccountantClass $accountant
     ){
+        $this->analyst = $analyst;
         $this->cashier = $cashier;
         $this->dropdown = $dropdown;
         $this->accountant = $accountant;
@@ -62,6 +66,20 @@ class DashboardController extends Controller
                             ]
                         ]);
                     break;
+                    case 'Laboratory Analyst':
+                        return inertia('Modules/Dashboard/Analyst/Index',[
+                            'reminders' => $this->analyst->reminders($request),
+                            'tasks' => $this->analyst->tasks($request),
+                            'laboratories' => $this->analyst->laboratories($request)
+                        ]);
+                    break;
+                    case 'Calibration Officer':
+                        return inertia('Modules/Dashboard/Analyst/Index',[
+                            'reminders' => $this->analyst->reminders($request),
+                            'tasks' => $this->analyst->tasks($request),
+                            'laboratories' => $this->analyst->laboratories($request)
+                        ]);
+                    break;
                     default:
                     return inertia('Modules/Dashboard/Index',[
                         // 'dropdowns' => [
@@ -77,6 +95,15 @@ class DashboardController extends Controller
                     ]);
                 }
             }
+        }
+    }
+
+    public function search(Request $request){
+        $option = $request->option;
+        switch($option){
+            case 'performance':
+                return $this->analyst->performance($request);
+            break;
         }
     }
 }

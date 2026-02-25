@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('report_id');
             $table->foreign('report_id')->references('id')->on('tsr_sample_reports')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['user_id','report_id'], 'unique_user');
         });
     }
 

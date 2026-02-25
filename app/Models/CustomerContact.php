@@ -23,6 +23,10 @@ class CustomerContact extends Model
         'kradworkz'
     ];
 
+    protected $casts = [
+        'otp_expires_at' => 'datetime',
+    ];
+
     public function customer()
     {
         return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');

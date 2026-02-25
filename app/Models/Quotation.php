@@ -148,4 +148,9 @@ class Quotation extends Model
         });
     }
 
+    public function createReferral(array $data): void
+    {
+        $this->referral()->create($data);
+    }
+
 }

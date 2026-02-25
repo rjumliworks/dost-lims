@@ -13,7 +13,8 @@
         <meta property="og:url" content="URL to the template's webpage">
         <meta name="twitter:card" content="summary_large_image">
         <link rel="shortcut icon" href="{{ URL::asset('images/favicon.ico') }}">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/1.8.349/pdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
         @vite(['resources/js/app.js'])
         @inertiaHead
     </head>

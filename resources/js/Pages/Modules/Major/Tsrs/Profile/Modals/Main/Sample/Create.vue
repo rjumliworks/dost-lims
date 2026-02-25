@@ -19,7 +19,8 @@
                 </BCol>
                 <BCol lg="6" class="mt-n3 mb-3">
                     <InputLabel for="testname" value="Category"/>
-                    <Multiselect @search-change="checkCategory" 
+                    <!--  @search-change="checkCategory"  -->
+                    <Multiselect
                     :options="categories" label="name" :searchable="true" 
                     v-model="category" 
                     placeholder="Select Category" ref="multiselectC"/>
@@ -109,8 +110,17 @@ export default {
                     this.names = this.sampletype.names;
                 }else{
                     this.form.sampletype_id = null;
+                    this.form.samplename_id = null;
                     this.names = [];
                 }
+            }
+        },
+        "category"(newVal){
+            if(!newVal){
+                this.types = null;
+                this.sampletype = null;
+            }else{
+                this.fetchType(newVal);
             }
         }
     },
@@ -122,6 +132,7 @@ export default {
             this.form.tsr_id = id;
             this.form.laboratory_id = laboratory;
             this.showModal = true;
+            this.fetchCategory();
         },
         edit(id, laboratory, data){
             this.empty();
@@ -156,15 +167,11 @@ export default {
             this.form.sampletype_id = type.id;
             this.form.samplename_id = name.id;
         },
-        checkCategory: _.debounce(function(string) {
-            (string) ? this.fetchCategory(string) : '';
-        }, 300),
         fetchCategory(code){
             axios.get('/categories',{
                 params: {
                     option: 'category',
-                    laboratory_id: this.form.laboratory_id,
-                    keyword: code
+                    laboratory_id: this.form.laboratory_id
                 }
             })
             .then(response => {
@@ -172,9 +179,6 @@ export default {
             })
             .catch(err => console.log(err));
         },
-        checkType: _.debounce(function(string) {
-            (string) ? this.fetchType(string) : '';
-        }, 300),
         fetchType(code){
             this.types = [];
             axios.get('/categories',{
@@ -182,7 +186,6 @@ export default {
                     option: 'type',
                     with: true,
                     category_id: this.category,
-                    keyword: code
                 }
             })
             .then(response => {

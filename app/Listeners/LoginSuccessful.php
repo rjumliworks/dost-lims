@@ -20,6 +20,10 @@ class LoginSuccessful
     public function handle(Login $event): void
     {
         $user = $event->user;
+        if ($user instanceof \App\Models\Customer) {
+            return;
+        }
+
         $user->last_login_at = now();
         $user->save();
         // $ip = $this->request->ip();

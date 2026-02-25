@@ -17,6 +17,9 @@ class CustomerName extends Model
     protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {
+            if (! auth()->guard('web')->check()) {
+                return;
+            }
             if (Auth::check()) {
                 $builder->where('agency_id', Auth::user()->profile->agency_id);
             }
