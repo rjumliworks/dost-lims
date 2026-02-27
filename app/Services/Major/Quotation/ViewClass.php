@@ -135,7 +135,7 @@ class ViewClass
         return \Auth::user()->profile?->agency?->address?->region_code;
     }
 
-     public function print($request){
+    public function print($request){
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($request->id);
 
@@ -290,7 +290,34 @@ class ViewClass
             $width = $fontMetrics->get_text_width($text, $font, $size);
             $canvas->text(106 - $width, 796, $text, $font, $size);
         });
-        return $pdf->stream($quotation->code.'.pdf');
+
+        $signatory = $quotation->signatory;
+
+        $latestDate = collect([
+            $signatory->prepared_date,
+            $signatory->approved_date,
+            $signatory->received_date,
+        ])->filter()->max();
+
+        $pdfBinary = $dompdf->output();
+
+        $meta = "\n%--- DOC META ---\n";
+        $meta .= "% ValidationHMAC: {$signatory->hmac}\n";
+        $meta .= "% GeneratedAt: " . $latestDate . "\n";
+        $meta .= "% Version: {$signatory->version}\n";
+        $meta .= "%--- END META ---\n";
+
+        $pos = strrpos($pdfBinary, '%%EOF');
+        if ($pos !== false) {
+            $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
+        } else {
+            $pdfBinary .= $meta . "%%EOF\n";
+        }
+
+        return response($pdfBinary)
+            ->header('Content-Type', 'application/pdf')
+             ->header('Content-Disposition', 'inline; filename="' . $quotation->code . '.pdf"');
+        // return $pdf->stream($quotation->code.'.pdf');
     }
 
      private function analysesList($id){

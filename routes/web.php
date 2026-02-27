@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
+Route::post('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verify']);
+
 Route::middleware(['auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index']);
 

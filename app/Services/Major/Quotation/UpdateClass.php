@@ -3,6 +3,7 @@
 namespace App\Services\Major\Quotation;
 
 use Carbon\Carbon;
+use App\Models\UserRole;
 use App\Models\Quotation;
 use App\Models\TsrSequence;
 
@@ -17,7 +18,10 @@ class UpdateClass
         if($data->save()){
             $data->signatory()->create([
                 'prepared_by' => \Auth::user()->id,
-                'prepared_date' => now()
+                'prepared_date' => now(),
+                'approved_by' => UserRole::where('laboratory_id',$data->laboratory_id)->whereHas('role',function ($query){
+                    $query->where('name','Technical Manager');
+                })->where('is_active',1)->value('user_id')
             ]);
         }
         

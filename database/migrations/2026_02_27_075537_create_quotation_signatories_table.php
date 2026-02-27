@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('quotation_signatories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
+            $table->string('hmac')->nullable();
+            $table->integer('version')->default(1);
             $table->unsignedInteger('prepared_by')->nullable();
             $table->foreign('prepared_by')->references('id')->on('users')->onDelete('cascade');
             $table->datetime('prepared_date')->nullable();
