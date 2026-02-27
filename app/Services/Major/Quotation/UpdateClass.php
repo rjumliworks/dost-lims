@@ -14,7 +14,13 @@ class UpdateClass
         $data->due_at = $request->due_at;
         $data->code = TsrSequence::getQuoCode(12);
         $data->terms = json_encode($request->terms);
-        $data->save();
+        if($data->save()){
+            $data->signatory()->create([
+                'prepared_by' => \Auth::user()->id,
+                'prepared_date' => now()
+            ]);
+        }
+        
         return [
             'data' => $data,
             'message' => 'Quotation was successfully confirmed!', 

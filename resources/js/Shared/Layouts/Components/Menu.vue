@@ -50,7 +50,7 @@
                 </li>
                 <li class="nav-item">
                     <Link href="/testreports" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Laboratory/Testreports') }">
+                    :class="{'active': $page.component.startsWith('Modules/Major/Testreports') }">
                     <i class="ri-file-paper-2-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Test Reports</span>
                     </Link>

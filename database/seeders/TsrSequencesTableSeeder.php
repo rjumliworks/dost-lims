@@ -166,7 +166,7 @@ class TsrSequencesTableSeeder extends Seeder
             12 => 
             array (
                 'id' => 13,
-                'next_sequence' => 4,
+                'next_sequence' => 1,
                 'year' => 2026,
                 'type_id' => 12,
                 'facility_id' => 1,

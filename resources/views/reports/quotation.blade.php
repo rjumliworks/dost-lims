@@ -382,7 +382,7 @@
             </div>
             <div style="page-break-inside: avoid;">
                 <h6 style="font-size: 10px; margin-top: 12px;">4. SIGNATORIES</h6>
-                <table style="text-align: center; border: 1px solid black; font-size: 10px; margin-top: -22px;">
+                <table style="text-align: center; border: 1px solid black; font-size: 10px; margin-top: -22px; page-break-inside: avoid;">
                     <tbody>
                         <tr>
                             <td style="min-height: 50px; padding: 20px; border-bottom-style: hidden;"></td>
@@ -390,9 +390,60 @@
                             <td style="min-height: 50px; padding: 20px; border-bottom-style: hidden;"></td>
                         </tr>
                         <tr>
-                            <td width="33.3%"><span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$quotation['conforme']}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">Customer / Authorized Representative </br> <span style="font-size:9px; color: #606060;">(Received by)</span></td>
-                            <td width="33.3%"><span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$user}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">Laboratory Personnel </br> <span style="font-size:9px; color: #606060;">(Prepared by)</span></td>
-                            <td width="33.3%"><span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$manager}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">Technical Manager </br> <span style="font-size:9px; color: #606060;">(Approved by)</span></td>
+                            <td width="33.3%" style="vertical-align: bottom; position: relative; height: 40px; text-align: center;">
+                                <div style="position: relative; height: 40px;">
+                                    <div style="position: absolute; bottom: 13px; left: 50%; transform: translateX(-50%);">
+                                        @if(!empty($signatory['received']['profile']['signature']))
+                                            <img 
+                                                src="{{ public_path('storage/profile-signatures/' . $sign['prepared']['profile']['signature']) }}" 
+                                                alt="Signature" 
+                                                style="height: 60px; width: auto;"
+                                            >
+                                        @endif
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 2; width: 100%;">
+                                    <span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$quotation['conforme']}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">Customer / Authorized Representative </br> <span style="font-size:9px; color: #606060;">(Received by)</span>
+                                </div>
+                            </td>
+                            <td width="33.3%" style="vertical-align: bottom; position: relative; height: 40px; text-align: center;">
+                                <div style="position: relative; height: 40px;">
+                                    <div style="position: absolute; bottom: 13px; left: 50%; transform: translateX(-50%);">
+                                        @if($signatory['prepared']['profile']['signature'] === 'no-esig.png')
+                                            <img 
+                                                src="{{ public_path('images/avatars/no-esig.png') }}" 
+                                                alt="Signature" 
+                                                style="height: 60px; width: auto;"
+                                            >
+                                        @else
+                                            <img 
+                                                src="{{ public_path('storage/profile-signatures/' . $signatory['prepared']['profile']['signature']) }}" 
+                                                alt="Signature" 
+                                                style="height: 60px; width: auto;"
+                                            >
+                                        @endif
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 2; width: 100%;">
+                                    <span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$user}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">Laboratory Personnel </br> <span style="font-size:9px; color: #606060;">(Prepared by)</span>
+                                </div>
+                            </td>
+                            <td width="33.3%" style="vertical-align: bottom; position: relative; height: 40px; text-align: center;">
+                                <div style="position: relative; height: 40px;">
+                                    <div style="position: absolute; bottom: 13px; left: 50%; transform: translateX(-50%);">
+                                        @if(!empty($signatory['approved']['profile']['signature']))
+                                            <img 
+                                                src="{{ public_path('storage/profile-signatures/' . $sign['prepared']['profile']['signature']) }}" 
+                                                alt="Signature" 
+                                                style="height: 60px; width: auto;"
+                                            >
+                                        @endif
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 2; width: 100%;">
+                                    <span style="font-weight: bold; font-size: 11px; color: #072388; text-transform: uppercase;">{{$manager}}</span><hr style="margin-top: 0px; margin-bottom: 1px; border: .1px solid black; width: 80%;">Technical Manager </br> <span style="font-size:9px; color: #606060;">(Approved by)</span>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

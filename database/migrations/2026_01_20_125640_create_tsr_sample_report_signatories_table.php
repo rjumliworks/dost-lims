@@ -14,13 +14,21 @@ return new class extends Migration
         Schema::create('tsr_sample_report_signatories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('timestamp');
-            $table->unsignedInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('report_id');
+            $table->string('analyzed_timestamp')->nullable();
+            $table->unsignedInteger('analized_by');
+            $table->foreign('analized_by')->references('id')->on('users')->onDelete('cascade');
+            $table->datetime('analyzed_date')->nullable();
+            $table->string('certified_timestamp')->nullable();
+            $table->unsignedInteger('certified_by');
+            $table->foreign('certified_by')->references('id')->on('users')->onDelete('cascade');
+            $table->datetime('certified_date')->nullable();
+            $table->string('approved_timestamp')->nullable();
+            $table->unsignedInteger('approved_by');
+            $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
+            $table->datetime('approved_date')->nullable();
+            $table->unsignedBigInteger('report_id')->unique();
             $table->foreign('report_id')->references('id')->on('tsr_sample_reports')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['user_id','report_id'], 'unique_user');
         });
     }
 

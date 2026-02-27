@@ -44,6 +44,7 @@ class Quotation extends Model
     public function samples(){ return $this->hasMany('App\Models\QuotationSample', 'quotation_id');}
     public function referral(){ return $this->hasOne('App\Models\QuotationReferral', 'quotation_id');}
     public function services(){ return $this->morphMany('App\Models\QuotationService', 'typeable');}
+    public function signatory(){ return $this->hasOne('App\Models\QuotationSignatory', 'quotation_id');}
 
     public function status(){ return $this->belongsTo('App\Models\ListStatus', 'status_id', 'id');}
     public function purpose(){ return $this->belongsTo('App\Models\ListDropdown', 'purpose_id', 'id');}

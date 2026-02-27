@@ -141,6 +141,7 @@ class ViewClass
 
         $quotation = Quotation::query()
         ->with('services.service')
+        ->with('signatory.prepared.profile:user_id,signature','signatory.approved.profile:user_id,signature','signatory.received.profile:user_id,signature')
         ->with('received:id','received.profile:id,firstname,lastname,middlename,user_id')
         ->with('laboratory:id,name','status:id,name,color,others')
         ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches','customer.address:address,customer_id,region_code,province_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name')
@@ -272,8 +273,9 @@ class ViewClass
             'descs' => $descs,
             'wallet' => $wallet,
             'manager' => $head->user->profile->firstname.' '.$head->user->profile->middlename[0].'. '.$head->user->profile->lastname,
-            'user' => $quotation->received->profile->firstname.' '.$quotation->received->profile->middlename[0].'. '.$quotation->received->profile->lastname
-        ]; 
+            'user' => $quotation->received->profile->firstname.' '.$quotation->received->profile->middlename[0].'. '.$quotation->received->profile->lastname,
+            'signatory' => $quotation->signatory
+        ];
         $pdf = \PDF::loadView('reports.quotation',$array)->setPaper('a4', 'portrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF();

@@ -229,8 +229,8 @@ export default {
             return { completed,notCompleted,total,percentage: percentage.toFixed(2) };
         },
         containerStyle() {
-            let offset = 325;
-            if (this.selected.status.name === 'Ongoing') {offset = 360;}
+            let offset = 320;
+            if (this.selected.status.name === 'Ongoing') {offset = 320;}
             return {
                 maxHeight: `calc(100vh - ${offset}px)`,
                 overflow: 'auto'
