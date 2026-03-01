@@ -1,6 +1,6 @@
 <template>
     <b-modal v-model="showModal"  style="--vz-modal-width: 600px;" header-class="p-3 bg-light" title="Update Analysis" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
-        <b-col lg class="mt-3">
+        <b-col lg class="mt-2">
             <label style="font-size: 12px; margin-bottom: 3px;">Started By / Date :</label>
             <div class="input-group mb-1">
                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
@@ -8,7 +8,7 @@
                 <TextInput v-model="form.start_at" type="date" class="form-control" @input="handleInput('start_at')" :light="true"/>
             </div>
         </b-col>
-        <b-col lg class="mt-3" v-if="form.ended">
+        <b-col lg class="mt-2" v-if="form.ended">
             <label style="font-size: 12px; margin-bottom: 3px;">Ended By / Date :</label>
             <div class="input-group mb-1">
                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
@@ -16,7 +16,6 @@
                 <TextInput v-model="form.end_at" type="date" class="form-control" @input="handleInput('ended_at')" :light="true"/>
             </div>
         </b-col>
-    
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
             <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Submit</b-button>
@@ -56,11 +55,11 @@ export default {
                 this.form.start_at = this.convertToISO(data.start_at);
             }
             if(data.ended){
-                this.form.started = {
+                this.form.ended = {
                     value: data.ended_id,
                     name: data.ended
                 };
-                this.form.ended_at = this.convertToISO(data.ended_at);
+                this.form.end_at = this.convertToISO(data.end_at);
             }
             this.showModal = true;
         },

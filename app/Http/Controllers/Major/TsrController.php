@@ -86,6 +86,9 @@ class TsrController extends Controller
                 case 'Confirm':
                     return $this->confirm->save($request);
                 break;
+                case 'Update':
+                    return $this->update->update($request);
+                break;
                 case 'Cancel':
                     return $this->update->cancel($request);
                 break;       

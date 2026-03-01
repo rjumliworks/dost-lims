@@ -52,6 +52,7 @@ class TaggingClass
         $laboratories = UserRole::where('user_id', auth()->id())
             ->whereIn('role_id', [5,10])
             ->pluck('laboratory_id');
+        $keyword = $request->keyword;
 
         if ($request->type === 'Testing Parameter') {
             // Query from TsrAnalysis
@@ -84,42 +85,45 @@ class TaggingClass
                     });
                 });
 
-            if ($request->keyword) {
-                $query->whereHas('testservice.testname', function($q) use ($request) {
-                    $q->where('name', 'LIKE', "%{$request->keyword}%");
+            if ($keyword) {
+                $query->whereHas('testservice.testname', function($q) use ($keyword) {
+                    $q->where('name', 'LIKE', "%{$keyword}%");
                 });
             }
 
         } else {
             // Query from TsrSample
             $query = TsrSample::query()
-                ->withWhereHas('tsr', function ($q) use ($request, $laboratories) {
-                    $q->select('id', 'code', 'laboratory_id', 'due_at');
-                    $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories)->where('status_id',3);
-                    if ($request->month) $q->whereMonth('due_at', $request->month);
-                    $q->when($request->year, function ($query, $year) {
-                        $query->whereYear('created_at', $year);
-                    });
-                    $q->when($request->reminder, function ($query, $reminder) {
-                        switch($reminder){
-                            case 'Completed with no report number':
-                                $query->where('status_id',4)->where('due_at','<',Carbon::now());
-                            break;
-                            case 'Due Soon':
-                                $query->whereBetween('due_at', [Carbon::now()->startOfDay(), Carbon::now()->addDays(5)->endOfDay()]);
-                            break;
-                            case 'Overdue Request':
-                                $query->whereDate('due_at','<',Carbon::now());
-                            break;
-                            case 'Completed':
-                                $query->where('status_id',4);
-                            break;
-                        }
-                    });
-                })
-                ->when($request->keyword, function ($q) use ($request) {
-                   $q->where('code', 'LIKE', "%{$request->keyword}%");
+            ->withWhereHas('tsr', function ($q) use ($request, $laboratories, $keyword) {
+                $q->when($keyword && $request->type == 'TSR Code', function ($q) use ($keyword) {
+                    $q->where('code', 'LIKE', "%{$keyword}%");
                 });
+                $q->select('id', 'code', 'laboratory_id', 'due_at');
+                $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories)->where('status_id',3);
+                if ($request->month) $q->whereMonth('due_at', $request->month);
+                $q->when($request->year, function ($query, $year) {
+                    $query->whereYear('created_at', $year);
+                });
+                $q->when($request->reminder, function ($query, $reminder) {
+                    switch($reminder){
+                        case 'Completed with no report number':
+                            $query->where('status_id',4)->where('due_at','<',Carbon::now());
+                        break;
+                        case 'Due Soon':
+                            $query->whereBetween('due_at', [Carbon::now()->startOfDay(), Carbon::now()->addDays(5)->endOfDay()]);
+                        break;
+                        case 'Overdue Request':
+                            $query->whereDate('due_at','<',Carbon::now());
+                        break;
+                        case 'Completed':
+                            $query->where('status_id',4);
+                        break;
+                    }
+                });
+            })
+            ->when($keyword && $request->type !== 'TSR Code', function ($q) use ($keyword) {
+                $q->where('code', 'LIKE', "%{$keyword}%");
+            });
         }
 
         return $query;
@@ -138,6 +142,7 @@ class TaggingClass
                         'tsr_id'    => $analysis->sample->tsr_id,
                         'tsr'       => $analysis->sample->tsr,
                         'code'      => $analysis->sample->code,
+                        'type'      => $analysis->sample->sampletype->name,
                         'name'      => $analysis->sample->samplename->name,
                         'testservice_name' => $analysis->testservice->testname->name ?? null,
                         'selected'  => null
@@ -160,6 +165,7 @@ class TaggingClass
                         'tsr_id'    => $sample->tsr_id,
                         'tsr'       => $sample->tsr,
                         'code'      => $sample->code,
+                        'type'      => $sample->sampletype->name,
                         'name'      => $sample->samplename->name,
                         'count'     => $sample->analyses_count,
                         'pending'   => $sample->pending_analyses_count,

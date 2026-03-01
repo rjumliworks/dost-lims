@@ -150,12 +150,12 @@
                                                                         <i class="ri-calendar-fill me-2"></i>Update Date
                                                                     </a>
                                                                 </li> -->
-                                                                <li><hr class="dropdown-divider"></li>
+                                                                <li v-if="list.status.name != 'Completed'"><hr class="dropdown-divider"></li>
                                                                 <li>
                                                                     <a v-if="list.status.name == 'Pending'"  @click="save(11,'start',list.id)" class="dropdown-item d-flex align-items-center"  href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
                                                                         <span class="text-success"><i class="ri-checkbox-circle-fill me-2"></i>Start Analysis</span>
                                                                     </a>
-                                                                    <a v-else @click="save(12,'end',list.id)" class="dropdown-item d-flex align-items-center"  href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
+                                                                    <a v-else-if="list.status.name == 'Ongoing'" @click="save(12,'end',list.id)" class="dropdown-item d-flex align-items-center"  href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
                                                                         <span class="text-danger"><i class="ri-checkbox-circle-fill me-2"></i>End Analysis</span>
                                                                     </a>
                                                                 </li>

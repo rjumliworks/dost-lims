@@ -17,6 +17,7 @@ class AnalysisController extends Controller
 
     protected ViewClass $view;
     protected SaveClass $save;
+    protected TaggingClass $tagging;
     protected UpdateClass $update;
 
     public function __construct(ViewClass $view, SaveClass $save, UpdateClass $update, TaggingClass $tagging){

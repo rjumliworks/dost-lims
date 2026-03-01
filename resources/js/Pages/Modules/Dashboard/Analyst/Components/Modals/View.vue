@@ -102,17 +102,20 @@
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
             <b-button v-if="status === 'Pending'" @click="save(11,'start')" variant="primary" :disabled="form.processing" block>Start Analysis</b-button>
             <b-button v-if="status === 'Ongoing'" @click="save(12,'end')" variant="primary" :disabled="form.processing" block>End Analysis</b-button>
+            <b-button v-if="status === 'Completed'" @click="openGenerate()" variant="success" :disabled="form.processing" block>Generate Report Number</b-button>
         </template>
     </b-modal>
     <Save @hide="hide" ref="save"/>
+    <Generate ref="generate"/>
 </template>
 <script>
 import simplebar from "simplebar-vue";
 import Save from './Save.vue';
+import Generate from './Generate.vue';
 import Multiselect from "@vueform/multiselect";
 import "@vueform/multiselect/themes/default.css";
 export default {
-    components: { Multiselect, Save, simplebar },
+    components: { Multiselect, Save, simplebar, Generate },
     data(){
         return {
             selected: {
@@ -182,6 +185,9 @@ export default {
                 option: type
             });
             this.$refs.save.show(this.form);
+        },
+        openGenerate(){
+            this.$refs.generate.show(this.selected.id);
         },
         formatMoney(value) {
             let val = (value/1).toFixed(2).replace(',', '.')

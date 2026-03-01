@@ -27,6 +27,10 @@ class UpdateRequest extends FormRequest
 
     public function withValidator($validator)
     {
+        if ($this->option === 'Update') {
+            return;
+        }
+
         $validator->after(function ($validator) {
             $hashids = new Hashids('krad', 10);
             $id = $hashids->decode($this->reference)[0] ?? null;

@@ -142,7 +142,7 @@
                                                     <th class="text-center" width="30%">Timestamp</th>
                                                 </tr>
                                             </thead>
-                                            <tbody v-if="this.testreport.data.signatories.length > 0">
+                                            <!-- <tbody v-if="this.testreport.data.signatories.length > 0">
                                                 <tr v-for="(list,index) in this.testreport.data.signatories" v-bind:key="index">
                                                     <td class="text-center"> 
                                                         {{index + 1}}
@@ -157,7 +157,7 @@
                                                 <tr>
                                                     <td colspan="3" class="text-center text-muted fs-12">No signatories found.</td>
                                                 </tr>
-                                            </tbody>
+                                            </tbody> -->
                                         </table>
                                     </div>
                                 </div>

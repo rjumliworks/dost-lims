@@ -43,7 +43,7 @@
                         <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                         <input type="text" :placeholder="'Search '+filter.type" v-model="filter.keyword" class="form-control" style="width: 30%;">
                         <Multiselect class="white" style="width: 17%;" :options="months" v-model="filter.month" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by Month" />
-                        <Multiselect class="white" style="width: 20%;" :options="['Sample Code','Testing Parameter']" v-model="filter.type" :searchable="true" :allow-empty="false"/>
+                        <Multiselect class="white" style="width: 20%;"  :can-clear="false" :can-deselect="false" :options="['Sample Code','Testing Parameter','TSR Code']" v-model="filter.type" :searchable="true" :allow-empty="false"/>
                         <Multiselect class="white" style="width: 10%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
                         <b-button type="button" variant="primary"  @click="(checked1.length > 0 || checked2.length > 0) ? openUpdate() : '' ">
                             <i class="ri-timer-line search-icon"></i> Update
@@ -85,7 +85,8 @@
                                         <div class="d-flex align-items-center"> 
                                             <input type="checkbox" v-model="item.selected" @change="toggleChecked($event, item, index)"  class="form-check-input me-2" />
                                             <div class="flex-grow-1 text-muted" style="cursor: pointer;"  @click="openShow(item.id,'Pending')">
-                                                <h6 class="card-title mb-n1 fs-14 fw-semibold"><span class="text-primary">{{(filter.type == 'Sample Code') ? item.code : item.testservice_name}}</span></h6>
+                                                <h6 class="card-title mb-n1 fs-14 fw-semibold"><span class="text-primary">
+                                                    {{(filter.type == 'Sample Code' || filter.type == 'TSR Code') ? item.code : item.testservice_name}}</span></h6>
                                             </div>
                                             <div class="flex-shrink-0">
                                                 <div class="text-muted"><i class="ri-calendar-event-fill me-1 align-bottom"></i>{{(item.tsr) ? formatShortMonth(item.tsr.due_at) : '-'}}</div>
@@ -160,7 +161,9 @@
                                         <div class="d-flex align-items-center">
                                              <input type="checkbox" v-model="item.selected" @change="toggleChecked1($event, item, index)" class="form-check-input me-2" />    
                                             <div class="flex-grow-1 text-muted" style="cursor: pointer;" @click="openShow(item.id,'Ongoing')">
-                                                <h6 class="card-title mb-n1 fs-14 fw-semibold"><span class="text-primary">{{(filter.type == 'Sample Code') ? item.code : item.testservice_name}}</span></h6>
+                                                <h6 class="card-title mb-n1 fs-14 fw-semibold"><span class="text-primary">
+                                                    {{(filter.type == 'Sample Code' || filter.type == 'TSR Code') ? item.code : item.testservice_name}}
+                                                </span></h6>
                                             </div>
                                             <div class="flex-shrink-0">
                                                 <div class="text-muted"><i class="ri-calendar-event-fill me-1 align-bottom"></i>{{(item.tsr) ? formatShortMonth(item.tsr.due_at) : '-'}}</div>
@@ -333,6 +336,10 @@ export default {
         },
         "filter.type"(newVal){
             this.fetch();
+            this.mark1 = null;
+            this.mark2 = null;
+            this.checked1 = [];
+            this.checked2 = [];
         },
         "filter.keyword"(newVal){
             this.checkSearchStr(newVal);
@@ -341,11 +348,11 @@ export default {
             this.fetch();
         },
         "mark1"(){
-            if(this.mark1){
+            if(this.mark1) {
                 this.pendings.data.forEach(item => {
                     item.selected = true;
-                    this.checked1.push(item);
                 });
+                this.checked1 = [...this.pendings.data];
             }else{
                 this.pendings.data.forEach(item => {
                     item.selected = false;
