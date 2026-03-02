@@ -50,6 +50,8 @@ class CreateRequest extends FormRequest
                 'laboratory_id' => 'sometimes|integer',
                 'discount_id'   => 'sometimes|integer',
             ];
+        }else if($this->option == 'copy'){
+            return [];
         }
     }
 

@@ -163,10 +163,10 @@ export default {
                 onSuccess: (response) => {
                     if(type == 'main'){
                         this.selected.report = this.$page.props.flash.data.code;
+                        this.$emit('update',true);
                     }else{
                         this.selected.related[this.index].report = this.$page.props.flash.data.code;
                     }
-                    this.$emit('update',true);
                 },
             });
         },

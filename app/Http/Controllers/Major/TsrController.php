@@ -67,6 +67,9 @@ class TsrController extends Controller
                 case 'validation':
                     return $this->save->validation($request);
                 break;
+                case 'copy':
+                    return $this->save->copy($request);
+                break;
                 default:
                     return $this->save->save($request);
             }

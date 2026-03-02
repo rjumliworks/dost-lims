@@ -23,10 +23,24 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'user' =>(\Auth::guard('web')->check()) ? new UserResource(User::with('profile')->where('id',\Auth::user()->id)->first()) : null,
-            'roles' => (\Auth::guard('web')->check()) ? \Auth::user()->roles()->where('user_roles.is_active', 1)->pluck('name') : null,
+            'user' => \Auth::guard('web')->check()
+                ? new UserResource(
+                    User::with('profile')
+                        ->find(\Auth::guard('web')->id())
+                )
+                : null,
+            'roles' => \Auth::guard('web')->check()
+                ? \Auth::guard('web')->user()
+                    ->roles()
+                    ->where('user_roles.is_active', 1)
+                    ->pluck('name')
+                : null,
+            'customer' => \Auth::guard('customer')->check()
+                ? Customer::with('contact','customer_name')->find(\Auth::guard('customer')->id())
+                : null,
+            
+
             'show' => (\Auth::guard('web')->check()) ? AgencyConfiguration::value('show_others') : null,
-            'viewer' => (\Auth::guard('customer')->check()) ? Customer::with('contact')->find(\Auth::guard('customer')->id()) : null,
             'years' => (\Auth::guard('web')->check()) ? Target::distinct()->pluck('year') : null,
             'flash' => [
                 'data'    => session('data') ?? null,

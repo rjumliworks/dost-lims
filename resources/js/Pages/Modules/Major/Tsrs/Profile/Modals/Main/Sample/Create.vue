@@ -2,22 +2,37 @@
     <b-modal v-model="showModal" style="--vz-modal-width: 850px;" header-class="p-3 bg-light" :title="(!action) ? 'Add Sampletype' : action+' Sampletype'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow class="g-3 mt-3">
-                <BCol lg="12" v-if="action == 'copy'" class="mt-0 mb-2">
-                    <div class="alert alert-danger alert-dismissible alert-label-icon label-arrow" role="alert"><i class="ri-error-warning-line label-icon"></i>
-                        <div class="d-flex mb-n2">
-                            <div class="flex-shrink-0 me-3">
-                                <TextInput id="name" v-model="form.count" type="text" class="form-control" style="width: 40px; text-align: center;" :light="true"/>
+                <BCol lg="12" v-if="action == 'Copy'">
+                    <hr class="text-muted mt-n2"/>
+                </BCol>
+                <BCol lg="9" v-if="action == 'Copy'" class="fs-12 mt-0" :class="{ 'text-danger': form.errors.count }">Please specify how many copies of the sample you want to add with its details.</BCol>
+                <BCol lg="3" v-if="action == 'Copy'" class="fs-12" style="margin-top: -9px; margin-bottom: -6px;">
+                    <TextInput id="name" v-model="form.count" type="text" class="form-control" style="width: 160px; text-align: center;" :light="true"/>
+                </BCol>
+                <BCol lg="12" v-if="action == 'Copy'">
+                    <hr class="text-muted mt-n2"/>
+                </BCol>
+                <BCol lg="9" v-if="action == 'Copy'" class="fs-12 mt-0" :class="{ 'text-danger': form.errors.include_testservices }">Do you want to include the test services attached to the sample when copying?</BCol>
+                <BCol lg="3" v-if="action == 'Copy'" class="fs-12 mt-0">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-0">
+                                <input type="radio" id="c1" class="custom-control-input me-2" :value="true" v-model="form.include_testservices">
+                                <label class="custom-control-label fw-normal fs-12" for="c1">Yes</label>
                             </div>
-                            <div class="flex-grow-1 mt-2"> 
-                                <span>Please specify how many copies of the sample you want to add with its details.</span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-0">
+                                <input type="radio" id="c2" class="custom-control-input me-2" :value="false" v-model="form.include_testservices">
+                                <label class="custom-control-label fw-normal fs-12" for="c2">No</label>
                             </div>
                         </div>
                     </div>
                 </BCol>
-                <BCol lg="12" v-if="action == 'copy'">
-                    <hr class="text-muted mt-n3 mb-4"/>
+                <BCol lg="12" v-if="action == 'Copy'">
+                    <hr class="text-muted mt-0 mb-4"/>
                 </BCol>
-                <BCol lg="6" class="mt-n3 mb-3">
+                <BCol lg="6" class="mt-n2 mb-3">
                     <InputLabel for="testname" value="Category"/>
                     <!--  @search-change="checkCategory"  -->
                     <Multiselect
@@ -25,7 +40,7 @@
                     v-model="category" 
                     placeholder="Select Category" ref="multiselectC"/>
                 </BCol>
-                <BCol lg="6" class="mt-n3 mb-3">
+                <BCol lg="6" class="mt-n2 mb-3">
                     <InputLabel for="sampletype" value="Sample Type" :message="form.errors.sampletype_id"/>
                     <Multiselect @search-change="checkType" 
                     @input="handleInput('sampletype_id')"
@@ -91,6 +106,8 @@ export default {
                 laboratory_id: null,
                 tsr_id: null,
                 count: 1,
+                include_testservices: null,
+                option: null
             }),
             action: null,
             category: null,
@@ -137,6 +154,7 @@ export default {
         edit(id, laboratory, data){
             this.empty();
             this.action = 'Edit';
+            this.form.option = 'edit';
             this.form.id = data.id;
             this.form.name = data.name;
             this.form.description = data.description;
@@ -149,7 +167,9 @@ export default {
         copy(id, laboratory, data){
             this.empty();
             this.action = 'Copy';
+            this.form.option = 'copy';
             this.form.tsr_id = id;
+            this.form.id = data.id;
             this.form.name = data.name;
             this.form.description = data.description;
             this.form.customer_description = data.customer_description;

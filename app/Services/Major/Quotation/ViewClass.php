@@ -291,20 +291,21 @@ class ViewClass
             $canvas->text(106 - $width, 796, $text, $font, $size);
         });
 
-        $signatory = $quotation->signatory;
+        // $signatory = $quotation->signatory;
 
-        $latestDate = collect([
-            $signatory->prepared_date,
-            $signatory->approved_date,
-            $signatory->received_date,
-        ])->filter()->max();
+        // $latestDate = collect([
+        //     $signatory->prepared_date,
+        //     $signatory->approved_date,
+        //     $signatory->received_date,
+        // ])->filter()->max();
 
         $pdfBinary = $dompdf->output();
 
+        $secret = config('app.key');
+        $hmac = hash_hmac('sha256', $pdfBinary, $secret);
         $meta = "\n%--- DOC META ---\n";
-        $meta .= "% ValidationHMAC: {$signatory->hmac}\n";
-        $meta .= "% GeneratedAt: " . $latestDate . "\n";
-        $meta .= "% Version: {$signatory->version}\n";
+        $meta .= "% ValidationHMAC: {$hmac}\n";
+        $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
         $meta .= "%--- END META ---\n";
 
         $pos = strrpos($pdfBinary, '%%EOF');

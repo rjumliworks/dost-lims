@@ -13,6 +13,27 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(function () {
+    Route::get('/', function () {
+        return 'wew';
+    });
+    Route::middleware('guest:customer')->group(function () {
+        Route::get('/login', [App\Http\Controllers\Customer\LoginController::class, 'index'])->name('login');
+        Route::post('/mail', [App\Http\Controllers\Customer\LoginController::class, 'mail']);
+        Route::post('/verify', [App\Http\Controllers\Customer\LoginController::class, 'verify']);
+    });
+
+    Route::middleware('auth:customer')->group(function () {
+        Route::post('/logout', [App\Http\Controllers\Customer\LoginController::class, 'logout'])->name('logout');
+        Route::get('/dashboard', [App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
+
+        Route::resource('tsrs', App\Http\Controllers\Customer\TsrController::class);
+        // Route::get('/{folder}/download', [App\Http\Controllers\Viewer\DownloadController::class, 'download'])->name('download');
+        // Route::resource('folders', App\Http\Controllers\Viewer\FolderController::class);
+        // Route::resource('downloads', App\Http\Controllers\Viewer\DownloadController::class);
+        // Route::resource('/files', App\Http\Controllers\Viewer\FileController::class);
+    });
+});
 
 Route::get('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
 Route::post('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verify']);
@@ -56,14 +77,17 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/discounts', App\Http\Controllers\Executive\DiscountController::class);
 });
 
-Route::get('/customer/login', [App\Http\Controllers\Public\CustomerController::class, 'login'])->name('customer.login');
-Route::middleware('auth:customer')->group(function () {
-    Route::get('/customer', [App\Http\Controllers\Public\CustomerController::class, 'view'])->name('customer.dashboard');
-    Route::get('/customer/tsrs', [App\Http\Controllers\Public\CustomerController::class, 'tsrs']);
-    Route::get('/customer/profile', [App\Http\Controllers\Public\CustomerController::class, 'profile']);
-    Route::get('/customer/logout', [App\Http\Controllers\Public\CustomerController::class, 'logout'])->name('customer.logout');
-});
-Route::post('/mail', [App\Http\Controllers\Public\OtpController::class, 'mail']);
-Route::post('/verify', [App\Http\Controllers\Public\OtpController::class, 'verify']);
+// Route::get('/customer/login', [App\Http\Controllers\Public\CustomerController::class, 'login'])->name('customer.login');
+// Route::middleware('auth:customer')->group(function () {
+//     Route::get('/customer', [App\Http\Controllers\Public\CustomerController::class, 'view'])->name('customer.dashboard');
+//     Route::get('/customer/tsrs', [App\Http\Controllers\Public\CustomerController::class, 'tsrs']);
+//     Route::get('/customer/profile', [App\Http\Controllers\Public\CustomerController::class, 'profile']);
+//     Route::get('/customer/logout', [App\Http\Controllers\Public\CustomerController::class, 'logout'])->name('customer.logout');
+// });
+// Route::post('/mail', [App\Http\Controllers\Public\OtpController::class, 'mail']);
+// Route::post('/verify', [App\Http\Controllers\Public\OtpController::class, 'verify']);
+
+
+
 
 require __DIR__.'/auth.php';
