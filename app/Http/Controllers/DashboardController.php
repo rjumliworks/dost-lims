@@ -4,23 +4,27 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Services\Dashboard\CroClass;
 use App\Services\Dashboard\AnalystClass;
 use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
 
 class DashboardController extends Controller
 {   
+    protected CroClass $cro;
     protected AnalystClass $analyst;
     protected CashierClass $cashier;
     protected DropdownClass $dropdown;
     protected AccountantClass $accountant;
     
     public function __construct(
+        CroClass $cro,
         AnalystClass $analyst,
         CashierClass $cashier,
         DropdownClass $dropdown,
         AccountantClass $accountant
     ){
+        $this->cro = $cro;
         $this->analyst = $analyst;
         $this->cashier = $cashier;
         $this->dropdown = $dropdown;
@@ -75,6 +79,13 @@ class DashboardController extends Controller
                     break;
                     case 'Calibration Officer':
                         return inertia('Modules/Dashboard/Analyst/Index',[
+                            'reminders' => $this->analyst->reminders($request),
+                            'tasks' => $this->analyst->tasks($request),
+                            'laboratories' => $this->analyst->laboratories($request)
+                        ]);
+                    break;
+                    case 'Customer Relation Officer':
+                        return inertia('Modules/Dashboard/Cro/Index',[
                             'reminders' => $this->analyst->reminders($request),
                             'tasks' => $this->analyst->tasks($request),
                             'laboratories' => $this->analyst->laboratories($request)
