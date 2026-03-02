@@ -102,11 +102,11 @@
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
             <b-button v-if="status === 'Pending'" @click="save(11,'start')" variant="primary" :disabled="form.processing" block>Start Analysis</b-button>
             <b-button v-if="status === 'Ongoing'" @click="save(12,'end')" variant="primary" :disabled="form.processing" block>End Analysis</b-button>
-            <b-button v-if="status === 'Completed'" @click="openGenerate()" variant="success" :disabled="form.processing" block>Generate Report Number</b-button>
+            <b-button v-if="!selected.has_report" @click="openGenerate()" variant="success" :disabled="form.processing" block>Generate Report Number</b-button>
         </template>
     </b-modal>
     <Save @hide="hide" ref="save"/>
-    <Generate ref="generate"/>
+    <Generate @update="updateStatus" ref="generate"/>
 </template>
 <script>
 import simplebar from "simplebar-vue";
@@ -188,6 +188,9 @@ export default {
         },
         openGenerate(){
             this.$refs.generate.show(this.selected.id);
+        },
+        updateStatus(){
+            this.selected.has_report = true;
         },
         formatMoney(value) {
             let val = (value/1).toFixed(2).replace(',', '.')

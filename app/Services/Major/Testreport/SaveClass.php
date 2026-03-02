@@ -114,21 +114,48 @@ class SaveClass
         ];
     }
 
-    public function upload($data,$request){
-        $name = $data->code;
-        
-        if($request->hasFile('pdf'))
-        {   
-            $pdf = $request->file('pdf');   
-            $file_name = strtolower($name).'.'.$pdf->getClientOriginalExtension();
-            $file_path = $pdf->storeAs('uploads/testreports', $file_name, 'public');
-            $attachment = [
-                'name' => $file_name,
-                'file' => $file_path,
-                'added_by' => \Auth::user()->id,
-                'created_at' => date('M d, Y g:i a', strtotime(now()))
-            ];
-            return $attachment;
+    public function upload($data, $request)
+{
+    $name = $data->code;
+
+    if ($request->hasFile('pdf')) {
+        $pdf = $request->file('pdf');
+        $extension = strtolower($pdf->getClientOriginalExtension());
+        $file_name = strtolower($name) . '.' . $extension;
+
+        // Read PDF bytes
+        $pdfBinary = file_get_contents($pdf->getRealPath());
+
+        // Compute HMAC
+        $secret = config('app.key');
+        $hmac = hash_hmac('sha256', $pdfBinary, $secret);
+
+        // Prepare metadata
+        $meta = "\n%--- DOC META ---\n";
+        $meta .= "% ValidationHMAC: {$hmac}\n";
+        $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
+        $meta .= "%--- END META ---\n";
+
+        // Insert metadata just before the last %%EOF
+        $pos = strrpos($pdfBinary, '%%EOF');
+        if ($pos !== false) {
+            $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
+        } else {
+            $pdfBinary .= $meta . "%%EOF\n";
         }
+
+        // Save the PDF to storage
+        $file_path = 'uploads/testreports/' . $file_name;
+        \Storage::disk('public')->put($file_path, $pdfBinary);
+
+        return [
+            'name' => $file_name,
+            'file' => $file_path,
+            'added_by' => \Auth::user()->id,
+            'created_at' => now()->format('M d, Y g:i a'),
+        ];
     }
+
+    return null;
+}
 }

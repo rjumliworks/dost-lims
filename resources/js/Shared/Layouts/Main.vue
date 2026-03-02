@@ -1,5 +1,6 @@
 <script>
 import { layoutComputed } from "@/Shared/State/helpers";
+import { mapActions } from "vuex";
 import Vertical from "./Vertical.vue";
 import Horizontal from "./Horizontal.vue";
 import TwoColumns from "./Twocolumn.vue";
@@ -11,6 +12,9 @@ export default {
     },
     computed: {
         ...layoutComputed,
+        customer() {
+            return this.$page.props.customer;
+        },
         message() {
             if(this.$page.props.flash.message == 'off'){
                 return false;
@@ -18,10 +22,37 @@ export default {
             return (this.$page.props.flash.message) ?  true : false;
         }
     },
+    mounted() {
+        this.resolveLayout();
+    },
+    watch: {
+        customer: {
+            immediate: true,
+            handler() {
+                this.resolveLayout();
+            }
+        },
+    },
     methods: {
+         ...mapActions("layout", ["changeLayoutType","changeTopbar"]),
         check(){
             this.$page.props.flash = {};
             this.message = false;
+        },
+        resolveLayout() {
+            const user = this.$page.props.user;
+            const customer = this.$page.props.customer;
+
+            // Priority: Web > Viewer
+
+            if (user) {
+                this.changeLayoutType({ layoutType: "vertical" });
+                this.changeTopbar({ topbar: "light" });
+            } 
+            else if (customer) {
+                this.changeLayoutType({ layoutType: "horizontal" });
+                this.changeTopbar({ topbar: "dark" });
+            }
         },
     }
 };

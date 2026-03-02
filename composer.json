@@ -25,7 +25,10 @@
         "orangehill/iseed": "*",
         "pragmarx/google2fa": "^9.0",
         "pragmarx/google2fa-laravel": "^2.3",
+        "setasign/fpdi": "^2.6",
+        "setasign/fpdi-tcpdf": "^2.3",
         "spatie/laravel-activitylog": "^4.10",
+        "tecnickcom/tcpdf": "^6.11",
         "torann/geoip": "^3.0"
     },
     "require-dev": {

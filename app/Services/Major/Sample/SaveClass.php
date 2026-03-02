@@ -16,7 +16,29 @@ class SaveClass
     public function save($request){
         $count = (int) $request->count;
         for ($i = 0; $i < $count; $i++) {
-            TsrSample::create($request->all());
+            $sample = TsrSample::create($request->all());
+            if($request->include_testservices){
+                $old_sample = TsrSample::with('analyses.addfee')->where('id',$request->id)->first();
+                foreach($old_sample->analyses as $analysis){
+                    $a = $sample->analyses()->create([
+                        'fee' => $analysis->fee,
+                        'status_id' => 10,
+                        'testservice_id' => $analysis->testservice_id
+                    ]);
+                    $total =  $this->updateTotal($sample->tsr_id,$analysis->fee);
+                    if($analysis->addfee->isNotEmpty()) {
+                        foreach ($analysis->addfee as $addfee) {
+                            $a->addfee()->create([
+                                'fee' => $addfee->fee,
+                                'total' => $addfee->total,
+                                'quantity' => $addfee->quantity,
+                                'service_id' => $addfee->service_id,
+                                'is_additional' => $addfee->is_additional
+                            ]);
+                        }
+                    }
+                }
+            }
         }
         
         return [
@@ -72,5 +94,25 @@ class SaveClass
             'message' => 'Sample Deletion Successful', 
             'info' => "The selected sample has been deleted successfully and is no longer linked to this TSR."
         ];
+    }
+
+    private function updateTotal($id,$fee){
+        $data = TsrPayment::with('discounted')->where('tsr_id',$id)->first();
+        $fee = (float) trim(str_replace(',','',$fee),'₱ ');
+        $subtotal = (float) trim(str_replace(',','',$data->subtotal),'₱ ');
+        if($data->discount_id === 1){
+            $discount = 0;
+            $subtotal = $subtotal + $fee;
+            $total = $subtotal;
+        }else{
+            $subtotal = $subtotal + $fee;
+            $discount = (float) (($data->discounted->value/100) * $subtotal);
+            $total =  ((float) $subtotal - (float) $discount);
+        }
+        $data->subtotal = $subtotal;
+        $data->discount = $discount;
+        $data->total = $total;
+        $data->save();
+        return $data;
     }
 }

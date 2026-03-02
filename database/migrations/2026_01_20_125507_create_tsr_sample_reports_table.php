@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->longText('passkey')->nullable();
             $table->longText('information')->nullable();
+            $table->longText('attachment')->nullable();
             $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedInteger('tm_id')->nullable();

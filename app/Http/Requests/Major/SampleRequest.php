@@ -13,13 +13,22 @@ class SampleRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            'sampletype_id' => 'sometimes|required',
-            'samplename_id' => 'sometimes|required',
-            'name' => 'nullable',
-            'customer_description' => 'sometimes|required',
-            'description' => 'nullable',
-            'tsr_id' => 'sometimes|required',
-        ];
+        if($this->option == 'edit'){
+            return [
+                'sampletype_id' => 'sometimes|required',
+                'samplename_id' => 'sometimes|required',
+                'name' => 'nullable',
+                'customer_description' => 'sometimes|required',
+                'description' => 'nullable',
+                'tsr_id' => 'sometimes|required',
+            ];
+        }else if($this->option == 'copy'){
+            return [
+                'include_testservices' => 'required',
+                 'count' => 'required|integer|min:1',
+            ];
+        }else{
+            return [];
+        }
     }
 }

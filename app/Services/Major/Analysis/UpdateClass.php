@@ -104,7 +104,7 @@ class UpdateClass
     }
 
     public function group($request){
-        if($request->type == 'Sample Code'){
+        if($request->type == 'Sample Code' || $request->type == 'TSR Code' ){
             $analyses = TsrAnalysis::whereIn('sample_id', $request->lists)->get();
             foreach ($analyses as $analysis) {
                 if (is_null($analysis->start_at)) {

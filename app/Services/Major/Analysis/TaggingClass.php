@@ -17,7 +17,8 @@ class TaggingClass
             'analyses.status',
             'analyses.testservice.testname',
             'analyses.testservice.method.reference',
-            'analyses.testservice.method.method'
+            'analyses.testservice.method.method',
+            'report'
             )
         ->where('id',$request->id)->first();
         if (!$data) {
@@ -32,6 +33,7 @@ class TaggingClass
             'sampletype' => $data->sampletype?->name,
             'samplename' => $data->samplename?->name,
             'analyses' => AnalysisResource::collection($data->analyses) ?? null,
+            'has_report' => ($data->report) ? true : false,
             'selected' => null,
         ];
 

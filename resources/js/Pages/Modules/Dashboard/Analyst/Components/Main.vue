@@ -76,8 +76,8 @@
                          {{pendings.total}} Sample ready for test
                     </p>
                 </div>
-                <div class="card shadow-none" no-body style="height: calc(100vh - 522px)">
-                    <simplebar data-simplebar style="height: calc(100vh - 500px);">
+                <div class="card shadow-none" no-body style="height: calc(100vh - 522px);">
+                    <simplebar data-simplebar style="height: calc(100vh - 530px); overflow-x: hidden;">
                         <BRow v-if="pendings.total > 0">
                             <BCol lg="12" class="project-card mb-n3" v-for="(item, index) of pendings.data" :key="index">
                                 <div class="card">
@@ -117,13 +117,17 @@
                                     </div>
                                 </div>
                             </BCol>
-                            <div v-if="pendings.next_page_url" class="text-center mt-2">
-                                <button class="btn btn-sm btn-outline-primary"
-                                    @click="loadMore('pendings')"
-                                    :disabled="loading">
-                                    Show More
-                                </button>
-                            </div>
+                            <BCol lg="12" class="project-card mb-n3">
+                                 <div class="card" v-if="pendings.next_page_url">
+                                    <div class="card-header text-center">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            @click="loadMore('pendings')"
+                                            :disabled="loading">
+                                            Show More
+                                        </button>
+                                    </div>
+                                </div>
+                            </BCol>
                         </BRow>
                         <div v-else class="alert alert-light mb-0 text-center" role="alert"><span class="fs-12 text-muted">No test available</span></div>
                     </simplebar>
@@ -153,7 +157,7 @@
                     <p class="mb-0 text-primary fs-12 fw-semibold text-center">{{ongoings.total}} ongoing test</p>
                 </div>
                 <div class="card bg-white shadow-none" no-body style="height: calc(100vh - 522px)">
-                    <simplebar data-simplebar style="height: calc(100vh - 500px);">
+                    <simplebar data-simplebar style="height: calc(100vh - 530px); overflow-x: hidden;">
                         <BRow v-if="ongoings.total > 0">
                             <BCol lg="12" class="project-card mb-n3" v-for="(item, index) of ongoings.data" :key="index">
                                 <div class="card">
@@ -229,7 +233,7 @@
                     <p class="mb-0 text-primary fs-12 fw-semibold text-center">{{completeds.total}} samples completed</p>
                 </div>
                 <div class="card bg-white shadow-none" no-body style="height: calc(100vh - 522px)">
-                    <simplebar data-simplebar style="height: calc(100vh - 500px);">
+                    <simplebar data-simplebar style="height: calc(100vh - 530px); overflow-x: hidden;">
                         <BRow v-if="completeds.total > 0">
                         <BCol lg="12" class="project-card mb-n3" v-for="(item, index) of completeds.data" :key="index">
                             <div class="card" style="cursor: pointer;" @click="openShow(item.id,'Completed')">
@@ -418,7 +422,7 @@ export default {
         },
         openUpdate(){
             if(this.mark1){
-                this.$refs.update.show(this.checked1);
+                this.$refs.update.show(this.checked1,this.filter.type);
             }else{
                 if(this.checked1.length > 0){
                     this.$refs.update.show(this.checked1,this.filter.type);
