@@ -12,6 +12,7 @@ use App\Models\TsrSequence;
 use App\Models\TsrSampleReport;
 use App\Models\TsrSampleReportSignatory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 
 class SaveClass
@@ -126,30 +127,42 @@ class SaveClass
             $extension = strtolower($pdf->getClientOriginalExtension());
             $file_name = strtolower($name) . '.' . $extension;
 
+            $response = Http::attach(
+                'file',
+                file_get_contents($pdf->getRealPath()),
+                $file_name
+            )->post('http://127.0.0.1:8000/sign');
+
+            if (!$response->successful()) {
+                throw new \Exception($response);
+            }
+
+        $signedPdf = $response->body();
+
             // Read PDF bytes
-            $pdfBinary = file_get_contents($pdf->getRealPath());
+            // $pdfBinary = file_get_contents($pdf->getRealPath());
 
             // Compute HMAC
-            $secret = config('app.key');
-            $hmac = hash_hmac('sha256', $pdfBinary, $secret);
+            // $secret = config('app.key');
+            // $hmac = hash_hmac('sha256', $pdfBinary, $secret);
 
             // Prepare metadata
-            $meta = "\n%--- DOC META ---\n";
-            $meta .= "% ValidationHMAC: {$hmac}\n";
-            $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
-            $meta .= "%--- END META ---\n";
+            // $meta = "\n%--- DOC META ---\n";
+            // $meta .= "% ValidationHMAC: {$hmac}\n";
+            // $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
+            // $meta .= "%--- END META ---\n";
 
-            // Insert metadata just before the last %%EOF
-            $pos = strrpos($pdfBinary, '%%EOF');
-            if ($pos !== false) {
-                $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
-            } else {
-                $pdfBinary .= $meta . "%%EOF\n";
-            }
+            // // Insert metadata just before the last %%EOF
+            // $pos = strrpos($pdfBinary, '%%EOF');
+            // if ($pos !== false) {
+            //     $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
+            // } else {
+            //     $pdfBinary .= $meta . "%%EOF\n";
+            // }
 
             // Save the PDF to storage
             $file_path = 'uploads/testreports/' . $file_name;
-            \Storage::disk('public')->put($file_path, $pdfBinary);
+            \Storage::disk('public')->put($file_path,$signedPdf);
 
             return [
                 'name' => $file_name,

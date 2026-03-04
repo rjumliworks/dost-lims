@@ -48,127 +48,129 @@
                 </b-card>
             </b-col>
             <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
-                <div class="file-manager-content w-100 p-4 pb-0" ref="box" style="margin-left: 20px;">
-                    <div class="row g-2">
-                        <div class="col-sm-12">
-                            <div class="row" v-if="selected.lists.length > 0" style="max-height: 130px; overflow: auto;">
-                                <div class="col-md-3" v-for="(column, index) in columns" :key="index">
-                                    <ul class="list-unstyled">
-                                        <li v-for="(item, idx) in column" :key="idx" class="py-1 fs-12">
-                                            <i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> {{ item.sample.code }}
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <div class="alert alert-primary alert-dismissible alert-label-icon rounded-label fade show mt-n2 mb-0" role="alert">
-                                <i class="ri-qr-code-fill label-icon"></i><strong>QR Code</strong> - <span style="cursor: pointer;" @click="printQr()">Click here to print</span>
-                            </div>
-                            <hr class="text-muted mt-3 mb-2"/>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="p-1 border border-dashed rounded">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-2">
-                                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted mb-0 fs-12">Report Date :</p>
-                                        <h5 class="mb-0 fs-12">{{selected.created_at}}</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="p-1 border border-dashed rounded mb-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-2">
-                                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted mb-0 fs-12">Released Date :</p>
-                                        <h5 class="mb-0 fs-12">-</h5>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-12" v-if="selected.attachment">
-                            <div class="border rounded border-dashed p-1 mb-3">
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-2">
-                                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-file-text-fill"></i></div>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <p class="text-muted mb-0 fs-12">Download PDF :</p>
-                                        <h5 class="mb-0 fs-12">{{selected.code+'.pdf'}}</h5>
-                                    </div>
-                                    <div class="flex-shrink-0 ms-2">
-                                        <div class="d-flex gap-1">
-                                            <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-download-2-line"></i></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <hr class="text-muted mt-n2"/>
-                            <div class="card bg-light-subtle shadow-none border">
-                                <div class="card-header bg-light-subtle">
-                                    <div class="d-flex mb-n3">
-                                        <div class="flex-shrink-0 me-3">
-                                            <div style="height:2.5rem;width:2.5rem;">
-                                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                                    <i class="ri-team-fill text-primary fs-22"></i>
-                                                </span>
-                                            </div>
+                <div class="file-manager-sidebar" style="margin-left: 20px;">
+                    <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
+                        <div class="row g-2 p-3">
+                           <!-- <div class="col-sm-12" v-if="selected.attachment">
+                                <div class="border rounded border-dashed p-1 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-file-text-fill"></i></div>
                                         </div>
                                         <div class="flex-grow-1">
-                                            <h5 class="mb-0 fs-13"><span class="text-body">List of Signatories</span></h5>
-                                            <p class="text-muted text-truncate-two-lines fs-12">This is the list of individuals authorized to sign and who have signed the report.</p>
+                                            <p class="text-muted mb-0 fs-12">Download PDF :</p>
+                                            <h5 class="mb-0 fs-12">{{selected.code+'.pdf'}}</h5>
                                         </div>
-                                        <div class="flex-shrink-0">
-                                           
+                                        <div class="flex-shrink-0 ms-2">
+                                            <div class="d-flex gap-1">
+                                                <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-download-2-line"></i></button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="card bg-white border-bottom shadow-none" no-body>
-                                    <div class="table-responsive">
-                                        <table class="table table-nowrap table-striped align-middle mb-0">
-                                            <thead class="table-light thead-fixed">
-                                                <tr class="fs-11">
-                                                    <th class="text-center" width="7%">#</th>
-                                                    <th>Name</th>
-                                                    <th class="text-center" width="30%">Timestamp</th>
-                                                </tr>
-                                            </thead>
-                                            <!-- <tbody v-if="this.testreport.data.signatories.length > 0">
-                                                <tr v-for="(list,index) in this.testreport.data.signatories" v-bind:key="index">
-                                                    <td class="text-center"> 
-                                                        {{index + 1}}
-                                                    </td>
-                                                    <td>
-                                                        <h5 class="fs-13 mb-0">{{list.user.profile.fullname}}</h5>
-                                                    </td>
-                                                    <td class="text-center">{{list.timestamp}}</td>
-                                                </tr>
-                                            </tbody>
-                                            <tbody v-else>
-                                                <tr>
-                                                    <td colspan="3" class="text-center text-muted fs-12">No signatories found.</td>
-                                                </tr>
-                                            </tbody> -->
-                                        </table>
+                            </div> -->
+                            <div class="col-sm-12">
+                                <div class="p-1 border border-dashed rounded">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted mb-0 fs-12">Report Created :</p>
+                                            <h5 class="mb-0 fs-12">{{selected.created_at}}</h5>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
-
+                            <div class="col-sm-12">
+                                <div class="p-1 border border-dashed rounded mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted mb-0 fs-12">Released Date :</p>
+                                            <h5 class="mb-0 fs-12">Noy yet release</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <hr class="text-muted mt-n2"/>
+                                <div class="card bg-light-subtle shadow-none border">
+                                    <div class="card-header bg-light-subtle">
+                                        <div class="d-flex mb-n3">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div style="height:2rem;width:2rem;">
+                                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                                        <i class="ri-quill-pen-fill text-primary fs-16"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-0 mt-n1 fs-12"><span class="text-body">List of Signatories</span></h5>
+                                                <p class="text-muted text-truncate-two-lines fs-11">This is the list of individuals authorized to sign.</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card bg-white border-bottom shadow-none" no-body>
+                                        <div class="table-responsive">
+                                            <table class="table table-nowrap table-striped align-middle mb-0">
+                                                <thead class="table-light thead-fixed">
+                                                    <tr class="fs-11">
+                                                        <th class="text-center" width="7%">#</th>
+                                                        <th>Name</th>
+                                                        <th class="text-center" width="30%">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <!-- <tbody v-if="this.testreport.data.signatories.length > 0">
+                                                    <tr v-for="(list,index) in this.testreport.data.signatories" v-bind:key="index">
+                                                        <td class="text-center"> 
+                                                            {{index + 1}}
+                                                        </td>
+                                                        <td>
+                                                            <h5 class="fs-13 mb-0">{{list.user.profile.fullname}}</h5>
+                                                        </td>
+                                                        <td class="text-center">{{list.timestamp}}</td>
+                                                    </tr>
+                                                </tbody>
+                                                <tbody v-else>
+                                                    <tr>
+                                                        <td colspan="3" class="text-center text-muted fs-12">No signatories found.</td>
+                                                    </tr>
+                                                </tbody> -->
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" v-if="selected.attachment">
+                                <hr class="text-muted mt-n2"/>
+                                <div class="border rounded border-dashed p-1 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-file-text-fill"></i></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted mb-0 fs-12">Download PDF :</p>
+                                            <h5 class="mb-0 fs-12">{{selected.code+'.pdf'}}</h5>
+                                        </div>
+                                        <div class="flex-shrink-0 ms-2">
+                                            <div class="d-flex gap-1">
+                                                <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-download-2-line"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </simplebar>
                 </div>
-                <div class="file-manager-sidebar" style="margin-right: 20px;">
-                    <div class="row p-4">
+                <div class="file-manager-content w-100 p-4 pb-0" ref="box" style="margin-right: 20px;">
+                    <div class="row">
                         <div class="col-md-12">  
                             <b-row class="mb-0">
                                 <b-col md>
@@ -231,7 +233,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -528,27 +529,14 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
         overflow: hidden;
         background-color: #f3f3f9;
     }
+
     .file-manager-sidebar {
-        min-width: 50%;
-        max-width: 50%;
+        min-width: 24%;
+        max-width: 24%;
         height: calc(100vh - 92px);
     }
-    #signature {
-        position: absolute;
-        z-index: 10;
-    }
-    .loading-overlay-inside {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 100%;
-    background-color: rgba(255, 255, 255, 0.6); /* Adjust if needed */
-    backdrop-filter: blur(2px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    pointer-events: all;
-}
+
+
+ 
+
 </style>

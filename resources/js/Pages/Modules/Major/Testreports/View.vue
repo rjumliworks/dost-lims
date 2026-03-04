@@ -48,28 +48,10 @@
                 </b-card>
             </b-col>
             <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
-                
                 <div class="file-manager-sidebar" style="margin-left: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
                         <div class="row g-2 p-3">
-                           <!-- <div class="col-sm-12" v-if="selected.attachment">
-                                <div class="border rounded border-dashed p-1 mb-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-2">
-                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-file-text-fill"></i></div>
-                                        </div>
-                                        <div class="flex-grow-1">
-                                            <p class="text-muted mb-0 fs-12">Download PDF :</p>
-                                            <h5 class="mb-0 fs-12">{{selected.code+'.pdf'}}</h5>
-                                        </div>
-                                        <div class="flex-shrink-0 ms-2">
-                                            <div class="d-flex gap-1">
-                                                <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-download-2-line"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
+                         
                             <div class="col-sm-12">
                                 <div class="p-1 border border-dashed rounded">
                                     <div class="d-flex align-items-center">
@@ -238,14 +220,7 @@
         </div>
     </div>
     <Message ref="message" />
-<template>
-  <div>
-    <input type="file" @change="onPdfSelected" />
-    <input type="file" @change="onP12Selected" />
-    <input type="password" v-model="p12Password" placeholder="Enter P12 password" />
-    <button @click="signPdf">Sign PDF</button>
-  </div>
-</template>
+  </template>
 <script>
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import interact from 'interactjs';
