@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Services\Major\Testreport;
-
+use GuzzleHttp\Client;
+use TCPDF;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use Hashids\Hashids;
 use Carbon\Carbon;
 use App\Models\UserRole;
@@ -10,6 +12,7 @@ use App\Models\TsrSequence;
 use App\Models\TsrSampleReport;
 use App\Models\TsrSampleReportSignatory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class SaveClass
 {
@@ -86,25 +89,25 @@ class SaveClass
         $attach = $this->upload($data,$request);
         $data->attachment = $attach;
         if($data->save()){
-            if ($request->timestamp) {
-                $alreadySigned = TsrSampleReportSignatory::where('report_id', $data->id)
-                ->where('user_id', auth()->id())
-                ->exists();
+            // if ($request->timestamp) {
+            //     $alreadySigned = TsrSampleReportSignatory::where('report_id', $data->id)
+            //     ->where('user_id', auth()->id())
+            //     ->exists();
 
-                if ($alreadySigned) {
-                    return [
-                        'data' => $data,
-                        'message' => 'Already signed.',
-                        'info' => 'You have already signed this report.'
-                    ];
-                }
+            //     if ($alreadySigned) {
+            //         return [
+            //             'data' => $data,
+            //             'message' => 'Already signed.',
+            //             'info' => 'You have already signed this report.'
+            //         ];
+            //     }
 
-                TsrSampleReportSignatory::create([
-                    'report_id' => $data->id,
-                    'timestamp' => $request->timestamp,
-                    'user_id'   => auth()->id(),
-                ]);
-            }
+            //     TsrSampleReportSignatory::create([
+            //         'report_id' => $data->id,
+            //         'timestamp' => $request->timestamp,
+            //         'user_id'   => auth()->id(),
+            //     ]);
+            // }
         }
         
         return [
@@ -115,47 +118,47 @@ class SaveClass
     }
 
     public function upload($data, $request)
-{
-    $name = $data->code;
+    {
+        $name = $data->code;
 
-    if ($request->hasFile('pdf')) {
-        $pdf = $request->file('pdf');
-        $extension = strtolower($pdf->getClientOriginalExtension());
-        $file_name = strtolower($name) . '.' . $extension;
+        if ($request->hasFile('pdf')) {
+            $pdf = $request->file('pdf');
+            $extension = strtolower($pdf->getClientOriginalExtension());
+            $file_name = strtolower($name) . '.' . $extension;
 
-        // Read PDF bytes
-        $pdfBinary = file_get_contents($pdf->getRealPath());
+            // Read PDF bytes
+            $pdfBinary = file_get_contents($pdf->getRealPath());
 
-        // Compute HMAC
-        $secret = config('app.key');
-        $hmac = hash_hmac('sha256', $pdfBinary, $secret);
+            // Compute HMAC
+            $secret = config('app.key');
+            $hmac = hash_hmac('sha256', $pdfBinary, $secret);
 
-        // Prepare metadata
-        $meta = "\n%--- DOC META ---\n";
-        $meta .= "% ValidationHMAC: {$hmac}\n";
-        $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
-        $meta .= "%--- END META ---\n";
+            // Prepare metadata
+            $meta = "\n%--- DOC META ---\n";
+            $meta .= "% ValidationHMAC: {$hmac}\n";
+            $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
+            $meta .= "%--- END META ---\n";
 
-        // Insert metadata just before the last %%EOF
-        $pos = strrpos($pdfBinary, '%%EOF');
-        if ($pos !== false) {
-            $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
-        } else {
-            $pdfBinary .= $meta . "%%EOF\n";
+            // Insert metadata just before the last %%EOF
+            $pos = strrpos($pdfBinary, '%%EOF');
+            if ($pos !== false) {
+                $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
+            } else {
+                $pdfBinary .= $meta . "%%EOF\n";
+            }
+
+            // Save the PDF to storage
+            $file_path = 'uploads/testreports/' . $file_name;
+            \Storage::disk('public')->put($file_path, $pdfBinary);
+
+            return [
+                'name' => $file_name,
+                'file' => $file_path,
+                'added_by' => \Auth::user()->id,
+                'created_at' => now()->format('M d, Y g:i a'),
+            ];
         }
 
-        // Save the PDF to storage
-        $file_path = 'uploads/testreports/' . $file_name;
-        \Storage::disk('public')->put($file_path, $pdfBinary);
-
-        return [
-            'name' => $file_name,
-            'file' => $file_path,
-            'added_by' => \Auth::user()->id,
-            'created_at' => now()->format('M d, Y g:i a'),
-        ];
+        return null;
     }
-
-    return null;
-}
 }

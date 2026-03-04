@@ -238,6 +238,13 @@
         </div>
     </div>
     <Message ref="message" />
+<template>
+  <div>
+    <input type="file" @change="onPdfSelected" />
+    <input type="file" @change="onP12Selected" />
+    <input type="password" v-model="p12Password" placeholder="Enter P12 password" />
+    <button @click="signPdf">Sign PDF</button>
+  </div>
 </template>
 <script>
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';

@@ -2,11 +2,31 @@
 
 namespace App\Http\Controllers\Public;
 
+use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
+    public function pnpki(){
+        $p12Path = storage_path('app/public/profile-p12/rij.p12');
+        if (!file_exists($p12Path)) {
+            return response()->json(['error' => 'P12 file not found']);
+        }
+        $p12 = file_get_contents($p12Path);
+        $password = 'KKradsbg44';
+
+        if (!openssl_pkcs12_read($p12, $certs, $password)) {
+            return response()->json(['error' => 'Invalid certificate password']);
+        }
+
+         return response()->json([
+            'status' => 'Certificate Loaded Successfully',
+            'subject' => openssl_x509_parse($certs['cert'])['subject']
+        ]);
+
+    }
+
     public function verification()
     {
         return inertia('Public/Verification/Index', [

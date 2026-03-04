@@ -27,12 +27,6 @@
                                             </div>
                                         </BCol>
                                         <div class="col-auto">
-                                            <BButton type="button" variant="soft-success">
-                                                <i class="ri-add-circle-line align-middle me-1"></i>
-                                                Add Product
-                                            </BButton>
-                                        </div>
-                                        <div class="col-auto">
                                             <BButton type="button" variant="soft-info"
                                                 class="btn-icon waves-effect layout-rightside-btn" @click="rightcolumn">
                                                 <i class="ri-pulse-line"></i>

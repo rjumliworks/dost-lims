@@ -35,6 +35,9 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
     });
 });
 
+
+Route::get('/pnpki', [App\Http\Controllers\Public\VerificationController::class, 'pnpki']);
+
 Route::get('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
 Route::post('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verify']);
 

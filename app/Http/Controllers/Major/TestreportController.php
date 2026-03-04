@@ -36,6 +36,8 @@ class TestreportController extends Controller
     }
 
     public function store(Request $request){
+
+   
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){
                 case 'single':
@@ -47,6 +49,8 @@ class TestreportController extends Controller
                 case 'report':
                     return $this->save->report($request);
                 break;
+                default: 
+                    return $this->save->signpdf($request);
             }
         });
 
