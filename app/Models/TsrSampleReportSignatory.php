@@ -21,17 +21,17 @@ class TsrSampleReportSignatory extends Model
 
     public function analyzed()
     {
-        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+        return $this->belongsTo('App\Models\User', 'analyzed_by', 'id');
     }
 
     public function certified()
     {
-        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+        return $this->belongsTo('App\Models\User', 'certified_by', 'id');
     }
 
     public function approved()
     {
-        return $this->belongsTo('App\Models\User', 'user_id', 'id');
+        return $this->belongsTo('App\Models\User', 'approved_by', 'id');
     }
 
     public function report()

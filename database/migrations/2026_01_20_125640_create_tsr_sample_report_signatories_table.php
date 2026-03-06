@@ -16,7 +16,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('analyzed_timestamp')->nullable();
             $table->unsignedInteger('analized_by');
-            $table->foreign('analized_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('analyzed_by')->references('id')->on('users')->onDelete('cascade');
             $table->datetime('analyzed_date')->nullable();
             $table->string('certified_timestamp')->nullable();
             $table->unsignedInteger('certified_by');

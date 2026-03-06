@@ -102,7 +102,7 @@
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
             <b-button v-if="status === 'Pending'" @click="save(11,'start')" variant="primary" :disabled="form.processing" block>Start Analysis</b-button>
             <b-button v-if="status === 'Ongoing'" @click="save(12,'end')" variant="primary" :disabled="form.processing" block>End Analysis</b-button>
-            <b-button v-if="!selected.has_report" @click="openGenerate()" variant="success" :disabled="form.processing" block>Generate Report Number</b-button>
+            <b-button v-if="status === 'Completed' && !selected.has_report" @click="openGenerate()" variant="success" :disabled="form.processing" block>Generate Report Number</b-button>
         </template>
     </b-modal>
     <Save @hide="hide" ref="save"/>

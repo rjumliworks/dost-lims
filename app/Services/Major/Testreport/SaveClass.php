@@ -46,6 +46,11 @@ class SaveClass
                     'user_id' => \Auth::user()->id,
                     'tm_id' => $head[0]
                 ]);
+                if($data){
+                    $data->signatory()->create([
+                        'approved_by' => 3 //JTF ID
+                    ]);
+                }
                 $message = 'Report number was generated!';
             }else{
                 $data = null;
@@ -85,32 +90,21 @@ class SaveClass
     public function report($request){
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($request->id);
-
         $data = TsrSampleReport::where('id',$id[0])->first();
         $attach = $this->upload($data,$request);
-        $data->attachment = $attach;
-        if($data->save()){
-            // if ($request->timestamp) {
-            //     $alreadySigned = TsrSampleReportSignatory::where('report_id', $data->id)
-            //     ->where('user_id', auth()->id())
-            //     ->exists();
-
-            //     if ($alreadySigned) {
-            //         return [
-            //             'data' => $data,
-            //             'message' => 'Already signed.',
-            //             'info' => 'You have already signed this report.'
-            //         ];
-            //     }
-
-            //     TsrSampleReportSignatory::create([
-            //         'report_id' => $data->id,
-            //         'timestamp' => $request->timestamp,
-            //         'user_id'   => auth()->id(),
-            //     ]);
-            // }
-        }
         
+        if(isset($attach['error']) && $attach['error']){
+            return [
+                'data' => [],
+                'message' => 'Failed to signed the PDF',
+                'info' => $attach['message'],
+                'status' => false
+            ];
+        }
+
+        $data->attachment = $attach;
+        $data->save();
+
         return [
             'data' => $data->attachment,
             'message' => 'Testreport updated.', 
@@ -126,20 +120,76 @@ class SaveClass
             $pdf = $request->file('pdf');
             $extension = strtolower($pdf->getClientOriginalExtension());
             $file_name = strtolower($name) . '.' . $extension;
+            $file_path = 'uploads/testreports/' . $file_name;
+            
+            if ($data->attachment == null) {
 
+                \Storage::disk('public')->put($file_path, file_get_contents($pdf->getRealPath()));
+                return [
+                    'name' => $file_name,
+                    'file' => $file_path,
+                    'added_by' => \Auth::user()->id,
+                    'created_at' => now()->format('M d, Y g:i a'),
+                ];
+            }
+            
             $response = Http::attach(
                 'file',
                 file_get_contents($pdf->getRealPath()),
                 $file_name
-            )->post('http://127.0.0.1:8000/sign');
+            )->post('http://127.0.0.1:8000/signs');
 
             if (!$response->successful()) {
-                throw new \Exception($response);
+                return [
+                    'error' => true,
+                    'message' => $response->json('message')
+                ]; // throw new \Exception($response);
             }
 
             $signedPdf = $response->body();
 
-            // Read PDF bytes
+            \Storage::disk('public')->put($file_path,$signedPdf);
+
+            return [
+                'name' => $file_name,
+                'file' => $file_path,
+                'added_by' => \Auth::user()->id,
+                'created_at' => now()->format('M d, Y g:i a'),
+            ];
+        }
+
+        return null;
+    }
+}
+
+
+       // $data = TsrSampleReport::where('id',$id[0])->first();
+        // $attach = $this->upload($data,$request);
+        // $data->attachment = $attach;
+        // if($data->save()){
+        //     // if ($request->timestamp) {
+        //     //     $alreadySigned = TsrSampleReportSignatory::where('report_id', $data->id)
+        //     //     ->where('user_id', auth()->id())
+        //     //     ->exists();
+
+        //     //     if ($alreadySigned) {
+        //     //         return [
+        //     //             'data' => $data,
+        //     //             'message' => 'Already signed.',
+        //     //             'info' => 'You have already signed this report.'
+        //     //         ];
+        //     //     }
+
+        //     //     TsrSampleReportSignatory::create([
+        //     //         'report_id' => $data->id,
+        //     //         'timestamp' => $request->timestamp,
+        //     //         'user_id'   => auth()->id(),
+        //     //     ]);
+        //     // }
+        // }
+
+
+        // Read PDF bytes
             // $pdfBinary = file_get_contents($pdf->getRealPath());
 
             // Compute HMAC
@@ -161,17 +211,3 @@ class SaveClass
             // }
 
             // Save the PDF to storage
-            $file_path = 'uploads/testreports/' . $file_name;
-            \Storage::disk('public')->put($file_path,$signedPdf);
-
-            return [
-                'name' => $file_name,
-                'file' => $file_path,
-                'added_by' => \Auth::user()->id,
-                'created_at' => now()->format('M d, Y g:i a'),
-            ];
-        }
-
-        return null;
-    }
-}

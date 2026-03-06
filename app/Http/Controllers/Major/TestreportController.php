@@ -64,7 +64,8 @@ class TestreportController extends Controller
 
      public function show($id){
         return inertia('Modules/Major/Testreports/View',[
-            'testreport' => $this->view->testreport($id)
+            'testreport' => $this->view->testreport($id),
+            'analysts' => $this->view->analysts($id)
         ]);
     }
 }

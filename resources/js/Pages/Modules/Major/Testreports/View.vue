@@ -109,22 +109,32 @@
                                                         <th class="text-center" width="30%">Status</th>
                                                     </tr>
                                                 </thead>
-                                                <!-- <tbody v-if="this.testreport.data.signatories.length > 0">
-                                                    <tr v-for="(list,index) in this.testreport.data.signatories" v-bind:key="index">
-                                                        <td class="text-center"> 
-                                                            {{index + 1}}
-                                                        </td>
+                                                <tbody >
+                                                    <tr style="cursor: pointer;" @click="setSignatory('analyzed')">
+                                                        <td class="text-center">1</td>
                                                         <td>
-                                                            <h5 class="fs-13 mb-0">{{list.user.profile.fullname}}</h5>
+                                                            <h5 class="fs-12 mb-0">-</h5>
+                                                            <p class="fs-11 text-muted mb-0">Analyzed By</p>
                                                         </td>
-                                                        <td class="text-center">{{list.timestamp}}</td>
+                                                        <td class="text-center">-</td>
+                                                    </tr>
+                                                    <tr style="cursor: pointer;" @click="setSignatory('certified')">
+                                                        <td class="text-center">2</td>
+                                                        <td>
+                                                            <h5 class="fs-12 mb-0">-</h5>
+                                                            <p class="fs-11 text-muted mb-0">Certified By</p>
+                                                        </td>
+                                                        <td class="text-center">-</td>
+                                                    </tr>
+                                                    <tr style="cursor: pointer;" @click="setSignatory('approved')">
+                                                        <td class="text-center">3</td>
+                                                        <td>
+                                                            <h5 class="fs-12 mb-0">{{selected.signatory.approved.profile.fullname}}</h5>
+                                                            <p class="fs-11 text-muted mb-0">Approved By</p>
+                                                        </td>
+                                                        <td class="text-center">-</td>
                                                     </tr>
                                                 </tbody>
-                                                <tbody v-else>
-                                                    <tr>
-                                                        <td colspan="3" class="text-center text-muted fs-12">No signatories found.</td>
-                                                    </tr>
-                                                </tbody> -->
                                             </table>
                                         </div>
                                     </div>
@@ -220,6 +230,7 @@
         </div>
     </div>
     <Message ref="message" />
+    <Signatory :analysts="analysts" ref="signatory"/>
   </template>
 <script>
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
@@ -231,14 +242,15 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 import vueFilePond from 'vue-filepond';
 import 'filepond/dist/filepond.min.css';
 import Message from './Modals/Message.vue';
+import Signatory from './Modals/Signatory.vue';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 import simplebar from "simplebar-vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
     export default {
         layout: null,
-        props: ['testreport'],
-        components: { PageHeader, simplebar, Message, FilePond },
+        props: ['testreport','analysts'],
+        components: { PageHeader, simplebar, Message, FilePond, Signatory },
         computed: {
             columns() {
                 const chunkSize = Math.ceil(this.selected.lists.length / 4);
@@ -492,6 +504,9 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     this.signaturePos = { x: centerX, y: centerY };
                 });
             },
+            setSignatory(type){
+                this.$refs.signatory.show(type);
+            },
             goToPage(page) {
                 this.currentPage = page;
                 this.renderPdf(page);
@@ -505,32 +520,6 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
         }
     }
 </script>
-<!-- <style scoped>
-    .auth-page-wrapper .auth-page-content {
-        padding-bottom: 0px;
-        width: 100%;
-        overflow: hidden;
-        background-color: #f3f3f9;
-    }
-    #signature {
-        position: absolute;
-        z-index: 10;
-    }
-    .loading-overlay-inside {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    min-height: 100%;
-    background-color: rgba(255, 255, 255, 0.6); /* Adjust if needed */
-    backdrop-filter: blur(2px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-    pointer-events: all;
-}
-</style> -->
 <style scoped>
     .auth-page-wrapper .auth-page-content {
         padding-bottom: 0px;
