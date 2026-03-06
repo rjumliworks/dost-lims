@@ -137,7 +137,7 @@ class SaveClass
                 throw new \Exception($response);
             }
 
-        $signedPdf = $response->body();
+            $signedPdf = $response->body();
 
             // Read PDF bytes
             // $pdfBinary = file_get_contents($pdf->getRealPath());
