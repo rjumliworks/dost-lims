@@ -113,7 +113,8 @@
                                                     <tr style="cursor: pointer;" @click="setSignatory('analyzed')">
                                                         <td class="text-center">1</td>
                                                         <td>
-                                                            <h5 class="fs-12 mb-0">-</h5>
+                                                            <h5 class="fs-12 mb-0" v-if="testreport.data.signatory.analyzed">{{testreport.data.signatory.analyzed.profile.fullname}}</h5>
+                                                            <h5 class="fs-12 mb-0" v-else>-</h5>
                                                             <p class="fs-11 text-muted mb-0">Analyzed By</p>
                                                         </td>
                                                         <td class="text-center">-</td>
@@ -121,7 +122,8 @@
                                                     <tr style="cursor: pointer;" @click="setSignatory('certified')">
                                                         <td class="text-center">2</td>
                                                         <td>
-                                                            <h5 class="fs-12 mb-0">-</h5>
+                                                            <h5 class="fs-12 mb-0" v-if="testreport.data.signatory.certified">{{testreport.data.signatory.certified.profile.fullname}}</h5>
+                                                            <h5 class="fs-12 mb-0" v-else>-</h5>
                                                             <p class="fs-11 text-muted mb-0">Certified By</p>
                                                         </td>
                                                         <td class="text-center">-</td>
@@ -505,7 +507,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 });
             },
             setSignatory(type){
-                this.$refs.signatory.show(type);
+                this.$refs.signatory.show(type,this.selected.signatory.id);
             },
             goToPage(page) {
                 this.currentPage = page;

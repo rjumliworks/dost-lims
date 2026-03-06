@@ -1,17 +1,12 @@
 <template>
     <b-modal v-model="showModal" header-class="p-3 bg-light" title="Set Signatory" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
-         <b-col lg class="mt-2">
-            <label style="font-size: 12px; margin-bottom: 3px;">Started By / Date :</label>
-            <div class="input-group mb-1">
-                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                <Multiselect class="white" style="width: 60%;" :options="analysts" v-model="form.started" object label="name" :allow-empty="false" :searchable="true" placeholder="Select Analyst" />
-                <TextInput v-model="form.start_at" type="date" class="form-control" @input="handleInput('start_at')" :light="true"/>
-            </div>
-        </b-col>
-
+        <div class="alert alert-info alert-dismissible alert-label-icon label-arrow fade show material-shadow" role="alert">
+            <i class="ri-ball-pen-fill label-icon"></i> {{ type }}
+        </div>
+        <Multiselect :options="analysts" v-model="selectedAnalyst" label="name" :allow-empty="false" :searchable="true" placeholder="Select Analyst" />
         <template v-slot:footer>
             <b-button @click="hide" variant="light" block>Close</b-button>
-            <b-button @click="openResult" variant="primary" block>Submit</b-button>
+            <b-button @click="submit" variant="primary" block>Submit</b-button>
         </template>
     </b-modal>
 </template>
@@ -28,21 +23,55 @@ export default {
         return {
             form: useForm({
                 id: null,
-                started: null,
-                start_at: null,
-                ended: null,
-                end_at: null,
-                option: 'tagging'
+                analyzed_by: null,
+                certified_by: null,
+                option: 'signatory'
             }),
             type: null,
             showModal: false
         };
     },
-   
+    computed: {
+        selectedAnalyst: {
+            get() {
+                return this.type === 'analyzed'
+                    ? this.form.analyzed_by
+                    : this.form.certified_by;
+            },
+            set(value) {
+                if (this.type === 'analyzed') {
+                    this.form.analyzed_by = value;
+                } else {
+                    this.form.certified_by = value;
+                }
+            }
+        }
+    },
     methods: {
-        show(type) {
+        show(type,id) {
             this.type = type;
+            this.form.id = id;
             this.showModal = true;
+        },
+        submit(){
+               this.form
+        .transform((data) => {
+
+            if (this.type === 'analyzed') {
+                delete data.certified_by;
+            } else {
+                delete data.analyzed_by;
+            }
+
+            return data;
+        })
+        .post('/testreports', {
+            preserveScroll: true,
+            onSuccess: () => {
+                this.$emit('update', this.$page.props.flash.data);
+                this.hide();
+            },
+        });
         },
         hide() {
             this.showModal = false;

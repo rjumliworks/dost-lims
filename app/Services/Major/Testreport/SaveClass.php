@@ -14,9 +14,23 @@ use App\Models\TsrSampleReportSignatory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
+use App\Http\Resources\Major\Testreport\WithReportResource;
 
 class SaveClass
 {
+    public function signatory($request){
+        $payload = array_filter([
+            'analyzed_by' => $request->analyzed_by,
+            'certified_by' => $request->certified_by,
+        ]);
+        $data = TsrSampleReportSignatory::where('id',$request->id)->update($payload);
+        return [
+            'data' => $data,
+            'message' => 'wew', 
+            'info' => "You've successfully generated the report number."
+        ];
+    }
+
     public function single($request){
         $laboratory_id = $request->laboratory_id;
 

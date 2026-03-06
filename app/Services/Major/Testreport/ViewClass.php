@@ -151,9 +151,9 @@ class ViewClass
         
         $data = UserRole::with('user.profile')
         ->whereHas('user', function ($query){
-            $query->where('is_active',1);
+            // $query->where('is_active',1);
         })
-        ->whereIn('role_id',[5,10])
+        ->whereIn('role_id',[3,5,10])
         ->select('user_id')   
         ->distinct()         
         ->get()->map(function ($item) {

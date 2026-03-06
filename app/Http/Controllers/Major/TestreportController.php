@@ -43,14 +43,17 @@ class TestreportController extends Controller
                 case 'single':
                     return $this->save->single($request);
                 break;
-                case 'multiple':
-                    return $this->save->multiple($request);
-                break;
+                // case 'multiple':
+                //     return $this->save->multiple($request);
+                // break;
                 case 'report':
                     return $this->save->report($request);
                 break;
+                case 'signatory':
+                    return $this->save->signatory($request);
+                break;
                 default: 
-                    return $this->save->signpdf($request);
+                    // return $this->save->signpdf($request);
             }
         });
 
