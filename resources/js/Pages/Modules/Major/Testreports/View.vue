@@ -35,9 +35,8 @@
                                 </b-col>
                                 <b-col md="auto">
                                     <div class="hstack gap-4 flex-wrap mt-2">
-                                        
-                                        <div>  
-                                            <b-button variant="primary" block><i class="ri-printer-fill me-1"></i> Print</b-button>
+                                        <div v-if="showSave">  
+                                            <b-button variant="primary" @click="savePdfWithSignature" block><i class="ri-save-fill me-1"></i> Save</b-button>
                                         </div>
                                     </div>
                                 </b-col>
@@ -51,7 +50,6 @@
                 <div class="file-manager-sidebar" style="margin-left: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
                         <div class="row g-2 p-3">
-                         
                             <div class="col-sm-12">
                                 <div class="p-1 border border-dashed rounded">
                                     <div class="d-flex align-items-center">
@@ -100,8 +98,8 @@
                                         </div>
                                     </div>
                                     <div class="card bg-white border-bottom shadow-none" no-body>
-                                        <div class="table-responsive">
-                                            <table class="table table-nowrap table-striped align-middle mb-0">
+                                        <div class="table-responsive mb-2">
+                                            <table class="table table-nowrap table-striped align-middle mb-">
                                                 <thead class="table-light thead-fixed">
                                                     <tr class="fs-11">
                                                         <th class="text-center" width="7%">#</th>
@@ -110,31 +108,43 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody >
-                                                    <tr style="cursor: pointer;" @click="setSignatory('analyzed')">
+                                                    <tr :style="testreport.data.signatory.analyzed_date === null ? 'cursor: pointer;' : ''"
+                                                        @click="testreport.data.signatory.analyzed_date === null ? setSignatory('analyzed') : ''">
                                                         <td class="text-center">1</td>
                                                         <td>
                                                             <h5 class="fs-12 mb-0" v-if="testreport.data.signatory.analyzed">{{testreport.data.signatory.analyzed.profile.fullname}}</h5>
                                                             <h5 class="fs-12 mb-0" v-else>-</h5>
                                                             <p class="fs-11 text-muted mb-0">Analyzed By</p>
                                                         </td>
-                                                        <td class="text-center">-</td>
+                                                        <td class="text-center">
+                                                            <span v-if="testreport.data.signatory.analyzed_date" class="badge bg-success">Completed</span>
+                                                            <span v-else class="badge bg-warning">Pending</span>
+                                                        </td>
                                                     </tr>
-                                                    <tr style="cursor: pointer;" @click="setSignatory('certified')">
+                                                    <tr :style="testreport.data.signatory.certified_date === null ? 'cursor: pointer;' : ''"
+                                                        @click="testreport.data.signatory.certified_date === null && setSignatory('certified')">
                                                         <td class="text-center">2</td>
                                                         <td>
                                                             <h5 class="fs-12 mb-0" v-if="testreport.data.signatory.certified">{{testreport.data.signatory.certified.profile.fullname}}</h5>
                                                             <h5 class="fs-12 mb-0" v-else>-</h5>
                                                             <p class="fs-11 text-muted mb-0">Certified By</p>
                                                         </td>
-                                                        <td class="text-center">-</td>
+                                                        <td class="text-center">
+                                                            <span v-if="testreport.data.signatory.certified_date" class="badge bg-success">Completed</span>
+                                                            <span v-else class="badge bg-warning">Pending</span>
+                                                        </td>
                                                     </tr>
-                                                    <tr style="cursor: pointer;" @click="setSignatory('approved')">
+                                                    <tr :style="testreport.data.signatory.approved_date === null ? 'cursor: pointer;' : ''"
+                                                        @click="testreport.data.signatory.approved_date === null && setSignatory('approved')">
                                                         <td class="text-center">3</td>
                                                         <td>
                                                             <h5 class="fs-12 mb-0">{{selected.signatory.approved.profile.fullname}}</h5>
                                                             <p class="fs-11 text-muted mb-0">Approved By</p>
                                                         </td>
-                                                        <td class="text-center">-</td>
+                                                        <td class="text-center">
+                                                            <span v-if="testreport.data.signatory.approved_date" class="badge bg-success">Completed</span>
+                                                            <span v-else class="badge bg-warning">Pending</span>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -170,10 +180,7 @@
                             <b-row class="mb-0">
                                 <b-col md>
                                     <div class="hstack gap-1 flex-wrap">
-                                        <div>  
-                                            <b-button @click="savePdfWithSignature" variant="primary" block><i class="ri-save-fill me-1"></i> Save</b-button>
-                                        </div>
-                                        <div v-if="!showSignature" @click="placeSignature">  
+                                        <div v-if="!showSignature  && signRole" @click="placeSignature">  
                                             <b-button variant="warning" block><i class="ri-ball-pen-fill me-1"></i>Sign</b-button>
                                         </div>
                                         <div>  
@@ -275,6 +282,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 totalPages: 0,
                 showSignature: false,
                 isRendering: false,
+                showSave: false,
                 currentDateTime: new Date().toLocaleString(),
             }
         },
@@ -282,6 +290,37 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
             this.renderPdf();
             this.makeDraggable();
         },
+        computed: {
+            signRole() {
+                const userId = this.$page.props.user.data.id;
+                const s = this.selected.signatory;
+
+                // Step 1: Analyzed
+                if (s.analyzed?.id === userId && !s.analyzed_date) {
+                    return 'analyzed';
+                }
+
+                // Step 2: Certified (only if analyzed already completed)
+                if (
+                    s.certified?.id === userId &&
+                    !s.certified_date &&
+                    s.analyzed_date
+                ) {
+                    return 'certified';
+                }
+
+                // Step 3: Approved (only if certified already completed)
+                if (
+                    s.approved?.id === userId &&
+                    !s.approved_date &&
+                    s.certified_date
+                ) {
+                    return 'approved';
+                }
+
+                return null;
+            }
+                    },
         watch: {
             showSignature(val) {
                 if (val && this.$refs.signature) {
@@ -429,6 +468,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 formData.append('id', this.selected.reference);
                 formData.append('timestamp',timestamp);
                 formData.append('option', 'report');
+                formData.append('role', this.signRole);
 
                 this.$inertia.post('/testreports', formData, {
                     preserveScroll: true,
@@ -438,6 +478,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     this.errors = this.$page.props.errors;
                     }
                 });
+                this.showSave = false;
             },
             handleAddFile(error, fileItem) {
                 if (error) return console.error('FilePond error:', error);
@@ -505,6 +546,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 
                     this.signaturePos = { x: centerX, y: centerY };
                 });
+                this.showSave = true;
             },
             setSignatory(type){
                 this.$refs.signatory.show(type,this.selected.signatory.id);

@@ -117,7 +117,29 @@ class SaveClass
         }
 
         $data->attachment = $attach;
-        $data->save();
+        if($data->save()){
+            $signatory = TsrSampleReportSignatory::where('report_id', $data->id)->first();
+            if($request->role == 'analyzed'){
+                $signatory->update([
+                    'analyzed_date' => now(),
+                    'analyzed_timestamp' => $request->timestamp
+                ]);
+            }
+
+            if($request->role == 'certified'){
+                $signatory->update([
+                    'certified_date' => now(),
+                    'certified_timestamp' => $request->timestamp
+                ]);
+            }
+
+            if($request->role == 'approved'){
+                $signatory->update([
+                    'approved_date' => now(),
+                    'approved_timestamp' => $request->timestamp
+                ]);
+            }
+        }
 
         return [
             'data' => $data->attachment,
@@ -151,7 +173,7 @@ class SaveClass
                 'file',
                 file_get_contents($pdf->getRealPath()),
                 $file_name
-            )->post('http://127.0.0.1:8000/signs');
+            )->post('http://127.0.0.1:8000/sign');
 
             if (!$response->successful()) {
                 return [
