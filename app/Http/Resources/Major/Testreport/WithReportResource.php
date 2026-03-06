@@ -19,7 +19,7 @@ class WithReportResource extends JsonResource
             'user' => $this->user->profile->fullname,
             'lists' => $this->lists,
             'attachment' => json_decode($this->attachment),
-            'signatories' => $this->signatories,
+            'signatory' => $this->signatory,
             'created_at' => $this->created_at
         ]; 
     }

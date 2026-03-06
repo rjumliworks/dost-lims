@@ -3,6 +3,7 @@
 namespace App\Services\Major\Testreport;
 
 use Hashids\Hashids;
+use App\Models\UserRole;
 use App\Models\TsrSample;
 use App\Models\TsrSampleReport;
 use App\Http\Resources\Major\Testreport\WithReportResource;
@@ -17,7 +18,9 @@ class ViewClass
             TsrSampleReport::query()
             ->with('lists.sample:id,code','lists.sample.analyses:testservice_id,sample_id','lists.sample.analyses.testservice:id,testname_id','lists.sample.analyses.testservice.testname:id,name')
             ->with('sample.tsr','user:id','user.profile:user_id,firstname,lastname,middlename,suffix_id')
-            ->with('signatory.user:id','signatory.user.profile:user_id,firstname,middlename,lastname,suffix_id')
+            ->with('signatory.analyzed:id','signatory.analyzed.profile:user_id,firstname,middlename,lastname,suffix_id')
+            ->with('signatory.certified:id','signatory.certified.profile:user_id,firstname,middlename,lastname,suffix_id')
+            ->with('signatory.approved:id','signatory.approved.profile:user_id,firstname,middlename,lastname,suffix_id')
             ->with('sample.analyses:testservice_id,sample_id','sample.analyses.testservice:id,testname_id','sample.analyses.testservice.testname:id,name')
             ->where('id',$id[0])
             ->first()
@@ -141,6 +144,27 @@ class ViewClass
             'laboratory_id' => $item->tsr->laboratory_id
         ];
     }
+
+    public function analysts($id){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($id);
+        
+        $data = UserRole::with('user.profile')
+        ->whereHas('user', function ($query){
+            $query->where('is_active',1);
+        })
+        ->whereIn('role_id',[5,10])
+        ->select('user_id')   
+        ->distinct()         
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->user_id,
+                'name' => $item->user->profile->firstname.' '.$item->user->profile->lastname
+            ];
+        });
+        return $data;
+    }
+
 
     // public function samples($request){
 
