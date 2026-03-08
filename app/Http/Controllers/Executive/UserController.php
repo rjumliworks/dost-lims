@@ -56,6 +56,9 @@ class UserController extends Controller
                 case 'user':
                     return $this->save->store($request);
                 break;
+                case 'certificate':
+                    return $this->save->sc($request);
+                break;
             }
         });
 
