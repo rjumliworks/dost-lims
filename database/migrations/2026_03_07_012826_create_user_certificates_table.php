@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('user_certificates', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->longText('certificate'); 
-            $table->longText('private_key'); 
+            $table->string('file'); 
+            $table->longText('password'); 
             $table->timestamp('expires_at')->nullable();
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

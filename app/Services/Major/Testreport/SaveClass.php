@@ -6,6 +6,7 @@ use TCPDF;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Hashids\Hashids;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\UserRole;
 use App\Models\ListLaboratory;
 use App\Models\TsrSequence;
@@ -158,22 +159,49 @@ class SaveClass
             $file_name = strtolower($name) . '.' . $extension;
             $file_path = 'uploads/testreports/' . $file_name;
             
-            if ($data->attachment == null) {
+             if ($data->attachment == null) {
 
-                \Storage::disk('public')->put($file_path, file_get_contents($pdf->getRealPath()));
-                return [
-                    'name' => $file_name,
-                    'file' => $file_path,
-                    'added_by' => \Auth::user()->id,
-                    'created_at' => now()->format('M d, Y g:i a'),
-                ];
-            }
-            
+            Storage::disk('public')->put(
+                $file_path,
+                file_get_contents($pdf->getRealPath())
+            );
+
+            return [
+                'name' => $file_name,
+                'file' => $file_path,
+                'added_by' => auth()->id(),
+                'created_at' => now()->format('M d, Y g:i a'),
+            ];
+        }
+
+            $user = User::with('certificate')->where('id',\Auth::user()->id)->first();
+           $p12Content = Storage::disk('s3')->get($user->certificate->file);
+
+// Ensure temp directory exists
+$tempDir = storage_path('app/temp');
+if (!file_exists($tempDir)) {
+    mkdir($tempDir, 0755, true);
+}
+
+// Use a proper filename
+$tempP12Path = $tempDir . '/' . basename($user->certificate->file);
+
+// Save the file
+file_put_contents($tempP12Path, $p12Content);
+$attachment = json_decode($data->attachment);
+$filePath = $attachment->file;
+
+ $existingPdf = Storage::disk('public')->get($filePath);
+
             $response = Http::attach(
                 'file',
-                file_get_contents($pdf->getRealPath()),
+                $existingPdf,
                 $file_name
-            )->post('http://127.0.0.1:8000/sign');
+            )->post('http://127.0.0.1:8000/sign',[ 
+                'p12_file' => $tempP12Path,
+                'p12_pass' => $user->certificate->password,
+                'field_name' => 'Asnalyzed'
+            ]);
 
             if (!$response->successful()) {
                 return [
