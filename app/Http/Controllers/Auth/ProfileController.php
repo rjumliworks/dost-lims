@@ -51,8 +51,8 @@ class ProfileController extends Controller
                 'p12' => 'required|file'
             ]);
             if ($request->file('p12')->getClientOriginalExtension() !== 'p12') {
-    return back()->withErrors(['p12' => 'The uploaded file must have a .p12 extension.']);
-}
+                return back()->withErrors(['p12' => 'The uploaded file must have a .p12 extension.']);
+            }
             $result = $this->handleTransaction(function () use ($request) {
 
                 $user = User::find(\Auth::user()->id);
@@ -74,6 +74,40 @@ class ProfileController extends Controller
                     [
                         'file' => $path, // save the S3 path
                         'password' => 'rstlD057rubber',
+                    ]
+                );
+
+                   return [
+                        'data' => [],
+                        'message' => 'Profile picture updated successfully.', 
+                        'info' => "The user's profile image has been changed to the new photo."
+                    ];
+            });
+        }else if($request->option == 'signature'){
+            $request->validate([
+                'signature' => 'required'
+            ]);
+           
+            $result = $this->handleTransaction(function () use ($request) {
+
+                $user = User::find(\Auth::user()->id);
+                // Get the uploaded file
+                $file = $request->file('signature');
+
+                // Optional: generate a unique filename
+                $filename = 'lims/signatures/' . $user->username . '.' . $file->getClientOriginalExtension();
+
+                // Store in S3
+                $path = $file->storeAs('', $filename, 's3');
+
+                // Get full URL if needed
+                $url = Storage::disk('s3')->url($path);
+
+                // Find or create the UserCertificate
+                $certificate = UserCertificate::updateOrCreate(
+                    ['user_id' => $user->id],
+                    [
+                        'signature' => $path
                     ]
                 );
 

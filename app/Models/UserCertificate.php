@@ -10,6 +10,7 @@ class UserCertificate extends Model
         'file', 
         'password',
         'expires_at',
+        'signature',
         'user_id'
     ];
 

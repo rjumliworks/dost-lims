@@ -6,7 +6,6 @@ use TCPDF;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use Hashids\Hashids;
 use Carbon\Carbon;
-use App\Models\User;
 use App\Models\UserRole;
 use App\Models\ListLaboratory;
 use App\Models\TsrSequence;
@@ -161,30 +160,7 @@ class SaveClass
             
             if ($data->attachment == null) {
 
-                $response = Http::attach(
-                    'file',
-                    file_get_contents($pdf->getRealPath()),
-                    $file_name
-                )->post('http://127.0.0.1:8000/normalize');
-
-                if (!$response->successful()) {
-                    return [
-                        'error' => true,
-                        'message' => 'Normalization failed'
-                    ];
-                }
-
-                $normalizedPdf = $response->body();
-
-                \Storage::disk('public')->put($file_path, $normalizedPdf);
-                $signatory = TsrSampleReportSignatory::where('report_id', $data->id)->first();
-                $signatory->analyzed_timestamp = null;
-                $signatory->analyzed_date = null;
-                $signatory->certified_timestamp = null;
-                $signatory->certified_date = null;
-                $signatory->approved_timestamp = null;
-                $signatory->approved_date = null;
-                $signatory->save(); 
+                \Storage::disk('public')->put($file_path, file_get_contents($pdf->getRealPath()));
                 return [
                     'name' => $file_name,
                     'file' => $file_path,
@@ -192,37 +168,12 @@ class SaveClass
                     'created_at' => now()->format('M d, Y g:i a'),
                 ];
             }
-
-            $user = User::with('certificate')->where('id', auth()->id())->first();
-            $p12Content = Storage::disk('s3')->get($user->certificate->file);
-
-            $tempDir = storage_path('app/temp');
-            if (!file_exists($tempDir)) mkdir($tempDir, 0755, true);
-
-            $tempP12Path = $tempDir . '/' . basename($user->certificate->file);
-            file_put_contents($tempP12Path, $p12Content);
-
-            $signatureBytes = Storage::disk('s3')->get('signatures/emapendergat95.png');
-            $tempPath = storage_path('app/temp/signature.png');
-            file_put_contents($tempPath, $signatureBytes);
-
+            
             $response = Http::attach(
                 'file',
                 file_get_contents($pdf->getRealPath()),
                 $file_name
-            )->post('http://127.0.0.1:8000/sign-merge',[
-                'signature_path' => $tempPath,
-                'p12_file' => $tempP12Path,
-                'p12_pass' => $user->certificate->password,
-                'field_name' => $request->role,
-                'page_number' => $request->page,        // Page number from Vue
-                'canvas_width' => $request->canvas_width ?? 1218,  // Vue canvas width
-                'canvas_height' => $request->canvas_height ?? 1723,// Vue canvas height
-                'sig_x' => $request->x,
-                'sig_y' => $request->y,
-                'sig_width' => $request->width,
-                'sig_height' => $request->height
-            ]);
+            )->post('http://127.0.0.1:8000/sign');
 
             if (!$response->successful()) {
                 return [

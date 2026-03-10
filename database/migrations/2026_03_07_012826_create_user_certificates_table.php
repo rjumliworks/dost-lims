@@ -16,6 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('file'); 
             $table->longText('password'); 
+            $table->string('signature', 200)->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

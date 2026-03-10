@@ -242,12 +242,7 @@
     <Signatory :analysts="analysts" ref="signatory"/>
   </template>
 <script>
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import interact from 'interactjs';
-const pdfjsLib = window['pdfjs-dist/build/pdf'];
-
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 import vueFilePond from 'vue-filepond';
 import 'filepond/dist/filepond.min.css';
 import Message from './Modals/Message.vue';
@@ -391,93 +386,98 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     });
                 }
             },
+            // async savePdfWithSignature() {
+            //     const signature = this.$refs.signature;
+            //     if (!signature) return;
+
+            //     const sigX = parseFloat(signature.dataset.x) || 0;
+            //     const sigY = parseFloat(signature.dataset.y) || 0;
+            //     const sigWidth = signature.offsetWidth;
+            //     const sigHeight = signature.offsetHeight;
+
+            //     const pageNum = this.currentPage;
+            //     this.currentDateTime = new Date().toLocaleString();
+            //     const timestamp = this.currentDateTime;
+
+            //     const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
+            //     const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+
+            //     const formData = new FormData();
+            //     formData.append('pdf', blob, 'signed-report.pdf');
+            //     formData.append('id', this.selected.reference);
+            //     formData.append('timestamp',timestamp);
+            //     formData.append('option', 'report');
+            //     formData.append('role', this.signRole);
+            //     formData.append('page', pageNum);
+            //     formData.append('x', sigX);
+            //     formData.append('y', sigY);
+            //     formData.append('width', sigWidth);
+            //     formData.append('height', sigHeight);
+
+            //     this.$inertia.post('/testreports', formData, {
+            //         preserveScroll: true,
+            //         forceFormData: true,
+            //         onSuccess: () => this.renderPdf?.(),
+            //         onError: () => {
+            //         this.errors = this.$page.props.errors;
+            //         }
+            //     });
+            //     this.showSave = false;
+            // },
             async savePdfWithSignature() {
                 const signature = this.$refs.signature;
                 const canvas = this.$refs.pdfCanvas;
+                if (!signature || !canvas) return;
 
-                const sigBlob = await fetch(signature.src).then(res => res.blob());
-                const sigArrayBuffer = await sigBlob.arrayBuffer();
-
-                const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
-                const pdfDoc = await PDFDocument.load(pdfBytes);
-                const page = pdfDoc.getPages()[this.currentPage - 1];
-
-                const img = await pdfDoc.embedPng(sigArrayBuffer);
-                const sigWidthCSS = signature.offsetWidth;
-                const sigHeightCSS = signature.offsetHeight;
-
-                const scaleX = page.getWidth() / canvas.offsetWidth;
-                const scaleY = page.getHeight() / canvas.offsetHeight;
-
+                // Signature position on canvas
                 const sigX = parseFloat(signature.dataset.x) || 0;
                 const sigY = parseFloat(signature.dataset.y) || 0;
+                const sigWidth = signature.offsetWidth;
+                const sigHeight = signature.offsetHeight;
 
-                const sigXPDF = sigX * scaleX;
-                const sigWidthPDF = sigWidthCSS * scaleX;
-                const sigHeightPDF = sigHeightCSS * scaleY;
+                // Current page
+                const pageNum = this.currentPage;
 
-                const cssYOffsetCorrection = 0; //36
-                const yOffsetCorrection = cssYOffsetCorrection * scaleY;
+                // Get PDF bytes
+                const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
+                const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
 
-                const sigYPDF = page.getHeight() - ((sigY + sigHeightCSS) * scaleY) + yOffsetCorrection;
+                // Get signature image bytes
+                const sigBlob = await fetch(signature.src).then(res => res.blob());
 
-                page.drawImage(img, {
-                    x: sigXPDF,
-                    y: sigYPDF,
-                    width: sigWidthPDF,
-                    height: sigHeightPDF,
-                });
+                // Timestamp
+                const timestamp = new Date().toLocaleString();
 
-                this.currentDateTime = new Date().toLocaleString();
-                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-                const title = 'DIGITALLY SIGNED BY';
-                const name = 'RA-OUF I. JUMLI';
-                const timestamp = this.currentDateTime;
-                const textX = sigXPDF + sigWidthPDF + 10;
-                const textY = sigYPDF + sigHeightPDF - 10;
-
-                page.drawText(title, {
-                    x: textX,
-                    y: textY,
-                    size: 5,
-                    font,
-                    color: rgb(0, 0, 1),
-                });
-
-                page.drawText(name, {
-                    x: textX,
-                    y: textY - 6,
-                    size: 5,
-                    font,
-                    color: rgb(0, 0, 1),
-                });
-
-                page.drawText(timestamp, {
-                    x: textX,
-                    y: textY - 12,
-                    size: 5,
-                    font,
-                    color: rgb(0, 0, 1),
-                });
-
-                const pdfBytesSigned = await pdfDoc.save();
-                const blob = new Blob([pdfBytesSigned], { type: 'application/pdf' });
-
+                // Build FormData for backend
                 const formData = new FormData();
-                formData.append('pdf', blob, 'signed-report.pdf');
+                formData.append('pdf', pdfBlob, 'signed-report.pdf');
+                formData.append('signature_image', sigBlob, 'signature.png');
                 formData.append('id', this.selected.reference);
-                formData.append('timestamp',timestamp);
+                formData.append('timestamp', timestamp);
                 formData.append('option', 'report');
                 formData.append('role', this.signRole);
+                formData.append('page_number', pageNum);
 
+                // Canvas dimensions for scaling coordinates
+                formData.append('canvas_width', canvas.offsetWidth);
+                formData.append('canvas_height', canvas.offsetHeight);
+
+                // Signature coordinates and size
+                formData.append('sig_x', sigX);
+                formData.append('sig_y', sigY);
+                formData.append('sig_width', sigWidth);
+                formData.append('sig_height', sigHeight);
+
+                // Send to backend endpoint that supports position-based signing
                 this.$inertia.post('/testreports', formData, {
                     preserveScroll: true,
                     forceFormData: true,
                     onSuccess: () => this.renderPdf?.(),
                     onError: () => {
-                    this.errors = this.$page.props.errors;
+                        this.errors = this.$page.props.errors;
                     }
                 });
+
                 this.showSave = false;
             },
             handleAddFile(error, fileItem) {

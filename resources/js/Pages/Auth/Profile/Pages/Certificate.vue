@@ -64,6 +64,16 @@
             :allow-process="false"
             @addfile="handleAddFile"
             />
+            <file-pond
+            name="signatureFile"
+            ref="pond"
+            allow-multiple="false"
+            max-files="1"
+            accepted-file-types="image/png"
+            label-idle='Drag & Drop your signature PNG or <span class="filepond--label-action">Browse</span>'
+            :allow-process="false"
+            @addfile="handleSignatureFile"
+        />
         </div>
     </div>
 </div>
@@ -94,6 +104,23 @@ export default {
         }
     },
     methods: {
+        handleSignatureFile(error, fileItem) {
+            if (error) return console.error('FilePond error:', error);
+
+            const file = fileItem.file;
+            const formData = new FormData();
+            formData.append('signature', file);
+            formData.append('option', 'signature');
+
+            this.$inertia.post('/profile', formData, {
+                preserveScroll: true,
+                forceFormData: true,
+                onSuccess: (page) => {
+                    console.log(page);
+                },
+                onError: () => this.errors = this.$page.props.errors
+            });
+        },
         handleAddFile(error, fileItem) {
             if (error) return console.error('FilePond error:', error);
 

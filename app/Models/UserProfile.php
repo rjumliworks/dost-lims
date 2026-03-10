@@ -100,13 +100,13 @@ class UserProfile extends Model
 
     public function getAvatarAttribute($value)
     {
-        if (!$value) {
-            return asset('images/default-avatar.png');
+        if (Storage::disk('s3')->exists($value)) {
+            return Storage::disk('s3')->url($value);
         }
 
-        return Storage::disk('s3')->url($value);
+        return asset('images/avatars/' . $value);
     }
-
+    
     protected static $recordEvents = ['updated'];
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
