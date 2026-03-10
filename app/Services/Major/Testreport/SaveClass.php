@@ -202,16 +202,19 @@ class SaveClass
             $tempP12Path = $tempDir . '/' . basename($user->certificate->file);
             file_put_contents($tempP12Path, $p12Content);
 
-            $signatureBytes = Storage::disk('s3')->get('signatures/emapendergat95.png');
-            $tempPath = storage_path('app/temp/signature.png');
-            file_put_contents($tempPath, $signatureBytes);
+            $signatureBytes = Storage::disk('s3')->get($user->certificate->signature);
+            $tempDir2 = storage_path('app/temp');
+            if (!file_exists($tempDir2)) mkdir($tempDir2, 0755, true);
+
+            $tempSignaturePath = $tempDir2 . '/' . basename($user->certificate->signature);
+            file_put_contents($tempSignaturePath, $signatureBytes);
 
             $response = Http::attach(
                 'file',
                 file_get_contents($pdf->getRealPath()),
                 $file_name
-            )->post('http://127.0.0.1:8000/sign-merge',[
-                'signature_path' => $tempPath,
+            )->post('http://127.0.0.1:8000/sign',[
+                'signature_image' => $tempSignaturePath,
                 'p12_file' => $tempP12Path,
                 'p12_pass' => $user->certificate->password,
                 'field_name' => $request->role,
