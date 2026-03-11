@@ -213,18 +213,19 @@ class SaveClass
                 'file',
                 file_get_contents($pdf->getRealPath()),
                 $file_name
+            )->attach(
+                'signature_file',  // <- match FastAPI parameter name
+                file_get_contents($tempSignaturePath),
+                basename($tempSignaturePath)
             )->post('http://127.0.0.1:8000/sign',[
-                'signature_image' => $tempSignaturePath,
                 'p12_file' => $tempP12Path,
                 'p12_pass' => $user->certificate->password,
                 'field_name' => $request->role,
                 'page_number' => $request->page,        // Page number from Vue
-                'canvas_width' => $request->canvas_width ?? 1218,  // Vue canvas width
-                'canvas_height' => $request->canvas_height ?? 1723,// Vue canvas height
-                'sig_x' => $request->x,
-                'sig_y' => $request->y,
-                'sig_width' => $request->width,
-                'sig_height' => $request->height
+                'box_x0' => $request->box_x0,
+                'box_y0' => $request->box_y0,
+                'box_x1' => $request->box_x1,
+                'box_y1' => $request->box_y1,
             ]);
 
             if (!$response->successful()) {
@@ -251,51 +252,4 @@ class SaveClass
 }
 
 
-       // $data = TsrSampleReport::where('id',$id[0])->first();
-        // $attach = $this->upload($data,$request);
-        // $data->attachment = $attach;
-        // if($data->save()){
-        //     // if ($request->timestamp) {
-        //     //     $alreadySigned = TsrSampleReportSignatory::where('report_id', $data->id)
-        //     //     ->where('user_id', auth()->id())
-        //     //     ->exists();
-
-        //     //     if ($alreadySigned) {
-        //     //         return [
-        //     //             'data' => $data,
-        //     //             'message' => 'Already signed.',
-        //     //             'info' => 'You have already signed this report.'
-        //     //         ];
-        //     //     }
-
-        //     //     TsrSampleReportSignatory::create([
-        //     //         'report_id' => $data->id,
-        //     //         'timestamp' => $request->timestamp,
-        //     //         'user_id'   => auth()->id(),
-        //     //     ]);
-        //     // }
-        // }
-
-
-        // Read PDF bytes
-            // $pdfBinary = file_get_contents($pdf->getRealPath());
-
-            // Compute HMAC
-            // $secret = config('app.key');
-            // $hmac = hash_hmac('sha256', $pdfBinary, $secret);
-
-            // Prepare metadata
-            // $meta = "\n%--- DOC META ---\n";
-            // $meta .= "% ValidationHMAC: {$hmac}\n";
-            // $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
-            // $meta .= "%--- END META ---\n";
-
-            // // Insert metadata just before the last %%EOF
-            // $pos = strrpos($pdfBinary, '%%EOF');
-            // if ($pos !== false) {
-            //     $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
-            // } else {
-            //     $pdfBinary .= $meta . "%%EOF\n";
-            // }
-
-            // Save the PDF to storage
+       
