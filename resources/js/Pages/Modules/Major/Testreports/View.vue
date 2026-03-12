@@ -210,9 +210,9 @@
                             <img
                                 v-show="showSignature"
                                 ref="signature"
-                                src="/images/aam0920.png"
+                                :src="signature"
                                 id="signature"
-                                style="position: absolute; width: 300px; height: 100px; cursor: move;"
+                                style="position: absolute; width: auto; height: 130px; cursor: move;"
                             />
                             <canvas
                                 ref="pdfCanvas"
@@ -250,21 +250,12 @@ import Signatory from './Modals/Signatory.vue';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 import simplebar from "simplebar-vue";
+import { PDFDocument } from 'pdf-lib';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
     export default {
         layout: null,
-        props: ['testreport','analysts'],
+        props: ['testreport','analysts','signature'],
         components: { PageHeader, simplebar, Message, FilePond, Signatory },
-        computed: {
-            columns() {
-                const chunkSize = Math.ceil(this.selected.lists.length / 4);
-                const result = [];
-                for (let i = 0; i < this.selected.lists.length; i += chunkSize) {
-                    result.push(this.selected.lists.slice(i, i + chunkSize));
-                }
-                return result;
-            }
-        },
         data(){
             return {
                 selected: this.testreport.data,
@@ -283,19 +274,15 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
         },
         mounted() {
             this.renderPdf();
-            this.makeDraggable();
         },
         computed: {
             signRole() {
                 const userId = this.$page.props.user.data.id;
                 const s = this.selected.signatory;
 
-                // Step 1: Analyzed
                 if (s.analyzed?.id === userId && !s.analyzed_date) {
                     return 'analyzed';
                 }
-
-                // Step 2: Certified (only if analyzed already completed)
                 if (
                     s.certified?.id === userId &&
                     !s.certified_date &&
@@ -303,8 +290,6 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 ) {
                     return 'certified';
                 }
-
-                // Step 3: Approved (only if certified already completed)
                 if (
                     s.approved?.id === userId &&
                     !s.approved_date &&
@@ -312,10 +297,9 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 ) {
                     return 'approved';
                 }
-
                 return null;
             }
-                    },
+        },
         watch: {
             showSignature(val) {
                 if (val && this.$refs.signature) {
@@ -390,64 +374,68 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     });
                 });
             },
-            async savePdfWithSignature() {
-                const signature = this.$refs.signature;
-                const canvas = this.$refs.pdfCanvas;
-                if (!signature || !canvas) return;
 
-                // Fixed size for signature box in PDF points
-                const SIGNATURE_BOX_WIDTH = 100;
-                const SIGNATURE_BOX_HEIGHT = 50;
 
-                // Canvas dimensions in pixels (actual PDF render size)
-                const canvasWidth = canvas.width;
-                const canvasHeight = canvas.height;
+async savePdfWithSignature() {
+    const signature = this.$refs.signature;
+    const canvas = this.$refs.pdfCanvas;
+    if (!signature || !canvas) return;
 
-                // PDF page size in points (example: Letter)
-                const pdfPageWidth = 612;
-                const pdfPageHeight = 792;
+    // Fetch PDF bytes
+    const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
 
-                // Signature position relative to canvas (accounts for CSS scaling)
-                const canvasRect = canvas.getBoundingClientRect();
-                const sigRect = signature.getBoundingClientRect();
+    // Load PDF with pdf-lib
+    const pdfDoc = await PDFDocument.load(pdfBytes);
 
-                const x = (sigRect.left - canvasRect.left) * (canvasWidth / canvasRect.width);
-                const y = (sigRect.top - canvasRect.top) * (canvasHeight / canvasRect.height);
+    // Get the page you want to sign (example: first page)
+    const page = pdfDoc.getPage(this.currentPage - 1); // zero-indexed
 
-                // Convert to PDF points (bottom-left origin)
-                const pdfX = x * (pdfPageWidth / canvasWidth);
-                const pdfY = pdfPageHeight - (y * (pdfPageHeight / canvasHeight) + SIGNATURE_BOX_HEIGHT);
+    // Get actual page size in points
+    const pdfPageWidth = page.getWidth();
+    const pdfPageHeight = page.getHeight();
+    
 
-                // Prepare FormData
-                const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
-                const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-                const sigBlob = await fetch(signature.src).then(res => res.blob());
-                const timestamp = new Date().toLocaleString();
+    console.log('PDF size:', pdfPageWidth, pdfPageHeight);
 
-                const formData = new FormData();
-                formData.append('pdf', pdfBlob, 'signed-report.pdf');
-                formData.append('signature_image', sigBlob, 'signature.png');
-                formData.append('id', this.selected.reference);
-                formData.append('timestamp', timestamp);
-                formData.append('option', 'report');
-                formData.append('role', this.signRole);
-                formData.append('page_number', this.currentPage);
+    // Continue your signature positioning logic
+    const SIGNATURE_BOX_WIDTH = 220;
+    const SIGNATURE_BOX_HEIGHT = 55;
 
-                formData.append('box_x0', pdfX);
-                formData.append('box_y0', pdfY);
-                formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
-                formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
+    const canvasRect = canvas.getBoundingClientRect();
+    const sigRect = signature.getBoundingClientRect();
 
-                // Send to backend
-                this.$inertia.post('/testreports', formData, {
-                    preserveScroll: true,
-                    forceFormData: true,
-                    onSuccess: () => this.renderPdf(this.currentPage),
-                    onError: () => this.errors = this.$page.props.errors
-                });
+    const x = (sigRect.left - canvasRect.left) * (canvas.width / canvasRect.width);
+    const y = (sigRect.top - canvasRect.top) * (canvas.height / canvasRect.height);
 
-                this.showSave = false;
-            },
+    const pdfX = x * (pdfPageWidth / canvas.width);
+    const pdfY = pdfPageHeight - (y * (pdfPageHeight / canvas.height) + SIGNATURE_BOX_HEIGHT);
+
+    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const sigBlob = await fetch(signature.src).then(res => res.blob());
+    const timestamp = new Date().toLocaleString();
+
+    const formData = new FormData();
+    formData.append('pdf', pdfBlob, 'signed-report.pdf');
+    formData.append('signature_image', sigBlob, 'signature.png');
+    formData.append('id', this.selected.reference);
+    formData.append('timestamp', timestamp);
+    formData.append('option', 'report');
+    formData.append('role', this.signRole);
+    formData.append('page_number', this.currentPage);
+    formData.append('box_x0', pdfX);
+    formData.append('box_y0', pdfY);
+    formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
+    formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
+
+    this.$inertia.post('/testreports', formData, {
+        preserveScroll: true,
+        forceFormData: true,
+        onSuccess: () => this.renderPdf(this.currentPage),
+        onError: () => (this.errors = this.$page.props.errors),
+    });
+
+    this.showSave = false;
+},
             handleAddFile(error, fileItem) {
                 if (error) return console.error('FilePond error:', error);
 
@@ -478,22 +466,6 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     onError: () => this.errors = this.$page.props.errors
                 });
             },
-            makeDraggable() {
-                interact(this.$refs.signature).draggable({
-                    modifiers: [interact.modifiers.restrictRect({ restriction: 'parent' })],
-                    listeners: {
-                    move: event => {
-                        const target = event.target;
-                        const x = (parseFloat(target.dataset.x) || 0) + event.dx;
-                        const y = (parseFloat(target.dataset.y) || 0) + event.dy;
-                        target.style.transform = `translate(${x}px, ${y}px)`;
-                        target.dataset.x = x;
-                        target.dataset.y = y;
-                        this.signaturePos = { x, y };
-                    }
-                    }
-                });
-            }, 
             placeSignature() {
                 this.showSignature = true;
                 this.$nextTick(() => {
@@ -519,8 +491,13 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
             setSignatory(type){
                 this.$refs.signatory.show(type,this.selected.signatory.id);
             },
-            goToPage(page) {
+           goToPage(page) {
+                if (page < 1 || page > this.totalPages) return;
+
+                this.showSignature = false;
+                this.showSave = false;
                 this.currentPage = page;
+
                 this.renderPdf(page);
             },
             printQr(){

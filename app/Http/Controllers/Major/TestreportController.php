@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Major;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\HandlesTransaction;
+use Illuminate\Support\Facades\Storage;
 use App\Services\Major\Testreport\ViewClass;
 use App\Services\Major\Testreport\SaveClass;
 
@@ -65,10 +66,25 @@ class TestreportController extends Controller
         ]);
     }
 
-     public function show($id){
+    public function show($id){
+        $user = auth()->user(); // or your target user
+        $signature = null;
+
+        if ($user->certificate && $user->certificate->signature) {
+            // Get S3 bytes
+            $signatureBytes = Storage::disk('s3')->get($user->certificate->signature);
+
+            // Get MIME type
+            $mime = Storage::disk('s3')->mimeType($user->certificate->signature);
+
+            // Convert to base64
+            $signature = 'data:' . $mime . ';base64,' . base64_encode($signatureBytes);
+        }
+
         return inertia('Modules/Major/Testreports/View',[
             'testreport' => $this->view->testreport($id),
-            'analysts' => $this->view->analysts($id)
+            'analysts' => $this->view->analysts($id),
+            'signature' => $signature
         ]);
     }
 }
