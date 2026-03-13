@@ -59,6 +59,11 @@ class Customer extends Authenticatable
         return (new Hashids('krad', 10))->encode($this->id);
     }
 
+    public function tsrs()
+    {
+        return $this->hasMany('App\Models\Tsr', 'customer_id');
+    }
+
     public function payorable()
     {
         return $this->morphOne('App\Models\FinanceOp', 'payorable');
