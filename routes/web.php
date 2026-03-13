@@ -80,17 +80,10 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/discounts', App\Http\Controllers\Executive\DiscountController::class);
 });
 
-// Route::get('/customer/login', [App\Http\Controllers\Public\CustomerController::class, 'login'])->name('customer.login');
-// Route::middleware('auth:customer')->group(function () {
-//     Route::get('/customer', [App\Http\Controllers\Public\CustomerController::class, 'view'])->name('customer.dashboard');
-//     Route::get('/customer/tsrs', [App\Http\Controllers\Public\CustomerController::class, 'tsrs']);
-//     Route::get('/customer/profile', [App\Http\Controllers\Public\CustomerController::class, 'profile']);
-//     Route::get('/customer/logout', [App\Http\Controllers\Public\CustomerController::class, 'logout'])->name('customer.logout');
-// });
-// Route::post('/mail', [App\Http\Controllers\Public\OtpController::class, 'mail']);
-// Route::post('/verify', [App\Http\Controllers\Public\OtpController::class, 'verify']);
-
-
-
+Route::prefix('insights')->group(function () {
+    Route::get('/customers', [App\Http\Controllers\Insights\CustomerController::class, 'index']);
+    Route::get('/payments', [App\Http\Controllers\Insights\PaymentController::class, 'index']);
+    Route::get('/laboratories', [App\Http\Controllers\Insights\LaboratoryController::class, 'index']);
+});
 
 require __DIR__.'/auth.php';

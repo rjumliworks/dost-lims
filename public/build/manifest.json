@@ -172,6 +172,18 @@
     "file": "assets/remixicon-DrAJSjvU.woff2",
     "src": "public/fonts/remixicon.woff2"
   },
+  "public/images/apps/customer.png": {
+    "file": "assets/customer-BnSpBMSv.png",
+    "src": "public/images/apps/customer.png"
+  },
+  "public/images/apps/laboratory.png": {
+    "file": "assets/laboratory-DGebyxyk.png",
+    "src": "public/images/apps/laboratory.png"
+  },
+  "public/images/apps/payment.png": {
+    "file": "assets/payment-D3v2iUXr.png",
+    "src": "public/images/apps/payment.png"
+  },
   "public/images/auth/new-password.png": {
     "file": "assets/new-password-DFqpapdk.png",
     "src": "public/images/auth/new-password.png"
@@ -179,30 +191,6 @@
   "public/images/auth/reset-password.png": {
     "file": "assets/reset-password-BNEyUq9v.png",
     "src": "public/images/auth/reset-password.png"
-  },
-  "public/images/brands/bitbucket.png": {
-    "file": "assets/bitbucket-JY-MQjeH.png",
-    "src": "public/images/brands/bitbucket.png"
-  },
-  "public/images/brands/dribbble.png": {
-    "file": "assets/dribbble-CYfSis_k.png",
-    "src": "public/images/brands/dribbble.png"
-  },
-  "public/images/brands/dropbox.png": {
-    "file": "assets/dropbox-BCymAMT5.png",
-    "src": "public/images/brands/dropbox.png"
-  },
-  "public/images/brands/github.png": {
-    "file": "assets/github-BCjAyx3y.png",
-    "src": "public/images/brands/github.png"
-  },
-  "public/images/brands/mail_chimp.png": {
-    "file": "assets/mail_chimp-mxZlJJIN.png",
-    "src": "public/images/brands/mail_chimp.png"
-  },
-  "public/images/brands/slack.png": {
-    "file": "assets/slack-Dy4YoRKU.png",
-    "src": "public/images/brands/slack.png"
   },
   "public/images/logo-dark.png": {
     "file": "assets/logo-dark-BTQwWYkM.png",
@@ -233,7 +221,7 @@
     "src": "public/images/sidebar/img-4.jpg"
   },
   "resources/js/app.js": {
-    "file": "assets/app-DwmEav9-.js",
+    "file": "assets/app-Y3o7geKi.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -250,7 +238,7 @@
       "node_modules/leaflet/dist/leaflet-src.esm.js"
     ],
     "css": [
-      "assets/app-lvn8PwEF.css"
+      "assets/app-FKwDspMN.css"
     ],
     "assets": [
       "assets/logo-sm-BMbbSDmV.png",
@@ -258,12 +246,9 @@
       "assets/new-password-DFqpapdk.png",
       "assets/logo-dark-BTQwWYkM.png",
       "assets/logo-light-xO5Q2xFH.png",
-      "assets/github-BCjAyx3y.png",
-      "assets/bitbucket-JY-MQjeH.png",
-      "assets/dribbble-CYfSis_k.png",
-      "assets/dropbox-BCymAMT5.png",
-      "assets/mail_chimp-mxZlJJIN.png",
-      "assets/slack-Dy4YoRKU.png",
+      "assets/customer-BnSpBMSv.png",
+      "assets/laboratory-DGebyxyk.png",
+      "assets/payment-D3v2iUXr.png",
       "assets/img-1-C6VsSbnm.jpg",
       "assets/img-2-B0ULeiCa.jpg",
       "assets/img-3-h1U1KdmN.jpg",

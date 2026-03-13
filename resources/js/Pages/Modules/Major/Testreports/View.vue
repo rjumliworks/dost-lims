@@ -212,7 +212,7 @@
                                 ref="signature"
                                 :src="signature"
                                 id="signature"
-                                style="position: absolute; width: auto; height: 130px; cursor: move;"
+                                style="position: absolute; width: auto; height: 120px; cursor: move;"
                             />
                             <canvas
                                 ref="pdfCanvas"
@@ -374,68 +374,66 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     });
                 });
             },
+            async savePdfWithSignature() {
+                const signature = this.$refs.signature;
+                const canvas = this.$refs.pdfCanvas;
+                if (!signature || !canvas) return;
 
+                // Fetch PDF bytes
+                const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
 
-async savePdfWithSignature() {
-    const signature = this.$refs.signature;
-    const canvas = this.$refs.pdfCanvas;
-    if (!signature || !canvas) return;
+                // Load PDF with pdf-lib
+                const pdfDoc = await PDFDocument.load(pdfBytes);
 
-    // Fetch PDF bytes
-    const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
+                // Get the page you want to sign (example: first page)
+                const page = pdfDoc.getPage(this.currentPage - 1); // zero-indexed
 
-    // Load PDF with pdf-lib
-    const pdfDoc = await PDFDocument.load(pdfBytes);
+                // Get actual page size in points
+                const pdfPageWidth = page.getWidth();
+                const pdfPageHeight = page.getHeight();
+                
 
-    // Get the page you want to sign (example: first page)
-    const page = pdfDoc.getPage(this.currentPage - 1); // zero-indexed
+                console.log('PDF size:', pdfPageWidth, pdfPageHeight);
 
-    // Get actual page size in points
-    const pdfPageWidth = page.getWidth();
-    const pdfPageHeight = page.getHeight();
-    
+                // Continue your signature positioning logic
+                const SIGNATURE_BOX_WIDTH = 230;
+                const SIGNATURE_BOX_HEIGHT = 55;
 
-    console.log('PDF size:', pdfPageWidth, pdfPageHeight);
+                const canvasRect = canvas.getBoundingClientRect();
+                const sigRect = signature.getBoundingClientRect();
 
-    // Continue your signature positioning logic
-    const SIGNATURE_BOX_WIDTH = 220;
-    const SIGNATURE_BOX_HEIGHT = 55;
+                const x = (sigRect.left - canvasRect.left) * (canvas.width / canvasRect.width);
+                const y = (sigRect.top - canvasRect.top) * (canvas.height / canvasRect.height);
 
-    const canvasRect = canvas.getBoundingClientRect();
-    const sigRect = signature.getBoundingClientRect();
+                const pdfX = x * (pdfPageWidth / canvas.width);
+                const pdfY = pdfPageHeight - (y * (pdfPageHeight / canvas.height) + SIGNATURE_BOX_HEIGHT);
 
-    const x = (sigRect.left - canvasRect.left) * (canvas.width / canvasRect.width);
-    const y = (sigRect.top - canvasRect.top) * (canvas.height / canvasRect.height);
+                const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const sigBlob = await fetch(signature.src).then(res => res.blob());
+                const timestamp = new Date().toLocaleString();
 
-    const pdfX = x * (pdfPageWidth / canvas.width);
-    const pdfY = pdfPageHeight - (y * (pdfPageHeight / canvas.height) + SIGNATURE_BOX_HEIGHT);
+                const formData = new FormData();
+                formData.append('pdf', pdfBlob, 'signed-report.pdf');
+                formData.append('signature_image', sigBlob, 'signature.png');
+                formData.append('id', this.selected.reference);
+                formData.append('timestamp', timestamp);
+                formData.append('option', 'report');
+                formData.append('role', this.signRole);
+                formData.append('page_number', this.currentPage);
+                formData.append('box_x0', pdfX);
+                formData.append('box_y0', pdfY);
+                formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
+                formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
 
-    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-    const sigBlob = await fetch(signature.src).then(res => res.blob());
-    const timestamp = new Date().toLocaleString();
+                this.$inertia.post('/testreports', formData, {
+                    preserveScroll: true,
+                    forceFormData: true,
+                    onSuccess: () => this.renderPdf(this.currentPage),
+                    onError: () => (this.errors = this.$page.props.errors),
+                });
 
-    const formData = new FormData();
-    formData.append('pdf', pdfBlob, 'signed-report.pdf');
-    formData.append('signature_image', sigBlob, 'signature.png');
-    formData.append('id', this.selected.reference);
-    formData.append('timestamp', timestamp);
-    formData.append('option', 'report');
-    formData.append('role', this.signRole);
-    formData.append('page_number', this.currentPage);
-    formData.append('box_x0', pdfX);
-    formData.append('box_y0', pdfY);
-    formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
-    formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
-
-    this.$inertia.post('/testreports', formData, {
-        preserveScroll: true,
-        forceFormData: true,
-        onSuccess: () => this.renderPdf(this.currentPage),
-        onError: () => (this.errors = this.$page.props.errors),
-    });
-
-    this.showSave = false;
-},
+                this.showSave = false;
+            },
             handleAddFile(error, fileItem) {
                 if (error) return console.error('FilePond error:', error);
 

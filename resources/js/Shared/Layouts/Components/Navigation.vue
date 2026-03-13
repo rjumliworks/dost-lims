@@ -40,11 +40,11 @@
                             class="p-3 border-top-0 dropdown-head border-start-0 border-end-0 border-dashed border dropdown-menu-lg">
                             <BRow class="align-items-center">
                                 <BCol>
-                                    <h6 class="m-0 fw-semibold fs-15">Web Apps</h6>
+                                    <h6 class="m-0 fw-semibold fs-15">Insights</h6>
                                 </BCol>
                                 <BCol cols="auto">
                                     <BLink href="#!" class="btn btn-sm btn-soft-info">
-                                        View All Apps
+                                        View All
                                         <i class="ri-arrow-right-s-line align-middle"></i>
                                     </BLink>
                                 </BCol>
@@ -54,26 +54,26 @@
                         <div class="p-2">
                             <BRow class="g-0">
                                 <BCol>
-                                    <BLink class="dropdown-icon-item" href="#!">
-                                        <img src="@assets/images/brands/github.png" alt="Github" />
-                                        <span>GitHub</span>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/customers')">
+                                        <img src="@assets/images/apps/customer.png" alt="customer" />
+                                        <span>Customers</span>
                                     </BLink>
                                 </BCol>
                                 <BCol>
-                                    <BLink class="dropdown-icon-item" href="#!">
-                                        <img src="@assets/images/brands/bitbucket.png" alt="bitbucket" />
-                                        <span>Bitbucket</span>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/laboratories')">
+                                        <img src="@assets/images/apps/laboratory.png" alt="laboratoryt" />
+                                        <span>Laboratories</span>
                                     </BLink>
                                 </BCol>
                                 <BCol>
-                                    <BLink class="dropdown-icon-item" href="#!">
-                                        <img src="@assets/images/brands/dribbble.png" alt="dribbble" />
-                                        <span>Dribbble</span>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/payments')">
+                                        <img src="@assets/images/apps/payment.png" alt="payment" />
+                                        <span>Payments</span>
                                     </BLink>
                                 </BCol>
                             </BRow>
 
-                            <BRow class="g-0">
+                            <!-- <BRow class="g-0">
                                 <BCol>
                                     <BLink class="dropdown-icon-item" href="#!">
                                         <img src="@assets/images/brands/dropbox.png" alt="dropbox" />
@@ -92,7 +92,7 @@
                                         <span>Slack</span>
                                     </BLink>
                                 </BCol>
-                            </BRow>
+                            </BRow> -->
                         </div>
                     </BDropdown>
 
@@ -239,49 +239,51 @@ export default {
         this.$parent.toggleRightSidebar();
         },
         initFullScreen() {
-        document.body.classList.toggle("fullscreen-enable");
-        if (
-            !document.fullscreenElement &&
-            /* alternative standard method */
-            !document.mozFullScreenElement &&
-            !document.webkitFullscreenElement
-        ) {
-            // current working methods
-            if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-            } else if (document.documentElement.mozRequestFullScreen) {
-            document.documentElement.mozRequestFullScreen();
-            } else if (document.documentElement.webkitRequestFullscreen) {
-            document.documentElement.webkitRequestFullscreen(
-                Element.ALLOW_KEYBOARD_INPUT
-            );
+            document.body.classList.toggle("fullscreen-enable");
+            if (
+                !document.fullscreenElement &&
+                /* alternative standard method */
+                !document.mozFullScreenElement &&
+                !document.webkitFullscreenElement
+            ) {
+                // current working methods
+                if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen(
+                    Element.ALLOW_KEYBOARD_INPUT
+                );
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+                }
             }
-        } else {
-            if (document.cancelFullScreen) {
-            document.cancelFullScreen();
-            } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-            } else if (document.webkitCancelFullScreen) {
-            document.webkitCancelFullScreen();
-            }
-        }
         },
 
         toggleDarkMode() {
+            if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
+                document.documentElement.setAttribute("data-bs-theme", "light");
+            } else {
+                document.documentElement.setAttribute("data-bs-theme", "dark");
+            }
 
-        if (document.documentElement.getAttribute("data-bs-theme") == "dark") {
-            document.documentElement.setAttribute("data-bs-theme", "light");
-        } else {
-            document.documentElement.setAttribute("data-bs-theme", "dark");
-        }
-
-        const mode = document.documentElement.getAttribute("data-bs-theme")
-        this.changeMode({
-            mode: mode,
-        });
+            const mode = document.documentElement.getAttribute("data-bs-theme")
+            this.changeMode({
+                mode: mode,
+            });
         },
         setDefaultImage(event) {
-        event.target.src = '/images/avatars/avatar.jpg';
+            event.target.src = '/images/avatars/avatar.jpg';
+        },
+        openInNewTab(url) {
+            window.open(url, '_blank');
         },
     }
 }
