@@ -1,28 +1,39 @@
-<?php
-
 namespace App\Services\Common\Testservice;
 
 use App\Imports\TestImport;
 use App\Models\Testservice;
 use App\Models\TestserviceName;
+use App\Models\TestserviceList;
 use App\Models\TestserviceMethod;
 use App\Models\SampleType;
+use App\Models\SampleName;
 use Maatwebsite\Excel\Facades\Excel;
 
-class UploadClass
+class UploadOldClass
 {
     public function preview($request){
         $data =  Excel::toCollection(new TestImport,$request->import_file);
         $rows = $data[0]; 
         foreach($rows as $row){ 
-            if($row[0] != 'Sample Type'){
+            // if($row[0] != 'Sample Type'){
+            //     $information[] = [
+            //         'types' => explode(', ', $row[2]),
+            //         'testname' => $row[3],
+            //         'code' => $row[4],
+            //         'method' => $row[5],
+            //         'reference' => $row[6],
+            //         'fee' => str_replace(['₱', ','], '', $row[7])
+            //     ];
+            // }
+
+            if($row[2] != 'Testname'){
                 $information[] = [
-                    'types' => explode(', ', $row[1]),
-                    'testname' => $row[3],
-                    'code' => $row[4],
-                    'method' => $row[5],
-                    'reference' => $row[6],
-                    'fee' => str_replace(['₱', ','], '', $row[7])
+                    'old_id' => $row[0],
+                    'testname' => $row[2],
+                    'code' => $row[3],
+                    'method' => $row[4],
+                    'reference' => $row[5],
+                    'fee' => str_replace(['₱', ','], '', $row[6])
                 ];
             }
         }
@@ -52,6 +63,7 @@ class UploadClass
         $rows = $request->lists;
 
         foreach ($rows as $index => $row) {
+            $oldId = $row['old_id'];
             $testName = $row['testname'];
             $methodCode = $row['code'];
             $methodName = $row['method'];
@@ -93,50 +105,80 @@ class UploadClass
                         'method_id' => $method->id,
                         'reference_id' => $reference->id,
                         'agency_id' => auth()->user()->profile->agency_id,
+                        'fee' => $fee,
                     ],
                     [
                         'laboratory_id' => $request->laboratory_id,
-                        'fee' => $fee,
                         'added_by' => auth()->id(),
                     ]
                 );
 
                 // Check if this testservice already exists
-                $existing = Testservice::where([
+                // $existing = Testservice::where([
+                //     'testname_id' => $parameter->id,
+                //     'method_id' => $methodCombo->id,
+                //     'laboratory_id' => $request->laboratory_id
+                // ])->first();
+
+                // if ($existing) {
+                //     foreach ($row['types'] as $name) {
+                //         $sampleRecord = SampleName::where('name', $name)->first();
+
+                //         if ($sampleRecord) {
+                //             // Laravel automatically sets sampleable_id and sampleable_type here
+                //             $sampleRecord->services()->create([
+                //                 'testservice_id' => $existing->id
+                //             ]);
+                //         }else{
+                //             $results['unknown'][] = $name;
+                //         }
+                //     }
+                //     $results['duplicate'][] = [
+                //         'row' => $index + 1,
+                //         'data' => $row,
+                //     ];
+                //     continue;
+                // }
+                //Add old services
+                $service = Testservice::FirstOrCreate([
                     'testname_id' => $parameter->id,
                     'method_id' => $methodCombo->id,
-                    'laboratory_id' => $request->laboratory_id
-                ])->first();
-
-                if ($existing) {
-                    $results['duplicate'][] = [
-                        'row' => $index + 1,
-                        'data' => $row,
-                    ];
-                    continue;
+                    'agency_id' => auth()->user()->profile->agency_id,
+                ],[
+                    'is_new' => 0,
+                    'is_active' => 0,
+                    'laboratory_id' => $request->laboratory_id,
+                    'old_id' => $oldId,
+                    'status_id' => 33
+                ]);
+                if($service){
+                    TestserviceList::create([
+                        'old_id' => $oldId,
+                        'testservice_id' => $service->id
+                    ]);
                 }
 
                 // Create new testservice
-                $service = Testservice::create([
-                    'testname_id' => $parameter->id,
-                    'method_id' => $methodCombo->id,
-                    'laboratory_id' => $request->laboratory_id,
-                    'status_id' => 32
-                ]);
-                if($service){
-                    foreach ($row['types'] as $name) {
-                        $sampleRecord = SampleType::where('name', $name)->first();
+                // $service = Testservice::create([
+                //     'testname_id' => $parameter->id,
+                //     'method_id' => $methodCombo->id,
+                //     'laboratory_id' => $request->laboratory_id,
+                //     'status_id' => 32
+                // ]);
+                // if($service){
+                //     foreach ($row['types'] as $name) {
+                //         $sampleRecord = SampleName::where('name', $name)->first();
 
-                        if ($sampleRecord) {
-                            // Laravel automatically sets sampleable_id and sampleable_type here
-                            $sampleRecord->services()->create([
-                                'testservice_id' => $service->id
-                            ]);
-                        }else{
-                            $results['unknown'][] = $name;
-                        }
-                    }
-                }
+                //         if ($sampleRecord) {
+                //             // Laravel automatically sets sampleable_id and sampleable_type here
+                //             $sampleRecord->services()->create([
+                //                 'testservice_id' => $service->id
+                //             ]);
+                //         }else{
+                //             $results['unknown'][] = $name;
+                //         }
+                //     }
+                // }
 
                 $results['success'][] = [
                     'row' => $index + 1,
