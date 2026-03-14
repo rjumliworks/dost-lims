@@ -15,7 +15,7 @@ class Testservice extends Model
     use LogsActivity;
 
     protected $fillable = [
-        'laboratory_id','testname_id','method_id','is_active','status_id'
+        'laboratory_id','testname_id','method_id','is_active','status_id','old_id','is_new'
     ];
 
     protected static function booted()

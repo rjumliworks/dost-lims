@@ -22,9 +22,4 @@ class TestserviceSample extends Model
     {
         return $this->morphTo();
     }
-
-    public function category()
-    {
-        return $this->belongsTo(SampleCategory::class);
-    }
 }

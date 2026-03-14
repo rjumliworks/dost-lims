@@ -47,6 +47,9 @@ class TestserviceController extends Controller
             case 'activity-logs':
                 return $this->view->activitylogs($request);
             break;
+            case 'download':
+                return $this->view->download($request);
+            break;
             default:
             return inertia('Modules/Testservices/Index',[
                 'dropdowns' => [

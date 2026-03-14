@@ -195,6 +195,39 @@ class SampleCategoriesTableSeeder extends Seeder
                 'created_at' => '2026-02-13 16:57:17',
                 'updated_at' => '2026-02-13 16:57:17',
             ),
+            16 => 
+            array (
+                'id' => 17,
+                'name' => 'Foods',
+                'is_active' => 1,
+                'laboratory_id' => 2,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-03-14 14:40:54',
+                'updated_at' => '2026-03-14 14:40:54',
+            ),
+            17 => 
+            array (
+                'id' => 18,
+                'name' => 'Environmental Matrices',
+                'is_active' => 1,
+                'laboratory_id' => 2,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-03-14 15:01:24',
+                'updated_at' => '2026-03-14 15:01:24',
+            ),
+            18 => 
+            array (
+                'id' => 19,
+                'name' => 'Industrial and Natural Resource Products',
+                'is_active' => 1,
+                'laboratory_id' => 2,
+                'agency_id' => 14,
+                'user_id' => 2,
+                'created_at' => '2026-03-14 15:03:01',
+                'updated_at' => '2026-03-14 15:03:01',
+            ),
         ));
         
         

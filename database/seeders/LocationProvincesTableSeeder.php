@@ -675,6 +675,14 @@ class LocationProvincesTableSeeder extends Seeder
                 'old_name' => NULL,
                 'region_code' => '130000000',
             ),
+            82 => 
+            array (
+                'id' => 83,
+                'code' => '098400000',
+                'name' => 'Isabela Province',
+                'old_name' => NULL,
+                'region_code' => '090000000',
+            ),
         ));
         
         

@@ -63,6 +63,18 @@ return [
             ]) : [],
         ],
 
+        'old_db' => [
+            'driver' => 'mysql',
+            'host' => env('OLD_DB_HOST'),
+            'database' => env('OLD_DB_DATABASE'),
+            'username' => env('OLD_DB_USERNAME'),
+            'password' => env('OLD_DB_PASSWORD'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),

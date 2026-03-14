@@ -164,6 +164,7 @@
     <View @update="updateData" ref="view"/>
     <Activation @update="updateData" ref="activation"/>
     <Upload :dropdowns="dropdowns" ref="upload"/>
+    <Download :dropdowns="dropdowns" ref="download"/>
     <Create :dropdowns="dropdowns" @message="fetch()" ref="create"/>
 </template>
 <script>
@@ -171,12 +172,13 @@ import _ from 'lodash';
 import View from './Modals/View.vue';
 import Create from './Modals/Create.vue';
 import Upload from './Modals/Upload.vue';
+import Download from './Modals/Download.vue';
 import Multiselect from "@vueform/multiselect";
 import Activation from './Modals/Activation.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Activation, View, Upload },
+    components: { PageHeader, Pagination, Multiselect, Create, Activation, View, Upload, Download },
     props: ['counts','dropdowns'],
     data(){
         return {
@@ -314,6 +316,9 @@ export default {
         },
         openUpload(){
             this.$refs.upload.show();
+        },
+        openDownload(){
+            this.$refs.download.show();
         },
         selectRow(index) {
             if (this.selectedRow === index) {

@@ -41,6 +41,7 @@ class ViewClass
         ->when($request->industry, fn ($q, $v) => $q->where('industry_id', $v))
         ->when($request->sex, fn ($q, $v) => $q->where('sex_id', $v))
         ->when($request->individual, fn ($q, $v) => $q->where('type_id', $v))
+        ->orderBy('customer_names.name', 'asc')
         ->orderBy('customers.created_at', 'desc')
         ->orderBy('customers.id', 'asc')
         ->paginate($request->count ?? 20);

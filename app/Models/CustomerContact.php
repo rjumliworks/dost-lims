@@ -35,6 +35,16 @@ class CustomerContact extends Model
     public function setEmailAttribute($value)
     {
         $email = strtolower($value);
+        $baseEmail = $email;
+        $i = 1;
+
+        // Check for duplicates in the table
+        while (self::where('kradworkz', hash('sha256', $email))->exists()) {
+            $parts = explode('@', $baseEmail);
+            $email = $parts[0] . $i . '@' . ($parts[1] ?? 'onelab.com');
+            $i++;
+        }
+
         $this->attributes['email'] = Crypt::encryptString($email);
         $this->attributes['kradworkz'] = hash('sha256', $email);
     }

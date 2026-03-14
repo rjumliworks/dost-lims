@@ -9,6 +9,9 @@ use App\Models\TestserviceMethod;
 use App\Models\SampleCategory;
 use App\Models\SampleType;
 use App\Models\SampleName;
+use App\Models\ListLaboratory;
+use App\Exports\TestServiceExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\Common\TestserviceResource;
 use App\Http\Resources\Common\Testservice\ListResource;
 use App\Http\Resources\Common\Testservice\ListsResource;
@@ -205,5 +208,11 @@ class ViewClass
         $test = Testservice::findOrFail(\Auth::user()->id);
         $data = $test->activities()->paginate(15);
         return ActivityResource::collection($data);
+    }
+
+    public function download($request){
+        $laboratory = ($request->laboratory) ? $request->laboratory : null;
+        $name = ListLaboratory::where('id',$laboratory)->value('short');
+        return Excel::download(new TestServiceExport($laboratory), $name.'-testservices.xlsx');
     }
 }
