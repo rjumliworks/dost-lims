@@ -5,6 +5,7 @@ namespace App\Services\Common\Testservice;
 use App\Imports\TestImport;
 use App\Models\Testservice;
 use App\Models\TestserviceName;
+use App\Models\TestserviceList;
 use App\Models\TestserviceMethod;
 use App\Models\SampleType;
 use App\Models\SampleName;
@@ -141,15 +142,23 @@ class UploadClass
                 //     continue;
                 // }
                 //Add old services
-                $service = Testservice::create([
-                    'is_new' => 0,
-                    'is_active' => 0,
+                $service = Testservice::FirstOrCreate([
                     'testname_id' => $parameter->id,
                     'method_id' => $methodCombo->id,
+                    'agency_id' => auth()->user()->profile->agency_id,
+                ],[
+                    'is_new' => 0,
+                    'is_active' => 0,
                     'laboratory_id' => $request->laboratory_id,
                     'old_id' => $oldId,
                     'status_id' => 33
                 ]);
+                if($service){
+                    TestserviceList::create([
+                        'old_id' => $oldId,
+                        'testservice_id' => $service->id
+                    ]);
+                }
 
                 // Create new testservice
                 // $service = Testservice::create([
