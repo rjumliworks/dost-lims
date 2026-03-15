@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use App\Models\User;
 use App\Models\CustomerConforme;
 use App\Models\CustomerContact;
 
@@ -13,7 +14,7 @@ class MigrateCustomers extends Command
     protected $signature = 'migrate:customers {old_key} {--limit=0}';
     protected $description = 'Migrate customers from old DB including encrypted fields';
 
-    private $oldEncrypter;
+    private $oldEncrypters;
 
     public function handle()
     {
@@ -97,7 +98,7 @@ class MigrateCustomers extends Command
                         'is_active' => $oldCustomer->is_active,
                         'is_internal' => $oldCustomer->is_internal,
                         'is_main' => $oldCustomer->is_main,
-                        'user_id' => 1,
+                        'user_id' => User::where('old_id', $oldCustomer->user_id)->value('id') ?? 1,
                         'is_new' => $oldCustomer->is_new,
                         'agency_id' => $oldCustomer->agency_id,
                         'created_at' => $oldCustomer->created_at,
@@ -175,20 +176,42 @@ class MigrateCustomers extends Command
 
     private function makeOldEncrypter($oldKey)
     {
-        if (Str::startsWith($oldKey, 'base64:')) {
-            $oldKey = base64_decode(substr($oldKey, 7));
+        $keys = [$oldKey];
+
+        $previous = env('APP_PREVIOUS_KEYS');
+
+        if ($previous) {
+            $keys = array_merge($keys, explode(',', $previous));
         }
-        $this->oldEncrypter = new \Illuminate\Encryption\Encrypter($oldKey, config('app.cipher'));
+
+        foreach ($keys as $key) {
+
+            $key = trim($key);
+
+            if (Str::startsWith($key, 'base64:')) {
+                $key = base64_decode(substr($key, 7));
+            }
+
+            $this->oldEncrypters[] = new \Illuminate\Encryption\Encrypter($key, config('app.cipher'));
+        }
     }
 
     private function safeDecrypt($value)
     {
-        if (!$value) return null;
+        if (!$value) {
+            return null;
+        }
+
+        // If value does not look encrypted, return as is
+        if (!Str::startsWith($value, ['eyJpdiI', 'base64:'])) {
+            return $value;
+        }
 
         try {
             return $this->oldEncrypter->decryptString($value);
         } catch (\Exception $e) {
-            return null;
+            $this->warn("Decrypt failed, returning raw value");
+            return $value;
         }
     }
 }

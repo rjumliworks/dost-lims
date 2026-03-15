@@ -85,7 +85,7 @@
                                         <td :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">{{index+1}}</td>
                                         <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
                                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{(list.code) ? list.code : 'Not yet available'}}</h5>
-                                            <p class="fs-13 text-muted mb-0">{{list.samplename.name}}</p>
+                                            <p class="fs-13 text-muted mb-0">{{ (list.samplename == 'n/a') ? list.samplename.name : list.name }}</p>
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                             <i>{{list.customer_description}}</i>, {{list.description}}
@@ -107,18 +107,18 @@
                                                                     <i class="ri-eye-line me-2"></i> View
                                                                 </a>
                                                             </li>
-                                                            <li>
+                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)">
                                                                 <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                                     <i class="ri-pencil-line me-2"></i>Edit
                                                                 </a>
                                                             </li>
-                                                            <li>
+                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)">
                                                                 <a @click="openSampleCopy(list)" class="dropdown-item d-flex align-items-center" role="button">
                                                                     <i class="ri-file-copy-2-line me-2"></i>Copy
                                                                 </a>
                                                             </li>
-                                                            <li><hr class="dropdown-divider"></li>
-                                                            <li>
+                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)"><hr class="dropdown-divider"></li>
+                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)">
                                                                 <a @click="openSampleRemove(list)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
                                                                     <span class="text-danger"><i class="ri-delete-bin-fill me-2"></i> Remove</span>
                                                                 </a>

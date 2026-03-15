@@ -88,8 +88,8 @@ class TsrSample extends Model
         $this->attributes['name'] = $value;
     }
 
-    public function getCodeAttribute($value)
-    {
-        return Str::after($value, '-');
-    }
+    // public function getCodeAttribute($value)
+    // {
+    //     return Str::after($value, '-');
+    // }
 }

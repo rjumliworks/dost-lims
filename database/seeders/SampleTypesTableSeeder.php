@@ -19,13 +19,12 @@ class SampleTypesTableSeeder extends Seeder
         \DB::table('sample_types')->delete();
         
         \DB::table('sample_types')->insert(array (
-            0 => 
-            array (
+            0 => array (
                 'id' => 1,
-                'name' => 'Raw Natural Rubber',
+                'name' => 'n/a',
                 'is_active' => 1,
                 'category_id' => 1,
-                'user_id' => 2,
+                'user_id' => 1,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 11:20:59',
                 'updated_at' => '2026-02-12 11:20:59',
@@ -33,834 +32,845 @@ class SampleTypesTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Meat',
+                'name' => 'Raw Natural Rubber',
                 'is_active' => 1,
                 'category_id' => 2,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-02-12 11:20:59',
+                'updated_at' => '2026-02-12 11:20:59',
+            ),
+            2 => 
+            array (
+                'id' => 3,
+                'name' => 'Meat',
+                'is_active' => 1,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:03:47',
                 'updated_at' => '2026-02-12 13:03:47',
             ),
-            2 => 
+            3 => 
             array (
-                'id' => 3,
+                'id' => 4,
                 'name' => 'Fish',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:07:52',
                 'updated_at' => '2026-02-12 13:07:52',
             ),
-            3 => 
+            4 => 
             array (
-                'id' => 4,
+                'id' => 5,
                 'name' => 'Crustacean',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:09:58',
                 'updated_at' => '2026-02-12 13:09:58',
             ),
-            4 => 
+            5 => 
             array (
-                'id' => 5,
+                'id' => 6,
                 'name' => 'Mollusk',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:12:00',
                 'updated_at' => '2026-02-12 13:12:00',
             ),
-            5 => 
+            6 => 
             array (
-                'id' => 6,
+                'id' => 7,
                 'name' => 'Echinoderms',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:14:57',
                 'updated_at' => '2026-02-12 13:14:57',
             ),
-            6 => 
+            7 => 
             array (
-                'id' => 7,
+                'id' => 8,
                 'name' => 'Algae and Seaweeds',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:16:16',
                 'updated_at' => '2026-02-12 13:16:16',
             ),
-            7 => 
+            8 => 
             array (
-                'id' => 8,
+                'id' => 9,
                 'name' => 'Dairy and Dairy-Based Products',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:17:47',
                 'updated_at' => '2026-02-12 13:17:47',
             ),
-            8 => 
+            9 => 
             array (
-                'id' => 9,
+                'id' => 10,
                 'name' => 'Insect-Based  and other Exotic Food',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:18:46',
                 'updated_at' => '2026-02-12 13:18:46',
             ),
-            9 => 
+            10 => 
             array (
-                'id' => 10,
+                'id' => 11,
                 'name' => 'Animal Fats and Oils',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:21:03',
                 'updated_at' => '2026-02-12 13:21:03',
             ),
-            10 => 
+            11 => 
             array (
-                'id' => 11,
+                'id' => 12,
                 'name' => 'Eggs and Egg Products',
                 'is_active' => 1,
-                'category_id' => 2,
+                'category_id' => 3,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:22:14',
                 'updated_at' => '2026-02-12 13:22:14',
             ),
-            11 => 
+            12 => 
             array (
-                'id' => 12,
+                'id' => 13,
                 'name' => 'Complete, Plant-Based, Animal-Based',
                 'is_active' => 1,
-                'category_id' => 3,
+                'category_id' => 4,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:23:11',
                 'updated_at' => '2026-02-12 13:23:11',
             ),
-            12 => 
+            13 => 
             array (
-                'id' => 13,
+                'id' => 14,
                 'name' => 'Cereal and Cereal-Based Products',
                 'is_active' => 1,
-                'category_id' => 4,
+                'category_id' => 5,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:26:18',
                 'updated_at' => '2026-02-12 13:26:18',
             ),
-            13 => 
+            14 => 
             array (
-                'id' => 14,
+                'id' => 15,
                 'name' => 'Fruits and Vegetables',
                 'is_active' => 1,
-                'category_id' => 4,
+                'category_id' => 5,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:27:39',
                 'updated_at' => '2026-02-12 13:27:39',
             ),
-            14 => 
+            15 => 
             array (
-                'id' => 15,
+                'id' => 16,
                 'name' => 'Nuts and Oilseeds',
                 'is_active' => 1,
-                'category_id' => 4,
+                'category_id' => 5,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:29:55',
                 'updated_at' => '2026-02-12 13:29:55',
             ),
-            15 => 
+            16 => 
             array (
-                'id' => 16,
+                'id' => 17,
                 'name' => 'Plant-Based Oils and Fats',
                 'is_active' => 1,
-                'category_id' => 4,
+                'category_id' => 5,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:31:01',
                 'updated_at' => '2026-02-12 13:31:01',
             ),
-            16 => 
+            17 => 
             array (
-                'id' => 17,
+                'id' => 18,
                 'name' => 'Cacao and Cacao Products',
                 'is_active' => 1,
-                'category_id' => 4,
+                'category_id' => 5,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:31:37',
                 'updated_at' => '2026-02-12 13:31:37',
             ),
-            17 => 
+            18 => 
             array (
-                'id' => 18,
+                'id' => 19,
                 'name' => 'Sugars and Sweeteners',
                 'is_active' => 1,
-                'category_id' => 4,
+                'category_id' => 5,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:32:36',
                 'updated_at' => '2026-02-12 13:32:36',
             ),
-            18 => 
+            19 => 
             array (
-                'id' => 19,
+                'id' => 20,
                 'name' => 'Spices and Seasonings',
                 'is_active' => 1,
-                'category_id' => 5,
+                'category_id' => 6,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:34:03',
                 'updated_at' => '2026-02-12 13:34:03',
             ),
-            19 => 
+            20 => 
             array (
-                'id' => 20,
+                'id' => 21,
                 'name' => 'Condimentd and Sauces',
                 'is_active' => 1,
-                'category_id' => 5,
+                'category_id' => 6,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:35:42',
                 'updated_at' => '2026-02-12 13:35:42',
             ),
-            20 => 
+            21 => 
             array (
-                'id' => 21,
+                'id' => 22,
                 'name' => 'Mineral-Based Food Products',
                 'is_active' => 1,
-                'category_id' => 5,
+                'category_id' => 6,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:39:09',
                 'updated_at' => '2026-02-12 13:39:09',
             ),
-            21 => 
+            22 => 
             array (
-                'id' => 22,
+                'id' => 23,
                 'name' => 'Non-Dairy and Non-Alcoholic',
                 'is_active' => 1,
-                'category_id' => 6,
+                'category_id' => 7,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:40:15',
                 'updated_at' => '2026-02-12 13:40:15',
             ),
-            22 => 
+            23 => 
             array (
-                'id' => 23,
+                'id' => 24,
                 'name' => 'Alcoholic Beverage',
                 'is_active' => 1,
-                'category_id' => 6,
+                'category_id' => 7,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:41:46',
                 'updated_at' => '2026-02-12 13:41:46',
             ),
-            23 => 
+            24 => 
             array (
-                'id' => 24,
+                'id' => 25,
                 'name' => 'Dairy–Based Beverage',
                 'is_active' => 1,
-                'category_id' => 6,
+                'category_id' => 7,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:43:17',
                 'updated_at' => '2026-02-12 13:43:17',
             ),
-            24 => 
+            25 => 
             array (
-                'id' => 25,
+                'id' => 26,
                 'name' => 'Brewed Products',
                 'is_active' => 1,
-                'category_id' => 6,
+                'category_id' => 7,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:44:48',
                 'updated_at' => '2026-02-12 13:44:48',
             ),
-            25 => 
+            26 => 
             array (
-                'id' => 26,
+                'id' => 27,
                 'name' => 'Water-Based Beverages',
                 'is_active' => 1,
-                'category_id' => 6,
+                'category_id' => 7,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:46:12',
                 'updated_at' => '2026-02-12 13:46:12',
             ),
-            26 => 
+            27 => 
             array (
-                'id' => 27,
+                'id' => 28,
                 'name' => 'Drinking/Potable Water',
                 'is_active' => 1,
-                'category_id' => 7,
+                'category_id' => 8,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:47:22',
                 'updated_at' => '2026-02-12 13:47:22',
             ),
-            27 => 
+            28 => 
             array (
-                'id' => 28,
+                'id' => 29,
                 'name' => 'Process Water',
                 'is_active' => 1,
-                'category_id' => 7,
+                'category_id' => 8,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:48:43',
                 'updated_at' => '2026-02-12 13:48:43',
             ),
-            28 => 
+            29 => 
             array (
-                'id' => 29,
+                'id' => 30,
                 'name' => 'Wastewater',
                 'is_active' => 1,
-                'category_id' => 7,
+                'category_id' => 8,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:49:49',
                 'updated_at' => '2026-02-12 13:49:49',
             ),
-            29 => 
+            30 => 
             array (
-                'id' => 30,
+                'id' => 31,
                 'name' => 'Environmental Water',
                 'is_active' => 1,
-                'category_id' => 7,
+                'category_id' => 8,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:51:13',
                 'updated_at' => '2026-02-12 13:51:13',
             ),
-            30 => 
+            31 => 
             array (
-                'id' => 31,
+                'id' => 32,
                 'name' => 'Fuel and Energy Materials',
                 'is_active' => 1,
-                'category_id' => 8,
+                'category_id' => 9,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:54:03',
                 'updated_at' => '2026-02-12 13:54:03',
             ),
-            31 => 
+            32 => 
             array (
-                'id' => 32,
+                'id' => 33,
                 'name' => 'Plant and Plant Extracts',
                 'is_active' => 1,
-                'category_id' => 8,
+                'category_id' => 9,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:54:46',
                 'updated_at' => '2026-02-12 13:54:46',
             ),
-            32 => 
+            33 => 
             array (
-                'id' => 33,
+                'id' => 34,
                 'name' => 'Fertilizers and Soil Amendments',
                 'is_active' => 1,
-                'category_id' => 8,
+                'category_id' => 9,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:56:51',
                 'updated_at' => '2026-02-12 13:56:51',
             ),
-            33 => 
+            34 => 
             array (
-                'id' => 34,
+                'id' => 35,
                 'name' => 'Industrial and Consumer Chemical Products',
                 'is_active' => 1,
-                'category_id' => 8,
+                'category_id' => 9,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 13:57:47',
                 'updated_at' => '2026-02-12 13:57:47',
             ),
-            34 => 
+            35 => 
             array (
-                'id' => 35,
+                'id' => 36,
                 'name' => 'Food',
                 'is_active' => 1,
-                'category_id' => 9,
+                'category_id' => 10,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-12 14:01:21',
                 'updated_at' => '2026-02-12 14:01:21',
             ),
-            35 => 
+            36 => 
             array (
-                'id' => 36,
+                'id' => 37,
                 'name' => 'Test Weight',
                 'is_active' => 1,
-                'category_id' => 10,
+                'category_id' => 11,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:30:32',
                 'updated_at' => '2026-02-13 16:30:32',
             ),
-            36 => 
+            37 => 
             array (
-                'id' => 37,
+                'id' => 38,
             'name' => 'Non-Automatic Weighing Instrument (NAWI)',
                 'is_active' => 1,
-                'category_id' => 10,
+                'category_id' => 11,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:33:08',
                 'updated_at' => '2026-02-13 16:33:08',
             ),
-            37 => 
+            38 => 
             array (
-                'id' => 38,
+                'id' => 39,
                 'name' => 'Contact Thermometer',
                 'is_active' => 1,
-                'category_id' => 11,
+                'category_id' => 12,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:36:28',
                 'updated_at' => '2026-02-13 16:36:28',
             ),
-            38 => 
+            39 => 
             array (
-                'id' => 39,
+                'id' => 40,
                 'name' => 'Non-Contact Thermometer',
                 'is_active' => 1,
-                'category_id' => 11,
+                'category_id' => 12,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:39:30',
                 'updated_at' => '2026-02-13 16:39:30',
             ),
-            39 => 
+            40 => 
             array (
-                'id' => 40,
+                'id' => 41,
                 'name' => 'Climatic Chamber',
                 'is_active' => 1,
-                'category_id' => 11,
+                'category_id' => 12,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:40:21',
                 'updated_at' => '2026-02-13 16:40:21',
             ),
-            40 => 
+            41 => 
             array (
-                'id' => 41,
+                'id' => 42,
                 'name' => 'Thermo-Hygrometer',
                 'is_active' => 1,
-                'category_id' => 12,
+                'category_id' => 13,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:42:36',
                 'updated_at' => '2026-02-13 16:42:36',
             ),
-            41 => 
+            42 => 
             array (
-                'id' => 42,
+                'id' => 43,
                 'name' => 'Thermometer',
                 'is_active' => 1,
-                'category_id' => 12,
+                'category_id' => 13,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:43:17',
                 'updated_at' => '2026-02-13 16:43:17',
             ),
-            42 => 
+            43 => 
             array (
-                'id' => 43,
+                'id' => 44,
                 'name' => 'Hygrometer',
                 'is_active' => 1,
-                'category_id' => 12,
+                'category_id' => 13,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:43:59',
                 'updated_at' => '2026-02-13 16:43:59',
             ),
-            43 => 
+            44 => 
             array (
-                'id' => 44,
+                'id' => 45,
                 'name' => 'Plastic and Glassware',
                 'is_active' => 1,
-                'category_id' => 13,
+                'category_id' => 14,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:44:41',
                 'updated_at' => '2026-02-13 16:44:41',
             ),
-            44 => 
+            45 => 
             array (
-                'id' => 45,
+                'id' => 46,
                 'name' => 'Piston Operated Volumetric Apparatus',
                 'is_active' => 1,
-                'category_id' => 13,
+                'category_id' => 14,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:47:51',
                 'updated_at' => '2026-02-13 16:47:51',
             ),
-            45 => 
+            46 => 
             array (
-                'id' => 46,
+                'id' => 47,
                 'name' => 'Test Measure',
                 'is_active' => 1,
-                'category_id' => 13,
+                'category_id' => 14,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:49:07',
                 'updated_at' => '2026-02-13 16:49:07',
             ),
-            46 => 
+            47 => 
             array (
-                'id' => 47,
+                'id' => 48,
                 'name' => 'Proving Tank',
                 'is_active' => 1,
-                'category_id' => 13,
+                'category_id' => 14,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:49:30',
                 'updated_at' => '2026-02-13 16:49:30',
             ),
-            47 => 
+            48 => 
             array (
-                'id' => 48,
+                'id' => 49,
                 'name' => 'Road Tanker',
                 'is_active' => 1,
-                'category_id' => 13,
+                'category_id' => 14,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:49:57',
                 'updated_at' => '2026-02-13 16:49:57',
             ),
-            48 => 
+            49 => 
             array (
-                'id' => 49,
+                'id' => 50,
                 'name' => 'Fuel Dispenser',
                 'is_active' => 1,
-                'category_id' => 13,
+                'category_id' => 14,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:50:53',
                 'updated_at' => '2026-02-13 16:50:53',
             ),
-            49 => 
+            50 => 
             array (
-                'id' => 50,
+                'id' => 51,
                 'name' => 'Positive Pressure Gauge',
                 'is_active' => 1,
-                'category_id' => 14,
+                'category_id' => 15,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:51:46',
                 'updated_at' => '2026-02-13 16:51:46',
             ),
-            50 => 
+            51 => 
             array (
-                'id' => 51,
+                'id' => 52,
                 'name' => 'Negative Pressure Gauge',
                 'is_active' => 1,
-                'category_id' => 14,
+                'category_id' => 15,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:53:08',
                 'updated_at' => '2026-02-13 16:53:08',
             ),
-            51 => 
+            52 => 
             array (
-                'id' => 52,
+                'id' => 53,
                 'name' => 'Sphygmomanometer',
                 'is_active' => 1,
-                'category_id' => 14,
+                'category_id' => 15,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:54:12',
                 'updated_at' => '2026-02-13 16:54:12',
             ),
-            52 => 
+            53 => 
             array (
-                'id' => 53,
+                'id' => 54,
                 'name' => 'Electrical Multimeter',
                 'is_active' => 1,
-                'category_id' => 15,
+                'category_id' => 16,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:54:40',
                 'updated_at' => '2026-02-13 16:54:40',
             ),
-            53 => 
+            54 => 
             array (
-                'id' => 54,
+                'id' => 55,
                 'name' => 'pH Meter',
                 'is_active' => 1,
-                'category_id' => 15,
+                'category_id' => 16,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:56:20',
                 'updated_at' => '2026-02-13 16:56:20',
             ),
-            54 => 
+            55 => 
             array (
-                'id' => 55,
+                'id' => 56,
                 'name' => 'Tachometer',
                 'is_active' => 1,
-                'category_id' => 15,
+                'category_id' => 16,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:56:49',
                 'updated_at' => '2026-02-13 16:56:49',
             ),
-            55 => 
+            56 => 
             array (
-                'id' => 56,
+                'id' => 57,
                 'name' => 'Rule',
                 'is_active' => 1,
-                'category_id' => 16,
+                'category_id' => 17,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:57:25',
                 'updated_at' => '2026-02-13 16:57:25',
             ),
-            56 => 
+            57 => 
             array (
-                'id' => 57,
+                'id' => 58,
                 'name' => 'External Micrometer',
                 'is_active' => 1,
-                'category_id' => 16,
+                'category_id' => 17,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 16:58:34',
                 'updated_at' => '2026-02-13 16:58:34',
             ),
-            57 => 
+            58 => 
             array (
-                'id' => 58,
+                'id' => 59,
                 'name' => 'Caliper',
                 'is_active' => 1,
-                'category_id' => 16,
+                'category_id' => 17,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-02-13 17:05:14',
                 'updated_at' => '2026-02-13 17:05:14',
             ),
-            58 => 
+            59 => 
             array (
-                'id' => 59,
+                'id' => 60,
                 'name' => 'Milk and Dairy',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:41:07',
                 'updated_at' => '2026-03-14 14:41:07',
             ),
-            59 => 
+            60 => 
             array (
-                'id' => 60,
+                'id' => 61,
                 'name' => 'Cereal and Cereal/Legume-Based Products',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:47:33',
                 'updated_at' => '2026-03-14 14:47:33',
             ),
-            60 => 
+            61 => 
             array (
-                'id' => 61,
+                'id' => 62,
                 'name' => 'Pasta Products & Noddles Uncooked',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:49:32',
                 'updated_at' => '2026-03-14 14:49:32',
             ),
-            61 => 
+            62 => 
             array (
-                'id' => 62,
+                'id' => 63,
                 'name' => 'Bakery Products',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:50:21',
                 'updated_at' => '2026-03-14 14:50:21',
             ),
-            62 => 
+            63 => 
             array (
-                'id' => 63,
+                'id' => 64,
                 'name' => 'Ready-to-Eat Savories',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:51:12',
                 'updated_at' => '2026-03-14 14:51:12',
             ),
-            63 => 
+            64 => 
             array (
-                'id' => 64,
+                'id' => 65,
                 'name' => 'Meat and Poultry Products',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:51:49',
                 'updated_at' => '2026-03-14 14:51:49',
             ),
-            64 => 
+            65 => 
             array (
-                'id' => 65,
+                'id' => 66,
                 'name' => 'Fish and Other Seafood Products',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:52:59',
                 'updated_at' => '2026-03-14 14:52:59',
             ),
-            65 => 
+            66 => 
             array (
-                'id' => 66,
+                'id' => 67,
                 'name' => 'Spices, Soups, Salads and Proteins Products',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:54:13',
                 'updated_at' => '2026-03-14 14:54:13',
             ),
-            66 => 
+            67 => 
             array (
-                'id' => 67,
+                'id' => 68,
                 'name' => 'Fats, Oils and Fat Emulsion',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:55:03',
                 'updated_at' => '2026-03-14 14:55:03',
             ),
-            67 => 
+            68 => 
             array (
-                'id' => 68,
+                'id' => 69,
                 'name' => 'Edible Ices, Including Sherbet and Sorbet',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:55:47',
                 'updated_at' => '2026-03-14 14:55:47',
             ),
-            68 => 
+            69 => 
             array (
-                'id' => 69,
+                'id' => 70,
                 'name' => 'Confectionaries',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:56:38',
                 'updated_at' => '2026-03-14 14:56:38',
             ),
-            69 => 
+            70 => 
             array (
-                'id' => 70,
+                'id' => 71,
                 'name' => 'Fruits and Vegetables, Nuts and Seeds',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:57:45',
                 'updated_at' => '2026-03-14 14:57:45',
             ),
-            70 => 
+            71 => 
             array (
-                'id' => 71,
+                'id' => 72,
                 'name' => 'Food for Infants and Young Children',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:58:48',
                 'updated_at' => '2026-03-14 14:58:48',
             ),
-            71 => 
+            72 => 
             array (
-                'id' => 72,
+                'id' => 73,
                 'name' => 'Animal and Marine Protein Source',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 14:59:45',
                 'updated_at' => '2026-03-14 14:59:45',
             ),
-            72 => 
+            73 => 
             array (
-                'id' => 73,
+                'id' => 74,
                 'name' => 'Beverages',
                 'is_active' => 1,
-                'category_id' => 17,
+                'category_id' => 18,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 15:00:33',
                 'updated_at' => '2026-03-14 15:00:33',
             ),
-            73 => 
+            74 => 
             array (
-                'id' => 74,
+                'id' => 75,
                 'name' => 'Water',
                 'is_active' => 1,
-                'category_id' => 18,
+                'category_id' => 19,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 15:01:32',
                 'updated_at' => '2026-03-14 15:01:32',
             ),
-            74 => 
+            75 => 
             array (
-                'id' => 75,
+                'id' => 76,
                 'name' => 'Swab',
                 'is_active' => 1,
-                'category_id' => 18,
+                'category_id' => 19,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 15:02:19',
                 'updated_at' => '2026-03-14 15:02:19',
             ),
-            75 => 
+            76 => 
             array (
-                'id' => 76,
+                'id' => 77,
                 'name' => 'Air Sample',
                 'is_active' => 1,
-                'category_id' => 18,
+                'category_id' => 19,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 15:02:47',
                 'updated_at' => '2026-03-14 15:02:47',
             ),
-            76 => 
+            77 => 
             array (
-                'id' => 77,
+                'id' => 78,
                 'name' => 'Plant Extracts',
                 'is_active' => 1,
-                'category_id' => 19,
+                'category_id' => 20,
                 'user_id' => 2,
                 'agency_id' => 14,
                 'created_at' => '2026-03-14 15:03:07',
