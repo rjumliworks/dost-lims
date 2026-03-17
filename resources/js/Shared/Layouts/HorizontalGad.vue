@@ -88,29 +88,29 @@ export default {
               </li>
               <li class="nav-item">
                   <Link href="/workforce" class="nav-link menu-link"
-                  :class="{'active': $page.component.startsWith('Customer/Tsrs') }">
-                  <i class="ri-folder-5-line"></i>
+                  :class="{'active': $page.component === 'Others/Gad/Workforce' }">
+                  <i class="ri-team-fill"></i>
                   <span class="fw-semibold fs-14" data-key="t-dashboards">Workforce Data</span>
                   </Link>
               </li>
                <li class="nav-item">
                     <Link href="/customers" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Participant/Downloads') }">
-                    <i class="ri-download-cloud-line"></i>
+                    :class="{'active': $page.component === 'Others/Gad/Customer' }">
+                    <i class="ri-account-circle-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Customer's Data</span>
                     </Link>
                 </li>
                 <li class="nav-item">
                     <Link href="/organizational-chart" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Participant/Downloads') }">
-                    <i class="ri-download-cloud-line"></i>
+                    :class="{'active': $page.component === 'Others/Gad/OrganizationalChart' }">
+                    <i class="ri-landscape-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Organizational Chart</span>
                     </Link>
                 </li>
                 <li class="nav-item">
                     <Link href="/knowledge-iec" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Participant/Downloads') }">
-                    <i class="ri-download-cloud-line"></i>
+                    :class="{'active': $page.component === 'Others/Gad/KnowledgeIec' }">
+                    <i class="ri-search-eye-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Knowledge $ IEC</span>
                     </Link>
                 </li>

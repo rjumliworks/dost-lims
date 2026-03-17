@@ -1,205 +1,153 @@
 <template>
     <PageHeader title="Workforce" pageTitle="DOST-IX" />
-  
-    
-    <div class="row">
-            <div class="col-lg-8">
-                <div class="card bg-soft bg-light border shadow-none mb-3">
-                    <div class="p-1">
-                        <div class="d-flex mt-1">
-                            <div class="avatar-xs align-self-center ml-2 ms-2 mr-2">
-                                <div class="avatar-title rounded bg-transparent"><i
-                                        class="bx bx-news h4 mt-1"></i></div>
-                            </div>
-                            <div class="overflow-hidden mr-auto align-self-center">
-                                <h5 class="fw-semibold fs-12 mt-1">Announcements</h5>
-                            </div>
-                        </div>
+    <div class="card shadow-none border">
+        <div class="card-body">
+            <div class="d-flex flex-wrap" style="cursor: pointer;">
+                <div class="avatar-sm">
+                    <div
+                        class="avatar-title bg-light rounded-circle fs-20 text-purple">
+                        <i class="ri-bar-chart-2-fill"></i>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-xl-4 col-sm-6">
-                        <div class="blog-box mb-4 mb-xl-0">
-                            <div class="position-relative"><img
-                                    src="http://stsims.local/images/post-2.jpg" alt=""
-                                    class="rounded img-fluid mx-auto d-block">
-                                <div class="badge bg-success blog-badge fs-11">Announcement</div>
-                            </div>
-                            <div class="mt-4 text-muted fs-12">
-                                <p class="mb-2"><i class="bx bx-calendar me-1"></i> May 14, 2022 6:38 pm
-                                </p>
-                                <h6 class="mb-3 fw-bold">2021 DOST-SEI Undergraduate Scholars</h6>
-                                <p>The long wait is over for the applicants to the 20..</p>
-                                <div><a href="#">Read more</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-sm-6">
-                        <div class="blog-box mb-4 mb-xl-0">
-                            <div class="position-relative"><img
-                                    src="http://stsims.local/images/post-1.jpg" alt=""
-                                    class="rounded img-fluid mx-auto d-block">
-                                <div class="badge bg-success blog-badge fs-11">News</div>
-                            </div>
-                            <div class="mt-4 text-muted fs-12">
-                                <p class="mb-2"><i class="bx bx-calendar me-1"></i> May 14, 2022 5:57 pm
-                                </p>
-                                <h6 class="mb-3 fw-bold">The DOST-SEI is proud to announce the
-                                    qualifiers for the 2021 Junior Level Science Scholarships! </h6>
-                                <p>Congratulations, scholars! May your journey as sci..</p>
-                                <div><a href="#">Read more</a></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-4 col-sm-6">
-                        <div class="blog-box mb-4 mb-xl-0">
-                            <div class="position-relative"><img
-                                    src="http://stsims.local/images/default.jpg" alt=""
-                                    class="rounded img-fluid mx-auto d-block">
-                                <div class="badge bg-success blog-badge fs-11">News</div>
-                            </div>
-                            <div class="mt-4 text-muted fs-12">
-                                <p class="mb-2"><i class="bx bx-calendar me-1"></i> May 14, 2022 5:54 pm
-                                </p>
-                                <h6 class="mb-3 fw-bold">STSIMS version 1 released.</h6>
-                                <p>The Science and Technology Scholarship Information..</p>
-                                <div><a href="#">Read more</a></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="ms-3 mt-1">
+                    <p class="fw-semibold fs-15 text-purple text-truncated mb-0">DOSTIX RSTL Workforce Data</p>
+                    <h5 class="mb-0 text-muted fs-13">View and manage employee information and staffing data for RSTL operations.</h5>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="card bg-soft bg-light border shadow-none mb-3">
-                    <div class="p-1">
-                        <div class="d-flex mt-1">
-                            <div class="avatar-xs align-self-center ml-2 ms-2 mr-2">
-                                <div class="avatar-title rounded bg-transparent"><i
-                                        class="bx bx-info-circle h4 mt-1"></i></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card bg-light-subtle shadow-none border">
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                               <h5 class="mb-3 fs-12 fw-semibold"><span class="text-purple">Age Group</span></h5>
                             </div>
-                            <div class="overflow-hidden mr-auto align-self-center">
-                                <h5 class="fw-semibold fs-12 mt-1">Quick Links</h5>
+                        </div>
+                        <div class="card-body bg-white">
+                           <div class="row">
+                                <div class="col-md-8">
+                                   <apexchart 
+                                    ref="realtimeChart" 
+                                    class="apex-charts" 
+                                    type="bar" 
+                                    height="300" 
+                                    :series="barSeries"
+                                    :options="chartOptions4" 
+                                    >
+                                    </apexchart>
+                                </div>
+                                <div class="col-md-4">
+                                    <table class="table table-sm table-striped fs-10 mt-n1">
+                                        <tbody>
+                                            <tr v-for="(list,index) in barSeries.data" v-bind:key="index">
+                                                <td>{{list}} :</td>
+                                                <td class="text-end">{{ age[index] }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card card-height-100">
+                <div class="card-header bg-purplealign-items-center d-flex">
+                    <h4 class="card-title mb-0 flex-grow-1 fs-14">Role Distribution</h4>
                 </div>
-                <div class="card border"><a href="https://www.science-scholarships.ph" target="_blank">
-                        <div class="card-body">
-                            <div class="d-flex flex-wrap">
-                                <div class="avatar-sm">
-                                    <div class="avatar-title bg-light rounded-circle fs-20 text-primary">
-                                        <i class="bx bxs-window-alt"></i>
-                                    </div>
-                                </div>
-                                <div class="ms-3 mt-1">
-                                    <p class="fw-semibold fs-13 text-truncated mb-0">S&amp;T E-Scholarship </p>
-                                    <h5 class="mb-0 text-muted fs-12">Web Application System</h5>
-                                </div>
-                            </div>
+
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+                        <div class="col-6">
+                            <h6 class="text-muted text-uppercase fw-semibold text-truncate fs-12 mb-3">Total Workforce</h6>
+                            <h4 class="mb-0">20</h4>
+                            <!-- <p class="mb-0 mt-2 text-muted"><span class="badge bg-success-subtle text-success mb-0"> <i class="ri-arrow-up-line align-middle"></i> 15.72 % </span> vs. previous month</p> -->
                         </div>
-                    </a>
-                </div>
-                <div class="card border mt-n3">
-                    <a href="https://www.sei.dost.gov.ph/images/stsd/ugradFAQ.pdf" target="_blank">
-                        <div class="card-body">
-                            <div class="d-flex flex-wrap">
-                                <div class="avatar-sm">
-                                    <div
-                                        class="avatar-title bg-light rounded-circle font-size-20 text-warning">
-                                        <i class="bx bxs-user-voice"></i></div>
-                                </div>
-                                <div class="ms-3 mt-1">
-                                    <p class="fw-semibold fs-13 text-truncated text-warning mb-0">Frequently Asked
-                                        Questions </p>
-                                    <h5 class="mb-0 text-muted fs-12">DOST - Science Education
-                                        Institute</h5>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="card border mt-n3">
-                    <div class="card-body">
-                        <div class="d-flex flex-wrap">
-                            <div class="avatar-sm">
-                                <div
-                                    class="avatar-title bg-light rounded-circle font-size-20 text-primary">
-                                    <img src="images/sei.png" alt="" class="ms-1" style="width: 25px;">
-                                </div>
-                            </div>
-                            <div class="ms-3 mt-1"><a href="https://www.sei.dost.gov.ph/"
-                                    target="_blank">
-                                    <p class="fw-semibold fs-13 text-truncated mb-0">Science Education Institute
-                                    </p>
-                                </a> <a href="https://www.dost.gov.ph/" target="_blank">
-                                    <h5 class="mb-0 text-muted fs-12">Department of Science and
-                                        Technology
-                                    </h5>
-                                </a>
+                        <div class="col-6">
+                            <div class="text-center">
+                                <img src="assets/images/illustrator-1.png" class="img-fluid" alt="">
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="input-group bg-light rounded mb-3"><input type="email"
-                        placeholder="Enter Email address" aria-label="Recipient's username"
-                        aria-describedby="button-addon2" class="form-control bg-transparent border-0">
-                    <div class="input-group-append"><button type="button" id="button-addon2"
-                            class="btn btn-primary rounded"><i class="bx bx-envelope"></i></button>
+                    <div class="mt-3 pt-2">
+                        <div class="progress progress-lg rounded-pill">
+                            <div
+                                v-for="(role, index) in roles"
+                                :key="index"
+                                class="progress-bar"
+                                :class="role_bgs[index]"
+                                role="progressbar"
+                                :style="{ width: getRolePercentage(index) + '%' }"
+                                :aria-valuenow="roles[index]"
+                                aria-valuemin="0"
+                                :aria-valuemax="totalRoles"
+                            ></div>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-2">
+                        <div class="d-flex mb-2" v-for="(list,index) in role_labels">
+                            <div class="flex-grow-1">
+                                <p class="text-truncate text-muted fs-14 mb-0"><i class="mdi mdi-circle align-middle me-2" :class="role_colors[index]"></i>{{ list }}</p>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <p class="mb-0">{{ roles[index] }}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 </template>
 <script>
-    import PageHeader from '@/Shared/Components/PageHeader.vue';
-    export default {
-        components: {
-            PageHeader
-        },
-        data() {
-            return {
-                file: null,
-                result: null,
-                error: null,
-                loading: false,
-            }
-        },
-
-        methods: {
-            onFileChange(e) {
-                this.file = e.target.files[0]
-                this.result = null
-                this.error = null
-            },
-
-            async verifyDocument() {
-                if (!this.file) return
-
-                this.loading = true
-                this.result = null
-                this.error = null
-
-                const formData = new FormData()
-                formData.append('file', this.file)
-
-                try {
-                    const response = await axios.post('/verification', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    })
-                    this.result = response.data
-                } catch (err) {
-                    if (err.response && err.response.data) {
-                        this.result = err.response.data
-                    } else {
-                        this.error = 'Verification failed. Please try again.'
-                    }
-                } finally {
-                    this.loading = false
+import PageHeader from '@/Shared/Components/PageHeader.vue';
+export default {
+    components: {
+        PageHeader
+    },
+    data() {
+        return {
+            gender: [12,9],
+            employment: [2,19],
+            civil_status: [14,7,0],
+            age: [0,13,5,1,2,0],
+            edu: [15,3,4],
+            roles: [3,9,1,2,4,1],
+            role_labels: ['Technical Manager','Analyst','IT','Staff','Laboratory Aide','Utility'],
+            role_colors: ['text-pink','text-purple','text-success','text-warning','text-danger','text-info'],
+            role_bgs: ['bg-pink','bg-purple','bg-success','bg-warning','bg-danger','bg-info'],
+            barSeries: [
+                {
+                    name: "Age Groups",
+                    data: [0, 13, 5, 1, 2, 0] // example numbers for each age group
                 }
-            },
-        },
+            ],
+            chartOptions4: {
+                chart: {
+                    type: 'bar',
+                },
+                xaxis: {
+                    categories: ['15-24','25-34','35-44','45-54','55-64','65+']
+                },
+                colors: ['#39a6c6','#d86885','#65b089','#f5c136','#9824e9','#318f78'],
+                legend: { show: false },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '70%',
+                    }
+                }
+            }
+        }
+    },
+    methods: {
+        getRolePercentage(index) {
+            const total = this.roles.reduce((sum, val) => sum + val, 0);
+            return ((this.roles[index] / total) * 100).toFixed(2);
+        }
     }
-
+}
 </script>
