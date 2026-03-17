@@ -105,12 +105,20 @@ class SaveClass
             return CustomerName::create([
                 'name'         => $request->customer['value'],
                 'has_branches' => $request->has_branches,
+                'type_id'      => $request->type_id,
+                'industry_id'  => $request->industry_id,
+                'classification_id' => $request->classification_id
             ])->id;
         }
 
         $name = CustomerName::findOrFail($request->customer['value']);
         $name->update(['has_branches' => true]);
-
+        if($name){
+            $customer = Customer::where('name_id', $name->id)->first();
+            if($customer){
+                $customer->update(['is_main' => 0]);
+            }
+        }
         return $name->id;
     }
 

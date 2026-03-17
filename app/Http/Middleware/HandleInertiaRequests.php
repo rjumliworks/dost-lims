@@ -38,8 +38,7 @@ class HandleInertiaRequests extends Middleware
             'customer' => \Auth::guard('customer')->check()
                 ? Customer::with('contact','customer_name')->find(\Auth::guard('customer')->id())
                 : null,
-            
-
+            'is_gad' => str_starts_with($request->getHost(), 'gad.'),
             'show' => (\Auth::guard('web')->check()) ? AgencyConfiguration::value('show_others') : null,
             'years' => (\Auth::guard('web')->check()) ? Target::distinct()->pluck('year') : null,
             'flash' => [

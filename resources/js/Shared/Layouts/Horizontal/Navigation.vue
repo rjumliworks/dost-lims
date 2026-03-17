@@ -1,5 +1,5 @@
 <template>
-    <header id="page-topbar">
+    <header id="page-topbar" style="background-color: #503c75;">
         <div class="layout-width">
             <div class="navbar-header">
                 <div class="d-flex">
@@ -41,7 +41,7 @@
                         </BButton>
                     </div>
 
-                    <BDropdown variant="link" class="ms-sm-3 header-item topbar-user" toggle-class="rounded-circle material-shadow-none" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -14, crossAxis: 0, mainAxis: 0 }">
+                    <BDropdown v-if="!this.$page.props.is_gad" variant="link" class="ms-sm-3 header-item topbar-user" toggle-class="rounded-circle material-shadow-none" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -14, crossAxis: 0, mainAxis: 0 }">
                         <template #button-content>
                             <span class="d-flex align-items-center">
                                 <img class="rounded-circle header-profile-user" src="/images/avatars/avatar.jpg">

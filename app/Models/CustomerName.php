@@ -12,7 +12,7 @@ class CustomerName extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['name', 'has_branches', 'is_active'];
+    protected $fillable = ['name','has_branches','is_active','industry_id','classification_id','type_id'];
 
     protected static function booted()
     {
@@ -37,6 +37,21 @@ class CustomerName extends Model
         return $this->hasMany('App\Models\Customer', 'name_id');
     }
 
+    public function type()
+    {
+        return $this->belongsTo('App\Models\ListDropdown', 'type_id', 'id');
+    }
+
+    public function classification()
+    {
+        return $this->belongsTo('App\Models\ListDropdown', 'classification_id', 'id');
+    }
+
+    public function industry()
+    {
+        return $this->belongsTo('App\Models\ListIndustry', 'industry_id', 'id');
+    }
+
     public function agency()
     {
         return $this->belongsTo('App\Models\Agency', 'agency_id', 'id');
@@ -44,7 +59,7 @@ class CustomerName extends Model
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
-        ->logOnly(['name', 'has_branches', 'is_active'])
+        ->logOnly(['name', 'has_branches', 'is_active','industry_id','classification_id','type_id'])
         ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
         ->useLogName('Name')
         ->logOnlyDirty()

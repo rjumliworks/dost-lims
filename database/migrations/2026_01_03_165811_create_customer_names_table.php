@@ -17,6 +17,12 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('has_branches')->default(0);
             $table->boolean('is_active')->default(1);
+            $table->unsignedTinyInteger('type_id')->nullable();
+            $table->foreign('type_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
+            $table->unsignedTinyInteger('industry_id');
+            $table->foreign('industry_id')->references('id')->on('list_industries')->onDelete('cascade');
+            $table->unsignedTinyInteger('classification_id');
+            $table->foreign('classification_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->timestamps();

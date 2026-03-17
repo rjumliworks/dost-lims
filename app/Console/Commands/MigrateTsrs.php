@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\Customer;
@@ -49,6 +50,7 @@ class MigrateTsrs extends Command
         DB::connection('old_db')
         ->table('tsrs as t')
         ->where('t.agency_id', 14)
+        
         ->whereIn('t.status_id', [2,3,4])
         ->whereNotExists(function ($query) {
             $query->select(DB::raw(1))
@@ -56,7 +58,7 @@ class MigrateTsrs extends Command
                 ->whereRaw('p.tsr_id = t.id')
                 ->where('p.is_child', 1);
         })
-        ->whereYear('t.created_at',2026)
+        // ->whereYear('t.created_at',2026)
         ->orderBy('t.id')
         ->chunk(200, function ($tsrs) use (&$tsrMap, &$sampleMap) {
 
@@ -105,12 +107,14 @@ class MigrateTsrs extends Command
                     ->table('tsr_samples')
                     ->where('tsr_id',$tsr->id)
                     ->get();
-
+                    $parts = explode('-', $tsr->code);       // ["R9", "032026", "CHE", "0112"]
+                    $numberBlock = $parts[1] ?? '';          // "032026"
+                    $year = substr($numberBlock, -4); 
                     foreach ($samples as $sample) {
 
                         $newSampleId = DB::table('tsr_samples')->insertGetId([
 
-                            'code'=>$sample->code,
+                            'code'=>$sample->code.'-'.$year,
                             'name'=>$sample->name,
                             'customer_description'=>$sample->customer_description,
                             'description'=>$sample->description,

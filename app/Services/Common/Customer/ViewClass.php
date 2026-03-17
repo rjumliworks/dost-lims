@@ -14,8 +14,14 @@ class ViewClass
 {
     public function list($request){
         $data = Customer::select('customers.*', 'customers.name as branch_name')
-        ->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
-        ->with('classification:id,name','sex:id,name','led:id,name','type:id,name','industry:id,name,industry_id,is_main,is_alone,is_active')
+        ->join('customer_names', 'customers.name_id', '=', 'customer_names.id') //'classification:id,name' 'type:id,name','industry:id,name,industry_id,is_main,is_alone,is_active'
+        ->with([
+            'customer_name.classification:id,name',
+            'customer_name.type:id,name',
+            'customer_name.industry:id,name,industry_id,is_main,is_alone,is_active',
+            'sex:id,name',
+            'led:id,name'
+        ])
         ->with('address.region:code,name,region','address.province:code,name','address.municipality:code,name','address.barangay:code,name')
         ->with(['customer_name' => function ($q) {
             $q->withoutGlobalScope('agency');
@@ -56,7 +62,7 @@ class ViewClass
         $data = new ViewResource(
             Customer::query()
             ->with('conformes','payors')
-            ->with('customer_name:id,name','classification:id,name','industry:id,name','type:id,name','sex:id,name','led:id,name')
+            ->with('customer_name:id,name,classification_id,industry_id,type_id','customer_name.classification:id,name','customer_name.industry:id,name','customer_name.type:id,name','sex:id,name','led:id,name')
             ->with('address.region:code,name,region','address.province:code,name','address.municipality:code,name','address.barangay:code,name')
             ->where('id',$id)->first()
         );
@@ -66,11 +72,14 @@ class ViewClass
     public function search($request){
         $keyword = $request->keyword;
         if($keyword){
-            $data = CustomerName::where('name', 'LIKE', "%{$keyword}%")->get()->map(function ($item) {
+            $data = CustomerName::with('classification:id','industry:id','type:id')->where('name', 'LIKE', "%{$keyword}%")->get()->map(function ($item) {
                 return [
                     'value' => $item->id,
                     'name' => $item->name,
-                    'has_branches' => $item->has_branches
+                    'has_branches' => $item->has_branches,
+                    'classification' => $item->classification->id,
+                    'industry' => $item->industry->id,
+                    'type_id' => $item->type?->id
                 ];
             });
             return $data;

@@ -411,6 +411,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const sigBlob = await fetch(signature.src).then(res => res.blob());
                 const timestamp = new Date().toLocaleString();
+                const pages = [1,2,3,4];
 
                 const formData = new FormData();
                 formData.append('pdf', pdfBlob, 'signed-report.pdf');
@@ -419,7 +420,9 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 formData.append('timestamp', timestamp);
                 formData.append('option', 'report');
                 formData.append('role', this.signRole);
-                formData.append('page_number', this.currentPage);
+                pages.forEach(p => {
+                    formData.append('page_numbers[]', p);
+                });
                 formData.append('box_x0', pdfX);
                 formData.append('box_y0', pdfY);
                 formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);

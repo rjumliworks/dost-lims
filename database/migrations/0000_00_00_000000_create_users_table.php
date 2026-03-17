@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('kradworkz', 64)->unique()->index();
             $table->string('password');
             $table->string('code',9)->nullable();
+            $table->integer('old_id')->nullable();
             $table->boolean('is_active')->default(0);
             $table->boolean('is_locked')->default(0);
             $table->boolean('must_change')->default(0);

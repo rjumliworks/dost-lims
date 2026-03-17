@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::domain('gad.' . config('app.app_host'))->as('gad.')->group(function () {
+    Route::get('/', [App\Http\Controllers\Others\GadController::class, 'index']);
+    Route::get('/workforce', [App\Http\Controllers\Others\GadController::class, 'workforce']);
+    Route::get('/customers', [App\Http\Controllers\Others\GadController::class, 'customers']);
+    Route::get('/organizational-chart', [App\Http\Controllers\Others\GadController::class, 'organizationalChart']);
+    Route::get('/knowledge-iec', [App\Http\Controllers\Others\GadController::class, 'knowledgeIec']);
+});
+
 Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(function () {
     Route::get('/', function () {
         return 'wew';

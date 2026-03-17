@@ -24,7 +24,7 @@ class MigrateCustomers extends Command
         $this->info("Starting customer migration...");
 
         // 1️⃣ Setup old encrypter
-        $this->makeOldEncrypter($oldKey);
+        // $this->makeOldEncrypter($oldKey);
 
         // 2️⃣ Truncate all customer-related tables
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
@@ -42,13 +42,30 @@ class MigrateCustomers extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
         // 3️⃣ Migrate customer_names (only those with customers with TSRS)
-        $oldNames = DB::connection('old_db')
+       $oldNames = DB::connection('old_db')
             ->table('customer_names as cn')
             ->join('customers as c', 'c.name_id', '=', 'cn.id')
             ->join('tsrs as t', 't.customer_id', '=', 'c.id')
             ->where('t.agency_id', 14)
-            ->select('cn.*')
-            ->distinct()
+            ->select(
+                'cn.id',
+                'cn.name',
+                DB::raw('MIN(c.industry_id) as industry_id'),
+                DB::raw('MIN(c.classification_id) as classification_id'),
+                DB::raw('MIN(c.type_id) as type_id'),
+                'cn.has_branches',
+                'cn.is_active',
+                'cn.created_at',
+                'cn.updated_at'
+            )
+            ->groupBy(
+                'cn.id',
+                'cn.name',
+                'cn.has_branches',
+                'cn.is_active',
+                'cn.created_at',
+                'cn.updated_at'
+            )
             ->get();
 
         $nameMapping = [];
@@ -57,6 +74,9 @@ class MigrateCustomers extends Command
                 'name' => $oldName->name,
                 'agency_id' => 14,
                 'has_branches' => $oldName->has_branches,
+                'industry_id' => $oldName->industry_id,
+                'classification_id' => $oldName->classification_id,
+                'type_id' => $oldName->type_id,
                 'is_active' => $oldName->is_active,
                 'created_at' => $oldName->created_at,
                 'updated_at' => $oldName->updated_at,
@@ -90,11 +110,8 @@ class MigrateCustomers extends Command
                         'name_id' => $nameMapping[$oldCustomer->name_id] ?? null,
                         'code' => $oldCustomer->code,
                         'name' => $oldCustomer->name,
-                        'industry_id' => $oldCustomer->industry_id,
-                        'classification_id' => $oldCustomer->classification_id,
                         'sex_id' => $oldCustomer->sex_id,
                         'led_id' => $oldCustomer->female_id,
-                        'type_id' => $oldCustomer->type_id,
                         'is_active' => $oldCustomer->is_active,
                         'is_internal' => $oldCustomer->is_internal,
                         'is_main' => $oldCustomer->is_main,
@@ -113,13 +130,11 @@ class MigrateCustomers extends Command
                         ->get();
 
                     foreach ($conformes as $c) {
-                        $name = $this->safeDecrypt($c->name);
-                        $contact = $this->safeDecrypt($c->contact_no);
-
-                        CustomerConforme::create([
+                    
+                        DB::table('customer_conformes')->insert([
                             'customer_id' => $newCustomerId,
-                            'name' => $name ?: 'None',
-                            'contact_no' => $contact,
+                            'name' => $c->name ?: 'None',
+                            'contact_no' => $c->contact_no,
                         ]);
                     }
 
@@ -132,13 +147,14 @@ class MigrateCustomers extends Command
                     $existingEmails = [];
 
                     foreach ($contacts as $c) {
-                        $email = $this->safeDecrypt($c->email) ?: 'none@onelab.com';
-                        $contact = $this->safeDecrypt($c->contact_no);
-
-                        CustomerContact::create([
+                     
+                        DB::table('customer_contacts')->insert([
                             'customer_id' => $newCustomerId,
-                            'email' => $email,
-                            'contact_no' => $contact,
+                            'email' => $c->email ?: 'none@onelab.com',
+                            'kradworkz' => $c->email 
+                            ? hash('sha256', $c->email)
+                            : hash('sha256', 'none@onelab.com'),
+                            'contact_no' => $c->contact_no,
                         ]);
                     }
 
@@ -208,7 +224,7 @@ class MigrateCustomers extends Command
         }
 
         try {
-            return $this->oldEncrypter->decryptString($value);
+            return $this->decryptString($value);
         } catch (\Exception $e) {
             $this->warn("Decrypt failed, returning raw value");
             return $value;

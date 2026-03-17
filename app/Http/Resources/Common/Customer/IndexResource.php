@@ -25,10 +25,10 @@ class IndexResource extends JsonResource
             'is_active' => $this->is_active,
             'is_new' => $this->is_new,
             'customer_name' => $this?->customer_name->name,
-            'classification' => $this->classification,
-            'type' => $this->type,
+            'classification' => $this->customer_name->classification,
+            'type' => $this->customer_name->type,
+            'industry' => $this->customer_name->industry,
             'led' => $this->led,
-            'industry' => $this->industry,
             'sex' => $this->sex,
             'address' => new AddressResource($this->address),
             'created_at' => $this->created_at

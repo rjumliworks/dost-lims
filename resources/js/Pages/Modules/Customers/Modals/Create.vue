@@ -26,7 +26,7 @@
                                     </div>
                                 </div>
                             </BCol>
-                            <BCol lg="12">
+                            <BCol lg="12" v-if="typeof form.customer?.value != 'number'">
                                 <BRow class="g-3">
                                     <BCol lg="12"><hr class="text-muted mb-0" :class="(form.customer) ? 'mt-1' : 'mt-3'"/></BCol>
                                     <BCol lg="8"  style="margin-top: 13px; margin-bottom: -12px;" class="fs-12" :class="(form.errors.has_branches) ? 'text-danger' : ''">Does the new customer represent a branch?</BCol>
@@ -49,15 +49,30 @@
                                     <BCol lg="12"><hr class="text-muted mt-n2" :class="(form.customer && form.has_branches) ? '' : 'mb-n3'"/></BCol>
                                 </BRow>
                             </BCol>
-                            <BCol lg="12" v-if="form.has_branches" class="mt-n2 mb-0">
+                            <BCol lg="12" v-else>
+                                <hr class="text-muted mt-2"/>
+                            </BCol>
+                            <BCol :lg="(typeof form.customer?.value === 'number') ? 6 : 12" v-if="form.has_branches" class="mt-n2 mb-0">
                                 <InputLabel for="name" value="Branch" :message="form.errors.name"/>
                                 <TextInput id="name" v-model="form.name" type="text" class="form-control" placeholder="Please enter name" @input="handleInput('name')" :light="false"/>
+                            </BCol>
+                            <BCol v-if="typeof form.customer?.value === 'number'" :lg="(form.sex_id == 71 || form.sex_id == 70) ? '3' : '6'" class="mt-n2 mb-1">
+                                <InputLabel for="sex_id" value="Sex" :message="form.errors.sex_id"/>
+                                <Multiselect :options="dropdowns.sexs" label="name" :searchable="true" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')" />
+                            </BCol>
+                            <BCol v-if="typeof form.customer?.value === 'number' &&  form.sex_id == 71 && form.customer.classification != 9" lg="3" class="mt-n2 mb-1">
+                                <InputLabel for="led_id" value="Type" :message="form.errors.led_id"/>
+                                <Multiselect :options="dropdowns.females" label="name" v-model="form.led_id" placeholder="Select Type" @input="handleInput('led')" />
+                            </BCol>
+                            <BCol v-if="typeof form.customer?.value === 'number' &&  form.sex_id == 70 && form.customer.classification != 9" lg="3" class="mt-n2 mb-1">
+                                <InputLabel for="led_id" value="Type" :message="form.errors.led_id"/>
+                                <Multiselect :options="dropdowns.males" label="name" v-model="form.led_id" placeholder="Select Type" @input="handleInput('led')" />
                             </BCol>
                         </BRow>
                     </form>
                 </div>
 
-                <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mt-3 p-3">
+                <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mt-3 p-3" v-if="typeof form.customer?.value != 'number' && form.customer">
                     <form class="customform">
                         <BRow>
                             <BCol :lg="(form.classification_id == 9) ? 3 : 6" class="mt- mb-1">
@@ -96,7 +111,7 @@
                     </form>
                 </div>
 
-                <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mt-n2 mb-3 p-3">
+                <div v-if="form.customer" class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-3 p-3" :class="(typeof form.customer?.value === 'number') ? 'mt-3' : 'mt-n2'">
                     <form class="customform">
                         <BRow>
                             <BCol lg="12" class="mt-0 mb-n1">
@@ -210,10 +225,17 @@ export default {
                if(typeof this.form.customer.value === 'number'){
                     this.form.has_branches = true;
                     this.form.name_id = this.form.customer.value;
+                    this.form.classification_id = this.form.customer.classification;
+                    this.form.industry_id = this.form.customer.industry;
+                    this.form.type_id = this.form.customer.type_id;
                }else if(typeof this.form.customer.value === 'string'){
                     this.form.has_branches = false;
                }    
             }else{
+                this.form.name_id = null;
+                this.form.classification_id = null;
+                this.form.industry_id = null;
+                this.form.type_id = null;
                 this.form.has_branches = false;
             }
         },

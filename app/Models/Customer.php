@@ -20,11 +20,8 @@ class Customer extends Authenticatable
         'code',
         'name',
         'name_id',
-        'industry_id',
-        'classification_id',
         'sex_id',
         'led_id',
-        'type_id',
         'is_active',
         'is_internal',
         'is_main',
@@ -104,21 +101,6 @@ class Customer extends Authenticatable
         return $this->hasOne('App\Models\CustomerAddress', 'customer_id');
     }
 
-     public function type()
-    {
-        return $this->belongsTo('App\Models\ListDropdown', 'type_id', 'id');
-    }
-
-    public function classification()
-    {
-        return $this->belongsTo('App\Models\ListDropdown', 'classification_id', 'id');
-    }
-
-    public function industry()
-    {
-        return $this->belongsTo('App\Models\ListIndustry', 'industry_id', 'id');
-    }
-
     public function sex()
     {
         return $this->belongsTo('App\Models\ListDropdown', 'sex_id', 'id');
@@ -157,7 +139,7 @@ class Customer extends Authenticatable
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
-        ->logOnly(['name','name_id','industry_id','classification_id','type_id','sex_id','led_id'])
+        ->logOnly(['name','name_id','sex_id','led_id'])
         ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
         ->useLogName('Details')
         ->logOnlyDirty()

@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('testservices', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+            $table->integer('old_id')->nullable();
+            $table->boolean('is_new')->default(1);
             $table->boolean('is_fixed')->default(1);
             $table->boolean('is_active')->default(1);
             $table->unsignedBigInteger('testname_id');

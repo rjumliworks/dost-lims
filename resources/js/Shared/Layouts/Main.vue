@@ -3,17 +3,22 @@ import { layoutComputed } from "@/Shared/State/helpers";
 import { mapActions } from "vuex";
 import Vertical from "./Vertical.vue";
 import Horizontal from "./Horizontal.vue";
+import HorizontalGad from "./HorizontalGad.vue";
 import TwoColumns from "./Twocolumn.vue";
 export default {
     components: {
         Vertical,
         Horizontal,
+        HorizontalGad,
         TwoColumns
     },
     computed: {
         ...layoutComputed,
         customer() {
             return this.$page.props.customer;
+        },
+        is_gad() {
+            return this.$page.props.is_gad;
         },
         message() {
             if(this.$page.props.flash.message == 'off'){
@@ -42,10 +47,14 @@ export default {
         resolveLayout() {
             const user = this.$page.props.user;
             const customer = this.$page.props.customer;
+            const is_gad = this.$page.props.is_gad;
 
             // Priority: Web > Viewer
-
-            if (user) {
+            if (is_gad) {
+                this.changeLayoutType({ layoutType: "horizontal" });
+                this.changeTopbar({ topbar: "dark" });
+            } 
+            else if (user) {
                 this.changeLayoutType({ layoutType: "vertical" });
                 this.changeTopbar({ topbar: "light" });
             } 
@@ -64,11 +73,14 @@ export default {
             <slot />
         </Vertical>
 
-        <Horizontal v-if="layoutType === 'horizontal'" :layout="layoutType">
+        <Horizontal v-else-if="layoutType === 'horizontal' && !this.$page.props.is_gad" :layout="layoutType">
             <slot />
         </Horizontal>
+         <HorizontalGad v-else-if="layoutType === 'horizontal' && this.$page.props.is_gad" :layout="layoutType">
+            <slot />
+        </HorizontalGad>
 
-        <TwoColumns v-if="layoutType === 'twocolumn'" :layout="layoutType">
+        <TwoColumns v-else-if="layoutType === 'twocolumn'" :layout="layoutType">
             <slot />
         </TwoColumns>
     </div>

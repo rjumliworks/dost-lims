@@ -17,6 +17,7 @@ return new class extends Migration
             $table->decimal('fee',12,2);
             $table->string('name');
             $table->string('description');
+            $table->integer('old_id')->nullable();
             $table->boolean('is_additional')->default(0);
             $table->boolean('is_active')->default(1);
             $table->unsignedInteger('typeable_id');
