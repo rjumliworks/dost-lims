@@ -1,6 +1,6 @@
 <script>
 import { Link } from '@inertiajs/vue3';
-import Navigation from "@/Shared/Layouts/Horizontal/Navigation.vue";
+import Navigation from './Horizontal/NavigationGad.vue';
 import Configuration from "@/Shared/Layouts/Components/Configuration.vue";
 import Footer from "@/Shared/Layouts/Components/Footer.vue";
 
