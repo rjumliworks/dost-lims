@@ -220,8 +220,20 @@
     "file": "assets/img-4-iSVl4_tu.jpg",
     "src": "public/images/sidebar/img-4.jpg"
   },
+  "public/images/small/1.png": {
+    "file": "assets/1-B7dvu8Xx.png",
+    "src": "public/images/small/1.png"
+  },
+  "public/images/small/2.jpg": {
+    "file": "assets/2-C6mjCL5c.jpg",
+    "src": "public/images/small/2.jpg"
+  },
+  "public/images/small/3.jpg": {
+    "file": "assets/3-BKKnlfUP.jpg",
+    "src": "public/images/small/3.jpg"
+  },
   "resources/js/app.js": {
-    "file": "assets/app-Y3o7geKi.js",
+    "file": "assets/app-Cs7e4D5V.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -238,12 +250,15 @@
       "node_modules/leaflet/dist/leaflet-src.esm.js"
     ],
     "css": [
-      "assets/app-FKwDspMN.css"
+      "assets/app-B7k3zHlQ.css"
     ],
     "assets": [
       "assets/logo-sm-BMbbSDmV.png",
       "assets/reset-password-BNEyUq9v.png",
       "assets/new-password-DFqpapdk.png",
+      "assets/1-B7dvu8Xx.png",
+      "assets/2-C6mjCL5c.jpg",
+      "assets/3-BKKnlfUP.jpg",
       "assets/logo-dark-BTQwWYkM.png",
       "assets/logo-light-xO5Q2xFH.png",
       "assets/customer-BnSpBMSv.png",

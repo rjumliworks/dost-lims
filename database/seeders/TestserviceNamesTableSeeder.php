@@ -4088,6 +4088,32 @@ class TestserviceNamesTableSeeder extends Seeder
                 'created_at' => '2026-03-15 06:15:35',
                 'updated_at' => '2026-03-15 06:15:35',
             ),
+            313 => 
+            array (
+                'id' => 314,
+            'name' => 'Digital (4 1/2 digits)',
+                'short' => NULL,
+                'is_active' => 1,
+                'type_id' => 31,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-03-18 01:54:34',
+                'updated_at' => '2026-03-18 01:54:34',
+            ),
+            314 => 
+            array (
+                'id' => 315,
+                'name' => 'EURAMET cg-15',
+                'short' => NULL,
+                'is_active' => 1,
+                'type_id' => 29,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-03-18 01:54:56',
+                'updated_at' => '2026-03-18 01:54:56',
+            ),
         ));
         
         

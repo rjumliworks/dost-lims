@@ -11,15 +11,13 @@ use App\Models\CustomerContact;
 
 class MigrateCustomers extends Command
 {
-    protected $signature = 'migrate:customers {old_key} {--limit=0}';
+    protected $signature = 'migrate:customers';
     protected $description = 'Migrate customers from old DB including encrypted fields';
 
-    private $oldEncrypters;
+  
 
     public function handle()
     {
-        $oldKey = $this->argument('old_key');
-        $limit = (int) $this->option('limit');
 
         $this->info("Starting customer migration...");
 
@@ -95,9 +93,7 @@ class MigrateCustomers extends Command
             })
             ->orderBy('id');
 
-        if ($limit > 0) {
-            $query->limit($limit);
-        }
+     
 
         $query->chunk(100, function ($oldCustomers) use ($nameMapping) {
 

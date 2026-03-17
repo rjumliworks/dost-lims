@@ -2385,6 +2385,19 @@ class TestserviceMethodsTableSeeder extends Seeder
                 'created_at' => '2026-03-15 06:15:35',
                 'updated_at' => '2026-03-15 06:15:35',
             ),
+            182 => 
+            array (
+                'id' => 183,
+                'fee' => '5050.00',
+                'is_active' => 1,
+                'method_id' => 233,
+                'reference_id' => 315,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-03-18 01:55:06',
+                'updated_at' => '2026-03-18 01:55:06',
+            ),
         ));
         
         
