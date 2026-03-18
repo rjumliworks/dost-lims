@@ -46,7 +46,7 @@
                                 img-height="400"
                                 img-width="1200"
                             >
-                                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-30 rounded-3 p-4 mb-4">
+                                <!-- <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-30 rounded-3 p-4 mb-4">
                                     <div class="d-inline-block mb-3">
                                         <span class="badge bg-warning text-dark px-3 py-2 rounded-pill">
                                             <i class="bx bx-star me-1"></i> FEATURED
@@ -59,7 +59,7 @@
                                     <button class="btn btn-warning btn-lg rounded-pill px-4">
                                         <i class="bx bx-calendar me-2"></i> Register Now
                                     </button>
-                                </div>
+                                </div> -->
                             </BCarouselSlide>
                             
                             <BCarouselSlide 
@@ -67,7 +67,7 @@
                                 img-height="400"
                                 img-width="1200"
                             >
-                                <div class="carousel-caption d-none d-md-block bg-primary bg-opacity-40 rounded-3 p-4 mb-4">
+                                <!-- <div class="carousel-caption d-none d-md-block bg-primary bg-opacity-40 rounded-3 p-4 mb-4">
                                     <div class="d-inline-block mb-3">
                                         <span class="badge bg-info text-white px-3 py-2 rounded-pill">
                                             <i class="bx bx-time me-1"></i> UPCOMING
@@ -80,7 +80,7 @@
                                     <button class="btn btn-info btn-lg rounded-pill px-4 text-white">
                                         <i class="bx bx-play-circle me-2"></i> Learn More
                                     </button>
-                                </div>
+                                </div> -->
                             </BCarouselSlide>
                             
                             <BCarouselSlide 
@@ -88,7 +88,7 @@
                                 img-height="400"
                                 img-width="1200"
                             >
-                                <div class="carousel-caption d-none d-md-block bg-success bg-opacity-40 rounded-3 p-4 mb-4">
+                                <!-- <div class="carousel-caption d-none d-md-block bg-success bg-opacity-40 rounded-3 p-4 mb-4">
                                     <div class="d-inline-block mb-3">
                                         <span class="badge bg-success text-white px-3 py-2 rounded-pill">
                                             <i class="bx bx-trending-up me-1"></i> TRENDING
@@ -101,7 +101,7 @@
                                     <button class="btn btn-success btn-lg rounded-pill px-4">
                                         <i class="bx bx-certification me-2"></i> Check Eligibility
                                     </button>
-                                </div>
+                                </div> -->
                             </BCarouselSlide>
                         </BCarousel>
                         
@@ -199,75 +199,7 @@
 
         <!-- Sidebar Column -->
         <div class="col-lg-4">
-            <!-- Quick Actions Card -->
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-transparent border-0 pt-4">
-                    <h5 class="fw-semibold mb-0"><i class="bx bx-bolt text-warning me-2"></i>Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary text-start d-flex align-items-center justify-content-between p-3">
-                            <span><i class="bx bx-upload me-2"></i> Upload New Material</span>
-                            <i class="bx bx-right-arrow-alt"></i>
-                        </button>
-                        <button class="btn btn-outline-success text-start d-flex align-items-center justify-content-between p-3">
-                            <span><i class="bx bx-search me-2"></i> Search Resources</span>
-                            <i class="bx bx-right-arrow-alt"></i>
-                        </button>
-                        <button class="btn btn-outline-info text-start d-flex align-items-center justify-content-between p-3">
-                            <span><i class="bx bx-help-circle me-2"></i> Request Assistance</span>
-                            <i class="bx bx-right-arrow-alt"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Activity Card -->
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-transparent border-0 pt-4">
-                    <h5 class="fw-semibold mb-0"><i class="bx bx-history text-info me-2"></i>Recent Activity</h5>
-                </div>
-                <div class="card-body">
-                    <div class="timeline">
-                        <div class="timeline-item d-flex gap-3 mb-4">
-                            <div class="avatar-sm">
-                                <div class="avatar-title bg-soft-primary rounded-circle">
-                                    <i class="bx bx-file text-primary"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">New document uploaded</h6>
-                                <p class="text-muted small mb-0">RA 11313 Implementing Rules</p>
-                                <span class="text-muted smaller">5 minutes ago</span>
-                            </div>
-                        </div>
-                        <div class="timeline-item d-flex gap-3 mb-4">
-                            <div class="avatar-sm">
-                                <div class="avatar-title bg-soft-success rounded-circle">
-                                    <i class="bx bx-download text-success"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">VAW Primer downloaded</h6>
-                                <p class="text-muted small mb-0">By Maria Santos, PCW</p>
-                                <span class="text-muted smaller">1 hour ago</span>
-                            </div>
-                        </div>
-                        <div class="timeline-item d-flex gap-3">
-                            <div class="avatar-sm">
-                                <div class="avatar-title bg-soft-warning rounded-circle">
-                                    <i class="bx bx-star text-warning"></i>
-                                </div>
-                            </div>
-                            <div>
-                                <h6 class="mb-1">New announcement posted</h6>
-                                <p class="text-muted small mb-0">GAD Summit 2025</p>
-                                <span class="text-muted smaller">3 hours ago</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+          
 
             <!-- Featured Resource Card -->
             <div class="card bg-gradient-purple border-0 shadow-lg mt-4">
