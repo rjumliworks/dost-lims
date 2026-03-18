@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="card bg-white border-bottom shadow-none" no-body>
-                    <div class="table-responsive" style="height: calc(100vh - 506px); overflow: auto;">
+                    <div class="table-responsive">
                         <table class="table table-nowrap table-bordered table-striped align-middle mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-11">
@@ -90,7 +90,7 @@
                     </div>
                 </div>
                 <div class="card bg-white border-bottom shadow-none" no-body>
-                    <div class="table-responsive" style="height: calc(100vh - 506px); overflow: auto;">
+                    <div class="table-responsive">
                         <table class="table table-nowrap table-bordered table-striped align-middle mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-11">

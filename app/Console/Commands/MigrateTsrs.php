@@ -74,6 +74,24 @@ class MigrateTsrs extends Command
                     |--------------------------------------------------------------------------
                     */
 
+                    $conforme = DB::connection('old_db')
+                        ->table('customer_conformes')
+                        ->where('old_id', $tsr->conforme_id)
+                        ->get();
+
+                    if($conforme){
+                        $newConformeId = $conforme->id;
+                    }else{
+                        $newConformeId = DB::table('customer_conformes')->insertGetId([
+                            'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id'),
+                            'old_id' => $tsr->conforme_id,
+                            'name' => $conforme->name ?: 'None',
+                            'contact_no' => $conforme->contact_no,
+                            'created_at' => $conforme->created_at,
+                            'updated_at' => $conforme->updated_at
+                        ]);
+                    }
+
                     $newTsrId = DB::table('tsrs')->insertGetId([
 
                         'code' => $tsr->code,
@@ -83,7 +101,7 @@ class MigrateTsrs extends Command
                         'status_id' => $tsr->status_id,
                         'facility_id' => 1,
                         'customer_id' => Customer::where('old_id', $tsr->customer_id,)->value('id') ?? 1,
-                        'conforme_id' => 1,
+                        'conforme_id' => $newConformeId,
                         'received_by' => User::where('old_id', $tsr->received_by)->value('id') ?? 1,
                         'release_id' => 16, //
                         'is_referral' => $tsr->is_referral,
@@ -159,9 +177,9 @@ class MigrateTsrs extends Command
                                 'status_id'=>$analysis->status_id,
                                 'testservice_id'=> $testserviceId,
                                 'sample_id'=>$newSampleId,
-                                'started_by'=>$analysis->analyst_id,
+                                'started_by'=> User::where('old_id', $analysis->analyst_id)->value('id') ?? 1,
                                 'start_at'=>$analysis->start_at,
-                                'ended_by'=>$analysis->analyst_id,
+                                'ended_by'=> User::where('old_id', $analysis->analyst_id)->value('id') ?? 1,
                                 'end_at'=>$analysis->end_at,
                                 'created_at'=>$analysis->created_at,
                                 'updated_at'=>$analysis->updated_at

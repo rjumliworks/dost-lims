@@ -11,7 +11,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 ms-0 mt-2 fs-14 fw-semibold text-uppercase text-white" style="font-size: 10.7px"> DEPARTMENT OF SCIENCE AND TECHNOLOGY</h5>
+                                <h5 class="mb-0 ms-0 mt-2 fs-14 fw-semibold text-uppercase text-white" style="font-size: 10.7px"> DEPARTMENT OF SCIENCE AND TECHNOLOGY - Regional Standards and Testing Laboratories</h5>
                                 <p class="text-white fs-11 float-start"><span class="fw-semibold">One<span class="text-info">DOST</span>4U</span> : <span class="text-white">Gender and Development</span></p>
                             </div>
                         </div>

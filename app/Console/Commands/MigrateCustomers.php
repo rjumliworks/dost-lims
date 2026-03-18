@@ -119,20 +119,20 @@ class MigrateCustomers extends Command
                         'old_id' => $oldCustomer->id
                     ]);
 
-                    // 4b️⃣ Migrate customer_conformes
-                    $conformes = DB::connection('old_db')
-                        ->table('customer_conformes')
-                        ->where('customer_id', $oldCustomer->id)
-                        ->get();
+                    // // 4b️⃣ Migrate customer_conformes
+                    // $conformes = DB::connection('old_db')
+                    //     ->table('customer_conformes')
+                    //     ->where('customer_id', $oldCustomer->id)
+                    //     ->get();
 
-                    foreach ($conformes as $c) {
+                    // foreach ($conformes as $c) {
                     
-                        DB::table('customer_conformes')->insert([
-                            'customer_id' => $newCustomerId,
-                            'name' => $c->name ?: 'None',
-                            'contact_no' => $c->contact_no,
-                        ]);
-                    }
+                    //     DB::table('customer_conformes')->insert([
+                    //         'customer_id' => $newCustomerId,
+                    //         'name' => $c->name ?: 'None',
+                    //         'contact_no' => $c->contact_no,
+                    //     ]);
+                    // }
 
                     // 4c️⃣ Migrate customer_contacts
                     $contacts = DB::connection('old_db')
