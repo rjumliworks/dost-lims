@@ -348,68 +348,97 @@
                     </div>
                 </div>
 
-                <!-- News & Updates -->
+                <!-- News & Updates - Updated with Facebook Posts -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-transparent border-0 pt-4">
                         <div class="d-flex align-items-center justify-content-between">
                             <h5 class="fw-semibold mb-0"><i class="ri-news-line text-purple me-2"></i>GAD News & Updates</h5>
-                            <span class="badge bg-purple text-white rounded-pill">5 new</span>
+                            <span class="badge bg-purple text-white rounded-pill">3 new</span>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="vstack gap-4">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar-sm bg-soft-purple rounded-circle">
-                                        <i class="ri-government-line text-purple avatar-title"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">PCW launches new GAD Resource Package</h6>
-                                    <p class="text-muted small mb-1">For local government units and agencies</p>
-                                    <small class="text-purple">2 hours ago</small>
-                                </div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar-sm bg-soft-success rounded-circle">
-                                        <i class="ri-scale-line text-success avatar-title"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">Supreme Court upholds VAWC provisions</h6>
-                                    <p class="text-muted small mb-1">Landmark decision on violence against women</p>
-                                    <small class="text-purple">5 hours ago</small>
-                                </div>
-                            </div>
-                            <div class="d-flex">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar-sm bg-soft-warning rounded-circle">
-                                        <i class="ri-calendar-line text-warning avatar-title"></i>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">Women's Month Celebration 2025</h6>
-                                    <p class="text-muted small mb-1">"Lipunang Patas sa Bagong Pilipinas"</p>
-                                    <small class="text-purple">March 08, 2025</small>
-                                </div>
-                            </div>
+                            <!-- Ellyssa Post 1 -->
                             <div class="d-flex">
                                 <div class="flex-shrink-0">
                                     <div class="avatar-sm bg-soft-info rounded-circle">
-                                        <i class="ri-file-copy-line text-info avatar-title"></i>
+                                        <i class="ri-government-line text-info avatar-title"></i>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
-                                    <h6 class="mb-1">Safe Spaces Act IRR for comment</h6>
-                                    <p class="text-muted small mb-1">Public consultation ongoing until March 30</p>
-                                    <small class="text-purple">March 05, 2025</small>
+                                    <h6 class="mb-1">DOST IX "Shuttle Her Power" Badminton Tournament</h6>
+                                    <p class="text-muted small mb-1">
+                                        The top pairs from Brackets C, D, and E have been determined! 
+                                        The tournament continues on March 20, 2026, for the quarterfinals, semifinals, and finals.
+                                    </p>
+                                    <small class="text-purple">
+                                        <a href="https://www.facebook.com/DOSTRegion9/posts/pfbid08ZtMBy2PjTo6adoYfh1hbFwT2dspAPNPVkwFfdGC3QkA6jk1UmzaE6dHm6uebZrtl" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        class="text-purple text-decoration-none">
+                                            <i class="ri-facebook-line me-1"></i>View post on Facebook
+                                            <i class="ri-external-link-line ms-1" style="font-size: 0.8rem;"></i>
+                                        </a>
+                                    </small>
                                 </div>
                             </div>
+
+                            <div class="d-flex">
+                <div class="flex-shrink-0">
+                    <div class="avatar-sm bg-soft-info rounded-circle">
+                        <i class="ri-government-line text-info avatar-title"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-1">DOST IX - International Women's Day Greeting</h6>
+                    <p class="text-muted small mb-1">
+                        "Celebrating strength, resilience, and empowerment - Happy International Women's Day from the PSTO-ZSP!" 
+                        <span class="text-dark">#WEcanbeEquALL</span>
+                    </p>
+                    <small class="text-purple">
+                        <a :href="dostPost1Url" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="text-purple text-decoration-none">
+                            <i class="ri-facebook-line me-1"></i>View post on Facebook
+                            <i class="ri-external-link-line ms-1" style="font-size: 0.8rem;"></i>
+                        </a>
+                    </small>
+                </div>
+            </div>
+
+            <!-- DOST Post 2: Women's Month Kick-off Activities -->
+            <div class="d-flex">
+                <div class="flex-shrink-0">
+                    <div class="avatar-sm bg-soft-success rounded-circle">
+                        <i class="ri-government-line text-success avatar-title"></i>
+                    </div>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-1">DOST IX Launches Women's Month 2026</h6>
+                    <p class="text-muted small mb-1">
+                        Kicked off with "Marcha De Las Mujeres," "Babaylan Beats: Friday Zumba," and the "Shuttle Her Power" badminton tournament. 
+                        Celebrating the theme "Live like Babaylans, Filipinas."
+                    </p>
+                    <small class="text-purple">
+                        <a :href="dostPost2Url" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="text-purple text-decoration-none">
+                            <i class="ri-facebook-line me-1"></i>View post on Facebook
+                            <i class="ri-external-link-line ms-1" style="font-size: 0.8rem;"></i>
+                        </a>
+                    </small>
+                </div>
+            </div>
+
+                           
                         </div>
                         <div class="mt-4 text-center">
-                            <a href="#" class="btn btn-soft-primary rounded-pill px-4">
-                                View All Updates <i class="ri-arrow-right-line ms-1"></i>
+                            <a href="https://www.facebook.com/ellyssa" 
+                               target="_blank"
+                               class="btn btn-soft-primary rounded-pill px-4">
+                                <i class="ri-facebook-line me-2"></i>Follow for Updates
                             </a>
                         </div>
                     </div>
