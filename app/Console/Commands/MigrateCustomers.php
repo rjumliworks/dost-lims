@@ -32,6 +32,7 @@ class MigrateCustomers extends Command
             'customer_addresses',
             'customers',
             'customer_names',
+            'wallets'
         ];
         foreach ($tables as $table) {
             DB::table($table)->truncate();
@@ -118,6 +119,23 @@ class MigrateCustomers extends Command
                         'updated_at' => $oldCustomer->updated_at,
                         'old_id' => $oldCustomer->id
                     ]);
+
+                    $wallet = DB::connection('old_db')
+                        ->table('wallets')
+                        ->where('customer_id', $oldCustomer->id)
+                        ->first();
+                    if($wallet) {
+                        DB::table('wallets')->insert([
+                            'customer_id' => $newCustomerId,
+                            'old_id' => $oldCustomer->id,
+                            'total' => $wallet->total,
+                            'available' => $wallet->available,
+                            'deduction' => $wallet->deduction,
+                            'created_at' => $wallet->created_at,
+                            'updated_at' => $wallet->updated_at,
+                        ]);
+                    }
+
 
                     // // 4b️⃣ Migrate customer_conformes
                     // $conformes = DB::connection('old_db')

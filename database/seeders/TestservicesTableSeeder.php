@@ -3478,7 +3478,7 @@ class TestservicesTableSeeder extends Seeder
             216 => 
             array (
                 'id' => 217,
-                'old_id' => NULL,
+                'old_id' => 298,
                 'is_new' => 1,
                 'is_fixed' => 1,
                 'is_active' => 0,

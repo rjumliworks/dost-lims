@@ -64,7 +64,9 @@ class DataClass
             [
                 'name' => 'Firms',
                 'description' => 'Business entities availing services.',
-                'total' => Customer::where('classification_id',8)
+                'total' => Customer::whereHas('customer_name', function ($q) {
+                    $q->where('classification_id',8);
+                })
                 ->when($month, function ($query, $month) {
                     $query->whereMonth('created_at',$month);
                 })
@@ -78,7 +80,9 @@ class DataClass
             [
                 'name' => 'Individuals',
                 'description' => 'Private customers using services',
-                'total' => Customer::where('classification_id',9)
+                'total' => Customer::whereHas('customer_name', function ($q) {
+                    $q->where('classification_id',9);
+                })
                 ->when($month, function ($query, $month) {
                     $query->whereMonth('created_at',$month);
                 })

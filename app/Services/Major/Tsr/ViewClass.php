@@ -227,7 +227,7 @@ class ViewClass
             ->with('referral.agency.member','referral.province')
             ->with('received:id','received.profile:id,firstname,lastname,user_id')
             ->with('agency','laboratory:id,name','status:id,name,color,others')
-            ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches','customer.wallet','customer.industry:id,name')
+            ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches','customer.wallet','customer.customer_name.industry:id,name')
             ->with('customer.address:address,customer_id,region_code,province_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name','customer.conformes')
             ->with('conforme:id,name,contact_no','customer.contact:id,email,contact_no,tin,customer_id')
             ->with('payment:tsr_id,id,total,subtotal,discount,or_number,is_paid,is_free,has_deduction,paid_at,status_id,discount_id,collection_id,payment_id','payment.status:id,name,color,others','payment.collection:id,name','payment.type:id,name','payment.discounted:id,name,value','payment.deduction')

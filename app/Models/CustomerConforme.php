@@ -13,6 +13,7 @@ class CustomerConforme extends Model
 
     protected $fillable = [
         'name',
+        'old_id',
         'contact_no',
         'customer_id'
     ];

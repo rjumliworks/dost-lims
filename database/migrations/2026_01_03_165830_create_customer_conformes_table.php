@@ -15,6 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB'; 
             $table->bigIncrements('id');
             $table->longText('name');
+            $table->integer('old_id')->nullable();
             $table->longText('contact_no');
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

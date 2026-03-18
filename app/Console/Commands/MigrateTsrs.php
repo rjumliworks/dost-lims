@@ -25,6 +25,7 @@ class MigrateTsrs extends Command
         $tables = [
             'tsr_analyses',
             'tsr_samples',
+            'tsr_remarks',
             'tsr_sample_reports',
             'tsr_sample_disposals',
             'tsr_sample_report_lists',
@@ -33,6 +34,7 @@ class MigrateTsrs extends Command
             'tsr_releases',
             'tsr_referrals',
             'tsr_services',
+            'tsr_reports',
             'tsrs',
         ];
 
@@ -50,7 +52,7 @@ class MigrateTsrs extends Command
         DB::connection('old_db')
         ->table('tsrs as t')
         ->where('t.agency_id', 14)
-        
+        ->where('code','!=', null)
         ->whereIn('t.status_id', [2,3,4])
         ->whereNotExists(function ($query) {
             $query->select(DB::raw(1))
@@ -76,20 +78,25 @@ class MigrateTsrs extends Command
 
                     $conforme = DB::connection('old_db')
                         ->table('customer_conformes')
-                        ->where('old_id', $tsr->conforme_id)
-                        ->get();
+                        ->where('id', $tsr->conforme_id)
+                        ->first();
 
                     if($conforme){
-                        $newConformeId = $conforme->id;
-                    }else{
-                        $newConformeId = DB::table('customer_conformes')->insertGetId([
-                            'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id'),
-                            'old_id' => $tsr->conforme_id,
-                            'name' => $conforme->name ?: 'None',
-                            'contact_no' => $conforme->contact_no,
-                            'created_at' => $conforme->created_at,
-                            'updated_at' => $conforme->updated_at
-                        ]);
+                         $conforme_new = DB::table('customer_conformes')
+                        ->where('old_id', $tsr->conforme_id)
+                        ->first();
+                        if($conforme_new){
+                            $newConformeId = $conforme_new->id;
+                        }else{
+                            $newConformeId = DB::table('customer_conformes')->insertGetId([
+                                'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id'),
+                                'old_id' => $tsr->conforme_id,
+                                'name' => $conforme->name ?: 'None',
+                                'contact_no' => $conforme->contact_no,
+                                'created_at' => $conforme->created_at,
+                                'updated_at' => $conforme->updated_at
+                            ]);
+                        }
                     }
 
                     $newTsrId = DB::table('tsrs')->insertGetId([
@@ -115,6 +122,25 @@ class MigrateTsrs extends Command
 
                     $tsrMap[$tsr->id] = $newTsrId;
 
+
+                    $remark = DB::connection('old_db')
+                        ->table('tsr_remarks')
+                        ->where('remarkable_type', 'App\Models\Tsr')->where('remarkable_id', $tsr->id)
+                        ->first();
+                        if($remark){
+                            DB::table('tsr_remarks')->insert([
+                                'amount'=> $remark->amount,
+                                'reason'=> $remark->reason,
+                                'type_id' => $remark->type_id,
+                                'user_id'=> User::where('old_id', $remark->user_id)->value('id') ?? 1,
+                                'remarkable_id'=> $newTsrId,
+                                'remarkable_type'=> 'App\Models\Tsr',
+                                'created_at'=> $remark->created_at,
+                                'updated_at'=> $remark->updated_at
+                            ]);
+                        }
+                    
+
                     /*
                     |--------------------------------------------------------------------------
                     | SAMPLES
@@ -132,7 +158,7 @@ class MigrateTsrs extends Command
 
                         $newSampleId = DB::table('tsr_samples')->insertGetId([
 
-                            'code'=>$sample->code.'-'.$year,
+                            'code'=>$sample->code.'-'.$year.'R9',
                             'name'=>$sample->name,
                             'customer_description'=>$sample->customer_description,
                             'description'=>$sample->description,
@@ -171,7 +197,7 @@ class MigrateTsrs extends Command
                                 $this->warn("Missing Testservice for old_id {$analysis->testservice_id} sample_id {$sample->id}");
                             }
 
-                            DB::table('tsr_analyses')->insert([
+                            $newAnalysisId = DB::table('tsr_analyses')->insertGetId([
 
                                 'fee'=>$analysis->fee,
                                 'status_id'=>$analysis->status_id,
@@ -186,6 +212,22 @@ class MigrateTsrs extends Command
 
                             ]);
 
+                            $remark = DB::connection('old_db')
+                                ->table('tsr_remarks')
+                                ->where('remarkable_type', 'App\Models\TsrAnalysis')->where('remarkable_id', $analysis->id)
+                                ->first();
+                            if($remark){
+                                DB::table('tsr_remarks')->insert([
+                                    'amount'=> $remark->amount,
+                                    'reason'=> $remark->reason,
+                                    'type_id' => $remark->type_id,
+                                    'user_id'=> User::where('old_id', $remark->user_id)->value('id') ?? 1,
+                                    'remarkable_id'=> $newAnalysisId,
+                                    'remarkable_type'=> 'App\Models\TsrAnalysis',
+                                    'created_at'=> $remark->created_at,
+                                    'updated_at'=> $remark->updated_at
+                                ]);
+                            }
                         }
 
                         $disposal = DB::connection('old_db')
@@ -210,49 +252,44 @@ class MigrateTsrs extends Command
 
                         }
 
-                        $report = DB::connection('old_db')
-                        ->table('tsr_sample_reports')
-                        ->where('sample_id',$sample->id)
-                        ->get();
-
-                        if($report->count() > 0){
-
-                            $report = $report->first();
-
-                            $newReportId = DB::table('tsr_sample_reports')->insertGetId([
-                                'code' => $report->code,
-                                'passkey' => $report->passkey,
-                                'information' => $report->information,
-                                'attachment' => $report->attachment,
-                                'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 1,
-                                'tm_id' => $report->tm_id,
-                                'sample_id' => $newSampleId,
-                                'created_at' => $report->created_at,
-                                'updated_at' => $report->updated_at
-                            ]);
-
-                            $list = DB::connection('old_db')
-                            ->table('tsr_sample_report_lists')
+                        $reports = DB::connection('old_db')
+                            ->table('tsr_sample_reports')
                             ->where('sample_id',$sample->id)
                             ->get();
 
-                            if($list->count() > 0){
+                        if ($reports->count() > 0) {
 
-                                foreach($list as $item){
+                            foreach ($reports as $report) {
 
+                                $newReportId = DB::table('tsr_sample_reports')->insertGetId([
+                                    'code' => $report->code,
+                                    'passkey' => $report->passkey,
+                                    'information' => $report->information,
+                                    'attachment' => $report->attachment,
+                                    'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 1,
+                                    'tm_id' => $report->tm_id,
+                                    'sample_id' => $newSampleId,
+                                    'created_at' => $report->created_at,
+                                    'updated_at' => $report->updated_at
+                                ]);
+
+                                // ✅ get ALL lists related to THIS report
+                                $lists = DB::connection('old_db')
+                                    ->table('tsr_sample_report_lists')
+                                    ->where('report_id', $report->id)
+                                    ->get();
+
+                                foreach ($lists as $list) {
                                     DB::table('tsr_sample_report_lists')->insert([
                                         'report_id' => $newReportId,
                                         'sample_id' => $newSampleId,
-                                        'created_at' => $item->created_at,
-                                        'updated_at' => $item->updated_at
+                                        'created_at' => $list->created_at,
+                                        'updated_at' => $list->updated_at
                                     ]);
-
                                 }
 
                             }
-
                         }
-
                     }
 
                     /*
@@ -268,7 +305,7 @@ class MigrateTsrs extends Command
 
                     foreach ($payments as $payment) {
 
-                        DB::table('tsr_payments')->insert([
+                        $paymentId = DB::table('tsr_payments')->insertGetId([
 
                             'total'=>$payment->total,
                             'subtotal'=>$payment->subtotal,
@@ -286,6 +323,8 @@ class MigrateTsrs extends Command
                             'paid_at'=>$payment->paid_at
 
                         ]);
+
+
 
                     }
 
@@ -394,6 +433,7 @@ class MigrateTsrs extends Command
                     }
 
                     DB::commit();
+                    
 
                 } catch (\Exception $e) {
 

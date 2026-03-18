@@ -90,6 +90,8 @@ Route::middleware(['role:Administrator'])->group(function () {
 
 Route::prefix('insights')->group(function () {
     Route::get('/customers', [App\Http\Controllers\Insights\CustomerController::class, 'index']);
+    Route::get('/customer/location', [App\Http\Controllers\Insights\CustomerController::class, 'location']);
+    Route::get('/customer/discount', [App\Http\Controllers\Insights\CustomerController::class, 'discount']);
     Route::get('/payments', [App\Http\Controllers\Insights\PaymentController::class, 'index']);
     Route::get('/laboratories', [App\Http\Controllers\Insights\LaboratoryController::class, 'index']);
 });
