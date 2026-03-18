@@ -1,22 +1,22 @@
 <template>
     <div class="">
-        <!-- Welcome Banner -->
+        <!-- Welcome Banner - Minimalist with Animated Gradient -->
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card border-0 bg-gradient-welcome overflow-hidden">
+                <div class="card border-0 animated-gradient overflow-hidden">
                     <div class="card-body p-4">
                         <div class="row align-items-center">
                             <div class="col-lg-8">
-                                <h1 class="display-5 fw-bold text-white mb-2">Championing Gender Equality Through Informed Action</h1>
-                                <p class="text-white-50 fs-5 mb-3">Your comprehensive resource hub for GAD policies, learning materials, and development tools</p>
-                                <div class="d-flex flex-wrap gap-3">
-                                    <span class="badge bg-white text-purple px-4 py-2 rounded-pill"><i class="ri-file-pdf-line me-1"></i> 1,247 Resources</span>
-                                    <span class="badge bg-white text-purple px-4 py-2 rounded-pill"><i class="ri-download-line me-1"></i> 45.2K Downloads</span>
-                                    <span class="badge bg-white text-purple px-4 py-2 rounded-pill"><i class="ri-user-line me-1"></i> 3,891 Active Users</span>
+                                <h2 class="fw-semibold text-white mb-2">Lipunang Patas sa Bagong Pilipinas</h2>
+                                <p class="text-white text-opacity-85 fs-6 mb-3">Gender and development resources, policies, and learning materials</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <span class="badge bg-white bg-opacity-15 text-white px-3 py-1 rounded-pill"><i class="ri-file-pdf-line me-1"></i> 1,247 Resources</span>
+                                    <span class="badge bg-white bg-opacity-15 text-white px-3 py-1 rounded-pill"><i class="ri-download-line me-1"></i> 45.2K Downloads</span>
+                                    <span class="badge bg-white bg-opacity-15 text-white px-3 py-1 rounded-pill"><i class="ri-user-line me-1"></i> 3,891 Active</span>
                                 </div>
                             </div>
                             <div class="col-lg-4 text-end d-none d-lg-block">
-                                <i class="ri-bar-chart-2-fill text-white opacity-25" style="font-size: 8rem;"></i>
+                                <i class="ri-bar-chart-2-fill text-white opacity-15" style="font-size: 6rem;"></i>
                             </div>
                         </div>
                     </div>
@@ -493,12 +493,12 @@
                             <div class="col-md-6">
                                 <p class="text-muted mb-2 mb-md-0">
                                     <i class="ri-heart-fill text-danger me-1"></i> 
-                                    Philippine Commission on Women · GAD Knowledge & IEC Repository
+                                    Philippine Commission on Women · GAD Knowledge & IEC
                                 </p>
                             </div>
                             <div class="col-md-6 text-md-end">
                                 <small class="text-muted">
-                                    <i class="ri-time-line me-1"></i> Last updated: March 18, 2025
+                                    <i class="ri-time-line me-1"></i> Updated: March 18, 2025
                                     <span class="mx-2">|</span>
                                     <i class="ri-file-copy-line me-1"></i> 1,247 resources
                                 </small>
@@ -529,11 +529,27 @@ export default {
 </script>
 
 <style scoped>
-/* Additional styles for enhanced version */
-.bg-gradient-welcome {
-    background: linear-gradient(135deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+/* Animated Gradient Background */
+.animated-gradient {
+    background: linear-gradient(-45deg, #4158D0, #C850C0, #FFCC70, #6b21a5);
+    background-size: 300% 300%;
+    animation: gradientMove 8s ease infinite;
+    border-radius: 1rem;
 }
 
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Other styles remain the same */
 .hover-card {
     transition: all 0.3s ease;
     cursor: pointer;
@@ -665,6 +681,19 @@ export default {
 .carousel-item img {
     object-fit: cover;
     height: 400px;
+}
+
+/* Text opacity utilities */
+.text-opacity-85 {
+    opacity: 0.85;
+}
+
+.text-opacity-15 {
+    opacity: 0.15;
+}
+
+.bg-opacity-15 {
+    --bs-bg-opacity: 0.15;
 }
 
 /* Responsive adjustments */
