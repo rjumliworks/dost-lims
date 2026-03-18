@@ -49,7 +49,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <!-- <div class="col-lg-4">
             <div class="card bg-soft bg-light border shadow-none mb-3">
                 <div class="p-1">
                     <div class="d-flex mt-1">
@@ -127,7 +127,7 @@
                         class="btn btn-primary rounded"><i class="bx bx-envelope"></i></button>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
