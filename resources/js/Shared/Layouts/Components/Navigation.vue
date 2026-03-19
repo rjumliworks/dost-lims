@@ -32,6 +32,13 @@
                 </div>
 
                 <div class="d-flex align-items-center">
+                    <div class="ms-1 header-item d-none d-sm-flex">
+                        <a :href="`/accomplishments`" target="_blank">
+                            <BButton type="button" variant="ghost-secondary" class="btn-icon btn-topbar rounded-circle">
+                                <i class="ri-focus-3-line fs-22"></i>
+                            </BButton>
+                        </a>
+                    </div>
                     <BDropdown class="dropdown" variant="ghost-secondary" dropstart :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }" toggle-class="btn-icon btn-topbar rounded-circle mode-layout ms-1 material-shadow-none" no-caret menu-class="p-0 dropdown-menu-end">
                         <template #button-content>
                             <i class="bx bx-category-alt fs-22"></i>

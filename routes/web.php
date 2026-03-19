@@ -96,4 +96,8 @@ Route::prefix('insights')->group(function () {
     Route::get('/laboratories', [App\Http\Controllers\Insights\LaboratoryController::class, 'index']);
 });
 
+Route::prefix('accomplishments')->group(function () {
+     Route::get('/', [App\Http\Controllers\Insights\AccomplishmentController::class, 'index']);
+});
+
 require __DIR__.'/auth.php';

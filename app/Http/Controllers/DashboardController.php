@@ -93,7 +93,8 @@ class DashboardController extends Controller
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
                             ],
-                            'counts' => $this->cro->counts($request)
+                            'counts' => $this->cro->counts($request),
+                            'reminders' => $this->cro->reminders($request)
                         ]);
                     break;
                     default:

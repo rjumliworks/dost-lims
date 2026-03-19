@@ -28,7 +28,7 @@ return new class extends Migration
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['target_id','objective_id'], 'target_objective');
+            $table->unique(['target_id','objective_id','laboratory_id'], 'target_objective');
         });
     }
 

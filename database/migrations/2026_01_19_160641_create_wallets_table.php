@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('wallets', function (Blueprint $table) {
             $table->engine = 'InnoDB'; 
             $table->bigIncrements('id');
+            $table->integer('old_id')->nullable();
             $table->decimal('total',12,2)->default(0.00);
             $table->decimal('available',12,2)->default(0.00);
             $table->decimal('deduction',12,2)->default(0.00);

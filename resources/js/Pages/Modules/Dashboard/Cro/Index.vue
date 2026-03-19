@@ -17,12 +17,11 @@
                                         <option :value="null">All Laboratories</option>
                                         <option :value="list" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
                                     </select>
-                                    <select class="form-select" aria-label="Default select example">
-                                        <option :value="null">All Year</option>
+                                    <select v-model="filter.year" class="form-select" aria-label="Default select example">
                                         <option :value="list" v-for="list in years" v-bind:key="list">{{list}}</option>
                                     </select>
                                     <div class="input-group-text bg-primary border-primary text-white">
-                                        <i class="ri-calendar-2-line"></i>
+                                        <i class="ri-calendar-2-line"></i> 
                                     </div>
                                 </div>
                             </div>
@@ -39,7 +38,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="avatar-sm flex-shrink-0">
                                     <span class="avatar-title bg-light text-primary rounded-circle fs-3">
-                                        <i :class="`bx ${item.icon} align-middle`"></i>
+                                        <i :class="`${item.icon} align-middle`"></i>
                                     </span>
                                 </div>
                                 <div class="flex-grow-1 ms-3">
@@ -50,7 +49,7 @@
                                         <span class="counter-value">{{item.total}}</span>
                                     </h4>
                                 </div>
-                                <div class="flex-shrink-0 align-self-end" v-if="index != 0">
+                                <div class="flex-shrink-0 align-self-end">
                                     <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
                                 </div>
                             </div>
@@ -86,34 +85,113 @@
                         </div>
                     </div>
                 </div>
-                <div class="card bg-white border-bottom shadow-none" no-body>
-                    <!-- <b-list-group flush>
-                        <BListGroupItem @click="filterReminder(list.name)" v-for="(list,index) in dropdowns.reminders" v-bind:key="index" style="cursor: pointer;" :class="(isActive(list.name)) ? 'bg-info-subtle' : ''">
-                            <div class="d-flex align-items-center">
-                                <div class="flex-shrink-0">
-                                    <div class="avatar-xs">
-                                        <div class="avatar-title rounded" :class="list.color">
-                                        <i class="fs-15" :class="list.icon"></i>
-                                        </div>
-                                    </div>
+                <div class="card bg-white border-bottom shadow-none" no-body style="height: calc(100vh - 540px)">
+                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                        <li class="list-group-item px-0" v-for="(list,index) in reminders" v-bind:key="index">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 avatar-xs">
+                                    <span class="avatar-title bg-light p-1 rounded-circle">
+                                        <i :class="list.icon+' '+list.color"></i>
+                                    </span>
                                 </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <h5 class="mb-0 fs-12">{{list.name}}</h5>
-                                    <p class="mb-0 fs-11 text-muted">{{list.description}}</p>
+                                <div class="flex-grow-1 ms-2">
+                                    <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                    <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
                                 </div>
-                                <span class="text-muted fs-12">{{reminder(index)}} </span>
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                </div>
                             </div>
-                        </BListGroupItem>
-                    </b-list-group> -->
-                </div>
-                <div class="card bg-white shadow-none" no-body style="height: calc(100vh - 762px)">
-
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
         <div class="col-md-9 mt-n2">
             <div class="card bg-light-subtle shadow-none border">
-               
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2.5rem;width:2.5rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-trophy-fill text-primary fs-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-14"><span class="text-body">Daily Accomplishment Insights</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                        </div>
+                    </div>
+                </div>
+                 <div class="car-body bg-white border-bottom shadow-none">
+                    <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
+                        <b-col lg>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
+                                <input v-if="filter.type == 'Daily'" type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 100px;">
+                                <!-- <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />-->
+                                <Multiselect v-if="filter.type == 'Monthly'" class="white" style="width: 15%;" :options="months" v-model="filter.month" label="name" :allow-empty="false" :searchable="true" placeholder="Select Month" />
+                                <Multiselect class="white" style="width: 15%;" :options="['Daily','Monthly']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" /> 
+                                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                    <i class="bx bx-refresh search-icon"></i>
+                                </span>
+                                <b-button type="button" variant="primary" @click="openCreate">
+                                    <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                                </b-button>
+                            </div>
+                        </b-col>
+                    </b-row>
+                </div>
+                <div class="card-body bg-white border-bottom">
+                    <div class="table-responsive table-card">
+                        <table class="table table-nowrap table-bordered align-middle mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th style="width: 20%;">Laboratory</th>
+                                    <th style="width: 9%;" class="text-center">No. of Requests</th>
+                                    <th style="width: 9%;" class="text-center">No. of Samples</th>
+                                    <th style="width: 9%;" class="text-center">No. of Analyses</th>
+                                    <th style="width: 15%;" class="text-center">Actual Fees Collected</th>
+                                    <th style="width: 12%;" class="text-center">Gratis</th>
+                                    <th style="width: 12%;" class="text-center">Discount</th>
+                                    <th style="width: 13%;" class="text-center">Gross</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-11">
+                                <tr v-for="(list,index) in laboratories" v-bind:key="index" >
+                                    <td> {{ list[0] }}</td>
+                                    <td class="text-center"> {{ list[1] }}</td>
+                                    <td class="text-center"> {{ list[2] }}</td>
+                                    <td class="text-center"> {{ list[3] }}</td>
+                                    <td class="text-center"> {{ list[4] }}</td>
+                                    <td class="text-center"> {{ list[5] }}</td>
+                                    <td class="text-center"> {{ list[6] }}</td>
+                                    <td class="text-center"> {{ list[7] }}</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-light fs-12" v-for="(list,index) in total" v-bind:key="index" >
+                                    <th> {{ list[0] }}</th>
+                                    <th class="text-center"> {{ list[1] }}</th>
+                                    <th class="text-center"> {{ list[2] }}</th>
+                                    <th class="text-center"> {{ list[3] }}</th>
+                                    <th class="text-center"> {{ list[4] }}</th>
+                                    <th class="text-center"> {{ list[5] }}</th>
+                                    <th class="text-center"> {{ list[6] }}</th>
+                                    <th class="text-center"> {{ list[7] }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+
             </div>
         </div>
     </b-row>
@@ -123,7 +201,7 @@ import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     components: { PageHeader, Multiselect },
-    props: ['dropdowns','counts','years'],
+    props: ['dropdowns','counts','reminders','years'],
     data(){
         return {
             month: new Date().getMonth() + 1,
@@ -138,34 +216,65 @@ export default {
                 tooltip: { fixed: { enabled: false }, x: { show: true },marker: { show: false } }
             },
             activeList: null,
-            laboratory: null
+            laboratory: null,
+            months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+            laboratories: [],
+            total: [],
+            filter: {
+                keyword: null,
+                type: 'Daily',
+                date: null,
+                month: null,
+                year: new Date().getFullYear()
+            },
         }
     },
     watch: {
-        laboratory(newId) {
-            this.updateLaboratoryTotal(newId);
-            this.$refs.lists.updateData(newId);
+        'filter.date'(val) {
+            if (this.filter.type === 'Daily') {
+                this.fetchDaily();
+            }
         },
+        'filter.month'(val) {
+            if (this.filter.type === 'Monthly') {
+                this.fetchDaily();
+            }
+        },
+        'filter.type'(val) {
+            this.fetchDaily();
+        }
     },
-    computed: {
-        total() {
-            // if (this.laboratory === null) {
-            //     const selectedLab = this.counts[0].total.reduce((sum, lab) => sum + lab.total, 0);
-            //     return this.formatMoney(selectedLab);
-            // } else {
-            //     const selectedLab = this.counts[0].total.find(lab => lab.id === this.laboratory.value);
-              
-            //     return this.formatMoney(selectedLab.total);
-            // }\
-            return 0;
-        },
+    created(){
+        this.fetchDaily();
     },
     methods: {
-      
-        // formatMoney(value) {
-        //     let val = (value / 1).toFixed(2).replace(',', '.');
-        //     return '₱' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        // },
+        fetchDaily(){
+            axios.get('/accomplishments',{
+                params : {
+                    date: this.filter.date,
+                    month: this.filter.month,
+                    year: this.filter.year,
+                    type: this.filter.type.toLowerCase(),
+                    option: 'accomplishment',
+                }
+            })
+            .then(response => {
+                this.laboratories = response.data.lists; 
+                this.total = response.data.footer;         
+            })
+            .catch(err => console.log(err));
+        },
+        filterReminder(data){
+            if(data == this.activeList){
+                this.activeList = null;
+            }else{
+                this.activeList = data;
+            }
+            this.$refs.lists.filterReminder(data,this.activeList);
+        },
+        isActive(name) {
+            return this.activeList === name;
+        }
     }
 }
 </script>
