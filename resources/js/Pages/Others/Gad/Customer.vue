@@ -48,7 +48,7 @@
                                 <tr v-for="(list,index) in transactions" v-bind:key="index">
                                     <td class="text-center">{{ list.name }}</td>
                                     <td class="text-center fs-10"  v-for="(list,index2) in list.monthly" v-bind:key="index2">
-                                        <span v-if="list != '00.0'">{{formatMoney(list)}}</span>
+                                        <span v-if="list.total != '00.0'">{{formatMoney(list.total)}} <br /> <span class                                                                                                                       ="text-danger">{{ formatMoney(list.discount) }}</span></span>
                                         <span v-else>-</span>
                                     </td>
                                     <td class="text-center fw-semibold text-primary">{{ formatMoney(list.total) }}</td>
@@ -59,7 +59,8 @@
                                     <th class="text-center">Total</th>
                                     <!-- Monthly column totals -->
                                     <th class="text-center" v-for="(month, index) in months" :key="'foot-' + index">
-                                        {{ formatMoney(monthlyTotals[index] || 0) }}
+                                        {{ formatMoney(monthlyTotals[index].total || 0) }} <br/> 
+                                        <span v-if="monthlyTotals[index].discount != '00.0'" class="text-danger">{{ formatMoney(monthlyTotals[index].discount || 0) }}</span>
                                     </th>
                                     <!-- Grand total -->
                                     <th class="text-center text-success fw-bold">
@@ -157,18 +158,23 @@
             };
         },
         computed: {
-            monthlyTotals() {
-                const totals = [];
+             monthlyTotals() {
+        const totals = [];
 
-                this.transactions.forEach(item => {
-                    item.monthly.forEach((value, index) => {
-                        const amount = parseFloat(value) || 0;
-                        totals[index] = (totals[index] || 0) + amount;
-                    });
-                });
+        this.transactions.forEach(item => {
+            item.monthly.forEach((value, index) => {
+                if (!totals[index]) {
+                    totals[index] = { total: 0, discount: 0, net: 0 };
+                }
 
-                return totals;
-            },
+                totals[index].total += parseFloat(value.total) || 0;
+                totals[index].discount += parseFloat(value.discount) || 0;
+                totals[index].net += parseFloat(value.net) || 0;
+            });
+        });
+
+        return totals;
+    },
             grandTotal() {
                 return this.transactions.reduce((sum, item) => {
                     return sum + (parseFloat(item.total) || 0);

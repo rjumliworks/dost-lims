@@ -67,6 +67,7 @@ class GadClass
         foreach($types as $index => $type){
             $monthlyTotals = [];
             $typeTotal = 0;
+            $totalDiscount = 0;
             foreach($months as $index => $month){
                 $total = Tsr::withWhereHas('payment', function ($query) {
                     $query->where('is_free',0);
@@ -84,17 +85,24 @@ class GadClass
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
                 ->where('agency_id',14)
-                ->get()
-                ->sum(function ($tsr) {
-                    return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
-                });
-                $monthlyTotals[] = $total;
-                $typeTotal += $total;
+                ->get();
+                
+                $sumTotal = $total->sum(fn($tsr) => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total));
+                $sumDiscount = $total->sum(fn($tsr) => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount));
+
+                $monthlyTotals[] = [
+                    'total' => $sumTotal,
+                    'discount' => $sumDiscount,
+                    'net' => $sumTotal - $sumDiscount
+                ];
+                $typeTotal += $sumTotal;
+                $totalDiscount += $sumDiscount;
             }
             $result[] = [
                 'name' => $type['name'],
                 'monthly' => $monthlyTotals,
-                'total' => $typeTotal
+                'total' => $typeTotal,
+                'discount' => $totalDiscount
             ];
         }
         return $result;

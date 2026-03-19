@@ -8,6 +8,7 @@ use App\Services\Dashboard\CroClass;
 use App\Services\Dashboard\AnalystClass;
 use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
+use App\Services\AgencyClass;
 
 class DashboardController extends Controller
 {   
@@ -16,19 +17,22 @@ class DashboardController extends Controller
     protected CashierClass $cashier;
     protected DropdownClass $dropdown;
     protected AccountantClass $accountant;
+    protected AgencyClass $agency;
     
     public function __construct(
         CroClass $cro,
         AnalystClass $analyst,
         CashierClass $cashier,
         DropdownClass $dropdown,
-        AccountantClass $accountant
+        AccountantClass $accountant,
+        AgencyClass $agency
     ){
         $this->cro = $cro;
         $this->analyst = $analyst;
         $this->cashier = $cashier;
         $this->dropdown = $dropdown;
         $this->accountant = $accountant;
+        $this->agency = $agency;
     }
 
     public function index(Request $request){
@@ -86,9 +90,10 @@ class DashboardController extends Controller
                     break;
                     case 'Customer Relation Officer':
                         return inertia('Modules/Dashboard/Cro/Index',[
-                            'reminders' => $this->analyst->reminders($request),
-                            'tasks' => $this->analyst->tasks($request),
-                            'laboratories' => $this->analyst->laboratories($request)
+                            'dropdowns' => [
+                                'laboratories' => $this->agency->laboratories(),
+                            ],
+                            'counts' => $this->cro->counts($request)
                         ]);
                     break;
                     default:
