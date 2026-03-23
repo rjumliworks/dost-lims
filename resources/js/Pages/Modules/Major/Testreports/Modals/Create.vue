@@ -7,7 +7,7 @@
                     <InputLabel for="customer" value="Sample Code" :message="form.errors.sample"/>
                     <Multiselect 
                     :options="samples" 
-                    @search-change="fetchSample" 
+                    @search-change="checkSearchStr" 
                     v-model="selected" 
                     object label="name"
                     :searchable="true" 
@@ -147,6 +147,9 @@ export default {
         },
     },
     methods: { 
+        checkSearchStr: _.debounce(function(string) {
+            this.fetchSample();
+        }, 300),
         show(){
             this.mark = null;
             this.checked = [];
@@ -180,7 +183,7 @@ export default {
                 }
             })
             .then(response => {
-                this.samples = response.data;
+                this.samples.unshift(response.data);
             })
             .catch(err => console.log(err));
         },

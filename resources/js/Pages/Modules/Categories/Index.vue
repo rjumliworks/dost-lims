@@ -30,7 +30,8 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Sample Name" class="form-control" style="width: 20%;">
-                                <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.category" label="name" :searchable="true" placeholder="Select Category" />
+                                <Multiselect class="white" style="width: 15%;" :options="types" v-model="filter.type" label="name" :searchable="true" placeholder="Select Type" />
+                                <Multiselect class="white" style="width: 15%;" :options="categories" v-model="filter.category" object label="name" :searchable="true" placeholder="Select Category" />
                                 <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
@@ -165,11 +166,13 @@ export default {
             filter: {
                 keyword: null,
                 laboratory: null,
-                category: null
+                category: null,
+                type: null
             },
             index: null,
             selectedRow: null,
-            categories: []
+            categories: [],
+            types: []
         }
     },
     watch: {
@@ -180,14 +183,33 @@ export default {
         },
         "filter.laboratory"(newVal){
             this.fetch();
+            if(!newVal){
+                this.categories = [];
+            } else {
+                this.categories = this.dropdowns.categories.filter(item => {
+                    return item.laboratory_id === newVal;
+                });
+            }
         },
+        "filter.category"(newVal){
+            this.fetch();
+            if(!newVal){
+                this.types = [];
+                this.filter.type = null;
+            } else {
+                this.types = this.filter.category.types;
+            }
+        },
+        "filter.type"(newVal){
+            this.fetch();
+        }
     },
     created() {
         this.debouncedFetch = _.debounce(() => {
             this.fetch();
         }, 300);
         this.fetch();
-    },
+    }, 
     methods: {
         fetch(page_url){
             page_url = page_url || '/categories';
@@ -195,6 +217,8 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     laboratory: this.filter.laboratory,
+                    category: this.filter.category?.value,
+                    type: this.filter.type,
                     count: 10,
                     option: 'list'
                 }
@@ -204,7 +228,7 @@ export default {
                     this.lists = response.data.data;
                     this.meta = response.data.meta;
                     this.links = response.data.links;          
-                }
+                } 
             })
             .catch(err => console.log(err));
         },

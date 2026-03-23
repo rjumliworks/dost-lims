@@ -13,11 +13,16 @@
                         <div class="row g-3 mb-0 align-items-center">
                             <div class="col-sm-auto">
                                 <div class="input-group">
-                                    <select v-model="laboratory" class="form-select" aria-label="Default select example">
+                                    <select style="width: 250px;" v-model="filter.laboratory" class="form-select" aria-label="Default select example">
                                         <option :value="null">All Laboratories</option>
                                         <option :value="list" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
                                     </select>
-                                    <select v-model="filter.year" class="form-select" aria-label="Default select example">
+                                    <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
+                                        <option :value="null">All Months</option>
+                                        <option :value="list" v-for="list in months" v-bind:key="list">{{list}}</option>
+                                    </select>
+                                    <select style="width: 100px;" v-model="filter.year" class="form-select" aria-label="Default select example">
+                                        <option :value="null">All Years</option>
                                         <option :value="list" v-for="list in years" v-bind:key="list">{{list}}</option>
                                     </select>
                                     <div class="input-group-text bg-primary border-primary text-white">
@@ -33,7 +38,7 @@
         <div class="col-md-12 mt-0">
             <div class="row g-3">
                 <b-col lg="3" md="4" v-for="(item, index) of counts" :key="index">
-                    <b-card no-body :class="item.color" >
+                    <b-card no-body :class="item.color" class="border shadow-none">
                         <b-card-body>
                             <div class="d-flex align-items-center">
                                 <div class="avatar-sm flex-shrink-0">
@@ -65,7 +70,7 @@
                         <div class="flex-shrink-0 me-3">
                             <div style="height:2.5rem;width:2.5rem;">
                                 <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-spy-fill text-primary fs-24"></i>
+                                    <i class="ri-alarm-warning-fill text-primary fs-24"></i>
                                 </span>
                             </div>
                         </div>
@@ -107,7 +112,60 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-9 mt-n2">
+        
+         <div class="col-md-6 mt-n2">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2.5rem;width:2.5rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-trophy-fill text-primary fs-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-14"><span class="text-body">Daily Accomplishment Insights</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-white border-bottom shadow-none" no-body style="height: calc(100vh - 540px)">
+                    <div class="table-responsive table-card">
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-3 mt-n2">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2.5rem;width:2.5rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-spy-fill text-primary fs-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-14"><span class="text-body">Request Status Monitoring</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-white border-bottom shadow-none" no-body style="height: calc(100vh - 540px)">
+                    <div class="table-responsive table-card">
+                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-12 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
                 <div class="card-header bg-light-subtle">
@@ -191,7 +249,6 @@
                     </div>
                 </div>
 
-
             </div>
         </div>
     </b-row>
@@ -201,7 +258,7 @@ import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     components: { PageHeader, Multiselect },
-    props: ['dropdowns','counts','reminders','years'],
+    props: ['dropdowns','years'],
     data(){
         return {
             month: new Date().getMonth() + 1,
@@ -216,17 +273,19 @@ export default {
                 tooltip: { fixed: { enabled: false }, x: { show: true },marker: { show: false } }
             },
             activeList: null,
-            laboratory: null,
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
             laboratories: [],
             total: [],
             filter: {
                 keyword: null,
                 type: 'Daily',
+                laboratory: null,
                 date: null,
-                month: null,
+                month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
             },
+            counts: [],
+            reminders: [],
         }
     },
     watch: {
@@ -242,12 +301,31 @@ export default {
         },
         'filter.type'(val) {
             this.fetchDaily();
-        }
+        },
+        'monthName'(val) {
+            this.fetch();
+        },
     },
     created(){
+        this.fetch();
         this.fetchDaily();
     },
     methods: {
+        fetch(){
+            axios.get('/fetch',{
+                params : {
+                    year: this.filter.year,
+                    month: this.monthName,
+                    laboratory: this.filter.laboratory,
+                    option: 'cro',
+                }
+            })
+            .then(response => {
+                this.counts = response.data.counts; 
+                this.reminders = response.data.reminders;         
+            })
+            .catch(err => console.log(err));
+        },
         fetchDaily(){
             axios.get('/accomplishments',{
                 params : {

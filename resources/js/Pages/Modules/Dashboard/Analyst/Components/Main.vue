@@ -96,7 +96,7 @@
                                             <div class="mt-auto">
                                                 <div class="d-flex mb-2">
                                                     <div class="flex-grow-1">
-                                                        <div class="text-muted">{{item}}</div>
+                                                        <div class="text-muted">{{(item.name == 'n/a') ? item.custom_name : item.name}}</div>
                                                     </div>
                                                     <div class="flex-shrink-0">
                                                         <div v-if="filter.type == 'Sample Code'">
@@ -177,7 +177,7 @@
                                             <div class="mt-auto">
                                                 <div class="d-flex mb-2">
                                                     <div class="flex-grow-1">
-                                                        <div class="text-muted">{{item.name}}</div>
+                                                        <div class="text-muted">{{(item.name == 'n/a') ? item.custom_name : item.name}}</div>
                                                     </div>
                                                     <div class="flex-shrink-0">
                                                         <div v-if="filter.type == 'Sample Code'">
@@ -250,7 +250,7 @@
                                         <div class="mt-auto">
                                             <div class="d-flex mb-2">
                                                 <div class="flex-grow-1">
-                                                    <div class="text-muted">{{item.name}}</div>
+                                                    <div class="text-muted">{{(item.name == 'n/a') ? item.custom_name : item.name}}</div>
                                                 </div>
                                                 <div class="flex-shrink-0">
                                                     <div>

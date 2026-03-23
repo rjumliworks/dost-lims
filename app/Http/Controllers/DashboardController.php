@@ -115,9 +115,12 @@ class DashboardController extends Controller
         }
     }
 
-    public function search(Request $request){
+    public function fetch(Request $request){
         $option = $request->option;
         switch($option){
+            case 'cro':
+                return $this->cro->dashboard($request);
+            break;
             case 'performance':
                 return $this->analyst->performance($request);
             break;

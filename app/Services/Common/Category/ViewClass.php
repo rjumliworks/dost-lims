@@ -18,6 +18,16 @@ class ViewClass
                 });
             });
         })
+        ->when($request->category, function ($query, $category) {
+            $query->whereHas('type', function ($query) use ($category){
+                $query->where('category_id',$category);
+            });
+        })
+        ->when($request->type, function ($query, $type) {
+            $query->whereHas('type', function ($query) use ($type){
+                $query->where('id',$type);
+            });
+        })
         ->latest()
         ->paginate($request->count ?? 20);
 

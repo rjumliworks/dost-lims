@@ -132,7 +132,14 @@ class DropdownClass
         $data = SampleCategory::where('is_active',1)->get()->map(function ($item) {
             return [
                 'value' => $item->id,
-                'name' => $item->name
+                'name' => $item->name,
+                'laboratory_id' => $item->laboratory_id,
+                'types' => $item->types->map(function ($type) {
+                    return [
+                        'value' => $type->id,
+                        'name' => $type->name
+                    ];
+                })
             ];
         });
         return $data;

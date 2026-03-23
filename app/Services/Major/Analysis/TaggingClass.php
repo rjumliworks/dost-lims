@@ -146,6 +146,7 @@ class TaggingClass
                         'code'      => $analysis->sample->code,
                         'type'      => $analysis->sample->sampletype->name,
                         'name'      => $analysis->sample->samplename->name,
+                        'custom_name'  => $analysis->sample->name,
                         'testservice_name' => $analysis->testservice->testname->name ?? null,
                         'selected'  => null
                     ];
@@ -167,6 +168,7 @@ class TaggingClass
                         'tsr_id'    => $sample->tsr_id,
                         'tsr'       => $sample->tsr,
                         'code'      => $sample->code,
+                        'custom_name'  => $sample->name,
                         'type'      => $sample->sampletype->name,
                         'name'      => $sample->samplename->name,
                         'count'     => $sample->analyses_count,
@@ -229,6 +231,7 @@ class TaggingClass
                 'tsr_id'    => $sample->tsr_id,
                 'tsr'       => $sample->tsr,
                 'code'      => $sample->code,
+                'custom_name' => $sample->name,
                 'name'      => $sample->samplename->name,
                 'count'     => $sample->analyses_count,
                 'pending'   => $sample->pending_analyses_count,

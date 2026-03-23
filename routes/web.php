@@ -53,7 +53,7 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index']);
 
     Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/fetch', [App\Http\Controllers\DashboardController::class, 'search']);
+    Route::get('/fetch', [App\Http\Controllers\DashboardController::class, 'fetch']);
     Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
 
     Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
@@ -97,7 +97,7 @@ Route::prefix('insights')->group(function () {
 });
 
 Route::prefix('accomplishments')->group(function () {
-     Route::get('/', [App\Http\Controllers\Insights\AccomplishmentController::class, 'index']);
+    Route::get('/', [App\Http\Controllers\Insights\AccomplishmentController::class, 'index']);
 });
 
 require __DIR__.'/auth.php';
