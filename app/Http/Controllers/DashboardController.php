@@ -92,9 +92,7 @@ class DashboardController extends Controller
                         return inertia('Modules/Dashboard/Cro/Index',[
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
-                            ],
-                            'counts' => $this->cro->counts($request),
-                            'reminders' => $this->cro->reminders($request)
+                            ]
                         ]);
                     break;
                     default:

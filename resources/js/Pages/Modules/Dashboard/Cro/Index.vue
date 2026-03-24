@@ -35,19 +35,83 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-12 mt-0">
+       
+        <div class="col-md-3 mt-n1">
+            <b-col lg="12">
+                <b-card no-body class="bg-info-subtle border shadow-none">
+                    <b-card-body>
+                        <div class="d-flex align-items-center" v-if="fee">
+                            <div class="avatar-xs flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle fs-4">
+                                    <i class="ri-loader-2-line align-middle`"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                {{ fee.name }}
+                                </p>
+                                <h4 class="mb-0">
+                                    <span class="counter-value">{{ formatMoney(fee.total) }}</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </b-card-body>
+                </b-card>
+            </b-col>
+            <b-col lg="12" class="mt-n2">
+                <div class="card shadow-none border">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3">
+                                <div style="height:2.5rem;width:2.5rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-alarm-warning-fill text-primary fs-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 fs-14"><span class="text-body">Request Monitoring & Alerts</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-12">Highlights urgency and updates</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-white border-bottom shadow-none" no-body style="height: 330px;">
+                        <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in reminders" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </b-col>
+        </div>
+        
+        <div class="col-md-6 mt-n1">
             <div class="row g-3">
-                <b-col lg="3" md="4" v-for="(item, index) of counts" :key="index">
+                <b-col lg="4" v-for="(item, index) of counts" :key="index">
                     <b-card no-body :class="item.color" class="border shadow-none">
                         <b-card-body>
                             <div class="d-flex align-items-center">
-                                <div class="avatar-sm flex-shrink-0">
+                                <!-- <div class="avatar-sm flex-shrink-0">
                                     <span class="avatar-title bg-light text-primary rounded-circle fs-3">
                                         <i :class="`${item.icon} align-middle`"></i>
                                     </span>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
+                                </div> -->
+                                <div class="flex-grow-1">
+                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
                                         {{ item.name }}
                                     </p>
                                     <h4 class="mb-0">
@@ -61,111 +125,102 @@
                         </b-card-body>
                     </b-card>
                 </b-col>
-            </div>
-        </div>
-        <div class="col-md-3 mt-n2">
-            <div class="card shadow-none border">
-                <div class="card-header bg-light-subtle">
-                    <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3">
-                            <div style="height:2.5rem;width:2.5rem;">
-                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-alarm-warning-fill text-primary fs-24"></i>
-                                </span>
+                <b-col lg="12" class="mt-n2">
+                    <div class="card bg-light-subtle shadow-none border">
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-3">
+                                    <div style="height:2.5rem;width:2.5rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                            <i class="ri-trophy-fill text-primary fs-24"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 fs-14"><span class="text-body">Daily Accomplishment Insights</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">Request Monitoring & Alerts</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">Highlights urgency and updates</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <!-- <div class="mt-1">
-                                <button @click="openView()" class="btn btn-sm btn-soft-success me-1" type="button" data-original-title="View All">
-                                    <i class="ri-eye-fill align-bottom"></i>
-                                </button>
-                                <button class="btn btn-sm btn-soft-info" type="button" data-original-title="View PDF">
-                                    <i class="ri-printer-fill align-bottom"></i>
-                                </button>
-                            </div> -->
+                        <div class="card bg-white border-bottom shadow-none" no-body style="height: 330px;">
+                            <apexchart ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
+                                :options="chartOptions1">
+                            </apexchart>
                         </div>
                     </div>
-                </div>
-                <div class="card bg-white border-bottom shadow-none" no-body style="height: calc(100vh - 540px)">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
-                        <li class="list-group-item px-0" v-for="(list,index) in reminders" v-bind:key="index">
-                            <div class="d-flex">
-                                <div class="flex-shrink-0 avatar-xs">
-                                    <span class="avatar-title bg-light p-1 rounded-circle">
-                                        <i :class="list.icon+' '+list.color"></i>
+                </b-col>
+            </div>
+            
+        </div>
+
+        <div class="col-md-3 mt-n1">
+            <b-col lg="12">
+                <b-card no-body class="bg-danger-subtle border shadow-none">
+                    <b-card-body>
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-xs flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle fs-4">
+                                    <i class="ri-loader-2-line align-middle`"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                  wew
+                                </p>
+                                <h4 class="mb-0">
+                                    <span class="counter-value">asda</span>
+                                </h4>
+                            </div>
+                            <div class="flex-shrink-0 align-self-end">
+                                <!-- <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart> -->
+                            </div>
+                        </div>
+                    </b-card-body>
+                </b-card>
+            </b-col>
+            <b-col lg="12" class="mt-n2">
+                <div class="card bg-light-subtle shadow-none border">
+                    
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3">
+                                <div style="height:2.5rem;width:2.5rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-spy-fill text-primary fs-24"></i>
                                     </span>
                                 </div>
-                                <div class="flex-grow-1 ms-2">
-                                    <h6 class="mb-0 fs-12">{{list.name}}</h6>
-                                    <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 fs-14"><span class="text-body">Request Status Monitoring</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card bg-white border-bottom shadow-none" no-body style="height: 330px;">
+                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in statuses" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                    </div>
                                 </div>
-                                <div class="flex-shrink-0 text-end">
-                                    <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-         <div class="col-md-6 mt-n2">
-            <div class="card bg-light-subtle shadow-none border">
-                
-                <div class="card-header bg-light-subtle">
-                    <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3">
-                            <div style="height:2.5rem;width:2.5rem;">
-                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-trophy-fill text-primary fs-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">Daily Accomplishment Insights</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
-                        </div>
+                            </li>
+                        </ul>
                     </div>
-                </div>
-                <div class="card bg-white border-bottom shadow-none" no-body style="height: calc(100vh - 540px)">
-                    <div class="table-responsive table-card">
-                        
-                    </div>
-                </div>
 
-            </div>
-        </div>
-        <div class="col-md-3 mt-n2">
-            <div class="card bg-light-subtle shadow-none border">
-                
-                <div class="card-header bg-light-subtle">
-                    <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3">
-                            <div style="height:2.5rem;width:2.5rem;">
-                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-spy-fill text-primary fs-24"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">Request Status Monitoring</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed</p>
-                        </div>
-                    </div>
                 </div>
-                <div class="card bg-white border-bottom shadow-none" no-body style="height: calc(100vh - 540px)">
-                    <div class="table-responsive table-card">
-                        
-                    </div>
-                </div>
-
-            </div>
+            </b-col>
         </div>
-        <div class="col-md-12 mt-n1">
+        <div class="col-md-9 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
                 <div class="card-header bg-light-subtle">
@@ -251,13 +306,42 @@
 
             </div>
         </div>
+        <div class="col-md-3 mt-n1">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2.5rem;width:2.5rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-calendar-fill text-primary fs-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-14"><span class="text-body">Upcoming Schedules</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="car-body bg-white border-bottom shadow-none">
+                
+                </div>
+            </div>        
+                                        
+                                       
+        </div>
     </b-row>
 </template>
 <script>
+import flatPickr from "vue-flatpickr-component";
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { PageHeader, Multiselect },
+    components: { PageHeader, Multiselect, flatPickr },
     props: ['dropdowns','years'],
     data(){
         return {
@@ -271,6 +355,61 @@ export default {
                 colors: ['#03114B'],
                 fill: { type: 'gradient',gradient: {shadeIntensity: 1,inverseColors: false,opacityFrom: 0.45, opacityTo: 0.05,stops: [25, 100, 100, 100] }, },
                 tooltip: { fixed: { enabled: false }, x: { show: true },marker: { show: false } }
+            },
+            series: [],
+            chartOptions1: {
+                chart: {height: 300,toolbar: {show: false,},},
+                // stroke: {curve: "straight", dashArray: [0, 0, 8],width: [2, 0, 2.2]},
+                // fill: {opacity: [0.1, 0.9, 1]},
+                markers: {
+                    size: [0, 0, 0],
+                    strokeWidth: 2,
+                    hover: { size: 4},
+                },
+                xaxis: {
+                    categories: [],
+                    axisTicks: {show: false},
+                    axisBorder: {show: false},
+                },
+                grid: {
+                    show: true,
+                    xaxis: {lines: {show: true}},
+                    yaxis: {lines: { show: false}},
+                    padding: { top: 0,right: -2,bottom: 15,left: 10,},
+                },
+                legend: {
+                    show: true,
+                    horizontalAlign: "center",
+                    offsetX: 0,
+                    offsetY: -5,
+                    markers: {width: 9,height: 9,radius: 6},
+                    itemMargin: { horizontal: 10, vertical: 0},
+                },
+                 dataLabels: {
+                    enabled: false, 
+                },
+                plotOptions: {
+                bar: {
+                    columnWidth: "50%",
+                    barHeight: "70%",
+                },
+                },
+                colors: ["#34c38f", "#ea6868", "#f1b44c", "#f1b44c", "#a20cce", " #713d3d"],
+                // tooltip: {
+                //     y: {
+                //         formatter: function (val) {
+                //             return "₱" + val.toLocaleString(); 
+                //         }
+                //     }
+                // },
+                // yaxis: {
+                //     labels: {
+                //         formatter: function (val) {
+                //             // Format y-axis labels as currency (e.g., $1,000)
+                //             return "₱" + val.toLocaleString();
+                //         }
+                //     }
+                // }
             },
             activeList: null,
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -286,6 +425,8 @@ export default {
             },
             counts: [],
             reminders: [],
+            statuses: [],
+            fee: null
         }
     },
     watch: {
@@ -321,8 +462,19 @@ export default {
                 }
             })
             .then(response => {
+                this.fee = response.data.fee;
                 this.counts = response.data.counts; 
-                this.reminders = response.data.reminders;         
+                this.reminders = response.data.reminders; 
+                this.statuses = response.data.statuses;   
+                this.chartOptions1 = {
+                    ...this.chartOptions1,
+                    ...{
+                        xaxis: {
+                            categories: response.data.charts.categories
+                        }
+                    }
+                };
+                this.series = response.data.charts.lists;     
             })
             .catch(err => console.log(err));
         },
@@ -349,6 +501,10 @@ export default {
                 this.activeList = data;
             }
             this.$refs.lists.filterReminder(data,this.activeList);
+        },
+        formatMoney(value) {
+            let val = (value/1).toFixed(2).replace(',', '.')
+            return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         isActive(name) {
             return this.activeList === name;
