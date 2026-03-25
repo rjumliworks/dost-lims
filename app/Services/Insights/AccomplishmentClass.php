@@ -11,9 +11,51 @@ use App\Models\TsrSample;
 use App\Models\TsrAnalysis;
 use App\Models\TsrSampleReport;
 use App\Models\Target;
+use App\Models\TargetBreakdown;
 
 class AccomplishmentClass
 {
+    public function overall($request){
+        $list = $request->list;
+
+        $total = (int) $request->target;
+        $count = count($list);
+
+        if ($count === 0) {
+            return [
+                'message' => 'List is empty'
+            ];
+        }
+
+        $base = intdiv($total, $count); // base value
+        $remainder = $total % $count;   // extra to distribute
+
+        foreach($list as $index => $l){
+            $data = TargetBreakdown::findOrFail(is_array($l) ? $l['id'] : $l);
+
+            // distribute remainder to first items
+            $data->count = $base + ($index < $remainder ? 1 : 0);
+            $data->save();
+        }
+
+        return [
+            'message' => 'Target Set Successfully',
+            'info' => "Target distributed without decimals."
+        ];
+    }
+
+    public function target($request){
+        $data = TargetBreakdown::findOrFail($request->id);
+        $data->count = $request->target;
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Target Set Successfully', 
+            'info' => "You've successfully created the new analysis."
+        ];
+    }
+
     public function accomplish($request){      
         $agencyId = \Auth::user()->profile?->agency_id;
 
@@ -171,6 +213,7 @@ class AccomplishmentClass
                     }
                     $grandtotal =$grandtotal + $total;
                     $breakdown[] = [
+                        'id' => $item->id,
                         'name' => $item->laboratory->name,
                         'target' => $item->count,
                         'months' => $monthly,
@@ -222,6 +265,7 @@ class AccomplishmentClass
                 }
             }
             $result = [
+                'lists' => $items,
                 'name' => $items->first()->objective->name,
                 'target' => $items->sum('count'),
                 'is_consolidated' => $items->first()['is_consolidated'],

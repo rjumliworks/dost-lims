@@ -52,7 +52,7 @@
                                         <tr class="bg-info-subtle fw-semibold" @click="toggleRow(typeIndex + '-' + oIndex)" style="cursor: pointer;">
                                             <td>{{ (typeIndex+1)+'.'+ (oIndex + 1).toString().padStart(2, '0') }}</td>
                                             <td>{{ objective.name }}</td>
-                                            <td class="text-center">{{ formatNumber(objective.target) }}</td>
+                                            <td class="text-center" @click="setOverallTarget(objective)">{{ (objective.is_amount) ? formatMoney(objective.target) : formatNumber(objective.target) }}</td>
                                             <template v-if="type == 'Months'" v-for="(m, xIndex) in objective.monthly" :key="xIndex">
                                                 <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex}">{{formatMoney(m.accomplish)}}</td>
                                                 <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex}">{{m.accomplish}}</td>
@@ -74,8 +74,11 @@
                                             :class="{'bg-dark text-white fw-semibold': selectedRow === `breakdown-${oIndex}-${bIndex}`}">
                                                 <td class="text-center"></td>
                                                 <td class="ps-4">{{ breakdown.name || '-' }}</td>
-                                                <td v-if="objective.is_amount" class="text-center">{{ formatMoney(breakdown.target) }}</td>
-                                                <td v-else class="text-center">{{ breakdown.target }}</td>
+                                                <td v-if="objective.is_amount" class="text-center" @click="setTarget(objective.name,breakdown)">-
+                                                    <!-- {{ formatMoney(breakdown.target) }} -->
+                                                </td>
+                                                <td v-else class="text-center" @click="setTarget(objective.name,breakdown)">-</td> 
+                                                <!-- {{ breakdown.target }} -->
                                                 <template v-if="type == 'Months'" v-for="(m, mIndex) in breakdown.months" :key="mIndex">
                                                     <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex}">{{formatMoney(m.accomplish)}}</td>
                                                 <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex}">{{m.accomplish}}</td>
@@ -87,9 +90,11 @@
                                                         <span v-else>{{ q.accomplish }}</span>
                                                     </td>
                                                 </template>
-                                                <td v-if="objective.is_amount" class="text-center">{{ formatMoney(breakdown.accomplish) }}</td>
+                                                <td v-if="objective.is_amount" class="text-center">-</td>
+                                                <!-- {{ formatMoney(breakdown.accomplish) }} -->
                                                 <td v-else class="text-center">{{ formatNumber(breakdown.accomplish) }}</td>
-                                                <td class="text-center">{{ breakdown.percentage }}</td>
+                                                <td class="text-center">-</td>
+                                                <!-- {{ breakdown.percentage }}  -->
                                             </tr>
                                       </template>
                                     </template>
@@ -101,12 +106,14 @@
             </div>
         </div>
     </div>
+    <Target ref="target"/>
 </template>
 <script>
+import Target from './Modals/Target.vue';
 import Multiselect from "@vueform/multiselect";
 export default {
     layout: null,
-    components: { Multiselect },
+    components: { Multiselect, Target },
     props: ['years'],
 data(){
         return {
@@ -205,6 +212,12 @@ data(){
             minimumFractionDigits: 0,
             maximumFractionDigits: 2
             });
+        },
+        setTarget(objective,breakdown){
+            this.$refs.target.show(objective,breakdown);
+        },
+        setOverallTarget(objective){
+            this.$refs.target.show('Overall',objective);
         },
         selectRow(index) {
             this.selectedRow = (this.selectedRow == index) ? null : index;

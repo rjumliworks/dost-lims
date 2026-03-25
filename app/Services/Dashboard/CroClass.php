@@ -2,11 +2,13 @@
 
 namespace App\Services\Dashboard;
 
+use App\Models\Customer;
 use App\Models\Tsr;
 use App\Models\TsrSample;
 use App\Models\TsrAnalysis;
 use App\Models\TsrRelease;
 use App\Models\TsrPayment;
+use App\Models\TargetBreakdown;
 use Carbon\Carbon;
 
 class CroClass
@@ -23,7 +25,8 @@ class CroClass
             'reminders' => $this->reminders($request),
             'statuses' => $this->statuses($request),
             'charts' => $this->charts($request),
-            'fee' => $this->fees($request)
+            'fee' => $this->fees($request),
+            'target' => $this->target($request)
         ];
     }
 
@@ -50,6 +53,170 @@ class CroClass
             'color' => 'bg-info-subtle',
             'total' => $total
         ];
+    }
+
+   private function target($request)
+{
+    $year = $request->year ?? date('Y');
+    $targetId = 2;
+
+    $months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    $currentMonthIndex = $request->month ? (int) \DateTime::createFromFormat('F', $request->month)->format('m') - 1 : date('m') - 1;
+
+    // Get all consolidated breakdowns for this target and objective type
+    $breakdowns = TargetBreakdown::with('objective')
+        ->where('target_id', $targetId)
+        ->whereHas('objective', fn($q) => $q->where('type_id', 76))
+        ->get();
+
+    $totalTarget = 0;
+    $totalAccom = 0;
+
+    foreach ($breakdowns as $item) {
+        $objectiveName = $item->objective->name;
+        $laboratoryId = $item->laboratory_id ?? null;
+
+        $accom = 0;
+
+        foreach ($months as $index => $month) {
+            if ($index > $currentMonthIndex) break; // only up to selected month
+
+            $accom += $this->count(
+                $objectiveName,
+                $laboratoryId ? $index : null,
+                $year,
+                $month,
+                $laboratoryId
+            );
+        }
+
+        $totalAccom += $accom;
+        $totalTarget += $item->count;
+    }
+
+    $percentage = $totalTarget > 0 ? round(($totalAccom / $totalTarget) * 100, 2) : 0;
+
+    return [
+        'name' => 'OneLab KPI - Objective 1',
+        'icon' => 'ri-bank-card-fill',
+        'color' => 'bg-isuccess-subtle',
+        'target' => $totalTarget,
+        'accomplishment' => $totalAccom,
+        'percentage' => $percentage . '%'
+    ];
+}
+
+public function count($name,$index,$year,$month,$laboratory_id){
+        $months = [
+            'Jan' => 1,
+            'Feb' => 2,
+            'Mar' => 3,
+            'Apr' => 4,
+            'May' => 5,
+            'Jun' => 6,
+            'Jul' => 7,
+            'Aug' => 8,
+            'Sep' => 9,
+            'Oct' => 10,
+            'Nov' => 11,
+            'Dec' => 12,
+        ];
+
+        switch($name){
+            case 'Samples Received':
+                $count = TsrSample::whereMonth('created_at',$index+1)->whereYear('created_at',$year)->whereHas('tsr', function ($query) use ($laboratory_id){
+                    $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
+                })->count();
+            break;
+            case 'Services Conducted':
+                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$year,$index){
+                    $query->where('status_id','!=',13);
+                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$year,$index){
+                        $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5)->whereMonth('created_at',$index+1)->whereYear('created_at',$year);
+                    });
+                })
+                ->count();
+            break;
+            case 'Customers Served':
+                $count = Tsr::where('status_id','!=',5)->whereMonth('created_at',$index+1)->whereYear('created_at',$year)->where('laboratory_id',$laboratory_id)->count();
+            break;
+            case 'New Customers Served':
+                $m = $months[$month] ?? null;
+                $count = Customer::query()
+                ->where('customers.is_new', true)
+                ->joinSub(
+                    \DB::table('tsrs')
+                        ->select('customer_id', \DB::raw('MIN(created_at) as first_tsr_date'))
+                        ->where('status_id', '!=', 5) // 🚫 exclude cancelled
+                        ->groupBy('customer_id'),
+                    'first_tsrs',
+                    'first_tsrs.customer_id',
+                    '=',
+                    'customers.id'
+                )
+                ->whereMonth('first_tsrs.first_tsr_date', $m)
+                ->whereYear('first_tsrs.first_tsr_date', $year)
+                ->count();
+            break;
+            case 'Firms Served':
+                $m = $months[$month] ?? null;
+                $count = Tsr::whereIn('id', function ($query) use ($year,$month,$laboratory_id) {
+                    $query->selectRaw('MIN(id)')
+                        ->from('tsrs')
+                        ->where('status_id','!=',5)
+                        ->whereYear('created_at', $year)
+                        ->groupBy('customer_id');
+                })
+                ->whereHas('customer.customer_name', function ($query) use ($m,$year){
+                    $query->where('classification_id',8);
+                })
+                ->where('laboratory_id',$laboratory_id)
+                ->whereMonth('created_at', $m)
+                ->whereYear('created_at', $year)
+                ->count();
+
+            break;
+            case 'Actual Fees Collected':
+                $count = Tsr::withWhereHas('payment', function ($query) {
+                    $query->where('is_free',0);
+                })
+                ->where('status_id','!=',5)
+                ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
+                ->where('laboratory_id',$laboratory_id)
+                ->get()
+                ->sum(function ($tsr) {
+                    return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
+                });
+            break;
+            case 'Values of Assistance Rendered':
+                $discount = Tsr::withWhereHas('payment', function ($query) {
+                    $query->where('is_free',0);
+                })
+                ->where('status_id','!=',5)
+                ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
+                ->where('laboratory_id',$laboratory_id)
+                ->get()
+                ->sum(function ($tsr) {
+                    return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
+                });
+
+                $gratis = Tsr::withWhereHas('payment', function ($query) {
+                    $query->where('is_free',1);
+                })
+                ->where('status_id','!=',5)
+                ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
+                ->where('laboratory_id',$laboratory_id)
+                ->get()
+                ->sum(function ($tsr) {
+                    return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
+                });
+
+                $count = $gratis + $discount;
+            break;
+            default: 
+            $count = 0;
+        }
+        return $count;
     }
 
     private function ongoing($request){

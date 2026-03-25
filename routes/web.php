@@ -98,6 +98,7 @@ Route::prefix('insights')->group(function () {
 
 Route::prefix('accomplishments')->group(function () {
     Route::get('/', [App\Http\Controllers\Insights\AccomplishmentController::class, 'index']);
+    Route::put('/update', [App\Http\Controllers\Insights\AccomplishmentController::class, 'update']);
 });
 
 require __DIR__.'/auth.php';

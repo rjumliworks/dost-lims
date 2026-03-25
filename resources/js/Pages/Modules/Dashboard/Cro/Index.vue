@@ -62,16 +62,16 @@
                 <div class="card shadow-none border">
                     <div class="card-header bg-light-subtle">
                         <div class="d-flex mb-n3">
-                            <div class="flex-shrink-0 me-3">
-                                <div style="height:2.5rem;width:2.5rem;">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
                                     <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                        <i class="ri-alarm-warning-fill text-primary fs-24"></i>
+                                        <i class="ri-alarm-warning-fill text-primary fs-20"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-14"><span class="text-body">Request Monitoring & Alerts</span></h5>
-                                <p class="text-muted text-truncate-two-lines fs-12">Highlights urgency and updates</p>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Request Monitoring & Alerts</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                             </div>
                         </div>
                     </div>
@@ -129,16 +129,16 @@
                     <div class="card bg-light-subtle shadow-none border">
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3">
-                                    <div style="height:2.5rem;width:2.5rem;">
+                                <div class="flex-shrink-0 me-3 mt-1">
+                                    <div style="height:2rem;width:2rem;">
                                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                            <i class="ri-trophy-fill text-primary fs-24"></i>
+                                            <i class="ri-trophy-fill text-primary fs-20"></i>
                                         </span>
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h5 class="mb-0 fs-14"><span class="text-body">Daily Accomplishment Insights</span></h5>
-                                    <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                                    <h5 class="mb-0 fs-13"><span class="text-body">Daily Accomplishment Insights</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
                                 </div>
                             </div>
                         </div>
@@ -155,9 +155,9 @@
 
         <div class="col-md-3 mt-n1">
             <b-col lg="12">
-                <b-card no-body class="bg-danger-subtle border shadow-none">
+                <b-card no-body class="bg-success-subtle border shadow-none">
                     <b-card-body>
-                        <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center" v-if="target">
                             <div class="avatar-xs flex-shrink-0">
                                 <span class="avatar-title bg-light text-primary rounded-circle fs-4">
                                     <i class="ri-loader-2-line align-middle`"></i>
@@ -165,14 +165,11 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                                  wew
+                                {{ target.name }}
                                 </p>
                                 <h4 class="mb-0">
-                                    <span class="counter-value">asda</span>
+                                    <span class="counter-value">{{ target.percentage }}</span>
                                 </h4>
-                            </div>
-                            <div class="flex-shrink-0 align-self-end">
-                                <!-- <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart> -->
                             </div>
                         </div>
                     </b-card-body>
@@ -183,16 +180,16 @@
                     
                     <div class="card-header bg-light-subtle">
                         <div class="d-flex mb-n3">
-                            <div class="flex-shrink-0 me-3">
-                                <div style="height:2.5rem;width:2.5rem;">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
                                     <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
                                         <i class="ri-spy-fill text-primary fs-24"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-14"><span class="text-body">Request Status Monitoring</span></h5>
-                                <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed</p>
+                                <h5 class="mb-0 fs-13"><span class="text-body">Request Status Monitoring</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed</p>
                             </div>
                         </div>
                     </div>
@@ -225,16 +222,16 @@
                 
                 <div class="card-header bg-light-subtle">
                     <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3">
-                            <div style="height:2.5rem;width:2.5rem;">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
                                 <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-trophy-fill text-primary fs-24"></i>
+                                    <i class="ri-trophy-fill text-primary fs-20"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">Daily Accomplishment Insights</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
+                            <h5 class="mb-0 fs-13"><span class="text-body">Daily Accomplishment Insights</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
                         </div>
                         <div class="flex-shrink-0">
                             <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
@@ -311,20 +308,45 @@
                 
                 <div class="card-header bg-light-subtle">
                     <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3">
-                            <div style="height:2.5rem;width:2.5rem;">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
                                 <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-calendar-fill text-primary fs-24"></i>
+                                    <i class="ri-calendar-fill text-primary fs-20"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">Upcoming Schedules</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">A summary of tasks completed, analyses</p>
+                            <h5 class="mb-0 fs-13"><span class="text-body">Upcoming Schedules</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses</p>
                         </div>
                         <div class="flex-shrink-0">
                             <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
                         </div>
+                    </div>
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center">
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1"><span class="counter-value" data-target="854">854</span></h5>
+                                <p class="text-muted mb-0">BOD</p>
+                            </div>
+                        </div>
+                        <!--end col-->
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1"><span class="counter-value" data-target="1278">1,278</span></h5>
+                                <p class="text-muted mb-0">Calibration</p>
+                            </div>
+                        </div>
+                        <!--end col-->
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border border-dashed border-start-0 border-end-0">
+                                <h5 class="mb-1"><span class="counter-value" data-target="3">3</span></h5>
+                                <p class="text-muted mb-0">Testing</p>
+                            </div>
+                        </div>
+                        <!--end col-->
                     </div>
                 </div>
                 <div class="car-body bg-white border-bottom shadow-none">
@@ -426,7 +448,8 @@ export default {
             counts: [],
             reminders: [],
             statuses: [],
-            fee: null
+            fee: null,
+            target: null
         }
     },
     watch: {
@@ -463,6 +486,7 @@ export default {
             })
             .then(response => {
                 this.fee = response.data.fee;
+                this.target = response.data.target;
                 this.counts = response.data.counts; 
                 this.reminders = response.data.reminders; 
                 this.statuses = response.data.statuses;   
