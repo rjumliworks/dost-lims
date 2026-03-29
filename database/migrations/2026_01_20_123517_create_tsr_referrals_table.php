@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('province_code')->references('code')->on('location_provinces')->onDelete('cascade');
             $table->unsignedInteger('agency_id')->unsigned()->index();
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
-            $table->unsignedBigInteger('tsr_id')->unsigned()->index();
+            $table->unsignedBigInteger('tsr_id');
             $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
             $table->timestamps();
         });

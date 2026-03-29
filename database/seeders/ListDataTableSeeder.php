@@ -131,6 +131,20 @@ class ListDataTableSeeder extends Seeder
                 'type' => 'Release',
                 'is_active' => 1,
             ),
+            16 => 
+            array (
+                'id' => 17,
+                'name' => 'User',
+                'type' => 'Schedule',
+                'is_active' => 1,
+            ),
+            17 => 
+            array (
+                'id' => 18,
+                'name' => 'Customer',
+                'type' => 'Schedule',
+                'is_active' => 1,
+            ),
         ));
         
         
