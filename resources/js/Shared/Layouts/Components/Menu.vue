@@ -151,10 +151,10 @@
                         <span data-key="t-menu">Other Modules</span>
                     </li>
                     <li class="nav-item">
-                        <Link href="/calendars" class="nav-link menu-link"
-                        :class="{'active': $page.component.startsWith('Modules/Others/Calendars') }">
+                        <Link href="/schedules" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/Others/Schedules') }">
                         <i class="ri-calendar-fill"></i>
-                        <span class="fw-semibold fs-14" data-key="t-dashboards">Calendar</span>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
                         </Link>
                     </li>
                     <li class="nav-item">

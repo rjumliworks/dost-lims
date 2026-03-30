@@ -18,6 +18,7 @@ use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
 use App\Models\LocationBarangay;
 use App\Models\SampleCategory;
+use App\Models\Schedule;
 use App\Models\Customer;
 use App\Models\FinanceName;
 
@@ -185,7 +186,39 @@ class DropdownClass
 
         return $grouped;
     }
-    
+
+    public function events()
+    {
+        $counts = Schedule::selectRaw('event_id, COUNT(*) as total')
+            ->groupBy('event_id')
+            ->pluck('total', 'event_id'); 
+
+        $data = ListDropdown::where('classification', 'Events')
+            ->where('is_active', 1)
+            ->get()
+            ->map(function ($item) use ($counts) {
+                return [
+                    'label' => $item->type, 
+                    'count' => $counts[$item->id] ?? 0, 
+                    'options' => [
+                        'value' => $item->id,
+                        'name' => $item->name,
+                        'color' => $item->color,
+                        'others' => $item->others
+                    ]
+                ];
+            });
+
+        $grouped = $data->groupBy('label')->map(function ($items) {
+            return [
+                'label' => $items->first()['label'],
+                'count' => $items->sum('count'),
+                'options' => $items->pluck('options')->values()
+            ];
+        })->values();
+
+        return $grouped;
+    }
 
     public function regions(){
         $data = LocationRegion::all()->map(function ($item) {
