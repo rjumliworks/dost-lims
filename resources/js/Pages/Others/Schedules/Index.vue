@@ -1,6 +1,6 @@
 <template>
-    <Head title="Calendar"/>
-    <PageHeader title="Calendars" pageTitle="Menu" />
+    <Head title="Schedules"/>
+    <PageHeader title="Schedules" pageTitle="Menu" />
     <b-row class="g-3">
         <div class="col-md-3">
             <div class="card shadow-none border">
@@ -38,73 +38,49 @@
                         </div>
                     </div>
                 </div>
-                <!-- {{ dropdowns.events }} -->
+             
                 <div class="card bg-white border-bottom shadow-none mb-0" style="height: calc(100vh - 343px); overflow: auto;">
-                   <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
-    <li class="list-group-item px-0"
-        v-for="(list,index) in dropdowns.events"
-        :key="index">
-
-        <!-- CLICKABLE HEADER -->
-        <div class="d-flex cursor-pointer"
-             @click="toggle(index)">
-
-            <div class="flex-shrink-0 avatar-xs">
-                <span class="avatar-title bg-light p-1 rounded-circle">
-                    <i :class="icons[index]+' fs-16 '+colors[index]"></i>
-                </span>
-            </div>
-
-            <div class="flex-grow-1 ms-2">
-                <h6 class="mb-0 fs-12">{{list.label}}</h6>
-                <p class="fs-11 mb-0 text-muted">
-                    {{ activeIndex === index ? 'Hide details' : 'Show details' }}
-                </p>
-            </div>
-
-            <div class="flex-shrink-0 text-end">
-                <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
-            </div>
-        </div>
-
-        <!-- ACCORDION CONTENT -->
-        <transition name="fade">
-            <div v-if="activeIndex === index" class="mt-2">
-                <div class="card-body shadow-none">
-                    <div class="card-body p-2">
-
-                        <!-- <div v-for="(opt,i) in list.options" :key="i"
-                             class="d-flex justify-content-between align-items-center mb-1">
-
-                            <span class="fs-12">
-                                {{ opt.name }}
-                            </span>
-
-                            <span class="badge bg-light text-dark">
-                                {{ opt.value }}
-                            </span>
-                        </div> -->
-                        <ul class="list-group list-group-flush">
-    <li  v-for="(opt,i) in list.options" :key="i" class="list-group-item fs-12">{{ opt.name }}</li>
-</ul>
-
+                    <div class="d-grid mt-3 ms-3 me-3" >
+                        <button @click="openCreate()" class="btn btn-primary" type="button">Create Schedule</button>
                     </div>
-                </div>
-            </div>
-        </transition>
+                    <hr class="text-muted"/>
+                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n4 p-3">
+                        <li class="list-group-item px-0" v-for="(list,index) in orderedEvents" :key="index">
+                            <div class="d-flex cursor-pointer" @click="toggle(index)">
 
-    </li>
-</ul>
-                    <!-- <div id="external-events" class="p-3">
-                        <div v-for="(list,index) in dropdowns.events" 
-                        v-bind:key="index" 
-                        :class="'external-event fc-event '+list.color+' '+list.others" 
-                        style="cursor: pointer;"
-                        @click="openCreate(list)"
-                        >
-                        <i class="mdi mdi-checkbox-blank-circle me-2"></i>{{list.name}}
-                        </div>
-                    </div> -->
+                                <div class="flex-shrink-0 avatar-xs">
+                                    <span class="avatar-title bg-light p-1 rounded-circle">
+                                        <i :class="icons[index]+' fs-16 '+colors[index]"></i>
+                                    </span>
+                                </div>
+
+                                <div class="flex-grow-1 ms-2">
+                                    <h6 class="mb-0 fs-12">{{list.label}}</h6>
+                                    <p class="fs-11 mb-0 text-muted">
+                                        {{ activeIndex === index ? 'Hide details' : 'Show details' }}
+                                    </p>
+                                </div>
+
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                </div>
+                            </div>
+
+                            <transition name="fade">
+                                <div v-if="activeIndex === index" class="mt-2">
+                                    <div class="card-body shadow-none">
+                                        <div class="card-body p-2">
+                                            <ul class="list-group list-group-flush mt-n3 mb-n4">
+                                                <li  v-for="(opt,i) in list.options" :key="i" class="list-group-item fs-11 text-muted">{{ opt.name }} <span class="float-end text-dark badge bg-dark-subtle">{{ opt.count }}</span></li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </transition>
+
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -131,7 +107,7 @@
             </div>
         </div>
     </b-row>
-    <Create @message="fetch()" ref="create"/>
+    <Create :events="dropdowns.events" @message="fetch()" ref="create"/>
     <View @message="fetch()" ref="view"/>
     <Tsr ref="tsr"/>
 </template>
@@ -154,7 +130,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             activeIndex: null,
-            icons: ['ri-flight-takeoff-fill','ri-walk-line','ri-suitcase-fill','ri-pencil-ruler-2-fill','ri-flask-fill'],
+            icons: ['ri-pencil-ruler-2-fill','ri-flask-fill','ri-flight-takeoff-fill','ri-walk-line','ri-suitcase-fill'],
             colors: ['text-danger','text-success','text-info','text-warning','text-purple'],
             currentEvents: this.lists,
             showDue: false,
@@ -175,6 +151,11 @@ export default {
                     center: "title",
                     right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
                 },
+                // buttonText: {
+                //     prev: 'Prev',
+                //     next: 'Next',
+                //     today: 'Today'
+                // },
                 windowResize: () => {
                     this.getInitialView();
                 },
@@ -186,6 +167,22 @@ export default {
                 height: 'calc(100vh - 320px)',
                 events: [],
                 eventClick: this.editEvent,
+                eventContent: function(arg) {
+                    const title = arg.event.title;
+                    const type = arg.event.extendedProps.type; 
+
+                    return {
+                        html: `
+                            <div class="fc-event-inner-center">
+                                <div style="font-weight:600; font-size:11px;">${title}</div>
+                                <div style="font-size:10px; opacity:0.7;">(${type})</div>
+                            </div>
+                        `
+                    };
+                },
+
+               
+        
             },
         }
     },   
@@ -196,6 +193,21 @@ export default {
         showDue(newValue) {
             this.fetch();
         },
+    },
+    computed: {
+        orderedEvents() {
+            const order = [
+                'Calibration Services',
+                'Testing Services',
+                'Official Business',
+                'Personal Business',
+                'Official'
+            ];
+
+            return [...this.dropdowns.events].sort((a, b) => {
+                return order.indexOf(a.label) - order.indexOf(b.label);
+            });
+        }
     },
     methods: {
         toggle(index) {
@@ -234,7 +246,7 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style>
 .fade-enter-active, .fade-leave-active {
     transition: all 0.2s ease;
 }
@@ -242,4 +254,44 @@ export default {
     opacity: 0;
     transform: translateY(-5px);
 }
+.fc .fc-daygrid-event,
+.fc .fc-timegrid-event {
+    display: flex;
+    align-items: center;     /* vertical center */
+    justify-content: center; /* horizontal center */
+}
+
+/* Remove default padding that offsets centering */
+.fc .fc-event-main {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Your custom content */
+.fc-event-inner-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    width: 100%;
+    height: 100%;
+
+    padding: 2px;
+    overflow: hidden;
+}
+.fc-event-inner-center div {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+/* .fc-event-inner-center div {
+    white-space: normal;    
+    word-break: break-word; 
+    line-height: 1.2;
+} */
 </style>

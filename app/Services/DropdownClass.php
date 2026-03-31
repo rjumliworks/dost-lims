@@ -190,6 +190,7 @@ class DropdownClass
     public function events()
     {
         $counts = Schedule::selectRaw('event_id, COUNT(*) as total')
+            ->whereDate('start', '>=', now())
             ->groupBy('event_id')
             ->pluck('total', 'event_id'); 
 
@@ -204,7 +205,9 @@ class DropdownClass
                         'value' => $item->id,
                         'name' => $item->name,
                         'color' => $item->color,
-                        'others' => $item->others
+                        'others' => $item->others,
+                        'type' => $item->type,
+                        'count' => Schedule::where('event_id',$item->id)->whereDate('start', '>=', now())->count()
                     ]
                 ];
             });
@@ -260,12 +263,15 @@ class DropdownClass
         return $data;
     }
 
-     public function users($keyword,$agency){
+     public function users($keyword){
+        if (!$keyword || trim($keyword) === '') {
+            return collect([]);
+        }
+
         $data =  User::with('profile','primaryRole.role')
-        ->when($keyword, function ($query) use ($keyword,$agency){
-            $query->whereHas('profile', function ($q) use ($keyword,$agency) {
-                $q->where('lastname', 'like', '%' . $keyword . '%')
-                ->where('agency_id',$agency);
+        ->when($keyword, function ($query) use ($keyword){
+            $query->whereHas('profile', function ($q) use ($keyword) {
+                $q->where('lastname', 'like', '%' . $keyword . '%');
             });
         })
         ->limit(5)->get()->map(function ($item) {

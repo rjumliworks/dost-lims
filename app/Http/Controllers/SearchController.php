@@ -31,7 +31,7 @@ class SearchController extends Controller
                 return $this->dropdown->tsrsamples($request->keyword);
             break;
             case 'users':
-                return $this->dropdown->users($request->keyword,$request->agency);
+                return $this->dropdown->users($request->keyword);
             break;
             case 'payors':
                 return $this->dropdown->payors($request);

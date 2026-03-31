@@ -14,6 +14,11 @@ class ScheduleController extends Controller
 {
     use HandlesTransaction;
 
+    protected $dropdown;
+    protected $agency;
+    protected $view;
+    protected $save;
+
     public function __construct(DropdownClass $dropdown, AgencyClass $agency, SaveClass $save, ViewClass $view){
         $this->dropdown = $dropdown;
         $this->agency = $agency;
@@ -24,8 +29,7 @@ class ScheduleController extends Controller
     public function index(Request $request){
         switch($request->option){
             case 'events':
-                // return $this->view->events($request);
-                return [];
+                return $this->view->events($request);
             break;
             case 'dues':
                 // return $this->view->dues($request);
@@ -40,4 +44,18 @@ class ScheduleController extends Controller
             ]);
         }
     }
+
+    public function store(Request $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            return $this->save->save($request);
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
 }

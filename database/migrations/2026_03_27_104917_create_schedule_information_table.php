@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('schedule_information', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->text('description')->nullable();
+            $table->text('information')->nullable();
             $table->string('venue')->nullable();
             $table->unsignedBigInteger('schedule_id');
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');

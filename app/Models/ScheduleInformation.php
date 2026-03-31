@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ScheduleInformation extends Model
 {
     protected $fillable = [
-        'description',
+        'information',
         'venue',
         'schedule_id'
     ];

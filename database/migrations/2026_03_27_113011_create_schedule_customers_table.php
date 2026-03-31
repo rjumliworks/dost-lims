@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
-            $table->unsignedBigInteger('conforme_id');
+            $table->unsignedBigInteger('conforme_id')->nullable();
             $table->foreign('conforme_id')->references('id')->on('customer_conformes')->onDelete('cascade');
             $table->unsignedBigInteger('schedule_id');
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
