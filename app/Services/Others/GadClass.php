@@ -116,17 +116,22 @@ class GadClass
         $result = [];
 
         foreach($types as $type){
-            $records = Tsr::withWhereHas('payment', function ($query) {
-                    $query->where('is_free', 0)
-                        ->where('discount_id', 9); // March-only discount
-                })
-                ->whereHas('customer', function ($query) use ($type){
-                    $query->where('led_id', $type['id']);
-                })
-                ->where('status_id', '!=', 5)
-                ->whereYear('created_at', $year)
-                ->where('agency_id', 14)
-                ->get();
+           $records = Tsr::withWhereHas('payment', function ($query) {
+        $query->where('discount_id', 9)
+              ->where('is_free', 0); // add this back
+    })
+    ->whereHas('customer', function ($query) use ($type){
+        $query->where('led_id', $type['id'])
+        ->orWhere(function ($sub) use ($type) {
+            if($type['name'] == 'Female'){
+                $sub->whereNull('led_id')->where('sex_id', 71);
+            }
+        });
+    })
+    ->where('status_id', '!=', 5)
+    ->whereYear('created_at', $year)
+    ->where('agency_id', 14)
+    ->get();
 
             $sumTotal = $records->sum(fn($tsr) => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total));
             $sumDiscount = $records->sum(fn($tsr) => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount));
