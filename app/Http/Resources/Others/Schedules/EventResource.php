@@ -9,6 +9,8 @@ class EventResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+
+    
         $user = strtoupper(preg_replace('/\d+/', '', $this->user->username));
         $start =  date("M d, Y",strtotime($this->start));
         $end =  date("M d, Y",strtotime($this->end));
@@ -35,6 +37,10 @@ class EventResource extends JsonResource
         }else if($this->event->name == 'Official Travel'){
             $title = $this->title;
             // .' ('.$user.')';
+        }else if($this->event->type == 'Testing Services'){
+            $title = $this->customer->customer->customer_name->name;
+        }else if($this->event->type == 'Calibration Services'){
+            $title = $this->customer->customer->customer_name->name;
         }else{
             $title = $this->title;
             // .' ('.$user.')';

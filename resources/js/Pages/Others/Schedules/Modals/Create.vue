@@ -78,10 +78,12 @@
                 <BCol lg="12" class="mt-1 mb-0" v-if="form.event?.type == 'Testing Services' && form.customer">
                     <InputLabel for="name" value="Samples" :message="form.errors.event"/>
                     <TextInput id="name" v-model="form.samples" type="text" class="form-control" placeholder="Please enter no. of samples" @input="handleInput('samples')" :light="true"/>
+                     <InputLabel for="attribute" value="Information" :message="form.errors.information"/>
+                    <textarea id="attribute" v-model="form.information" maxlength="250" rows="2" type="text" class="form-control" placeholder="Please enter information" style="background-color: #f5f6f7;"/>
                 </BCol>
-                <BCol lg="12" v-if="form.event?.type == 'Official' || form.event?.type == 'Personal Business' || form.event?.type == 'Official Business'"><hr class="text-muted mt-n1 mb-n3"/></BCol>
-                <BCol lg="8" v-if="form.event?.type == 'Official' || form.event?.type == 'Personal Business' || form.event?.type == 'Official Business'" style="margin-top: 13px; margin-bottom: -12px;" class="fs-12">Is the event all day?</BCol>
-                <BCol lg="4" v-if="form.event?.type == 'Official' || form.event?.type == 'Personal Business' || form.event?.type == 'Official Business'" style="margin-top: 13px; margin-bottom: -12px;">
+                <BCol lg="12"><hr class="text-muted mt-n1 mb-n3"/></BCol>
+                <BCol lg="8" style="margin-top: 13px; margin-bottom: -12px;" class="fs-12">Is the event all day?</BCol>
+                <BCol lg="4" style="margin-top: 13px; margin-bottom: -12px;">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="custom-control custom-radio mb-3">
@@ -97,7 +99,7 @@
                         </div>
                     </div>
                 </BCol>
-                <BCol lg="12" v-if="form.event?.type == 'Official' || form.event?.type == 'Personal Business' || form.event?.type == 'Official Business'"><hr class="text-muted mt-n1 mb-n3"/></BCol>
+                <BCol lg="12"><hr class="text-muted mt-n1 mb-n3"/></BCol>
                 <BCol lg="12" v-if="form.is_allday" class="mt-1"> 
                     <label>Date <span v-if="form.errors.date" class="text-danger" style="font-size: 9px;">({{ form.errors.date }})</span></label>
                     <div class="input-group">
@@ -169,7 +171,7 @@ export default {
                 samples: null,
                 tsr_id: null,
                 customer: null,
-                conforme_id: null,
+                conforme: null,
                 users: []
             }),
             timeConfig: {

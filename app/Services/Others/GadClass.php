@@ -12,8 +12,7 @@ class GadClass
             ['id' => 82, 'name' => 'Male'],
             ['id' => 83, 'name' => 'Male-led'],
             ['id' => 73, 'name' => 'Female'],
-            ['id' => 74, 'name' => 'Female-led'],
-            ['id' => 5, 'name' => 'Enterprise/Company'],
+            ['id' => 74, 'name' => 'Female-led']
         ];
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $result = [];
@@ -58,8 +57,7 @@ class GadClass
             ['id' => 82, 'name' => 'Male'],
             ['id' => 83, 'name' => 'Male-led'],
             ['id' => 73, 'name' => 'Female'],
-            ['id' => 74, 'name' => 'Female-led'],
-            ['id' => 5, 'name' => 'Enterprise/Company'],
+            ['id' => 74, 'name' => 'Female-led']
         ];
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $result = [];

@@ -161,23 +161,23 @@
             };
         },
         computed: {
-             monthlyTotals() {
-        const totals = [];
+            monthlyTotals() {
+                const totals = [];
 
-        this.transactions.forEach(item => {
-            item.monthly.forEach((value, index) => {
-                if (!totals[index]) {
-                    totals[index] = { total: 0, discount: 0, net: 0 };
-                }
+                this.transactions.forEach(item => {
+                    item.monthly.forEach((value, index) => {
+                        if (!totals[index]) {
+                            totals[index] = { total: 0, discount: 0, net: 0 };
+                        }
 
-                totals[index].total += parseFloat(value.total) || 0;
-                totals[index].discount += parseFloat(value.discount) || 0;
-                totals[index].net += parseFloat(value.net) || 0;
-            });
-        });
+                        totals[index].total += parseFloat(value.total) || 0;
+                        totals[index].discount += parseFloat(value.discount) || 0;
+                        totals[index].net += parseFloat(value.net) || 0;
+                    });
+                });
 
-        return totals;
-    },
+                return totals;
+            },
             grandTotal() {
                 return this.transactions.reduce((sum, item) => {
                     return sum + (parseFloat(item.total) || 0);

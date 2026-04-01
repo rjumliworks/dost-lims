@@ -352,6 +352,7 @@ $success:       $green;
 $info:          $cyan;
 $warning:       $yellow;
 $danger:        $red;
+$purple:        $purple;
 $light:         $gray-100;
 $dark:          $gray-900;
 
@@ -393,6 +394,7 @@ $success-bg-subtle:       tint-color($success, 85%);
 $info-bg-subtle:          tint-color($info, 85%);
 $warning-bg-subtle:       tint-color($warning, 85%);
 $danger-bg-subtle:        tint-color($danger, 85%);
+$purple-bg-subtle:        tint-color($purple, 85%);
 $light-bg-subtle:         mix($gray-100, $white);
 $dark-bg-subtle:          $gray-300;
 // scss-docs-end theme-bg-subtle-variables
@@ -404,6 +406,7 @@ $success-border-subtle:   tint-color($success, 60%);
 $info-border-subtle:      tint-color($info, 60%);
 $warning-border-subtle:   tint-color($warning, 60%);
 $danger-border-subtle:    tint-color($danger, 60%);
+$purple-border-subtle:    tint-color($purple, 60%);
 $light-border-subtle:     $gray-200;
 $dark-border-subtle:      $gray-500;
 // scss-docs-end theme-border-subtle-variables
@@ -841,6 +844,7 @@ $table-variants: (
   "info":       shift-color($info, $table-bg-scale),
   "warning":    shift-color($warning, $table-bg-scale),
   "danger":     shift-color($danger, $table-bg-scale),
+  "purple":     shift-color($purple, $table-bg-scale),
   "light":      $light,
   "dark":       $dark,
 );

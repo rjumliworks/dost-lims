@@ -283,15 +283,15 @@ export default {
     padding: 2px;
     overflow: hidden;
 }
-.fc-event-inner-center div {
+/* .fc-event-inner-center div {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
-}
-/* .fc-event-inner-center div {
+} */
+.fc-event-inner-center div {
     white-space: normal;    
     word-break: break-word; 
     line-height: 1.2;
-} */
+}
 </style>
