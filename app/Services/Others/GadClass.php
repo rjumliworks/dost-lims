@@ -106,6 +106,44 @@ class GadClass
         return $result;
     }
 
+    public function discounts(){
+        $year = 2026;
+        $types = [
+            ['id' => 73, 'name' => 'Female'],
+            ['id' => 74, 'name' => 'Female-led']
+        ];
+
+        $result = [];
+
+        foreach($types as $type){
+            $records = Tsr::withWhereHas('payment', function ($query) {
+                    $query->where('is_free', 0)
+                        ->where('discount_id', 9); // March-only discount
+                })
+                ->whereHas('customer', function ($query) use ($type){
+                    $query->where('led_id', $type['id']);
+                })
+                ->where('status_id', '!=', 5)
+                ->whereYear('created_at', $year)
+                ->where('agency_id', 14)
+                ->get();
+
+            $sumTotal = $records->sum(fn($tsr) => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total));
+            $sumDiscount = $records->sum(fn($tsr) => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount));
+
+            $result[] = [
+                'name' => $type['name'],
+                'transactions' => $records->count(),
+                'gross' => $sumTotal,
+                'discount' => $sumDiscount,
+                'net' => $sumTotal - $sumDiscount
+            ];
+        }
+
+        return $result;
+    }
+
+
     public function chart(){
          // $code = '097200000';//zdn
         // $code = '097300000';//zds

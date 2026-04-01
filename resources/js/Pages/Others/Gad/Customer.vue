@@ -131,6 +131,49 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-12">
+            <div class="card bg-light-subtle shadow-none border">
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-article-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-12"><span class="text-body">Testing and Calibration Services Availed during Women's Month {{year}}</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Tracks how many transactions are made by gender and role for transparency and analysis.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-white border-bottom shadow-none" no-body>
+                    <div class="table-responsive">
+                        <table class="table table-nowrap table-bordered table-striped align-middle mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th class="text-center" width="13%">Type</th>
+                                    <th class="text-center">Number of Transactions</th>
+                                    <th class="text-center">Actual Fees Collected</th>
+                                    <th class="text-center">Discount</th>
+                                    <th class="text-center">Gross</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-11">
+                                <tr v-for="(list,index) in discounts" v-bind:key="index">
+                                    <td class="text-center">{{ list.name }}</td>
+                                    <td class="text-center">{{ list.transactions }}</td>
+                                    <td class="text-center">{{ list.net }}</td>
+                                    <td class="text-center">{{ list.discount }}</td>
+                                    <td class="text-center">{{ list.gross }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
    
 </template>
@@ -140,7 +183,7 @@
         components: {
             PageHeader
         },
-        props: ['transactions','numbers','list'],
+        props: ['transactions','numbers','discounts','list'],
         data() {
             return {
                 months: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],

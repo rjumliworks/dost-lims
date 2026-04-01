@@ -24,6 +24,7 @@ class GadController extends Controller
         return inertia('Others/Gad/Customer',[
             'transactions' => $this->gad->transactions(),
             'numbers' => $this->gad->numbers(),
+            'discounts' => $this->gad->discounts(),
             'list' => $this->gad->chart()
         ]);
     }
