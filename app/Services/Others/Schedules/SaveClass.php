@@ -28,29 +28,25 @@ class SaveClass
                 $end = $request->end;
             }
         }
-
-        switch($request->event['name']){
-            case 'Leave':
-                $title = $request->event['name'];
-            break;
-            default:
-                $title = $request->title;
-        }
         
         $data = Schedule::create([
-            'title' => $title,
             'start' => $start,
             'end' => $end,
             'is_allday' => $request->is_allday,
             'event_id' => $request->event['value']
         ]);
 
-        if($request->information){
-            $data->information()->create([
-                'venue' => $request->venue,
-                'information' => $request->information
-            ]);
-        }
+        $data->information()->create([
+            'title' => $request->title,
+            'venue' => $request->venue,
+            'information' => $request->information,
+            'samples' => $request->samples,
+            'tsr_id' => $request->tsr_id,
+            'quotation_id' => $request->quotation_id,
+            'customer_id' => $request->customer ? $request->customer['value'] : null,
+            'conforme_id' => $request->conforme ? $request->conforme['value'] : null,
+            'schedule_id' => $data->id
+        ]);
 
         if(count($request->users)){
             foreach($request->users as $user){
@@ -59,16 +55,6 @@ class SaveClass
                     'user_id' => $user['value']
                 ]);
             }
-        }
-
-        if($request->event['type'] == 'Testing Services'){
-            ScheduleCustomer::create([
-                'samples' => $request->samples,
-                'tsr_id' => $request->tsr_id,
-                'customer_id' => $request->customer['value'],
-                'conforme_id' => $request->conforme['value'],
-                'schedule_id' => $data->id
-            ]);
         }
 
         return [

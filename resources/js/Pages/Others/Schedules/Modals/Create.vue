@@ -14,46 +14,11 @@
                     placeholder="Select Event"/>
                     <hr v-if="form.event" class="text-muted"/>
                 </BCol>
-                <BCol lg="12" class="mt-n2 mb-1" v-if="form.event?.type == 'Official'">
+                <BCol lg="12" class="mt-n2 mb-n1" v-if="form.event?.fields.title">
                     <InputLabel for="name" value="Title" :message="form.errors.event"/>
                     <TextInput id="name" v-model="form.title" type="text" class="form-control" placeholder="Please enter title" @input="handleInput('name')" :light="true"/>
                 </BCol>
-                <BCol lg="12" class="mt-n1 mb-1" v-if="form.event?.type == 'Official' && form.event?.name != 'Holiday'">
-                    <InputLabel for="attribute" value="Information" :message="form.errors.information"/>
-                    <textarea id="attribute" v-model="form.information" maxlength="250" rows="2" type="text" class="form-control" placeholder="Please enter information" style="background-color: #f5f6f7;"/>
-                </BCol>
-                <BCol lg="12" class="mt-n1 mb-1" v-if="form.event?.type == 'Personal Business'">
-                    <InputLabel for="attribute" value="Reason" :message="form.errors.information"/>
-                    <textarea id="attribute" v-model="form.information" maxlength="250" rows="2" type="text" class="form-control" placeholder="Please enter reason" style="background-color: #f5f6f7;"/>
-                </BCol>
-                <BCol lg="12" class="mt-n1 mb-1" v-if="form.event?.type == 'Official Business'">
-                    <InputLabel for="name" value="Title" :message="form.errors.event"/>
-                    <TextInput id="name" v-model="form.title" type="text" class="form-control" placeholder="Please enter title" @input="handleInput('title')" :light="true"/>
-                    <InputLabel for="name" value="Venue" :message="form.errors.venue"/>
-                    <TextInput id="name" v-model="form.venue" type="text" class="form-control" placeholder="Please enter venue" @input="handleInput('venue')" :light="true"/>
-                    <InputLabel for="attribute" value="Purpose" :message="form.errors.information"/>
-                    <textarea id="attribute" v-model="form.information" maxlength="250" rows="2" type="text" class="form-control" placeholder="Please enter information" style="background-color: #f5f6f7;"/>
-                </BCol>
-                <BCol lg="12" class="mt-0 mb-0" v-if="form.event?.type == 'Official Business'">
-                    <InputLabel for="role" value="Employees" :message="form.errors.tags"/>
-                    <Multiselect
-                        v-model="form.users"
-                        :options="employees"
-                        mode="tags"
-                        @search-change="checkSearchStr"
-                        :multiple="true"
-                        :searchable="true"
-                        :loading="isLoading"
-                        label="name"
-                        object
-                         @input="handleInput('users')"
-                        :preserve-search="true"
-                        :filter-results="false"
-                        placeholder="Select Employee"
-                        ref="multiselect2"
-                        />
-                </BCol>
-                <BCol lg="12" class="mt-n1 mb-0" v-if="form.event?.type == 'Testing Services'">
+                <BCol lg="12" class="mt-n1 mb-0" v-if="form.event?.fields.customer">
                     <InputLabel for="customer" value="Customer" :message="form.errors.customer"/>
                     <Multiselect 
                     :options="customers" 
@@ -64,10 +29,10 @@
                     @input="handleInput('customer')"
                     placeholder="Select Customer"/>
                 </BCol>
-                <BCol lg="12" class="mt-1 mb-0" v-if="form.event?.type == 'Testing Services' && form.customer">
-                    <InputLabel for="conforme" value="Conforme" :message="form.errors.conforme"/>
+                <BCol lg="12" class="mt-1 mb-0" v-if="form.event?.fields.conforme && form.customer">
+                    <InputLabel for="conforme" value="Conforme" :message="form.errors.customer"/>
                     <Multiselect 
-                    :options="form.customer.conformes" 
+                    :options="form.customer?.conformes" 
                     v-model="form.conforme" 
                     label="name"
                     object
@@ -75,15 +40,33 @@
                     :searchable="true" 
                     placeholder="Select Conforme"/>
                 </BCol>
-                <BCol lg="12" class="mt-1 mb-0" v-if="form.event?.type == 'Testing Services' && form.customer">
+                 <BCol lg="12" class="mt-1 mb-0" v-if="form.event?.fields.tsr">
+                    <InputLabel for="conforme" value="TSR Number" :message="form.errors.tsr_id"/>
+                    <Multiselect 
+                    :options="tsrs" 
+                    v-model="form.tsr_id" 
+                    label="name"
+                    object
+                    @input="handleInput('tsr_id')"
+                    :searchable="true" 
+                    placeholder="Select TSR"/>
+                </BCol>
+                <BCol lg="12" class="mt-1 mb-n1" v-if="form.event?.fields.samples">
                     <InputLabel for="name" value="Samples" :message="form.errors.event"/>
                     <TextInput id="name" v-model="form.samples" type="text" class="form-control" placeholder="Please enter no. of samples" @input="handleInput('samples')" :light="true"/>
-                     <InputLabel for="attribute" value="Information" :message="form.errors.information"/>
+                </BCol>
+                <BCol lg="12" class="mt-1 mb-n1" v-if="form.event?.fields.venue">
+                    <InputLabel for="name" value="Venue" :message="form.errors.venue"/>
+                    <TextInput id="name" v-model="form.venue" type="text" class="form-control" placeholder="Please enter venue" @input="handleInput('venue')" :light="true"/>
+                </BCol>
+                <BCol lg="12" class="mt-1 mb-0" v-if="form.event?.fields.info">
+                    <InputLabel for="attribute" value="Information" :message="form.errors.information"/>
                     <textarea id="attribute" v-model="form.information" maxlength="250" rows="2" type="text" class="form-control" placeholder="Please enter information" style="background-color: #f5f6f7;"/>
                 </BCol>
-                <BCol lg="12"><hr class="text-muted mt-n1 mb-n3"/></BCol>
-                <BCol lg="8" style="margin-top: 13px; margin-bottom: -12px;" class="fs-12">Is the event all day?</BCol>
-                <BCol lg="4" style="margin-top: 13px; margin-bottom: -12px;">
+               
+                <BCol lg="12"><hr class="text-muted mt-0 mb-n3"/></BCol>
+                <BCol lg="8" style="margin-top: 10px; margin-bottom: -15px;" class="fs-12">Is the event all day?</BCol>
+                <BCol lg="4" style="margin-top: 10px; margin-bottom: -20px;">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="custom-control custom-radio mb-3">
@@ -100,8 +83,8 @@
                     </div>
                 </BCol>
                 <BCol lg="12"><hr class="text-muted mt-n1 mb-n3"/></BCol>
-                <BCol lg="12" v-if="form.is_allday" class="mt-1"> 
-                    <label>Date <span v-if="form.errors.date" class="text-danger" style="font-size: 9px;">({{ form.errors.date }})</span></label>
+                <BCol lg="12" v-if="form.is_allday" class="mt-2 mb-n2"> 
+                    <!-- <label>Date <span v-if="form.errors.date" class="text-danger" style="font-size: 9px;">({{ form.errors.date }})</span></label> -->
                     <div class="input-group">
                         <flat-pickr ref="datepicker" 
                         placeholder="Select date" 
@@ -111,27 +94,56 @@
                         </flat-pickr>
                     </div>
                 </BCol>
-                <BCol v-if="form.is_allday != null && form.is_allday == false"  lg="12" class="mt-1">
-                    <div class="row g-3">
+                <BCol v-if="form.is_allday != null && form.is_allday == false"  lg="12" class="mt-2 mb-n2">
+                    <div class="row g-2">
                         <div class="col-md-6">
-                            <label>Start Date</label>
+                            <!-- <label>Start Date</label> -->
                             <flat-pickr ref="datepicker" 
-                                placeholder="Select date & time" 
+                                placeholder="Select start date & time" 
                                 v-model="form.start" 
                                 :config="timeConfig"
                                 class="form-control flatpickr-input" id="caledate">
                             </flat-pickr>
                         </div>
                         <div class="col-md-6">
-                            <label>End Date</label>
+                            <!-- <label>End Date</label> -->
                             <flat-pickr ref="datepicker" 
-                                placeholder="Select date & time" 
+                                placeholder="Select end date & time" 
                                 v-model="form.end" 
                                 :config="timeConfig"
                                 class="form-control flatpickr-input" id="caledate">
                             </flat-pickr>
                         </div>
                     </div>
+                </BCol>
+                <BCol v-if="form.event?.fields.employees" lg="12"><hr class="text-muted mt-0 mb-n3"/></BCol>
+                <BCol v-if="form.event?.fields.employees" lg="8" style="margin-top: 10px; margin-bottom: -15px;" class="fs-12">Is for all employees?</BCol>
+                <BCol v-if="form.event?.fields.employees" lg="4" style="margin-top: 10px; margin-bottom: -20px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" id="customRadio1" class="custom-control-input me-2" :value="true" v-model="form.is_forall">
+                                <label class="custom-control-label fw-normal fs-12" for="customRadio1">Yes</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" id="customRadio2" class="custom-control-input me-2" :value="false" v-model="form.is_forall">
+                                <label class="custom-control-label fw-normal fs-12" for="customRadio2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </BCol>
+                <BCol lg="12" v-if="form.event?.fields.employees"><hr class="text-muted mt-n1 mb-n3"/></BCol>
+                <BCol lg="12" class="mt-2" v-if="form.event?.fields.employees">
+                     <Multiselect 
+                    :options="tsrs" 
+                    v-model="form.tsr_id" 
+                    label="name"
+                    object
+                    @input="handleInput('tsr_id')"
+                    :searchable="true" 
+                    placeholder="Select TSR"/>
                 </BCol>
             </BRow>
         </form>
@@ -166,7 +178,8 @@ export default {
                 end: null,
                 information: null,
                 venue: null,
-                is_allday: null,
+                is_allday: false,
+                is_forall: false,
                 type: null,
                 samples: null,
                 tsr_id: null,

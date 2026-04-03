@@ -31,18 +31,13 @@ class EventResource extends JsonResource
         }
 
         if($this->event->name == 'Holiday'){
-            $title = $this->title;
+            $title = $this->information->title;
         }else if($this->event->name == 'Leave'){
             $title = $this->user->profile->fullname;
-        }else if($this->event->name == 'Official Travel'){
-            $title = $this->title;
-            // .' ('.$user.')';
-        }else if($this->event->type == 'Testing Services'){
-            $title = $this->customer->customer->customer_name->name;
-        }else if($this->event->type == 'Calibration Services'){
-            $title = $this->customer->customer->customer_name->name;
+        }else if($this->information->customer){
+            $title = $this->information->customer->customer_name->name;
         }else{
-            $title = $this->title;
+            $title = $this->information->title;
             // .' ('.$user.')';
         }
         return [
@@ -51,7 +46,7 @@ class EventResource extends JsonResource
             'start' => $this->start,
             'end' => $this->end,
             'type' => $this->event->name,
-            'className' => $this->event->others.' '.$this->event->color,
+            'className' => $this->event->bg.' '.$this->event->color,
             'full_title' => $this->title,
             'full_name' => $this->user->profile->firstname.' '.$this->user->profile->lastname,
             'start_date' => date("M d, Y g:i a",strtotime($this->start)),

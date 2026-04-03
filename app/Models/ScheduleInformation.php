@@ -7,11 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class ScheduleInformation extends Model
 {
     protected $fillable = [
+        'title',
         'information',
         'venue',
+        'samples',
+        'quotation_id',
+        'tsr_id',
+        'customer_id',
+        'conforme_id',
         'schedule_id'
     ];
 
+    public function quotation(){ return $this->belongsTo('App\Models\Quotation', 'quotation_id', 'id');}
+    public function tsr(){ return $this->belongsTo('App\Models\Tsr', 'tsr_id', 'id');}
+    public function customer(){ return $this->belongsTo('App\Models\Customer', 'customer_id', 'id');}
+    public function conforme(){ return $this->belongsTo('App\Models\CustomerConforme', 'conforme_id', 'id');}
     public function schedule(){ return $this->belongsTo('App\Models\Schedule', 'schedule_id', 'id');}
 
     public function getUpdatedAtAttribute($value)

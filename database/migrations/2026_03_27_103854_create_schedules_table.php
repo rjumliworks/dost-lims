@@ -14,15 +14,15 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('title')->index();
             $table->datetime('start');
             $table->datetime('end');
+            $table->boolean('is_forall');
             $table->boolean('is_allday');
-            $table->tinyInteger('event_id')->unsigned()->index();
-            $table->foreign('event_id')->references('id')->on('list_dropdowns')->onDelete('cascade');
-            $table->integer('user_id')->unsigned()->index();
+            $table->unsignedTinyInteger('event_id');
+            $table->foreign('event_id')->references('id')->on('list_events')->onDelete('cascade');
+            $table->unsignedinteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->integer('agency_id')->unsigned()->index();
+            $table->unsignedinteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->timestamps();
         });

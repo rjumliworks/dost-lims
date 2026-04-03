@@ -4,8 +4,10 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
 use App\Models\User;
 use App\Models\Customer;
+use App\Models\CustomerConforme;
 use App\Models\TestserviceList;
 use App\Models\TestserviceAddon;
 use Illuminate\Console\Command;
@@ -88,14 +90,22 @@ class MigrateTsrs extends Command
                         if($conforme_new){
                             $newConformeId = $conforme_new->id;
                         }else{
-                            $newConformeId = DB::table('customer_conformes')->insertGetId([
-                                'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id'),
-                                'old_id' => $tsr->conforme_id,
-                                'name' => $conforme->name ?: 'None',
-                                'contact_no' => $conforme->contact_no,
-                                'created_at' => $conforme->created_at,
-                                'updated_at' => $conforme->updated_at
-                            ]);
+                            $hash_name = hash('sha256', Crypt::decryptString($conforme->name));
+                            $check = CustomerConforme::where('name_hash',$hash_name)->first();
+                            if($check){
+                                $newConformeId = $check->id;
+                            }else{
+                                $newConformeId = DB::table('customer_conformes')->insertGetId([
+                                    'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id'),
+                                    'old_id' => $tsr->conforme_id,
+                                    'name' => $conforme->name ?: 'None',
+                                    'name_hash' => $hash_name,
+                                    'contact_no' => $conforme->contact_no,
+                                    'created_at' => $conforme->created_at,
+                                    'updated_at' => $conforme->updated_at
+                                ]);
+                            }
+                            
                         }
                     }
 
@@ -403,7 +413,7 @@ class MigrateTsrs extends Command
                             'released_at'=>$release->released_at,
                             'release_id'=> 16,
                             'status_id'=>$release->status_id,
-                            'user_id'=>$release->user_id,
+                            'user_id'=> User::where('old_id', $release->user_id)->value('id') ?? 1,
                             'tsr_id'=>$newTsrId,
                             'created_at'=>$release->created_at,
                             'updated_at'=>$release->updated_at

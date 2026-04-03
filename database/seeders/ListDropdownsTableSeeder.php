@@ -445,8 +445,8 @@ class ListDropdownsTableSeeder extends Seeder
                 'name' => 'Official Travel',
                 'classification' => 'Events',
                 'type' => 'Official Business',
-                'color' => 'text-white',
-                'others' => 'bg-success',
+                'color' => 'text-success',
+                'others' => 'bg-success-subtle',
                 'is_active' => 1,
             ),
             43 => 
@@ -495,8 +495,8 @@ class ListDropdownsTableSeeder extends Seeder
                 'name' => 'Holiday',
                 'classification' => 'Events',
                 'type' => 'Official',
-                'color' => 'text-dark',
-                'others' => 'bg-dark-subtle',
+                'color' => 'text-white',
+                'others' => 'bg-dark',
                 'is_active' => 1,
             ),
             48 => 
@@ -665,8 +665,8 @@ class ListDropdownsTableSeeder extends Seeder
                 'name' => 'Others',
                 'classification' => 'Events',
                 'type' => 'Official',
-                'color' => 'text-white',
-                'others' => 'bg-warning',
+                'color' => 'text-warning',
+                'others' => 'bg-warning-subtle',
                 'is_active' => 1,
             ),
             65 => 
@@ -765,8 +765,8 @@ class ListDropdownsTableSeeder extends Seeder
                 'name' => 'GAD Activity',
                 'classification' => 'Events',
                 'type' => 'Official',
-                'color' => 'text-white',
-                'others' => 'bg-purple',
+                'color' => 'text-purple',
+                'others' => 'bg-primary-subtle',
                 'is_active' => 1,
             ),
             75 => 
@@ -946,7 +946,7 @@ class ListDropdownsTableSeeder extends Seeder
                 'classification' => 'Events',
                 'type' => 'Testing Services',
                 'color' => 'text-white',
-                'others' => 'bg-info',
+                'others' => 'bg-pink',
                 'is_active' => 1,
             ),
         ));

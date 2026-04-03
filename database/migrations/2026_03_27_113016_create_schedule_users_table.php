@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('schedule_users', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->integer('user_id')->unsigned()->index();
+            $table->unsignedInteger('user_id') ;
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('schedule_id');
             $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');

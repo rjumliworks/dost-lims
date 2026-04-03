@@ -12,6 +12,7 @@ use App\Models\ListStatus;
 use App\Models\ListDiscount;
 use App\Models\ListDropdown;
 use App\Models\ListIndustry;
+use App\Models\ListEvent;
 use App\Models\ListLaboratory;
 use App\Models\LocationRegion;
 use App\Models\LocationProvince;
@@ -194,9 +195,8 @@ class DropdownClass
             ->groupBy('event_id')
             ->pluck('total', 'event_id'); 
 
-        $data = ListDropdown::where('classification', 'Events')
-            ->where('is_active', 1)
-            ->get()
+        $data = ListEvent::where('is_active', 1)
+            ->orderBy('id','asc')->get()
             ->map(function ($item) use ($counts) {
                 return [
                     'label' => $item->type, 
@@ -204,6 +204,7 @@ class DropdownClass
                     'options' => [
                         'value' => $item->id,
                         'name' => $item->name,
+                        'fields' => $item->fields,
                         'color' => $item->color,
                         'others' => $item->others,
                         'type' => $item->type,

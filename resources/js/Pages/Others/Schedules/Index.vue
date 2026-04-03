@@ -45,7 +45,7 @@
                     </div>
                     <hr class="text-muted"/>
                     <ul class="list-group list-group-flush border-dashed mb-n4 mt-n4 p-3">
-                        <li class="list-group-item px-0" v-for="(list,index) in orderedEvents" :key="index">
+                        <li class="list-group-item px-0" v-for="(list,index) in dropdowns.events" :key="index">
                             <div class="d-flex cursor-pointer" @click="toggle(index)">
 
                                 <div class="flex-shrink-0 avatar-xs">
@@ -193,21 +193,6 @@ export default {
         showDue(newValue) {
             this.fetch();
         },
-    },
-    computed: {
-        orderedEvents() {
-            const order = [
-                'Calibration Services',
-                'Testing Services',
-                'Official Business',
-                'Personal Business',
-                'Official'
-            ];
-
-            return [...this.dropdowns.events].sort((a, b) => {
-                return order.indexOf(a.label) - order.indexOf(b.label);
-            });
-        }
     },
     methods: {
         toggle(index) {

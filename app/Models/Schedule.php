@@ -14,6 +14,7 @@ class Schedule extends Model
 
     protected $fillable = [
         'title',
+        'is_forall',
         'is_allday',
         'start',
         'end',
@@ -22,11 +23,10 @@ class Schedule extends Model
         'user_id'
     ];
     
-    public function customer(){ return $this->hasOne('App\Models\ScheduleCustomer', 'schedule_id');}
     public function information(){ return $this->hasOne('App\Models\ScheduleInformation', 'schedule_id');}
     public function users(){ return $this->hasOne('App\Models\ScheduleUser', 'schedule_id');}
     
-    public function event(){ return $this->belongsTo('App\Models\ListDropdown', 'event_id', 'id');}
+    public function event(){ return $this->belongsTo('App\Models\ListEvent', 'event_id', 'id');}
     public function user(){ return $this->belongsTo('App\Models\User', 'user_id', 'id');}
     public function agency(){ return $this->belongsTo('App\Models\Agency', 'agency_id', 'id');}
 
