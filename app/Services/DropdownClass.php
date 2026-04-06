@@ -339,4 +339,25 @@ class DropdownClass
             return [];
         }
     }
+
+    public function tsrs($request){
+        $keyword = $request->keyword;
+        $customer = $request->customer_id;
+        $data =  Tsr::when($keyword, function ($query) use ($keyword){
+            $query->where('code', 'LIKE', "%{$keyword}%")->whereIn('status_id',[1,2,3]);
+        })
+        ->where('customer_id',$customer)
+        ->limit(5)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->code
+            ];
+        });
+        
+        if($keyword){
+            return $data;
+        }else{
+            return [];
+        }
+    }
 }

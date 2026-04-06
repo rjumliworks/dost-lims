@@ -317,7 +317,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-13"><span class="text-body">Upcoming Schedules</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses</p>
+                            <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
                         </div>
                         <div class="flex-shrink-0">
                             <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
@@ -328,29 +328,63 @@
                     <div class="row g-0 text-center">
                         <div class="col-6 col-sm-4">
                             <div class="p-3 border border-dashed border-start-0">
-                                <h5 class="mb-1"><span class="counter-value" data-target="854">854</span></h5>
-                                <p class="text-muted mb-0">BOD</p>
+                                <h5 class="mb-1 fs-12">{{schedules.calibration}}</h5>
+                                <p class="text-muted mb-0 fs-12">Calibration</p>
                             </div>
                         </div>
-                        <!--end col-->
                         <div class="col-6 col-sm-4">
                             <div class="p-3 border border-dashed border-start-0">
-                                <h5 class="mb-1"><span class="counter-value" data-target="1278">1,278</span></h5>
-                                <p class="text-muted mb-0">Calibration</p>
+                                <h5 class="mb-1 fs-12">{{schedules.testing}}</h5>
+                                <p class="text-muted mb-0 fs-12">Testing</p>
                             </div>
                         </div>
-                        <!--end col-->
                         <div class="col-6 col-sm-4">
                             <div class="p-3 border border-dashed border-start-0 border-end-0">
-                                <h5 class="mb-1"><span class="counter-value" data-target="3">3</span></h5>
-                                <p class="text-muted mb-0">Testing</p>
+                                <h5 class="mb-1 fs-12">{{schedules.others}}</h5>
+                                <p class="text-muted mb-0 fs-12">Others</p>
                             </div>
                         </div>
-                        <!--end col-->
                     </div>
                 </div>
-                <div class="car-body bg-white border-bottom shadow-none">
-                
+                <div class="card-body bg-white border-bottom shadow-none" style="height: calc(100vh - 593px); overflow: auto;">
+                    <ul class="list-group list-group-flush border-dashed mt-n2">
+                        <li class="list-group-item ps-0" v-for="(list,index) in schedules.list" v-bind:key="index">
+                            <div class="row align-items-center g-3">
+                                <div class="col-auto">
+                                    <div class="avatar-sm p-1 py-2 h-auto rounded-3 material-shadow" :class="list.event.bg">
+                                        <div class="text-center" >
+                                            <h5 class="mb-0 fs-12" :class="list.event.color">{{ list.day }}</h5>
+                                            <div class="fs-10" :class="list.event.color">{{ list.day_name }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class=" fw-normal mt-0 mb-0 fs-11">{{list.event.name}}</h5>
+                                    <p class="text-primary text-truncate fw-semibold fs-12 mb-0">{{list.title}}</p>
+                                    <h5 class="text-muted fw-normal mt-0 mb-0 fs-11">{{list.event.type}}</h5>
+                                </div>
+                                
+                            </div>
+                            <!-- end row -->
+                        </li><!-- end -->
+                    </ul>
+                    <!-- <div class="table-responsive table-card" style="height: calc(100vh - 595px); overflow: auto;">
+                        <table class="table align-middle table-centered table-striped mb-0">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th>Customer</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-12">
+                                <tr :class="list.event.bg" v-for="(list,index) in schedules.list" v-bind:key="index">
+                                    <td>
+                                        <h5 class="fs-12 mb-0 fw-semibold" :class="list.event.color">{{list.title}}</h5>
+                                        <p class="fs-11 mb-0" :class="list.event.color">{{list.event.name}} ({{list.event.type}})</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
                 </div>
             </div>        
                                         
@@ -448,6 +482,7 @@ export default {
             counts: [],
             reminders: [],
             statuses: [],
+            schedules: [],
             fee: null,
             target: null
         }
@@ -490,6 +525,7 @@ export default {
                 this.counts = response.data.counts; 
                 this.reminders = response.data.reminders; 
                 this.statuses = response.data.statuses;   
+                this.schedules = response.data.schedules; 
                 this.chartOptions1 = {
                     ...this.chartOptions1,
                     ...{

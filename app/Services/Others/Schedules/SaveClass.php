@@ -17,7 +17,7 @@ class SaveClass
             $start = $start.' '.$startTime;
             $end = $end.' '.$endTime;
         }else{
-            if($request->is_allday){
+            if(!$request->is_allday){
                 $startTime = "08:00:00";
                 $endTime = "17:00:00";
                 $date = substr($request->date, 0, 10);
@@ -33,6 +33,7 @@ class SaveClass
             'start' => $start,
             'end' => $end,
             'is_allday' => $request->is_allday,
+            'is_forall' => $request->is_forall,
             'event_id' => $request->event['value']
         ]);
 
@@ -48,11 +49,18 @@ class SaveClass
             'schedule_id' => $data->id
         ]);
 
-        if(count($request->users)){
-            foreach($request->users as $user){
+        if(!$request->is_forall){
+            if(count($request->users)){
+                foreach($request->users as $user){
+                    ScheduleUser::create([
+                        'schedule_id' => $data->id,
+                        'user_id' => $user['value']
+                    ]);
+                }
+            }else{
                 ScheduleUser::create([
                     'schedule_id' => $data->id,
-                    'user_id' => $user['value']
+                    'user_id' => \Auth::user()->id
                 ]);
             }
         }
@@ -61,6 +69,18 @@ class SaveClass
             'data' => $data,
             'message' => 'Schedule creation was successful!', 
             'info' => "You've successfully created the new event."
+        ];
+    }
+
+    public function delete($id)
+    {
+        $event = Schedule::findOrFail($id);
+        $event->delete();
+
+        return [
+            'data' => [],
+            'message' => 'Event deleted successful!', 
+            'info' => "You've successfully deleted the event."
         ];
     }
 }

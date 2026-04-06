@@ -24,7 +24,7 @@ class Schedule extends Model
     ];
     
     public function information(){ return $this->hasOne('App\Models\ScheduleInformation', 'schedule_id');}
-    public function users(){ return $this->hasOne('App\Models\ScheduleUser', 'schedule_id');}
+    public function users(){ return $this->hasMany('App\Models\ScheduleUser', 'schedule_id');}
     
     public function event(){ return $this->belongsTo('App\Models\ListEvent', 'event_id', 'id');}
     public function user(){ return $this->belongsTo('App\Models\User', 'user_id', 'id');}

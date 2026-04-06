@@ -29,6 +29,15 @@ class Customer extends Authenticatable
         'is_new'
     ];
 
+    protected $appends = ['fulladdress'];
+
+    public function getFulladdressAttribute()
+    {
+        
+        $name = "{$this->address->barangay->name}, {$this->address->municipality->name}, {$this->address->province->name}, {$this->address->region->region}";
+        return $name;
+    }
+
     protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {

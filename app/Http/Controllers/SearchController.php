@@ -36,6 +36,9 @@ class SearchController extends Controller
             case 'payors':
                 return $this->dropdown->payors($request);
             break;
+            case 'tsrs':
+                return $this->dropdown->tsrs($request);
+            break;
         }
     }
 }

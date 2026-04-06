@@ -9,7 +9,9 @@ use App\Models\TsrAnalysis;
 use App\Models\TsrRelease;
 use App\Models\TsrPayment;
 use App\Models\TargetBreakdown;
+use App\Models\Schedule;
 use Carbon\Carbon;
+use App\Http\Resources\Others\Schedules\EventResource;
 
 class CroClass
 {
@@ -26,7 +28,8 @@ class CroClass
             'statuses' => $this->statuses($request),
             'charts' => $this->charts($request),
             'fee' => $this->fees($request),
-            'target' => $this->target($request)
+            'target' => $this->target($request),
+            'schedules' => $this->schedules($request)
         ];
     }
 
@@ -39,7 +42,29 @@ class CroClass
         ];
     }
 
-     private function fees($request){
+    private function schedules($request){
+        return [
+            'calibration' => Schedule::whereIn('event_id',[1,2])
+                ->whereBetween('start', [now()->startOfWeek(), now()->startOfWeek()->addDays(4)])
+                ->count(),
+
+            'testing' => Schedule::whereIn('event_id',[3,4])
+                ->whereBetween('start', [now()->startOfWeek(), now()->startOfWeek()->addDays(4)])
+                ->count(),
+
+            'others' => Schedule::whereNotIn('event_id',[1,2,3,4])
+                ->whereBetween('start', [now()->startOfWeek(), now()->startOfWeek()->addDays(4)])
+                ->count(),
+
+            'list' => EventResource::collection(Schedule::with('users.user:id','users.user.profile')
+            ->with('information.customer.customer_name','information.customer.address','information.conforme')
+            ->whereBetween('start', [now()->startOfWeek(), now()->startOfWeek()->addDays(4)])
+            ->orderBy('start','ASC')
+            ->get())
+        ];
+    }
+
+    private function fees($request){
         $month = ($request->month) ? \DateTime::createFromFormat('F', $request->month)->format('m') : date('m');  
         $year = ($request->year) ? $request->year : date('Y');
 

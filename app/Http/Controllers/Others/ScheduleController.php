@@ -58,4 +58,18 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function destroy($id)
+    {
+        $result = $this->handleTransaction(function () use ($id) {
+            return $this->save->delete($id);
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
 }
