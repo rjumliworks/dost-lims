@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insights;
 use App\Models\Target;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\DropdownClass;
 use App\Services\Insights\Customer\BarClass;
 use App\Services\Insights\Customer\DataClass;
 use App\Services\Insights\Customer\LocationClass;
@@ -12,11 +13,12 @@ use App\Services\Insights\Customer\DiscountClass;
 
 class CustomerController extends Controller
 {
-    public function __construct(BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount){
+    public function __construct(DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount){
         $this->bar = $bar;
         $this->data = $data;
         $this->location = $location;
         $this->discount = $discount;
+        $this->dropdown = $dropdown;
 
     }
 
@@ -29,6 +31,7 @@ class CustomerController extends Controller
                 return [
                     'summary_count' => $this->data->summary_count($request),
                     'summary_type' => $this->data->summary_type($request),
+                    'high_request' => $this->data->high_request($request)
                 ];
             break;
             case 'location':
@@ -39,8 +42,13 @@ class CustomerController extends Controller
             break;
             default: 
                 return inertia('Modules/Insights/Customer/Index',[
-                    'year' => date('Y'),
-                    'years' => Target::distinct()->pluck('year')
+                    'current_year' => date('Y'),
+                    'years' => Target::distinct()->pluck('year'),
+                    'dropdowns' => [
+                        'classes' => $this->dropdown->dropdowns('Class','n/a'),
+                        'sexs' => $this->dropdown->dropdowns('Sex','n/a'),
+                        'individuals' => $this->dropdown->dropdowns('Individual','n/a')
+                    ]
                 ]);
         }
     }

@@ -25,20 +25,24 @@
         <BCol xl="4">
             <Summary :count="summary_count" :type="summary_type" ref="summary"/>
         </BCol>
+        <BCol xl="4" class="mt-n1">
+            <HighRequest :lists="high_request" :total="total_tsrs" :dropdowns="dropdowns" ref="high_request"/>
+        </BCol>
     </BRow>
 </template>
 <script>
 import Bar from './Components/Bar.vue';
 import Summary from './Components/Summary.vue';
+import HighRequest from './Components/HighRequest.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    props: ['years','year'],
-    components: { PageHeader, Multiselect, Bar, Summary },
+    props: ['years','current_year','dropdowns'],
+    components: { PageHeader, Multiselect, Bar, Summary, HighRequest },
     data(){
         return {
             by: null,
-            year: this.year,
+            year: this.current_year,
             month: null,
             quarter: null,
             semester: null,
@@ -46,11 +50,27 @@ export default {
             quarters: ['1st Quater','2nd Quarter','3rd Quarter','4th Quarter'],
             semesters: ['1st Semester','2nd Semester'],
             summary_count: [],
-            summary_type: []
+            summary_type: [],
+            high_request: []
         }
     },
     watch: {
-        
+        "year"(newVal){
+            this.fetch();
+            this.$refs.bar.updateYear(newVal);
+        },
+        "laboratory"(newVal){
+            this.fetch();
+        },
+        "quarter"(newVal){
+            this.fetch();
+        },
+        "semester"(newVal){
+            this.fetch();
+        },
+        "month"(newVal){
+            this.fetch();
+        }
     },
     created(){
         this.fetch();
@@ -70,6 +90,7 @@ export default {
             .then(response => {
                 this.summary_count = response.data.summary_count;
                 this.summary_type = response.data.summary_type;
+                this.high_request = response.data.high_request;
             })
             .catch(err => console.log(err));
         },

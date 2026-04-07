@@ -29,12 +29,19 @@ class Customer extends Authenticatable
         'is_new'
     ];
 
-    protected $appends = ['fulladdress'];
+    protected $appends = ['fulladdress','fullname'];
 
     public function getFulladdressAttribute()
     {
         
         $name = "{$this->address->barangay->name}, {$this->address->municipality->name}, {$this->address->province->name}, {$this->address->region->region}";
+        return $name;
+    }
+
+    public function getFullnameAttribute()
+    {
+        $subname = ($this->is_main) ? '' : ' - '.$this->name;
+        $name = $this->customer_name->name.$subname;
         return $name;
     }
 
