@@ -6,6 +6,7 @@ use App\Models\Target;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Services\Insights\Customer\TopClass;
 use App\Services\Insights\Customer\BarClass;
 use App\Services\Insights\Customer\DataClass;
 use App\Services\Insights\Customer\LocationClass;
@@ -13,8 +14,9 @@ use App\Services\Insights\Customer\DiscountClass;
 
 class CustomerController extends Controller
 {
-    public function __construct(DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount){
+    public function __construct(DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount, TopClass $top){
         $this->bar = $bar;
+        $this->top = $top;
         $this->data = $data;
         $this->location = $location;
         $this->discount = $discount;
@@ -31,8 +33,16 @@ class CustomerController extends Controller
                 return [
                     'summary_count' => $this->data->summary_count($request),
                     'summary_type' => $this->data->summary_type($request),
-                    'high_request' => $this->data->high_request($request)
+                    'high_request' => $this->data->high_request($request),
+                    'high_spend' => $this->data->high_spend($request),
+                    'customer_province' => $this->data->customer_province($request),
+                    'firms_industry' => $this->data->firms_industry($request),
+                    'firms_subindustry' => $this->data->firms_subindustry($request),
+                    'firms_purpose' => $this->data->firms_purpose($request)
                 ];
+            break;
+            case 'top':
+                return $this->top->fetch($request);
             break;
             case 'location':
                 return $this->location->data($request);

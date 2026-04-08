@@ -5,13 +5,13 @@
                 <div class="flex-shrink-0 me-3">
                     <div style="height:2.5rem;width:2.5rem;">
                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                            <i class="ri-team-fill text-primary fs-24"></i>
+                            <i class="ri-map-pin-user-fill text-primary fs-24"></i>
                         </span>
                     </div>
                 </div>
                 <div class="flex-grow-1">
-                    <h5 class="mb-0 fs-14"><span class="text-body">Top 5 High-Request Customers</span></h5>
-                    <p class="text-muted text-truncate-two-lines fs-12">Shows the top 5 customers with the most requests</p>
+                    <h5 class="mb-0 fs-14"><span class="text-body">Customer Distribution by Province</span></h5>
+                    <p class="text-muted text-truncate-two-lines fs-12">Shows customer distribution across provinces</p>
                 </div>
                 <div class="flex-shrink-0">
                     <div class="mt-1">
@@ -35,15 +35,13 @@
                                 <th style="cursor: pointer; width: 4%;">#</th>
                                 <th scope="col">Name</th>
                                 <th class="text-center" style="width: 10%;">#</th>
-                                <th class="text-center" style="width: 10%;">%</th>
                             </tr>
                         </thead>
                         <tbody class="bg-light-subtle fs-12">
-                            <tr v-for="(list,index) in lists.data" v-bind:key="index">
+                            <tr v-for="(list,index) in lists" v-bind:key="index">
                                 <td>{{index + 1}}</td>
-                                <td class="text-truncate name-cell">{{list.fullname }}</td>
-                                <td class="text-center">{{list.tsrs_count}} </td>
-                                <td class="text-center">{{percentage(list.tsrs_count)}}</td>
+                                <td class="text-truncate name-cell">{{list.name }}</td>
+                                <td class="text-center">{{list.address_count}} </td>
                             </tr>
                         </tbody>
                     </table>
@@ -74,7 +72,7 @@ export default {
             }
         },
         openView(){
-            this.$refs.topcustomer.show('Top High-Request Customers');
+            this.$refs.topcustomer.show('Customer Distribution by Province');
         }
     }
 }

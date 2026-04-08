@@ -102,7 +102,7 @@ class Tsr extends Model
                 abort(403, 'User has no agency assigned.');
             }
 
-            $builder->where('agency_id', $agencyId);
+            $builder->where('tsrs.agency_id', $agencyId);
         });
 
         static::creating(function ($model) {
