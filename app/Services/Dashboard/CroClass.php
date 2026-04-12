@@ -29,7 +29,8 @@ class CroClass
             'charts' => $this->charts($request),
             'fee' => $this->fees($request),
             'target' => $this->target($request),
-            'schedules' => $this->schedules($request)
+            'schedules' => $this->schedules($request),
+            'personnels' => $this->personnels($request)
         ];
     }
 
@@ -63,6 +64,38 @@ class CroClass
             ->get())
         ];
     }
+
+    private function personnels($request)
+    {
+        // IN (inside laboratory)
+        $inCount = Schedule::whereDate('start', Carbon::today())
+        ->whereHas('event', fn($q) => $q->where('is_out', 0))
+        ->with('users.user:id')
+        ->get()
+        ->pluck('users')
+        ->flatten()
+        ->pluck('user')
+        ->unique('id')
+        ->count();
+
+
+        // OUT (outside laboratory)
+        $outUsers = Schedule::whereDate('start', Carbon::today())
+            ->whereHas('event', fn($q) => $q->where('is_out', 1))
+            ->with('users.user:id')
+            ->get()
+            ->pluck('users')
+            ->flatten()
+            ->unique('id')
+            ->values();
+
+        return [
+            'in' => $inCount,
+            'out' => $outUsers->count(),
+            'list' => $outUsers
+        ];
+    }
+
 
     private function fees($request){
         $month = ($request->month) ? \DateTime::createFromFormat('F', $request->month)->format('m') : date('m');  

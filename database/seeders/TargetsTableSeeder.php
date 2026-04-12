@@ -26,8 +26,8 @@ class TargetsTableSeeder extends Seeder
                 'data' => '[]',
                 'is_completed' => 1,
                 'agency_id' => 14,
-                'created_at' => '2025-01-01 14:38:06',
-                'updated_at' => '2025-01-01 14:38:06',
+                'created_at' => '2026-04-11 10:40:53',
+                'updated_at' => '2026-04-11 10:40:53',
             ),
             1 => 
             array (
@@ -36,8 +36,8 @@ class TargetsTableSeeder extends Seeder
                 'data' => '[]',
                 'is_completed' => 0,
                 'agency_id' => 14,
-                'created_at' => '2025-01-01 14:38:06',
-                'updated_at' => '2025-01-01 14:38:06',
+                'created_at' => '2026-04-11 10:40:53',
+                'updated_at' => '2026-04-11 10:40:53',
             ),
         ));
         

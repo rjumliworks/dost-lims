@@ -21,11 +21,11 @@ return new class extends Migration
             $table->boolean('is_consolidated');
             $table->unsignedTinyInteger('objective_id');
             $table->foreign('objective_id')->references('id')->on('list_objectives')->onDelete('cascade');
-            $table->unsignedTinyInteger('laboratory_id');
+            $table->unsignedTinyInteger('laboratory_id')->nullable();
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
             $table->unsignedInteger('target_id');
             $table->foreign('target_id')->references('id')->on('targets')->onDelete('cascade');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['target_id','objective_id','laboratory_id'], 'target_objective');

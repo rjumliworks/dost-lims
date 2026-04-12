@@ -217,7 +217,79 @@
                 </div>
             </b-col>
         </div>
-        <div class="col-md-9 mt-n1">
+        <div class="col-md-3 mt-n1">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-calendar-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-13"><span class="text-body">Upcoming Schedules</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center">
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">{{schedules.calibration}}</h5>
+                                <p class="text-muted mb-0 fs-12">Calibration</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">{{schedules.testing}}</h5>
+                                <p class="text-muted mb-0 fs-12">Testing</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <div class="p-3 border border-dashed border-start-0 border-end-0">
+                                <h5 class="mb-1 fs-12">{{schedules.others}}</h5>
+                                <p class="text-muted mb-0 fs-12">Others</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-white border-bottom shadow-none" style="height: 330px; overflow: auto;">
+                    <ul class="list-group list-group-flush border-dashed mt-n2">
+                        <li class="list-group-item ps-0" v-for="(list,index) in schedules.list" v-bind:key="index">
+                            <div class="row align-items-center g-3">
+                                <div class="col-auto">
+                                    <div class="avatar-sm p-1 py-2 h-auto rounded-3 material-shadow" :class="list.event.bg">
+                                        <div class="text-center" >
+                                            <h5 class="mb-0 fs-12" :class="list.event.color">{{ list.day }}</h5>
+                                            <div class="fs-10" :class="list.event.color">{{ list.day_name }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class=" fw-normal mt-0 mb-0 fs-11">{{list.event.name}}</h5>
+                                    <p class="text-primary text-truncate fw-semibold fs-12 mb-0">{{list.title}}</p>
+                                    <h5 class="text-muted fw-normal mt-0 mb-0 fs-11">{{list.event.type}}</h5>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div v-if="schedules.list?.length == 0">
+                        <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
+                            <i class="ri-alert-line label-icon"></i><strong>Warning</strong> - No upcoming schedules for this week
+                        </div>
+                    </div>
+                </div>
+            </div>                            
+                                       
+        </div>
+        <div class="col-md-6 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
                 <div class="card-header bg-light-subtle">
@@ -262,7 +334,7 @@
                     <div class="table-responsive table-card">
                         <table class="table table-nowrap table-bordered align-middle mb-0">
                             <thead class="table-light thead-fixed">
-                                <tr class="fs-11">
+                                <tr class="fs-10">
                                     <th style="width: 20%;">Laboratory</th>
                                     <th style="width: 9%;" class="text-center">No. of Requests</th>
                                     <th style="width: 9%;" class="text-center">No. of Samples</th>
@@ -273,7 +345,7 @@
                                     <th style="width: 13%;" class="text-center">Gross</th>
                                 </tr>
                             </thead>
-                            <tbody class="fs-11">
+                            <tbody class="fs-10">
                                 <tr v-for="(list,index) in laboratories" v-bind:key="index" >
                                     <td> {{ list[0] }}</td>
                                     <td class="text-center"> {{ list[1] }}</td>
@@ -286,7 +358,7 @@
                                 </tr>
                             </tbody>
                             <tfoot>
-                                <tr class="table-light fs-12" v-for="(list,index) in total" v-bind:key="index" >
+                                <tr class="table-light fs-10" v-for="(list,index) in total" v-bind:key="index" >
                                     <th> {{ list[0] }}</th>
                                     <th class="text-center"> {{ list[1] }}</th>
                                     <th class="text-center"> {{ list[2] }}</th>
@@ -311,12 +383,12 @@
                         <div class="flex-shrink-0 me-3 mt-1">
                             <div style="height:2rem;width:2rem;">
                                 <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-calendar-fill text-primary fs-20"></i>
+                                    <i class="ri-account-circle-fill text-primary fs-20"></i>
                                 </span>
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-13"><span class="text-body">Upcoming Schedules</span></h5>
+                            <h5 class="mb-0 fs-13"><span class="text-body">Personnel Status Monitoring</span></h5>
                             <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
                         </div>
                         <div class="flex-shrink-0">
@@ -326,28 +398,23 @@
                 </div>
                 <div class="card-header p-0 border-0 bg-light-subtle">
                     <div class="row g-0 text-center">
-                        <div class="col-6 col-sm-4">
+                        <div class="col-6 col-sm-6">
                             <div class="p-3 border border-dashed border-start-0">
-                                <h5 class="mb-1 fs-12">{{schedules.calibration}}</h5>
-                                <p class="text-muted mb-0 fs-12">Calibration</p>
+                                <h5 class="mb-1 fs-12">{{personnels.in}}</h5>
+                                <p class="text-muted mb-0 fs-12">In Laboratory</p>
                             </div>
                         </div>
-                        <div class="col-6 col-sm-4">
+                        <div class="col-12 col-sm-6">
                             <div class="p-3 border border-dashed border-start-0">
-                                <h5 class="mb-1 fs-12">{{schedules.testing}}</h5>
-                                <p class="text-muted mb-0 fs-12">Testing</p>
-                            </div>
-                        </div>
-                        <div class="col-6 col-sm-4">
-                            <div class="p-3 border border-dashed border-start-0 border-end-0">
-                                <h5 class="mb-1 fs-12">{{schedules.others}}</h5>
-                                <p class="text-muted mb-0 fs-12">Others</p>
+                                <h5 class="mb-1 fs-12">{{personnels.out}}</h5>
+                                <p class="text-muted mb-0 fs-12">Out of Laboratory</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-body bg-white border-bottom shadow-none" style="height: calc(100vh - 593px); overflow: auto;">
+                <div class="card-body bg-white border-bottom shadow-none" style="height: 330px; overflow: auto;">
                     <ul class="list-group list-group-flush border-dashed mt-n2">
+                        {{ personnels.list }}
                         <li class="list-group-item ps-0" v-for="(list,index) in schedules.list" v-bind:key="index">
                             <div class="row align-items-center g-3">
                                 <div class="col-auto">
@@ -363,31 +430,16 @@
                                     <p class="text-primary text-truncate fw-semibold fs-12 mb-0">{{list.title}}</p>
                                     <h5 class="text-muted fw-normal mt-0 mb-0 fs-11">{{list.event.type}}</h5>
                                 </div>
-                                
                             </div>
-                            <!-- end row -->
-                        </li><!-- end -->
+                        </li>
                     </ul>
-                    <!-- <div class="table-responsive table-card" style="height: calc(100vh - 595px); overflow: auto;">
-                        <table class="table align-middle table-centered table-striped mb-0">
-                            <thead class="table-light thead-fixed">
-                                <tr class="fs-11">
-                                    <th>Customer</th>
-                                </tr>
-                            </thead>
-                            <tbody class="fs-12">
-                                <tr :class="list.event.bg" v-for="(list,index) in schedules.list" v-bind:key="index">
-                                    <td>
-                                        <h5 class="fs-12 mb-0 fw-semibold" :class="list.event.color">{{list.title}}</h5>
-                                        <p class="fs-11 mb-0" :class="list.event.color">{{list.event.name}} ({{list.event.type}})</p>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div> -->
+                    <div v-if="schedules.list?.length == 0">
+                        <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
+                            <i class="ri-alert-line label-icon"></i><strong>Warning</strong> - No upcoming schedules for this week
+                        </div>
+                    </div>
                 </div>
-            </div>        
-                                        
+            </div>                            
                                        
         </div>
     </b-row>
@@ -483,6 +535,7 @@ export default {
             reminders: [],
             statuses: [],
             schedules: [],
+            personnels: [],
             fee: null,
             target: null
         }
@@ -526,6 +579,7 @@ export default {
                 this.reminders = response.data.reminders; 
                 this.statuses = response.data.statuses;   
                 this.schedules = response.data.schedules; 
+                this.personnels = response.data.personnels;
                 this.chartOptions1 = {
                     ...this.chartOptions1,
                     ...{
