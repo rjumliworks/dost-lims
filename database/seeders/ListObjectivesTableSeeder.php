@@ -151,6 +151,17 @@ class ListObjectivesTableSeeder extends Seeder
                 'created_at' => '2025-07-02 16:41:43',
                 'updated_at' => '2025-07-02 16:41:43',
             ),
+            12 => 
+            array (
+                'id' => 13,
+                'name' => 'Number of Firms Assisted',
+                'type_id' => 80,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
         ));
         
         

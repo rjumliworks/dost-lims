@@ -74,10 +74,10 @@
                                             :class="{'bg-dark text-white fw-semibold': selectedRow === `breakdown-${oIndex}-${bIndex}`}">
                                                 <td class="text-center"></td>
                                                 <td class="ps-4">{{ breakdown.name || '-' }}</td>
-                                                <td v-if="objective.is_amount" class="text-center" @click="setTarget(objective.name,breakdown)">-
+                                                <td v-if="objective.is_amount" class="text-center" @click="setTarget(objective.name,breakdown)">{{ formatMoney(breakdown.target) }}
                                                     <!-- {{ formatMoney(breakdown.target) }} -->
                                                 </td>
-                                                <td v-else class="text-center" @click="setTarget(objective.name,breakdown)">-</td> 
+                                                <td v-else class="text-center" @click="setTarget(objective.name,breakdown)">{{ breakdown.target }}</td> 
                                                 <!-- {{ breakdown.target }} -->
                                                 <template v-if="type == 'Months'" v-for="(m, mIndex) in breakdown.months" :key="mIndex">
                                                     <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex}">{{formatMoney(m.accomplish)}}</td>
@@ -90,10 +90,10 @@
                                                         <span v-else>{{ q.accomplish }}</span>
                                                     </td>
                                                 </template>
-                                                <td v-if="objective.is_amount" class="text-center">-</td>
+                                                <td v-if="objective.is_amount" class="text-center">{{ formatMoney(breakdown.accomplish) }}</td>
                                                 <!-- {{ formatMoney(breakdown.accomplish) }} -->
                                                 <td v-else class="text-center">{{ formatNumber(breakdown.accomplish) }}</td>
-                                                <td class="text-center">-</td>
+                                                <td class="text-center">{{ breakdown.percentage }}</td>
                                                 <!-- {{ breakdown.percentage }}  -->
                                             </tr>
                                       </template>

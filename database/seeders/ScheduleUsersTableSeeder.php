@@ -147,6 +147,30 @@ class ScheduleUsersTableSeeder extends Seeder
                 'created_at' => '2026-04-11 11:06:29',
                 'updated_at' => '2026-04-11 11:06:29',
             ),
+            16 => 
+            array (
+                'id' => 18,
+                'user_id' => 14,
+                'schedule_id' => 17,
+                'created_at' => '2026-04-13 09:53:26',
+                'updated_at' => '2026-04-13 09:53:26',
+            ),
+            17 => 
+            array (
+                'id' => 19,
+                'user_id' => 13,
+                'schedule_id' => 17,
+                'created_at' => '2026-04-13 09:53:26',
+                'updated_at' => '2026-04-13 09:53:26',
+            ),
+            18 => 
+            array (
+                'id' => 20,
+                'user_id' => 3,
+                'schedule_id' => 18,
+                'created_at' => '2026-04-13 09:58:23',
+                'updated_at' => '2026-04-13 09:58:23',
+            ),
         ));
         
         

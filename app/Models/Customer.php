@@ -47,17 +47,20 @@ class Customer extends Authenticatable
 
     protected static function booted()
     {
-        static::addGlobalScope('agency', function (Builder $builder) {
-            if (! auth()->guard('web')->check()) {
+         static::addGlobalScope('agency', function (Builder $builder) {
+            if (! Auth::check()) {
                 return;
             }
-
-            $agencyId = Auth::user()->profile?->agency_id;
+            $user = Auth::user();
+            if ($user->hasRole('Administrator')) {
+                return;
+            }
+            $agencyId = $user->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
             }
 
-            $builder->where('customers.agency_id', $agencyId);
+            $builder->where('agency_id', $agencyId);
         });
 
         static::creating(function ($model) {

@@ -74,18 +74,59 @@
                             <div class="flex-shrink-0 me-3 mt-1">
                                 <div style="height:2rem;width:2rem;">
                                     <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                        <i class="ri-alarm-warning-fill text-primary fs-20"></i>
+                                        <i class="ri-secure-payment-fill text-primary fs-20"></i>
                                     </span>
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Request Monitoring & Alerts</span></h5>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Collection Summary</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                             </div>
                         </div>
                     </div>
                     <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                        <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                       
+                        <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                            <li class="list-group-item px-0" v-for="(list,index) in collection" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <hr class="text-muted"/>
+                        <ul class="list-group list-group-flush border-dashed mb-0 mt-n4 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in collection_summary" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mb-1 fs-12">{{formatMoney(list.total)}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                       
+                        <!-- <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
                             <li class="list-group-item px-0" v-for="(list,index) in reminders" v-bind:key="index">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 avatar-xs">
@@ -102,7 +143,7 @@
                                     </div>
                                 </div>
                             </li>
-                        </ul>
+                        </ul> -->
                     </div>
                 </div>
             </b-col>
@@ -197,13 +238,13 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-13"><span class="text-body">Request Status Monitoring</span></h5>
+                                <h5 class="mb-0 fs-13"><span class="text-body">Customer Summary</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed</p>
                             </div>
                         </div>
                     </div>
                     <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                    <!-- <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
                             <li class="list-group-item px-0" v-for="(list,index) in statuses" v-bind:key="index">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 avatar-xs">
@@ -220,11 +261,73 @@
                                     </div>
                                 </div>
                             </li>
+                        </ul> -->
+                         <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                            <li class="list-group-item px-0" v-for="(list,index) in customer" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 fs-12">{{list.total}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <hr class="text-muted"/>
+                        <ul class="list-group list-group-flush border-dashed mb-0 mt-n4 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in customer_summary" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mb-1 fs-12">{{list.total}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
                         </ul>
                     </div>
 
                 </div>
             </b-col>
+        </div>
+        <div class="col-xl-12 mt-n2">
+            <div class="card shadow-none border crm-widget">
+                <div class="card-body p-0">
+                    <div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 g-0">
+                        <div class="col" v-for="(list,index) in reminders" v-bind:key="index">
+                            <div class="py-4 px-3">
+                                <h5 class="text-muted text-uppercase fs-13">{{ list.name }}<i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i :class="list.icon+' '+list.color" class="display-6 fs-14"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h2 class="mb-0 fs-14"><span class="counter-value" data-target="197">{{list.count}}</span></h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- end col -->
+                        
+
+                    </div><!-- end row -->
+                </div><!-- end card body -->
+            </div><!-- end card -->
         </div>
         <div class="col-md-3 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
@@ -300,92 +403,7 @@
             </div>                            
                                        
         </div>
-        <div class="col-md-6 mt-n1">
-            <div class="card bg-light-subtle shadow-none border">
-                
-                <div class="card-header bg-light-subtle">
-                    <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3 mt-1">
-                            <div style="height:2rem;width:2rem;">
-                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-trophy-fill text-primary fs-20"></i>
-                                </span>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-13"><span class="text-body">Daily Accomplishment Insights</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
-                        </div>
-                    </div>
-                </div>
-                 <div class="car-body border-bottom shadow-none">
-                    <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
-                        <b-col lg>
-                            <div class="input-group mb-1">
-                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
-                                <input v-if="filter.type == 'Daily'" type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 100px;">
-                                <!-- <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />-->
-                                <Multiselect v-if="filter.type == 'Monthly'" class="white" style="width: 15%;" :options="months" v-model="filter.month" label="name" :allow-empty="false" :searchable="true" placeholder="Select Month" />
-                                <Multiselect class="white" style="width: 15%;" :options="['Daily','Monthly']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" /> 
-                                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
-                                    <i class="bx bx-refresh search-icon"></i>
-                                </span>
-                                <b-button type="button" variant="primary" @click="openCreate">
-                                    <i class="ri-add-circle-fill align-bottom me-1"></i> Create
-                                </b-button>
-                            </div>
-                        </b-col>
-                    </b-row>
-                </div>
-                <div class="card-body border-bottom">
-                    <div class="table-responsive table-card">
-                        <table class="table table-nowrap table-bordered align-middle mb-0">
-                            <thead class="table-light thead-fixed">
-                                <tr class="fs-10">
-                                    <th style="width: 20%;">Laboratory</th>
-                                    <th style="width: 9%;" class="text-center">Requests</th>
-                                    <th style="width: 9%;" class="text-center">Samples</th>
-                                    <th style="width: 9%;" class="text-center">Analyses</th>
-                                    <th style="width: 15%;" class="text-center">Fees Collected</th>
-                                    <th style="width: 12%;" class="text-center">Gratis</th>
-                                    <th style="width: 12%;" class="text-center">Discount</th>
-                                    <th style="width: 13%;" class="text-center">Gross</th>
-                                </tr>
-                            </thead>
-                            <tbody class="fs-10">
-                                <tr v-for="(list,index) in laboratories" v-bind:key="index" >
-                                    <td> {{ list[0] }}</td>
-                                    <td class="text-center"> {{ list[1] }}</td>
-                                    <td class="text-center"> {{ list[2] }}</td>
-                                    <td class="text-center"> {{ list[3] }}</td>
-                                    <td class="text-center"> {{ list[4] }}</td>
-                                    <td class="text-center"> {{ list[5] }}</td>
-                                    <td class="text-center"> {{ list[6] }}</td>
-                                    <td class="text-center"> {{ list[7] }}</td>
-                                </tr>
-                            </tbody>
-                            <tfoot>
-                                <tr class="table-light fs-10" v-for="(list,index) in total" v-bind:key="index" >
-                                    <th> {{ list[0] }}</th>
-                                    <th class="text-center"> {{ list[1] }}</th>
-                                    <th class="text-center"> {{ list[2] }}</th>
-                                    <th class="text-center"> {{ list[3] }}</th>
-                                    <th class="text-center"> {{ list[4] }}</th>
-                                    <th class="text-center"> {{ list[5] }}</th>
-                                    <th class="text-center"> {{ list[6] }}</th>
-                                    <th class="text-center"> {{ list[7] }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
+        
         <div class="col-md-3 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
@@ -451,6 +469,98 @@
                                 <i class="ri-alert-line label-icon"></i>No upcoming schedules for this week
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>                            
+                                       
+        </div>
+        <div class="col-md-3 mt-n1">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-tools-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-13"><span class="text-body">Equipment Service Status</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center">
+                        
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">{{personnels.out}}</h5>
+                                <p class="text-muted mb-0 fs-12">Maintenance</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-6">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">{{personnels.in}}</h5>
+                                <p class="text-muted mb-0 fs-12">Calibration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+            </div>                            
+                                       
+        </div>
+        <div class="col-md-3 mt-n1">
+            <div class="card bg-light-subtle shadow-none border">
+                
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-archive-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-13"><span class="text-body">Inventory Monitoring</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Schedules only within the week.</p>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center">
+                        
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">{{personnels.out}}</h5>
+                                <p class="text-muted mb-0 fs-12">Out of Stock</p>
+                            </div>
+                        </div>
+                        <div class="col-6 col-sm-6">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-1 fs-12">{{personnels.in}}</h5>
+                                <p class="text-muted mb-0 fs-12">Expired</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
+                    <div class="card-body">
+                        
                     </div>
                 </div>
             </div>                            
@@ -550,6 +660,10 @@ export default {
             statuses: [],
             schedules: [],
             personnels: [],
+            collection: [],
+            collection_summary: [],
+            customer: [],
+            customer_summary: [],
             fee: null,
             target: null
         }
@@ -583,7 +697,7 @@ export default {
                     year: this.filter.year,
                     month: this.monthName,
                     laboratory: this.filter.laboratory,
-                    option: 'cro',
+                    option: 'labhead',
                 }
             })
             .then(response => {
@@ -594,6 +708,10 @@ export default {
                 this.statuses = response.data.statuses;   
                 this.schedules = response.data.schedules; 
                 this.personnels = response.data.personnels;
+                this.collection = response.data.collection;
+                this.collection_summary = response.data.collection_summary;
+                this.customer = response.data.customer;
+                this.customer_summary =response.data.customer_summary;
                 this.chartOptions1 = {
                     ...this.chartOptions1,
                     ...{

@@ -8,11 +8,15 @@ use App\Services\Dashboard\CroClass;
 use App\Services\Dashboard\AnalystClass;
 use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
+use App\Services\Dashboard\CommonClass;
+use App\Services\Dashboard\LabHeadClass;
 use App\Services\AgencyClass;
 
 class DashboardController extends Controller
 {   
+    protected CommonClass $common;
     protected CroClass $cro;
+    protected LabHeadClass $labhead;
     protected AnalystClass $analyst;
     protected CashierClass $cashier;
     protected DropdownClass $dropdown;
@@ -20,6 +24,8 @@ class DashboardController extends Controller
     protected AgencyClass $agency;
     
     public function __construct(
+        CommonClass $common,
+        LabHeadClass $labhead,
         CroClass $cro,
         AnalystClass $analyst,
         CashierClass $cashier,
@@ -27,6 +33,8 @@ class DashboardController extends Controller
         AccountantClass $accountant,
         AgencyClass $agency
     ){
+        $this->common = $common;
+        $this->labhead = $labhead;
         $this->cro = $cro;
         $this->analyst = $analyst;
         $this->cashier = $cashier;
@@ -95,6 +103,13 @@ class DashboardController extends Controller
                             ]
                         ]);
                     break;
+                     case 'Laboratory Head':
+                        return inertia('Modules/Dashboard/LabHead/Index',[
+                            'dropdowns' => [
+                                'laboratories' => $this->agency->laboratories(),
+                            ]
+                        ]);
+                    break;
                     default:
                     return inertia('Modules/Dashboard/Index',[
                         // 'dropdowns' => [
@@ -117,7 +132,16 @@ class DashboardController extends Controller
         $option = $request->option;
         switch($option){
             case 'cro':
-                return $this->cro->dashboard($request);
+                return array_merge(
+                    $this->cro->dashboard($request),
+                    $this->common->calendar($request)
+                );
+            break;
+             case 'labhead':
+                return array_merge(
+                    $this->labhead->dashboard($request),
+                    $this->common->calendar($request)
+                );
             break;
             case 'performance':
                 return $this->analyst->performance($request);

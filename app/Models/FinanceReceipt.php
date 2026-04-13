@@ -72,7 +72,11 @@ class FinanceReceipt extends Model
             if (! Auth::check()) {
                 return;
             }
-            $agencyId = Auth::user()->profile?->agency_id;
+            $user = Auth::user();
+            if ($user->hasRole('Administrator')) {
+                return;
+            }
+            $agencyId = $user->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
             }

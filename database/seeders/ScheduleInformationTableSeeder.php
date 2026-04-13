@@ -259,6 +259,36 @@ class ScheduleInformationTableSeeder extends Seeder
                 'created_at' => '2026-04-11 11:06:29',
                 'updated_at' => '2026-04-11 11:06:29',
             ),
+            16 => 
+            array (
+                'id' => 17,
+                'title' => NULL,
+                'information' => 'To render on-site calibration services at Sirawai Palm and Rubber Corporation by AAJavier & MACalunod.',
+                'venue' => NULL,
+                'samples' => NULL,
+                'quotation_id' => NULL,
+                'tsr_id' => 3759,
+                'customer_id' => 168,
+                'conforme_id' => NULL,
+                'schedule_id' => 17,
+                'created_at' => '2026-04-13 09:53:26',
+                'updated_at' => '2026-04-13 09:53:26',
+            ),
+            17 => 
+            array (
+                'id' => 18,
+                'title' => 'Training at DOST III',
+                'information' => 'To conduct a training in DOST3',
+                'venue' => 'DOST III',
+                'samples' => NULL,
+                'quotation_id' => NULL,
+                'tsr_id' => NULL,
+                'customer_id' => NULL,
+                'conforme_id' => NULL,
+                'schedule_id' => 18,
+                'created_at' => '2026-04-13 09:58:23',
+                'updated_at' => '2026-04-13 09:58:23',
+            ),
         ));
         
         

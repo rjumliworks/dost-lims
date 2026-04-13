@@ -227,6 +227,32 @@ class SchedulesTableSeeder extends Seeder
                 'created_at' => '2026-04-11 11:06:29',
                 'updated_at' => '2026-04-11 11:06:29',
             ),
+            16 => 
+            array (
+                'id' => 17,
+                'start' => '2026-04-13 08:00:00',
+                'end' => '2026-04-17 23:00:00',
+                'is_forall' => 0,
+                'is_allday' => 0,
+                'event_id' => 2,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-04-13 09:53:25',
+                'updated_at' => '2026-04-13 09:53:25',
+            ),
+            17 => 
+            array (
+                'id' => 18,
+                'start' => '2026-04-13 08:00:00',
+                'end' => '2026-04-17 23:00:00',
+                'is_forall' => 0,
+                'is_allday' => 0,
+                'event_id' => 5,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-04-13 09:58:23',
+                'updated_at' => '2026-04-13 09:58:23',
+            ),
         ));
         
         

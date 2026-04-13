@@ -63,14 +63,20 @@ class Schedule extends Model
      protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {
-            $agencyId = Auth::user()->profile?->agency_id;
+            if (! Auth::check()) {
+                return;
+            }
+            $user = Auth::user();
+            if ($user->hasRole('Administrator')) {
+                return;
+            }
+            $agencyId = $user->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
             }
 
             $builder->where('agency_id', $agencyId);
         });
-
         static::creating(function ($model) {
             if (Auth::check()) {
                 $user = Auth::user();

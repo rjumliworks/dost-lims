@@ -87,6 +87,11 @@ class User extends Authenticatable  implements MustVerifyEmail
         return $this->hasMany('App\Models\UserCredit', 'user_id')->orderBy('created_at','DESC');
     }
 
+    public function schedules()
+    {
+        return $this->hasMany('App\Models\ScheduleUser', 'user_id');
+    }
+
     public function folders()
     {
         return $this->hasMany('App\Models\UserFolder', 'user_id');
