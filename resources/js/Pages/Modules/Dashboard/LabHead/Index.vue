@@ -233,7 +233,7 @@
                             <div class="flex-shrink-0 me-3 mt-1">
                                 <div style="height:2rem;width:2rem;">
                                     <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                        <i class="ri-spy-fill text-primary fs-24"></i>
+                                        <i class="ri-group-2-fill text-primary fs-24"></i>
                                     </span>
                                 </div>
                             </div>

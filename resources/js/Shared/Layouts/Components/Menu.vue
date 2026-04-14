@@ -159,14 +159,14 @@
                     </li>
                     <li class="nav-item">
                         <Link href="/equipments" class="nav-link menu-link"
-                        :class="{'active': $page.component.startsWith('Modules/Others/Equipments') }">
+                        :class="{'active': $page.component.startsWith('Others/Equipments') }">
                         <i class="ri-tools-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Equipments</span>
                         </Link>
                     </li> 
                     <li class="nav-item">
                         <Link href="/inventory" class="nav-link menu-link"
-                        :class="{'active': $page.component.startsWith('Modules/Others/Inventory') }">
+                        :class="{'active': $page.component.startsWith('Others/Inventory') }">
                         <i class="ri-archive-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Inventory</span>
                         </Link>

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\Tsr;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\CustomerConforme;
@@ -108,6 +109,36 @@ class MigrateTsrs extends Command
                             
                         }
                     }
+                    $customerId = Customer::where('old_id', $tsr->customer_id)->value('id');
+                    $customer = Customer::find($customerId);
+
+                    $hasAnyTsr = Tsr::where('customer_id', $customerId)->exists();
+                    $hasRecentTsr = Tsr::where('customer_id', $customerId)
+                    ->where('created_at', '>=', Carbon::now()->subYears(2))
+                    ->exists();
+
+                    $is_first = 0;
+                    $is_new = $customer->is_new;
+                    if ($customer->is_new == 0) {
+                        $is_first = 0;
+                        $is_new = 0;
+                    } else {
+
+                        if (!$hasAnyTsr) {
+                            $is_first = 1;
+                            $is_new = 1;
+                        } elseif (!$hasRecentTsr) {
+                            $is_first = 1;
+                            $is_new = 1;
+                        } else {
+                            $is_first = 0;
+                            $is_new = 0;
+                        }
+                    }
+
+                    $customer->update([
+                        'is_new' => $is_new
+                    ]);
 
                     $newTsrId = DB::table('tsrs')->insertGetId([
 
@@ -117,12 +148,12 @@ class MigrateTsrs extends Command
                         'purpose_id' => $tsr->purpose_id ?? 1,
                         'status_id' => $tsr->status_id,
                         'facility_id' => 1,
-                        'customer_id' => Customer::where('old_id', $tsr->customer_id,)->value('id') ?? 1,
+                        'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id') ?? 1,
                         'conforme_id' => $newConformeId,
                         'received_by' => User::where('old_id', $tsr->received_by)->value('id') ?? 1,
                         'release_id' => 16, //
                         'is_referral' => $tsr->is_referral,
-                        'is_first' => 0, //
+                        'is_first' => $is_first,
                         'is_onsite' => $tsr->is_onsite,
                         'due_at' => $tsr->due_at,
                         'created_at' => $tsr->created_at,

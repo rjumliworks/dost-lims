@@ -21,10 +21,21 @@ use App\Models\LocationBarangay;
 use App\Models\SampleCategory;
 use App\Models\Schedule;
 use App\Models\Customer;
+use App\Models\Supplier;
 use App\Models\FinanceName;
 
 class DropdownClass
 {  
+    public function suppliers(){
+        $data = Supplier::where('is_active',1)->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
      public function discounts(){
         $data = ListDiscount::where('is_active',1)->get()->map(function ($item) {
             return [

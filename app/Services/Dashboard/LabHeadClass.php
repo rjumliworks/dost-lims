@@ -577,14 +577,15 @@ public function count($name,$index,$year,$month,$laboratory_id){
             [
                 'name' => 'New Customers',
                 'description' => 'Customers who recently availed services',
-                'total' => Customer::where('is_new',1)
+                'total' => Tsr::where('is_first',1)
+                ->where('status_id','!=',5)
                 ->when($month, function ($query, $month) {
                     $query->whereMonth('created_at',$month);
                 })
                 ->when($year, function ($query, $year) {
                     $query->whereYear('created_at',$year);
                 })
-                ->where('is_active',1)->count(),
+                ->count(),
                 'icon' => 'ri-user-add-fill fs-20',
                 'color' => 'text-info'
             ],

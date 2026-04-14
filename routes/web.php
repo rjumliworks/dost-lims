@@ -68,6 +68,8 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::resource('/testreports', App\Http\Controllers\Major\TestreportController::class);
 
     Route::resource('/schedules', App\Http\Controllers\Others\ScheduleController::class);
+    Route::resource('/equipments', App\Http\Controllers\Others\EquipmentController::class);
+    Route::resource('/inventory', App\Http\Controllers\Others\InventoryController::class);
 });
 
 Route::middleware(['role:Laboratory Analyst,Calibration Officer,Technical Manager,Laboratory Head'])->group(function () {
