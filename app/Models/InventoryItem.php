@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-
 class InventoryItem extends Model
 {
     protected $fillable = [
@@ -19,6 +20,26 @@ class InventoryItem extends Model
         'user_id',
         'is_equipment'
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $user = Auth::user();
+
+                if (empty($model->agency_id)) {
+                    $model->agency_id = $user->profile?->agency_id;
+                }
+            }
+        });
+    }
+
+    protected $appends = ['reference'];
+
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
 
     public function stocks()
     {
@@ -55,4 +76,7 @@ class InventoryItem extends Model
         $totalStock = $this->stocks()->sum('onhand');
         return $totalStock <= $this->reorder && $totalStock != 0;
     }
+
+    public function getUpdatedAtAttribute($value){ return date('M d, Y g:i a', strtotime($value));}
+    public function getCreatedAtAttribute($value){ return date('F d, Y g:i a', strtotime($value));}
 }

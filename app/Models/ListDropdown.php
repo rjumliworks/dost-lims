@@ -13,4 +13,9 @@ class ListDropdown extends Model
     {
         return $this->morphOne('App\Models\Signatory', 'designationable');
     }
+
+    public function inventory_category()
+    {
+        return $this->hasMany('App\Models\InventoryItem', 'category_id');
+    } 
 }

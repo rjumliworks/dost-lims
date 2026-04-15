@@ -68,6 +68,9 @@ class MigrateInventory extends Command
                         'supplier_id' => Supplier::where('id', $stock->supplier_id)->value('id'),
                         'user_id' => User::where('old_id', $stock->user_id)->value('id') ?? 1,
                         'item_id' => $e,
+                        'bought_at' => $stock->bought_at,
+                        'expired_at' => $stock->expired_at,
+                        'notify_at' => $stock->notify_at,
                         'created_at'=>$stock->created_at,
                         'updated_at'=>$stock->updated_at
                     ]);

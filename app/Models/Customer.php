@@ -60,7 +60,7 @@ class Customer extends Authenticatable
                 abort(403, 'User has no agency assigned.');
             }
 
-            $builder->where('agency_id', $agencyId);
+            $builder->where('customers.agency_id', $agencyId);
         });
 
         static::creating(function ($model) {
