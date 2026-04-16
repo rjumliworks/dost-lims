@@ -140,7 +140,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="table-white">
-                                        <tr v-for="(list,index) in lists" v-bind:key="index">
+                                        <tr v-for="(list,index) in lists" v-bind:key="index" style="cursor: pointer;" @click="$inertia.visit(`/equipments/${list.reference}`)">
                                             <td class="text-center fs-12"> 
                                             {{ (meta.current_page - 1) * meta.per_page + index + 1 }}.
                                             </td>

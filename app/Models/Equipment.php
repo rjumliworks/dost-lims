@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
@@ -22,6 +23,14 @@ class Equipment extends Model
         'laboratory_id',
         'agency_id',
     ];
+
+    protected $appends = ['reference'];
+
+    public function getReferenceAttribute(): string
+    {
+        return (new Hashids('krad', 10))->encode($this->id);
+    }
+
 
     public function agency()
     {

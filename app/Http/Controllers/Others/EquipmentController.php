@@ -42,4 +42,16 @@ class EquipmentController extends Controller
             ]);
         }
     }
+
+    public function show($id){
+        $item = $this->view->view($id);
+        return inertia('Others/Equipments/Profile/Index',[
+            'equipment' => $item,
+            'dropdowns' => [
+                'categories' => $this->dropdown->dropdowns('Inventory','Category'),
+                'suppliers' => $this->dropdown->suppliers(),
+                'units' => $this->dropdown->dropdowns('Inventory','Unit'),
+            ],
+        ]);
+    }
 }

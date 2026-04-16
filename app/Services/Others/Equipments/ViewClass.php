@@ -2,6 +2,7 @@
 
 namespace App\Services\Others\Equipments;
 
+use Hashids\Hashids; 
 use Carbon\Carbon;
 use App\Models\Equipment;
 use App\Models\EquipmentLog;
@@ -166,6 +167,22 @@ class ViewClass
             })
             ->orderBy('code','ASC')
             ->paginate($request->count)
+        );
+        return $data;
+    }
+
+    public function view($id){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($id);
+
+        $data = new IndexResource(
+            Equipment::query()
+            ->with('logs','info','laboratory','user.profile','agency','status')
+            ->addSelect([
+                'last_calibration' => EquipmentLog::select('date')->where('is_calibrated',1)->whereColumn('equipment_id', 'equipment.id')->latest()->take(1),
+                'last_maintenance' => EquipmentLog::select('date')->where('is_calibrated',0)->whereColumn('equipment_id', 'equipment.id')->latest()->take(1),
+            ])
+            ->where('id',$id)->first()
         );
         return $data;
     }

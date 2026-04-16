@@ -1,5 +1,5 @@
 <template lang="">
-    <Head title="Customer Profile"/>
+    <Head title="Item Profile"/>
     <Top :item="item"/>
     <b-row class="g-3">
         <Sidebar :item="item.data"/>

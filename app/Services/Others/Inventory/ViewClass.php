@@ -176,15 +176,32 @@ class ViewClass
         return $data;
     }
 
+    public function stockins($request){
+        $data = StockResource::collection(
+            InventoryStock::query()
+            ->with('item','unittype','supp')
+            ->orderBy('bought_at','desc')
+            ->paginate(10)
+        );
+        return $data;
+    }
+
     public function stockout($request){
         return [];
     }
 
     public function stocks(){
-        $stocks = InventoryStock::query()
-            ->with('withdrawals', 'supp')
-            ->orderByDesc('created_at')
+        $dates = InventoryStock::query()
+            ->selectRaw('DATE(created_at) as date')
+            ->distinct()
+            ->orderByDesc('date')
             ->take(5)
+            ->pluck('date');
+
+        $stocks = InventoryStock::query()
+            ->with('unittype', 'supp', 'item')
+            ->whereIn(\DB::raw('DATE(created_at)'), $dates)
+            ->orderByDesc('created_at')
             ->get()
             ->groupBy(function ($item) {
                 return $item->created_at->format('Y-m-d');

@@ -69,6 +69,10 @@ Route::middleware(['auth','verified'])->group(function () {
 
     Route::resource('/schedules', App\Http\Controllers\Others\ScheduleController::class);
     Route::resource('/equipments', App\Http\Controllers\Others\EquipmentController::class);
+
+    Route::get('/inventory/stockin', [App\Http\Controllers\Others\InventoryController::class, 'stockIn']);
+    Route::get('/inventory/stockout', [App\Http\Controllers\Others\InventoryController::class, 'stockOut']);
+    Route::get('/inventory/checkout', [App\Http\Controllers\Others\InventoryController::class, 'checkout']);
     Route::resource('/inventory', App\Http\Controllers\Others\InventoryController::class);
 });
 

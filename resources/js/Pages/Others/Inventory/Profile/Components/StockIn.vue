@@ -109,7 +109,7 @@ export default {
         this.fetch();
     },
     methods: {
-         checkSearchStr: _.debounce(function(string) {
+        checkSearchStr: _.debounce(function(string) {
             this.fetch();
         }, 300),
         fetch(page_url) {

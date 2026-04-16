@@ -19,7 +19,8 @@
                 </b-card-body>
             </b-card>
             <div class="card shadow-none border mt-n2">
-                <div class="card-header bg-light-subtle">
+                <Link href="/inventory/stockin">
+                <div class="card-header bg-light-subtle" style="cursor: pointer;">
                     <div class="d-flex mb-n3">
                         <div class="flex-shrink-0 me-3 mt-1">
                             <div style="height:2rem;width:2rem;">
@@ -34,37 +35,44 @@
                         </div>
                     </div>
                 </div>
-                <div class="card border-bottom shadow-none" no-body style="height: 431px; overflow: auto;">
-                    <div class="p-3">
-                       <div v-for="(items, date) in stocks" :key="date">
+            </Link>
+                <div class="card  shadow-none" no-body>
+                      <!-- <div v-for="(items, date) in stocks" :key="date">
                         <h6 class="text-muted text-uppercase mb-3 fs-11">{{date}}</h6>
-                        </div>
-                        <!-- <div class="d-flex align-items-center">
-                            <div class="avatar-xs flex-shrink-0">
-                                <span class="avatar-title bg-light rounded-circle material-shadow">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle icon-dual-success icon-sm"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg>
-                                </span>
-                            </div>
-
-                            {{ stocks }}
-                            <div class="flex-grow-1 ms-3">
-                                <h6 class="fs-12 mb-0">Bought Bitcoin</h6>
-                                <p class="text-muted fs-11 mb-0">+878.52 USD</p>
-                            </div>
-                            <div class="flex-shrink-0 text-end">
-                                <h6 class="mb-0 text-success fs-12">+0.04025745<span class="text-uppercase ms-1">Btc</span></h6>
-                                <p class="text-muted fs-11 mb-0">+878.52 USD</p>
-                            </div>
-                        </div>
+                        <div class="d-flex align-items-center mb-1" v-for="(stock, index) in items" :key="stock.id"> -->
+                    <simplebar data-simplebar style="height: calc(100vh - 405px);">
+                    <div class="p-3">
+                        <template v-for="(items, date, index) in stocks" :key="date">
+                            <h6 class="text-muted fw-semibold text-uppercase mb-3 fs-11" :class="(index == 0) ? '' : 'mt-3'"><i class="ri-calendar-2-fill me-1"></i> {{ formatDate(date) }}</h6>
+                            
+                           
+                            <div class="d-flex align-items-center" :class="(index == 0) ? '' : 'mt-2'" v-for="(stock, index) in items" :key="stock.id">
+                                <div class="avatar-xs flex-shrink-0">
+                                    <span class="avatar-title bg-light rounded-circle material-shadow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle icon-dual-success icon-sm"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <h6 class="fs-12 mb-0">{{ stock.item.name }}</h6>
+                                    <p class="text-muted fs-12 mb-0">
+                                        <i class="mdi mdi-circle-medium text-success fs-15 align-middle"></i> {{ stock.brand }}
+                                    </p>
+                                </div>
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="fs-12 mb-0 text-success">{{stock.unit}} {{ stock.unittype.name }}</h6>
+                                    <p class="text-muted fs-12 mb-0">{{stock.price}}</p>
+                                </div>
+                            </div> 
+                            
+                        </template>
                         
 
-                        <h6 class="text-muted text-uppercase mb-3 mt-4 fs-11">24 Dec 2021</h6> -->
-                        
                         <div class="mt-3 text-center">
                             <a href="javascript:void(0);" class="text-muted text-decoration-underline">Load More</a>
                         </div>
 
                     </div>
+                    </simplebar>
                 </div>
             </div>
         </div>
@@ -241,8 +249,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="card border-bottom shadow-none" no-body style="height: 431px;">
-                    
+                <div class="card shadow-none" no-body>
+                    <simplebar data-simplebar style="height: calc(100vh - 405px);">
+
+                    </simplebar>
                 </div>
             </div>
         </div>
@@ -251,12 +261,13 @@
 </template>
 <script>
 import _ from 'lodash';
+import simplebar from 'simplebar-vue';
 import Create from './Modals/Create.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Multiselect, Pagination, Create },
+    components: { PageHeader, Multiselect, simplebar, Pagination, Create },
     props: ['dropdowns'],
     data(){
         return {
@@ -347,6 +358,13 @@ export default {
             this.filter.laboratory = null;
             this.filter.status = null;
             this.fetchList();
+        },
+        formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+            });
         }
     }
 }
