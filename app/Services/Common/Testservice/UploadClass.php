@@ -103,6 +103,7 @@ class UploadClass
 
                 // Check if this testservice already exists
                 $existing = Testservice::where([
+                    'is_new' => 1,
                     'testname_id' => $parameter->id,
                     'method_id' => $methodCombo->id,
                     'laboratory_id' => $request->laboratory_id

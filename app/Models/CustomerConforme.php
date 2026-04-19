@@ -13,6 +13,7 @@ class CustomerConforme extends Model
 
     protected $fillable = [
         'name',
+        'name_hash',
         'old_id',
         'contact_no',
         'customer_id'
@@ -26,6 +27,7 @@ class CustomerConforme extends Model
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = Crypt::encryptString($value);
+        $this->attributes['name_hash'] = hash('sha256', $value);
     }
 
     public function getNameAttribute($value)

@@ -98,7 +98,7 @@
     
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
-            <b-button v-if="is_new" @click="submit('ok')" variant="primary" block>Submit</b-button>
+            <b-button v-if="is_new" @click="submit('ok')" variant="primary" :disabled="confirm" block>Submit</b-button>
         </template>
     </b-modal>
 </template>
@@ -112,7 +112,8 @@ export default {
         return {
             showModal: false,
             is_new : null,
-            summary: {}
+            summary: {},
+            confirm: false,
         }
     },
     methods: { 
@@ -122,6 +123,7 @@ export default {
             this.showModal = true;
         },
         submit() {
+            this.confirm = true;
             if (this.is_new === null) {
                 return;
             }

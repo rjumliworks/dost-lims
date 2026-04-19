@@ -6,7 +6,7 @@ use App\Models\Customer;
 use App\Models\CustomerName;
 use App\Models\CustomerPayor;
 use App\Models\CustomerConforme;
-use App\Models\AgencyConfiguration;
+use Illuminate\Support\Facades\Crypt;
 
 class SaveClass
 {
@@ -16,6 +16,7 @@ class SaveClass
         $conforme = [
             'value' => $customer->id,
             'name' => $customer->name,
+            'name_hash' => hash('sha256', Crypt::decryptString($customer->name)),
             'contact_no' => $customer->contact_no
         ];
 
@@ -51,7 +52,7 @@ class SaveClass
     }
 
     public function customer($request)
-    {
+    { 
         $nameId = $this->resolveCustomerName($request);
         $code = $this->generateCode();
 
@@ -87,7 +88,7 @@ class SaveClass
 
         if($request->add_to_conforme){
             $customer->conformes()->create([
-                'name' => $customer->customer_name->name,
+                'name' => $request->customer['name'],
                 'contact_no' => $request->contact_no
             ]);
         }
