@@ -12,7 +12,7 @@ class CustomerName extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['name','has_branches','is_active','industry_id','classification_id','type_id'];
+    protected $fillable = ['name','alias','has_branches','is_active','industry_id','classification_id','type_id'];
 
     protected static function booted()
     {
@@ -59,7 +59,7 @@ class CustomerName extends Model
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
-        ->logOnly(['name', 'has_branches', 'is_active','industry_id','classification_id','type_id'])
+        ->logOnly(['name','alias','has_branches', 'is_active','industry_id','classification_id','type_id'])
         ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
         ->useLogName('Name')
         ->logOnlyDirty()

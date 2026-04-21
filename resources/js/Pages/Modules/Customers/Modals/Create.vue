@@ -6,7 +6,8 @@
                     <form class="customform">
                         <BRow>
                             <BCol lg="12" class="mt-1">
-                                <Multiselect 
+                                <Search @set="chooseName" @new="setName" :names="names" @search="checkSearchStr" ref="search" :class="(!form.customer) ? 'mb-n4' : ''"/>
+                                <!-- <Multiselect 
                                 :key="multiselectKey" 
                                 :create-option="true" 
                                 :options="names" 
@@ -19,6 +20,14 @@
                                 placeholder="Select Customer"/>
                                 <div v-if="form.customer" class="mb-n2">
                                     <div v-if="(typeof form.customer.value === 'string')" class="alert alert-success mt-2 p-2 fs-12" role="alert">
+                                        The inputted customer name is new. Please double-check the spelling.
+                                    </div>
+                                    <div v-if="(typeof form.customer.value === 'number')" class="alert alert-warning mt-2 p-2 fs-12" role="alert">
+                                        The customer name already exists. This will add a branch for the customer name.
+                                    </div>
+                                </div> -->
+                                  <div v-if="form.customer" class="mb-n2 mt-n3">
+                                    <div v-if="(typeof form.customer === 'string')" class="alert alert-success mt-2 p-2 fs-12" role="alert">
                                         The inputted customer name is new. Please double-check the spelling.
                                     </div>
                                     <div v-if="(typeof form.customer.value === 'number')" class="alert alert-warning mt-2 p-2 fs-12" role="alert">
@@ -228,8 +237,10 @@ export default {
                     this.form.classification_id = this.form.customer.classification;
                     this.form.industry_id = this.form.customer.industry;
                     this.form.type_id = this.form.customer.type_id;
-               }else if(typeof this.form.customer.value === 'string'){
+                    this.$refs.search.set(this.form.customer.name);
+               }else if(typeof this.form.customer === 'string'){
                     this.form.has_branches = false;
+                    this.$refs.search.set(this.form.customer);
                }    
             }else{
                 this.form.name_id = null;
@@ -320,6 +331,12 @@ export default {
                     this.$refs.confirm.hide();
                 }
             });
+        },
+        chooseName(data){
+            this.form.customer = data;
+        },
+        setName(name){
+            this.form.customer = name;
         },
         addLocation(index){
             this.$refs.location.openEdit(this.region);

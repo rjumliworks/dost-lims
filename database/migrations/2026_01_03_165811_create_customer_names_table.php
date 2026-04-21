@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('customer_names', function (Blueprint $table) {
             $table->engine = 'InnoDB'; 
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('name')->index();
+            $table->string('alias')->nullable()->index();
             $table->boolean('has_branches')->default(0);
             $table->boolean('is_active')->default(1);
             $table->unsignedTinyInteger('type_id')->nullable();

@@ -14,8 +14,6 @@ class MigrateCustomers extends Command
     protected $signature = 'migrate:customers';
     protected $description = 'Migrate customers from old DB including encrypted fields';
 
-  
-
     public function handle()
     {
 
@@ -68,9 +66,26 @@ class MigrateCustomers extends Command
             ->get();
 
         $nameMapping = [];
+        $ignore = [
+            'of', 'the', 'and', 'de', 'la', 'del',
+            'in', 'on', 'at', 'for', 'to', 'from',
+            'a', 'an', 'by', 'with'
+        ];
         foreach ($oldNames as $oldName) {
+            if($oldName->classification_id == 8) {
+                $cleanName = preg_replace('/[^a-zA-Z0-9\s]/', '', $oldName->name);
+                $words = preg_split('/\s+/', strtolower(trim($cleanName)));
+                $filtered = collect($words)
+                    ->filter()
+                    ->reject(fn($word) => in_array($word, $ignore));
+                $alias = $filtered
+                    ->map(fn($word) => strtoupper(substr($word, 0, 1)))
+                    ->implode('');
+            }
+
             $newNameId = DB::table('customer_names')->insertGetId([
                 'name' => $oldName->name,
+                'alias' => $alias,
                 'agency_id' => 14,
                 'has_branches' => $oldName->has_branches,
                 'industry_id' => $oldName->industry_id,

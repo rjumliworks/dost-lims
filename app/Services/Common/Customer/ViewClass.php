@@ -72,7 +72,12 @@ class ViewClass
     public function search($request){
         $keyword = $request->keyword;
         if($keyword){
-            $data = CustomerName::with('classification:id','industry:id','type:id')->where('name', 'LIKE', "%{$keyword}%")->get()->map(function ($item) {
+            $data = CustomerName::with('classification:id','industry:id','type:id')
+           ->where(function ($query) use ($keyword) {
+                $query->whereRaw('LOWER(name) LIKE ?', ["%{$keyword}%"])
+                  ->orWhereRaw('LOWER(alias) LIKE ?', ["%{$keyword}%"]);
+            })
+            ->get()->take(5)->map(function ($item) {
                 return [
                     'value' => $item->id,
                     'name' => $item->name,
