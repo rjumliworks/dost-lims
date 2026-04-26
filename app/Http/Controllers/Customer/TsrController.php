@@ -20,7 +20,19 @@ class TsrController extends Controller
     }
 
     private function list(Request $request){
-        $data = Tsr::with('payment.status','status')
+        $data = Tsr::with('payment.status','status','samples.report.signatory','samples.samplename','samples.analyses')
+        ->withCount([
+            'samples as total_report_count' => function ($query) {
+                $query->select(\DB::raw('COUNT(DISTINCT tsr_sample_reports.code)'))
+                    ->join('tsr_sample_reports', 'tsr_sample_reports.sample_id', '=', 'tsr_samples.id');
+            },
+            'samples as completed_report_count' => function ($query) {
+                $query->select(\DB::raw('COUNT(DISTINCT tsr_sample_reports.code)'))
+                    ->join('tsr_sample_reports', 'tsr_sample_reports.sample_id', '=', 'tsr_samples.id')
+                    ->join('tsr_sample_report_signatories', 'tsr_sample_report_signatories.report_id', '=', 'tsr_sample_reports.id')
+                    ->where('tsr_sample_report_signatories.status_id', 42);
+            }
+        ])
         ->whereIn('status_id',[2,3,4])
         ->where('customer_id',\Auth::guard('customer')->id())
         ->orderBy('created_at','DESC')

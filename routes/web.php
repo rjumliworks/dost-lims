@@ -34,8 +34,10 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
     Route::middleware('auth:customer')->group(function () {
         Route::post('/logout', [App\Http\Controllers\Customer\LoginController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/fetch', [App\Http\Controllers\Customer\DashboardController::class, 'fetch']);
 
         Route::resource('tsrs', App\Http\Controllers\Customer\TsrController::class);
+        Route::resource('downloads', App\Http\Controllers\Customer\TsrController::class);
         // Route::get('/{folder}/download', [App\Http\Controllers\Viewer\DownloadController::class, 'download'])->name('download');
         // Route::resource('folders', App\Http\Controllers\Viewer\FolderController::class);
         // Route::resource('downloads', App\Http\Controllers\Viewer\DownloadController::class);

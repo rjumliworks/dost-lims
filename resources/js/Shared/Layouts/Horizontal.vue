@@ -93,9 +93,23 @@ export default {
                   <span class="fw-semibold fs-14" data-key="t-dashboards">Technical Service Requests</span>
                   </Link>
               </li>
+              <li class="nav-item">
+                  <Link href="/quotations" class="nav-link menu-link"
+                  :class="{'active': $page.component.startsWith('Customer/Quotation') }">
+                  <i class="ri-folder-5-line"></i>
+                  <span class="fw-semibold fs-14" data-key="t-dashboards">Quotation</span>
+                  </Link>
+              </li>
+              <li class="nav-item">
+                  <Link href="/quotations" class="nav-link menu-link"
+                  :class="{'active': $page.component.startsWith('Customer/Quotation') }">
+                  <i class="ri-calendar-line"></i>
+                  <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
+                  </Link>
+              </li>
                <li class="nav-item">
                     <Link href="/downloads" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Participant/Downloads') }">
+                    :class="{'active': $page.component.startsWith('Customer/Downloads') }">
                     <i class="ri-download-cloud-line"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Downloads</span>
                     </Link>

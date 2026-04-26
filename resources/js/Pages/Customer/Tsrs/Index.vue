@@ -28,11 +28,12 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Folder" class="form-control" style="width: 20%;">
-                                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                <!-- <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
-                                </span>
+                                </span> -->
                                 <b-button type="button" variant="primary" @click="openCreate">
-                                    <i class="ri-add-circle-fill align-bottom me-1"></i> New Quotation
+                                    <!-- <i class="ri-add-circle-fill align-bottom me-1"></i> New Quotation -->
+                                     <i class="bx bx-refresh search-icon"></i>
                                 </b-button>
                             </div>
                         </b-col>
@@ -60,9 +61,14 @@
                                     <td class="text-center">{{list.due_at}}</td>
                                     <td class="text-center">{{list.created_at}}</td>
                                     <td class="text-center">{{list.payment.total}}</td>
-                                    <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td>
-                                    <td class="text-center">
-                                        -
+                                    <td class="text-center" v-if="list.completed_report_count == list.total_report_count">
+                                        <span :class="'badge '+list.status.color">{{list.status.name}}</span>
+                                    </td>
+                                    <td class="text-center" v-else>{{ list.completed_report_count }} of {{ list.total_report_count }}</td>
+                                    <!-- <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td> -->
+                                    <td class="text-end">
+                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="openView(list)" class="btn btn-dark btn-sm w-md">Pay now</button>
+                                        <button v-else type="button" @click="openView(list)" class="btn btn-soft-dark btn-sm w-md">View TSR</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -80,13 +86,15 @@
             </div>
         </div>
     </BRow>
+    <View ref="view"/>
 </template>
 <script>
 import _ from 'lodash';
+import View from './Modals/View.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination },
+    components: { PageHeader, Pagination, View },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -96,22 +104,9 @@ export default {
             filter: {
                 keyword: null
             },
-            type: null,
             index: null,
             selectedRow: null
         }
-    },
-    watch: {
-        "type"(newVal) {
-            if(newVal){
-                if(newVal != 'all'){
-                    this.type = newVal;
-                }else{
-                    this.type = null;
-                }
-                this.fetch();
-            }
-        },
     },
     created(){
         this.fetch();
@@ -125,7 +120,6 @@ export default {
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
-                    type: this.type,
                     count: 10, 
                     option: 'list'
                 }
@@ -139,30 +133,10 @@ export default {
             })
             .catch(err => console.log(err));
         },
-        openCreate(){
-            this.$refs.create.show();
+        openView(data){
+            this.$refs.view.show(data);
         },
-        openUpdate(data,index){
-            this.index = index;
-            this.$refs.create.edit(data);
-        },
-        openDelete(list,index){
-            this.$refs.delete.show(list);
-            this.index = index;
-        },
-        selectView(data){
-            this.type = data;
-        },
-        selectRow(index) {
-            this.selectedRow = index;
-        },
-         deleteItem(data) {
-            this.lists.splice(this.index, 1);
-            this.index = null;
-        },
-        updateRow(data){
-            this.lists[this.index] = data;
-        }
+
     }
 }
 </script>
