@@ -41,6 +41,17 @@ class UserCertificatesTableSeeder extends Seeder
                 'created_at' => '2026-03-10 17:31:48',
                 'updated_at' => '2026-03-10 17:36:07',
             ),
+            2 => 
+            array (
+                'id' => 3,
+                'file' => 'lims/certificates/schezzojuly.p12',
+                'password' => 'M3trology',
+                'signature' => NULL,
+                'expires_at' => NULL,
+                'user_id' => 3,
+                'created_at' => '2026-04-23 08:31:03',
+                'updated_at' => '2026-04-23 08:31:03',
+            ),
         ));
         
         

@@ -426,6 +426,61 @@ class ListStatusesTableSeeder extends Seeder
                 'created_at' => '2024-03-28 10:33:01',
                 'updated_at' => '2024-03-28 10:33:01',
             ),
+            37 => 
+            array (
+                'id' => 38,
+                'name' => 'Pending',
+                'type' => 'Testreport',
+                'color' => 'bg-warning',
+                'others' => 'text-warning',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 10:33:01',
+                'updated_at' => '2024-03-28 10:33:01',
+            ),
+            38 => 
+            array (
+                'id' => 39,
+                'name' => 'Analyzed',
+                'type' => 'Testreport',
+                'color' => 'bg-info',
+                'others' => 'text-info',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 10:33:01',
+                'updated_at' => '2024-03-28 10:33:01',
+            ),
+            39 => 
+            array (
+                'id' => 40,
+                'name' => 'Certified',
+                'type' => 'Testreport',
+                'color' => 'bg-purple',
+                'others' => 'text-purple',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 10:33:01',
+                'updated_at' => '2024-03-28 10:33:01',
+            ),
+            40 => 
+            array (
+                'id' => 41,
+                'name' => 'Approved',
+                'type' => 'Testreport',
+                'color' => 'bg-primary',
+                'others' => 'text-primary',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 10:33:01',
+                'updated_at' => '2024-03-28 10:33:01',
+            ),
+            41 => 
+            array (
+                'id' => 42,
+                'name' => 'Completed',
+                'type' => 'Testreport',
+                'color' => 'bg-success',
+                'others' => 'text-success',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 10:33:01',
+                'updated_at' => '2024-03-28 10:33:01',
+            ),
         ));
         
         

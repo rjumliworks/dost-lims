@@ -101,29 +101,38 @@
                                 <p class="text-muted text-truncate-two-lines fs-11">List of TSRs that are due for payment and awaiting settlement</p>
                             </div>
                             <div class="flex-shrink-0">
-                             
+                                <BButton @click="addTsr()" variant="danger" class="btn-sm waves-effect waves-light mt-1">
+                                    Add TSR
+                                </BButton>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body bg-white">
-                        <div class="table-responsive table-card">
-                            <table class="table table-nowrap align-middle mb-0">
-                                <thead>
-                                    <tr class="table-light fs-11">
-                                        <th style="width: 50%;" class="text-center">TSR Number</th>
-                                        <th style="width: 45%;" class="text-center">Total</th>
-                                        <th style="width: 5%;" class="text-center"></th>
+                    <div class="card-body bg-white rounded-bottom">
+                        <div class="table-responsive table-card rounded-bottom">
+                            <table class="table align-middle table-centered mb-0">
+                                <thead class="table-light thead-fixed">
+                                    <tr class="fs-11">
+                                        <th class="text-center" style="width: 7%">#</th>
+                                        <th>Code</th>
+                                        <th class="text-end" style="width: 18%;">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="fs-12" v-for="(list,index) in selected.items" v-bind:key="index">
-                                        <td class="text-center">{{list.itemable.code}}</td>
-                                        <td class="text-center">{{list.amount}}</td>
-                                        <td>
-                                           <b-button v-if="selected.status.name === 'Pending'" class="me-1" @click="openRemove(list,index)" variant="danger" v-b-tooltip.hover title="Remove" size="sm">
+                                    <tr v-for="(list,index) in selected.items" v-bind:key="index">
+                                        <td class="text-center fs-12">
+                                            <b-button v-if="selected.status.name === 'Pending'" class="me-1" @click="openRemove(list,index)" variant="danger" v-b-tooltip.hover title="Remove" size="sm">
                                                 <i class="ri-delete-bin-fill align-bottom"></i>
                                             </b-button>
                                         </td>
+                                        <td class="text-start">
+                                            <span class="fw-medium fs-12">{{list.itemable.code}}</span>
+                                        </td>
+                                        <td class="text-end">{{list.amount}}</td>
+                                    </tr>
+                                    <tr class="border-top border-top-dashed bg-primary fs-13">
+                                        <th></th>
+                                        <th class="fs-12 fw-semibold text-white text-end">Total Amount</th>
+                                        <th class="text-end text-white">{{selected.total}}</th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -137,14 +146,16 @@
             <b-button @click="openEdit(selected)" variant="primary" block>Update</b-button>
         </template>
     </b-modal>
+    <Tsr ref="tsr"/>
     <Remove ref="remove"/>
     <Update :collections="dropdowns.collections" :payments="dropdowns.payments" @update="updateData" ref="update"/>
 </template>
 <script>
+import Tsr from './Tsr.vue';
 import Remove from './Remove.vue';
 import Update from './Update.vue';
 export default {
-    components: { Update, Remove },
+    components: { Update, Remove, Tsr },
     props: ['dropdowns'],
     data(){
         return {
@@ -189,6 +200,9 @@ export default {
                 this.selected.payment = data.payment;
                 this.selected.collection = data.collection.name;
             }
+        },
+        addTsr(){
+            this.$refs.tsr.show(this.selected.id);
         },
         openEdit(data){
             this.$refs.update.show(data);

@@ -51,16 +51,19 @@ class Customer extends Authenticatable
             if (! Auth::check()) {
                 return;
             }
-            $user = Auth::user();
-            if ($user->hasRole('Administrator')) {
-                return;
-            }
-            $agencyId = $user->profile?->agency_id;
-            if (! $agencyId) {
-                abort(403, 'User has no agency assigned.');
-            }
+            
+            if (auth()->guard('web')->check()) {
+                    $user = Auth::user();
+                    if ($user->hasRole('Administrator')) {
+                        return;
+                    }
+                    $agencyId = $user->profile?->agency_id;
+                    if (! $agencyId) {
+                        abort(403, 'User has no agency assigned.');
+                    }
 
-            $builder->where('customers.agency_id', $agencyId);
+                $builder->where('customers.agency_id', $agencyId);
+            }
         });
 
         static::creating(function ($model) {

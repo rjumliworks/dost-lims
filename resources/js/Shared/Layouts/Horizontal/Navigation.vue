@@ -1,5 +1,6 @@
 <template>
-    <header id="page-topbar" style="background-color: #503c75;">
+    <header id="page-topbar"> 
+        <!-- style="background-color: #503c75;" -->
         <div class="layout-width">
             <div class="navbar-header">
                 <div class="d-flex">

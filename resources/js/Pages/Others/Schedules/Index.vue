@@ -201,7 +201,7 @@ export default {
         fetch(){
             axios.get('/schedules',{
                 params : {
-                    option: (this.showDue) ? 'dues' : 'events' 
+                    option: 'dues' 
                 }
             })
             .then(response => {

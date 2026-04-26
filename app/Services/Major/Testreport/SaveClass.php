@@ -63,7 +63,8 @@ class SaveClass
                 ]);
                 if($data){
                     $data->signatory()->create([
-                        'approved_by' => 3 //JTF ID
+                        'approved_by' => 3, //JTF ID
+                        'status_id' => 38
                     ]);
                 }
                 $message = 'Report number was generated!';
@@ -123,21 +124,24 @@ class SaveClass
             if($request->role == 'analyzed'){
                 $signatory->update([
                     'analyzed_date' => now(),
-                    'analyzed_timestamp' => $request->timestamp
+                    'status_id' => 39
+                    // 'analyzed_timestamp' => $request->timestamp
                 ]);
             }
 
             if($request->role == 'certified'){
                 $signatory->update([
                     'certified_date' => now(),
-                    'certified_timestamp' => $request->timestamp
+                    'status_id' => 40
+                    // 'certified_timestamp' => $request->timestamp
                 ]);
             }
 
             if($request->role == 'approved'){
                 $signatory->update([
                     'approved_date' => now(),
-                    'approved_timestamp' => $request->timestamp
+                    'status_id' => 42
+                    // 'approved_timestamp' => $request->timestamp
                 ]);
             }
         }
@@ -178,11 +182,11 @@ class SaveClass
 
                 \Storage::disk('public')->put($file_path, $normalizedPdf);
                 $signatory = TsrSampleReportSignatory::where('report_id', $data->id)->first();
-                $signatory->analyzed_timestamp = null;
+                // $signatory->analyzed_timestamp = null;
                 $signatory->analyzed_date = null;
-                $signatory->certified_timestamp = null;
+                // $signatory->certified_timestamp = null;
                 $signatory->certified_date = null;
-                $signatory->approved_timestamp = null;
+                // $signatory->approved_timestamp = null;
                 $signatory->approved_date = null;
                 $signatory->save(); 
                 return [

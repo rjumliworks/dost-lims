@@ -97,7 +97,7 @@
     
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
-            <b-button v-if="is_referral != null" @click="submit('ok')" variant="primary" block>Submit</b-button>
+            <b-button v-if="is_referral != null" @click="submit('ok')" variant="primary" :disabled="confirm" block>Submit</b-button>
         </template>
     </b-modal>
 </template>
@@ -115,6 +115,7 @@ export default {
             is_referral : null,
             agency_id: null,
             province_code: null,
+            confirm: false,
             provinces: [],
             summary: {}
         }
@@ -127,6 +128,7 @@ export default {
             this.showModal = true;
         },
         submit() {
+            this.confirm = true;
             if (this.is_referral === null) {
                 return;
             }

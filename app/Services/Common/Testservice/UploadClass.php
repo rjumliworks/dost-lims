@@ -93,10 +93,11 @@ class UploadClass
                         'method_id' => $method->id,
                         'reference_id' => $reference->id,
                         'agency_id' => auth()->user()->profile->agency_id,
+                        
+                        'fee' => $fee,
                     ],
                     [
                         'laboratory_id' => $request->laboratory_id,
-                        'fee' => $fee,
                         'added_by' => auth()->id(),
                     ]
                 );

@@ -110,7 +110,6 @@ export default {
     methods: { 
         handleCoordinates(coords) {
             this.coordinates = coords;
-            console.log(coords);
             this.form.longitude = this.coordinates.lng;
             this.form.latitude = this.coordinates.lat;
         },

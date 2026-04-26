@@ -36,7 +36,7 @@
                         </div>
                     </b-link>
 
-                   <div class="d-flex flex-column align-items-center text-center mt-2 mb-2 border: 1px solid #e9ecef;" v-if="!showButton">
+                   <div class="d-flex flex-column align-items-center text-center mt-2 mb-2 border: 1px solid #e9ecef;">
                         <span class="text-muted fs-12 mt-2">
                             Do you wish to add new customer name? we haven't found any duplicate
                         </span>

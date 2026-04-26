@@ -14,18 +14,20 @@ return new class extends Migration
         Schema::create('tsr_sample_report_signatories', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->string('analyzed_timestamp')->nullable();
-            $table->unsignedInteger('analyzed_by');
+            // $table->string('analyzed_timestamp')->nullable();
+            $table->unsignedInteger('analyzed_by')->nullable();
             $table->foreign('analyzed_by')->references('id')->on('users')->onDelete('cascade');
             $table->datetime('analyzed_date')->nullable();
-            $table->string('certified_timestamp')->nullable();
-            $table->unsignedInteger('certified_by');
+            // $table->string('certified_timestamp')->nullable();
+            $table->unsignedInteger('certified_by')->nullable();
             $table->foreign('certified_by')->references('id')->on('users')->onDelete('cascade');
             $table->datetime('certified_date')->nullable();
-            $table->string('approved_timestamp')->nullable();
-            $table->unsignedInteger('approved_by');
+            // $table->string('approved_timestamp')->nullable();
+            $table->unsignedInteger('approved_by')->nullable();
             $table->foreign('approved_by')->references('id')->on('users')->onDelete('cascade');
             $table->datetime('approved_date')->nullable();
+            $table->unsignedTinyInteger('status_id');
+            $table->foreign('status_id')->references('id')->on('list_statuses')->onDelete('cascade');
             $table->unsignedBigInteger('report_id')->unique();
             $table->foreign('report_id')->references('id')->on('tsr_sample_reports')->onDelete('cascade');
             $table->timestamps();

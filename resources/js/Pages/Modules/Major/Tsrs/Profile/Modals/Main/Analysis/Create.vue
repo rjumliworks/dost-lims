@@ -94,8 +94,7 @@
         </BRow>
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
-            <b-button v-if="!has_many" @click="submit('ok')" variant="primary" block>Submit</b-button>
-            <b-button v-else @click="submitMany('ok')" variant="primary" block>Submit</b-button>
+            <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Submit</b-button>
         </template>
     </b-modal>
 </template>

@@ -20,7 +20,11 @@ class TsrController extends Controller
     }
 
     private function list(Request $request){
-        $data = Tsr::with('payment.status','status')->whereIn('status_id',[2,3,4])->where('customer_id',\Auth::guard('customer')->id())->paginate(10);
+        $data = Tsr::with('payment.status','status')
+        ->whereIn('status_id',[2,3,4])
+        ->where('customer_id',\Auth::guard('customer')->id())
+        ->orderBy('created_at','DESC')
+        ->paginate(10);
         return TsrResource::collection($data);
     }
 }

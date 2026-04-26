@@ -27,7 +27,7 @@
                     <div class="card-body">
                         <div class="d-flex">
                             <div class="flex-grow-1">
-                                <h6 class="mb-0"><b class="text-secondary">Overall Progress: {{analysisCounts.percentage}}% of analyses completed successfully</b></h6>
+                                <h6 class="mb-0"><b :class="(analysisCounts.percentage != '100.00') ? 'text-secondary' : 'text-success'">Overall Progress: {{analysisCounts.percentage}}% of analyses completed successfully</b></h6>
                             </div>
                             <div class="flex-shrink-0">
                                 <h6 class="mb-0">{{analysisCounts.completed}} of {{ analysisCounts.total }} completed</h6>
@@ -35,7 +35,7 @@
                         </div>
                     </div>
                     <div class="progress  bg-secondary-subtle">
-                        <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" :aria-valuenow="analysisCounts.percentage" aria-valuemin="0" aria-valuemax="100" :style="'width: '+analysisCounts.percentage+'%'"></div>
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" :class="(analysisCounts.percentage != '100.00') ? 'bg-secondary' : 'bg-success'" role="progressbar" :aria-valuenow="analysisCounts.percentage" aria-valuemin="0" aria-valuemax="100" :style="'width: '+analysisCounts.percentage+'%'"></div>
                     </div>
                 </div>
                 <div class="car-body bg-white border-bottom shadow-none">

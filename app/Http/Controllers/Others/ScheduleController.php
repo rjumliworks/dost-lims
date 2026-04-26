@@ -32,8 +32,7 @@ class ScheduleController extends Controller
                 return $this->view->events($request);
             break;
             case 'dues':
-                // return $this->view->dues($request);
-                return [];
+                return $this->view->dues($request);
             break;
             default :
             return inertia('Others/Schedules/Index',[

@@ -23,7 +23,6 @@
                     </div>
                 </div>
             </div>
-          
             <div class="col-sm-12"><hr class="text-muted"/></div>
 
             <div class="col-sm-12 mb-n4">
@@ -177,7 +176,7 @@ export default {
         save(status,type){
             this.form = this.$inertia.form({
                 sample_id: this.selected.id,
-                tsr_id: this.selected.tsr_id,
+                tsr_id: this.selected.tsr?.id,
                 id: this.tests,
                 status_id: status,
                 start_at: null,

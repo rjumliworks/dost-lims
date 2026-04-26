@@ -90,7 +90,7 @@ class TsrSample extends Model
 
     public function getCodeAttribute($value)
     {
-        return implode('-', array_slice(explode('-', $value), 0, -1));
+         return implode('-', array_slice(explode('-', $value), 1));
     }
 
     // public function getCodeAttribute($value)

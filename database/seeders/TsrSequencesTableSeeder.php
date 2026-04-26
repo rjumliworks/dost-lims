@@ -22,7 +22,7 @@ class TsrSequencesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'next_sequence' => 10,
+                'next_sequence' => 1,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
@@ -46,7 +46,7 @@ class TsrSequencesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'next_sequence' => 4,
+                'next_sequence' => 1,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
@@ -70,7 +70,7 @@ class TsrSequencesTableSeeder extends Seeder
             4 => 
             array (
                 'id' => 5,
-                'next_sequence' => 7,
+                'next_sequence' => 1,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
@@ -94,7 +94,7 @@ class TsrSequencesTableSeeder extends Seeder
             6 => 
             array (
                 'id' => 7,
-                'next_sequence' => 5,
+                'next_sequence' => 1,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,

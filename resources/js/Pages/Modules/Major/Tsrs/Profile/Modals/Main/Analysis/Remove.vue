@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" hide-footer hide-header title="Remove Sample" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+   <b-modal v-model="showModal" hide-footer hide-header header-class="p-3 bg-light" title="Add Analysis" class="v-modal-custom" modal-class="zoomIn" centered>
         <div class="text-center">
             <div class="mt-4">
                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light" 
@@ -15,7 +15,7 @@
             <button @click="hide()" class="btn btn-light btn-md" type="button">
                 <div class="btn-content"> Close</div>
             </button>
-            <a @click="submit()" class="btn btn-danger" href="javascript:void(0);" target="_self">Confirm</a>
+            <button @click="submit()" class="btn btn-danger" :disabled="confirm">Confirm</button>
         </div>
     </b-modal>
 </template>
@@ -30,20 +30,28 @@ export default {
                option: 'delete'
             }),
             selected: null,
-            showModal: false
+            showModal: false,
+            confirm: false
         }
     },
     methods: { 
-        show(data,id){
+     show(data, id) {
             this.form.id = data.id;
             this.form.tsr_id = id;
             this.selected = data;
-            this.showModal = true;
+
+            this.showModal = false;
+
+            setTimeout(() => {
+                this.showModal = true;
+            }, 50);
         },
         submit(){
+            this.confirm = true;
             this.form.post('/analyses',{
                 preserveScroll: true,
                 onSuccess: (response) => {
+                    this.confirm = false;
                     this.hide();
                 },
             });

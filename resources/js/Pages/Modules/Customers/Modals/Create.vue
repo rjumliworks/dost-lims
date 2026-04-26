@@ -2,39 +2,24 @@
     <b-modal v-model="showModal" style="--vz-modal-width: 800px;" header-class="p-3 bg-light" :title="(!editable) ? 'Create Customer' : 'Edit Customer'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <BRow>
             <BCol lg="12" class="mt-1 mb-n3">
-                <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
+                <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-3 p-3">
                     <form class="customform">
                         <BRow>
                             <BCol lg="12" class="mt-1">
-                                <Search @set="chooseName" @new="setName" :names="names" @search="checkSearchStr" ref="search" :class="(!form.customer) ? 'mb-n4' : ''"/>
-                                <!-- <Multiselect 
-                                :key="multiselectKey" 
-                                :create-option="true" 
-                                :options="names" 
-                                @search-change="checkSearchStr" 
-                                v-model="form.customer" 
-                                object
-                                :searchable="true" 
-                                label="name"
-                                :message="form.errors.name" 
-                                placeholder="Select Customer"/>
-                                <div v-if="form.customer" class="mb-n2">
-                                    <div v-if="(typeof form.customer.value === 'string')" class="alert alert-success mt-2 p-2 fs-12" role="alert">
-                                        The inputted customer name is new. Please double-check the spelling.
-                                    </div>
-                                    <div v-if="(typeof form.customer.value === 'number')" class="alert alert-warning mt-2 p-2 fs-12" role="alert">
-                                        The customer name already exists. This will add a branch for the customer name.
-                                    </div>
-                                </div> -->
-                                  <div v-if="form.customer" class="mb-n2 mt-n3">
+                                <Search @set="chooseName" @new="setName" :names="names" @search="checkSearchStr" ref="search" :class="(!form.customer) ? 'mb-n3' : ''"/>
+                                <div v-if="form.customer" class="mb-n2 mt-n3">
                                     <div v-if="(typeof form.customer === 'string')" class="alert alert-success mt-2 p-2 fs-12" role="alert">
                                         The inputted customer name is new. Please double-check the spelling.
                                     </div>
-                                    <div v-if="(typeof form.customer.value === 'number')" class="alert alert-warning mt-2 p-2 fs-12" role="alert">
+                                    <div v-else-if="typeof form.customer === 'object' && form.customer.classification == 8" class="alert alert-warning mt-2 p-2 fs-12" role="alert">
                                         The customer name already exists. This will add a branch for the customer name.
+                                    </div>
+                                    <div v-else class="alert alert-danger mt-2 p-2 fs-12" role="alert">
+                                         This customer already exists as an individual customer. Duplicate entries are not allowed.
                                     </div>
                                 </div>
                             </BCol>
+                            <template v-if="typeof form.customer === 'object' && form.customer?.classification == 8">
                             <BCol lg="12" v-if="typeof form.customer?.value != 'number'">
                                 <BRow class="g-3">
                                     <BCol lg="12"><hr class="text-muted mb-0" :class="(form.customer) ? 'mt-1' : 'mt-3'"/></BCol>
@@ -77,6 +62,7 @@
                                 <InputLabel for="led_id" value="Type" :message="form.errors.led_id"/>
                                 <Multiselect :options="dropdowns.males" label="name" v-model="form.led_id" placeholder="Select Type" @input="handleInput('led')" />
                             </BCol>
+                            </template>
                         </BRow>
                     </form>
                 </div>
@@ -120,7 +106,7 @@
                     </form>
                 </div>
 
-                <div v-if="form.customer" class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-3 p-3" :class="(typeof form.customer?.value === 'number') ? 'mt-3' : 'mt-n2'">
+                <div v-if="form.customer && form.customer?.classification != 9" class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-3 p-3" :class="(typeof form.customer?.value === 'number') ? 'mt-3' : 'mt-n2'">
                     <form class="customform">
                         <BRow>
                             <BCol lg="12" class="mt-0 mb-n1">
@@ -323,12 +309,12 @@ export default {
             this.form.post('/customers', {
                 preserveScroll: true,
                 onSuccess: () => {
-                    this.names = [];
-                    this.$emit('message',true);
+                    this.$emit('message', true);
+
                     this.$refs.location.emptyMap();
-                    this.hide();
-                    this.multiselectKey += 1;
                     this.$refs.confirm.hide();
+
+                    this.hide(); // ✅ central reset
                 }
             });
         },
@@ -363,10 +349,30 @@ export default {
             this.form.customer = null;
             this.address = null;
             this.industry = null;
+
             this.form.reset();
             this.form.clearErrors();
+
+            this.form.email = null;
+            this.form.contact_no = null;
+            this.form.sex_id = null;
+            this.form.led_id = null;
+            this.form.type_id = null;
+            this.form.add_to_conforme = false;
+
             this.form.name = 'Main';
             this.form.is_main = true;
+
+            this.names = []; // clear search results
+
+            // ✅ clear Search input safely
+            if (this.$refs.search) {
+                this.$refs.search.clear();
+            }
+
+            // ✅ force Search re-render (VERY important)
+            this.multiselectKey++;
+
             this.editable = false;
             this.showModal = false;
         }

@@ -27,6 +27,7 @@ class AgencyClass
             return [
                 'value' => $item->discount->id,
                 'name' => $name,
+                'is_individual' => $item->discount->is_individual,
                 'number' => $item->discount->value,
                 'type' => $item->discount->type->name,
                 'based' => $item->discount->based->name,

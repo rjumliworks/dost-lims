@@ -7,9 +7,20 @@
                 <!-- <p class="text-muted mb-4">Please double-check all data to avoid cancellation or updating of the data.</p> -->
                 <div class="customform">
                     <BRow>
-                        <BCol lg="12" class="mt-2">
-                            <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
-                            <TextInput v-model="form.due_at" type="date" class="form-control" placeholder="Please enter email" @input="handleInput('due_at')" :light="true"/>
+                        <BCol lg="12" class="mt-2 mb-n2">
+                            <div class="d-flex">
+                                <div style="width: 100%;">
+                                    <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
+                                    <TextInput v-model="form.due_at" type="date" class="form-control" placeholder="Please enter email" @input="handleInput('due_at')" :light="true"/>
+                                </div>
+                                <div class="flex-shrink-0">
+                                    <b-button @click="openCalendar()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1">
+                                        <i class="ri-calendar-todo-fill text-danger"></i> <span class="text-muted fs-11 ms-1">View Calendar</span>
+                                    </b-button>
+                                </div>
+                            </div>
+                            <!-- <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
+                            <TextInput v-model="form.due_at" type="date" class="form-control" placeholder="Please enter email" @input="handleInput('due_at')" :light="true"/> -->
                         </BCol>
                         <BCol lg="12" class="mt-2">
                             <InputLabel for="due" value="Please type CONFIRM to continue."/>
@@ -44,19 +55,21 @@
                         <button @click="hide()" class="btn btn-light btn-md" type="button">
                             <div class="btn-content"> Close</div>
                         </button>
-                        <button @click="submit()" :disabled="keyword !== 'CONFIRM'" class="btn btn-primary">Confirm</button>
+                        <button v-if="keyword == 'CONFIRM'" @click="submit()" :disabled="confirm" class="btn btn-primary">Confirm</button>
                     </div>
                 </div>
             </div>
         </div>
     </b-modal>
+    <Calendar ref="calendar"/>
 </template>
 <script>
+import Calendar from './Calendar.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 export default {
-    components: { InputLabel, TextInput },
+    components: { InputLabel, TextInput, Calendar },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -70,6 +83,7 @@ export default {
             }),
             facility: null,
             keyword: null,
+            confirm: false,
             showModal: false
         }
     },
@@ -82,14 +96,19 @@ export default {
             this.showModal = true;
         },
         submit(){
+            this.confirm = true;
             this.form.put('/tsrs/update',{
                 preserveScroll: true,
                 onSuccess: (response) => {
+                    this.confirm = false;
                     this.$emit('selected',response.props.flash.data.data);
                     this.hide();
                     window.open('/samples?option=qrcode-list&id='+response.props.flash.data.data.qr);
                 },
             });
+        },
+        openCalendar(){
+            this.$refs.calendar.show();
         },
         handleInput(field) {
             this.form.errors[field] = false;

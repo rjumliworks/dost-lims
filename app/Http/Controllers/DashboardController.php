@@ -146,6 +146,9 @@ class DashboardController extends Controller
             case 'performance':
                 return $this->analyst->performance($request);
             break;
+            case 'tsr':
+                
+            break;
         }
     }
 }

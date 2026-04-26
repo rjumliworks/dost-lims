@@ -16,7 +16,6 @@ class SaveClass
         $conforme = [
             'value' => $customer->id,
             'name' => $customer->name,
-            'name_hash' => hash('sha256', Crypt::decryptString($customer->name)),
             'contact_no' => $customer->contact_no
         ];
 
@@ -88,7 +87,7 @@ class SaveClass
 
         if($request->add_to_conforme){
             $customer->conformes()->create([
-                'name' => $request->customer['name'],
+                'name' => (is_array($request->customer)) ? $request->customer['name'] : $request->customer,
                 'contact_no' => $request->contact_no
             ]);
         }
@@ -102,9 +101,9 @@ class SaveClass
 
     private function resolveCustomerName($request): int
     {
-        if ($request->customer['value'] === $request->customer['name']) {
+        if (!is_array($request->customer)) {
             return CustomerName::create([
-                'name'         => $request->customer['value'],
+                'name'         => (is_array($request->customer)) ? $request->customer['name'] : $request->customer,
                 'has_branches' => $request->has_branches,
                 'type_id'      => $request->type_id,
                 'industry_id'  => $request->industry_id,

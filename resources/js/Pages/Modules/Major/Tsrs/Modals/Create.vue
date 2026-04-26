@@ -84,7 +84,7 @@
                                 <!-- <i class="ri-price-tag-3-fill me-1"></i> -->
                                 <InputLabel for="region" value="Discount" :message="form.errors.discount_id"/>
                                 <Multiselect 
-                                :options="dropdowns.discounts" 
+                                :options="filteredDiscounts" 
                                 v-model="form.discount_id"
                                 @input="handleInput('discount_id')"
                                 :searchable="true" label="name"
@@ -159,6 +159,29 @@ export default {
             editable: false
         }
     },
+    computed: {
+        filteredDiscounts() {
+            if (!this.form.customer) return [];
+
+            const sex = (this.form.customer.sex || '').toLowerCase().trim();
+            const isFemale = sex === 'female';
+
+            const isIndividual = this.form.customer.classification === 'Individual';
+
+            return this.dropdowns.discounts.filter(d => {
+                const name = (d.name || '').trim();
+                if (name === "Regular") return true;
+                if (name === "Women's Month (20%)") {
+                    return isFemale;
+                }
+                if (isIndividual) {
+                    return d.is_individual == 1;
+                } else {
+                    return d.is_individual == 0;
+                }
+            });
+        }
+    },
     watch: {
         "form.is_referral"(newVal){
             if(!newVal){
@@ -181,6 +204,7 @@ export default {
                 this.form.email = null;
                 this.form.contact_no = null;
             }
+            this.form.discount_id = null;
         },
         "form.laboratory"(newVal){
             if(newVal){

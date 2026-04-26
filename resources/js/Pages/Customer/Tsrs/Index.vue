@@ -46,19 +46,21 @@
                                 <tr class="fs-10">
                                     <th style="width: 4%;"></th>
                                     <th style="width: 20%;">Code</th>
-                                    <th style="width: 25%;" class="text-center">Request At</th>
-                                    <th style="width: 16%;" class="text-center">Status</th>
+                                    <th style="width: 15%;" class="text-center">Due At</th>
+                                    <th style="width: 15%;" class="text-center">Request At</th>
                                     <th style="width: 15%;" class="text-center">Total</th>
+                                    <th style="width: 16%;" class="text-center">Status</th>
                                     <th style="width: 10%;" class="text-center"></th>
                                 </tr>
                             </thead>
                             <tbody v-if="lists.length > 0">
                                 <tr v-for="(list,index) in lists" v-bind:key="index" class="fs-12">
-                                    <td>{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
+                                    <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
                                     <td>{{list.code}}</td>
+                                    <td class="text-center">{{list.due_at}}</td>
                                     <td class="text-center">{{list.created_at}}</td>
-                                    <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td>
                                     <td class="text-center">{{list.payment.total}}</td>
+                                    <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td>
                                     <td class="text-center">
                                         -
                                     </td>

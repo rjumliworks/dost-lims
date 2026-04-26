@@ -7,15 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class TsrSampleReportSignatory extends Model
 {
     protected $fillable = [
-        'analyzed_timestamp',
+        // 'analyzed_timestamp',
         'analyzed_by',
         'analyzed_date',
-        'certified_timestamp',
+        // 'certified_timestamp',
         'certified_by',
         'certified_date',
-        'approved_timestamp',
+        // 'approved_timestamp',
         'approved_by',
         'approved_date',
+        'status_id',
         'report_id'
     ];
 
@@ -38,4 +39,6 @@ class TsrSampleReportSignatory extends Model
     {
         return $this->belongsTo('App\Models\TsrSampleReport', 'report_id', 'id');
     }
+
+    public function status(){ return $this->belongsTo('App\Models\ListStatus', 'status_id', 'id');}
 }
