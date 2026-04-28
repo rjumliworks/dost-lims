@@ -94,7 +94,7 @@ export default {
                   </Link>
               </li>
               <li class="nav-item">
-                  <Link href="/quotations" class="nav-link menu-link"
+                  <Link href="/quotation" class="nav-link menu-link"
                   :class="{'active': $page.component.startsWith('Customer/Quotation') }">
                   <i class="ri-folder-5-line"></i>
                   <span class="fw-semibold fs-14" data-key="t-dashboards">Quotation</span>
@@ -102,7 +102,7 @@ export default {
               </li>
               <li class="nav-item">
                   <Link href="/quotations" class="nav-link menu-link"
-                  :class="{'active': $page.component.startsWith('Customer/Quotation') }">
+                  :class="{'active': $page.component.startsWith('Customer/Schedules') }">
                   <i class="ri-calendar-line"></i>
                   <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
                   </Link>

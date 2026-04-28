@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Resources\Customer\Quotation;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class AddressResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+         $address = ($this->address != '' || $this->address != NULL) ? $this->address.', ' : '';
+        if($this->municipality->name == 'Zamboanga City' || $this->municipality->name == 'Isabela City'){
+            $a = '';
+        }else if($this->province->name == 'Sulu'){
+            $a = ', '.$this->province->name;
+        }else{
+            $a = ', '.$this->province->name;
+        }
+        return [
+            'name' => $address.$this->barangay->name.', '.$this->municipality->name.$a,
+            'address' => $this->address,
+            'region' => $this->region,
+            'province' => $this->province,
+            'municipality' => $this->municipality,
+            'barangay' => $this->barangay,
+        ];
+    }
+}

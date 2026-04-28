@@ -38,6 +38,9 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
 
         Route::resource('tsrs', App\Http\Controllers\Customer\TsrController::class);
         Route::resource('downloads', App\Http\Controllers\Customer\TsrController::class);
+        Route::resource('quotation', App\Http\Controllers\Customer\QuotationController::class);
+         Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);
+         Route::resource('/analyses', App\Http\Controllers\Major\AnalysisController::class);
         // Route::get('/{folder}/download', [App\Http\Controllers\Viewer\DownloadController::class, 'download'])->name('download');
         // Route::resource('folders', App\Http\Controllers\Viewer\FolderController::class);
         // Route::resource('downloads', App\Http\Controllers\Viewer\DownloadController::class);
@@ -109,6 +112,10 @@ Route::prefix('insights')->group(function () {
 Route::prefix('accomplishments')->group(function () {
     Route::get('/', [App\Http\Controllers\Insights\AccomplishmentController::class, 'index']);
     Route::put('/update', [App\Http\Controllers\Insights\AccomplishmentController::class, 'update']);
+});
+
+Route::prefix('reports')->group(function () {
+    Route::get('/excel', [App\Http\Controllers\Finance\ReportController::class, 'excel']);
 });
 
 require __DIR__.'/auth.php';

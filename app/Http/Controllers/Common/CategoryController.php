@@ -14,6 +14,7 @@ class CategoryController extends Controller
 {
     use HandlesTransaction;
 
+    protected DropdownClass $dropdown;
     protected ViewClass $view;
     protected SaveClass $save;
 

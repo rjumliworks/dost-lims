@@ -37,6 +37,7 @@ class ViewClass
     public function category($request){
         $keyword = $request->keyword;
         $data = SampleCategory::where('laboratory_id',$request->laboratory_id)
+        ->where('is_active', 1)
         ->where('name', 'LIKE', "%{$keyword}%")->where('is_active',1)->get()->map(function ($item) {
             return [
                 'value' => $item->id,

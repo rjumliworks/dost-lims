@@ -5,33 +5,39 @@
                 <div class="flex-shrink-0 me-3">
                     <div style="height:2.5rem;width:2.5rem;">
                         <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                            <i class="ri-file-text-fill  text-primary fs-24"></i>
+                            <i class="ri-hand-coin-fill text-primary fs-24"></i>
                         </span>
                     </div>
                 </div>
                 <div class="flex-grow-1">
-                    <h5 class="mb-0 fs-14"><span class="text-body">List of Order of Payments</span></h5>
+                    <h5 class="mb-0 fs-14"><span class="text-body">Pending Order of Payments</span></h5>
                     <p class="text-muted text-truncate-two-lines fs-12">A document authorizing a payment, including details like the payee, amount and more.</p>
                 </div>
                 <div class="flex-shrink-0">
-                    <div class="input-group mb-1">
+                    <!-- <div class="input-group mb-1">
                         <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                         <input type="text" placeholder="Search Request" class="form-control" style="width: 40%;">
                         <b-button type="button" variant="primary" @click="openCreate">
                             <i class="ri-add-circle-fill align-bottom me-1"></i> Create
                         </b-button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
-        <div class="card bg-white border-bottom shadow-none" no-body>
+        <div class="card border-bottom shadow-none" no-body>
             <div class="d-flex">
                 <div class="flex-grow-1">
                     <!-- border border-dashed border-end-0 border-start-0 -->
-                    <ul class="nav nav-tabs nav-tabs-custom nav-success fs-12" role="tablist">
+                    <ul class="nav nav-tabs nav-tabs-custom nav-primary fs-12" role="tablist">
                         <li class="nav-item">
                             <BLink @click="viewStatus(10,null)" class="nav-link py-3 active text-primary" data-bs-toggle="tab" role="tab" aria-selected="true">
-                            <i class="ri-apps-2-line me-1 align-bottom"></i> All Requests
+                            <i class="ri-apps-2-line me-1 align-bottom"></i> All Payment
+                            </BLink>
+                        </li>
+                         <li class="nav-item" v-for="(list,index) in dropdowns.payments" v-bind:key="index">
+                            <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? list.others+' active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
+                                <i :class="icons[index]" class="me-1 align-bottom"></i>
+                                {{ list.name }} <BBadge v-if="counts[index] > 0" :class="list.color" class="align-middle ms-1">{{counts[index]}}</BBadge>
                             </BLink>
                         </li>
                     </ul>
@@ -41,18 +47,18 @@
                 </div>
             </div>
         </div>
-        <div class="card-body bg-white rounded-bottom">
-            <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 400px);">
+        <div class="card-body rounded-bottom">
+            <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 480px);">
                 <table class="table align-middle table-centered mb-0">
                     <thead class="table-light thead-fixed">
                         <tr class="fs-11">
                             <th style="width: 4%;"></th>
                             <th>Customer</th>
-                            <th style="width: 13;" class="text-center">Collection</th>
-                            <th style="width: 13%;" class="text-center">Payment</th>
-                            <th style="width: 10%;" class="text-center">Status</th>
-                            <th style="width: 10%;" class="text-center">Total</th>
-                            <th style="width: 10%;" ></th>
+                            <th style="width: 20%;" class="text-center">Collection</th>
+                            <th style="width: 14%;" class="text-center">Date</th>
+                            <!-- <th style="width: 12%;" class="text-center">Status</th> -->
+                            <th style="width: 13%;" class="text-center">Total</th>
+                            <th style="width: 15%;" ></th>
                         </tr>
                     </thead>
                     <tbody v-if="lists.length > 0" class="table-white">
@@ -61,16 +67,17 @@
                                 {{ (meta.current_page - 1) * meta.per_page + index + 1 }}.
                             </td>
                             <td>
-                                <h5 class="fs-13 mb-0 text-dark" v-if="list.or">OR# : {{list.or.number}}</h5>
-                                <h5 class="fs-13 mb-0 text-dark" v-else>{{list.code}}</h5>
+                                <h5 class="fs-12 fw-semibold mb-0 text-primary" v-if="list.or">OR# : {{list.or.number}}</h5>
+                                <h5 class="fs-12 fw-semibold mb-0 text-primary" v-else>{{list.code}}</h5>
                                 <p class="fs-12 text-muted mb-0">{{list.payorable.name}}</p>
+                                {{ list.created_at }}
                             </td>
                             <td class="text-center fs-12">{{list.collection}}</td>
-                            <td class="text-center fs-12">{{list.payment.name}}</td>
-                            <td class="text-center">
+                            <td class="text-center fs-12">{{list.date}}</td>
+                            <!-- <td class="text-center">
                                 <span :class="'badge '+list.status.color+' '+list.status.others">{{list.status.name}}</span>
-                            </td>
-                            <td class="text-center">{{list.total}}</td>
+                            </td> -->
+                            <td class="text-center fs-12">{{list.total}}</td>
                             <td class="text-end">
                                 <b-button @click="openView(list)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                     <i class="ri-eye-fill align-bottom"></i>
@@ -110,16 +117,18 @@ import Delete from '../Modals/Delete.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { Pagination, Create, View, Delete },
-    props: ['dropdowns'],
+    props: ['dropdowns','counts'],
     data(){
         return {
             currentUrl: window.location.origin,
+            icons: ['ri-hand-coin-line','ri-wallet-3-line','ri-indeterminate-circle-line','ri-bank-line','ri-cloud-line'],
             lists: [],
             meta: {},
             links: {},
             index: null,
             filter: {
                 keyword: null,
+                payment: null,
                 status: null
             }
         }
@@ -143,6 +152,7 @@ export default {
                     keyword: this.filter.keyword,
                     status: 6,
                     count: 10,
+                    mode: this.filter.payment,
                     option: 'list'
                 }
             })
@@ -167,6 +177,11 @@ export default {
         openPrint(id){
             window.open(this.currentUrl + '/orderofpayments?option=print&id='+id);
         },
+        viewStatus(index,status){
+            this.index = index;
+            this.filter.payment = status;
+            this.fetch();
+        }
     }
 }
 </script>

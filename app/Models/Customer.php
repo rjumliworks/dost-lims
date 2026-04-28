@@ -51,7 +51,7 @@ class Customer extends Authenticatable
             if (! Auth::check()) {
                 return;
             }
-            
+
             if (auth()->guard('web')->check()) {
                     $user = Auth::user();
                     if ($user->hasRole('Administrator')) {

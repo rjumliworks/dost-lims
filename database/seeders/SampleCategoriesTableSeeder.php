@@ -20,7 +20,7 @@ class SampleCategoriesTableSeeder extends Seeder
             [
                 'id' => 1,
                 'name' => 'n/a',
-                'is_active' => 1,
+                'is_active' => 0,
                 'laboratory_id' => 1,
                 'agency_id' => 14,
                 'user_id' => 1,

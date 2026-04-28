@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Controllers\Finance;
+
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\Finance\OpOrExport;
+use App\Exports\Finance\ReconciliationExport;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class ReportController extends Controller
+{
+    public function excel(Request $request)
+    {
+        $month_name = $request->month ?: date('F');
+        $month = \DateTime::createFromFormat('F', ucfirst(strtolower($month_name)))->format('m');
+        $year = $request->year ?: date('Y');
+        $laboratory = $request->laboratory;
+
+        switch($request->type){
+            case 'reconciliation':
+                return Excel::download(
+                    new ReconciliationExport($month,$year,$laboratory), 
+                    'reconciliation-'.strtolower($month_name).'-'.$year.'.xlsx'
+                );
+            break;
+             case 'opandor':
+                return Excel::download(
+                    new OpOrExport($month,$year,$laboratory), 
+                    'opandor-'.strtolower($month_name).'-'.$year.'.xlsx'
+                );
+            break;
+        }
+    }
+}

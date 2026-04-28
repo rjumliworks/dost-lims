@@ -22,7 +22,7 @@ class SampleTypesTableSeeder extends Seeder
             0 => array (
                 'id' => 1,
                 'name' => 'n/a',
-                'is_active' => 1,
+                'is_active' => 0,
                 'category_id' => 1,
                 'user_id' => 1,
                 'agency_id' => 14,

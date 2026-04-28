@@ -62,8 +62,11 @@ class DashboardController extends Controller
                 switch($role){
                     case 'Accountant':
                         return inertia('Finance/Accounting/Dashboard/Index',[
+                            'counts' => $this->accountant->counts($this->dropdown->dropdowns('Payment Mode','n/a')),
                             'dropdowns' => [
-                                'reminders' => $this->accountant->reminders(),
+                                'reminders' => $this->accountant->reminders($request),
+                                'collection' => $this->accountant->collection($request),
+                                'collection_summary' => $this->accountant->collection_summary($request),
                                 'tsrs' => $this->accountant->forpayment($request),
                                 'collections' => $this->dropdown->dropdowns('Collection Type','Laboratory'),
                                 'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
