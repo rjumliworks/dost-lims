@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->longText('customer_description');
             $table->longText('description')->nullable();
+            $table->longText('remarks')->nullable();
             $table->boolean('is_completed')->default(0);
             $table->boolean('is_disposed')->default(0);
             $table->unsignedInteger('samplename_id')->nullable();

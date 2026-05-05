@@ -53,6 +53,7 @@ class TsrController extends Controller
                     'purposes' => $this->dropdown->dropdowns('Purpose','n/a'),
                     'releases' => $this->dropdown->datas('Release'),
                     'regions' => $this->dropdown->regions(),
+                    'years' => $this->dropdown->years()
                 ],
                 // 'facility' => \Auth::user()->profile->facility_id,
                 'counts' => $this->view->counts($this->dropdown->statuses('Request')),

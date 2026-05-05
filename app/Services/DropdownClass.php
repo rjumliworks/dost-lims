@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Tsr;
 use App\Models\User;
 use App\Models\Agency;
+use App\Models\Target;
 use App\Models\AgencyFacility;
 use App\Models\ListRole;
 use App\Models\ListData;
@@ -26,6 +27,11 @@ use App\Models\FinanceName;
 
 class DropdownClass
 {  
+    public function years(){
+        $data = Target::distinct()->pluck('year')->toArray();
+        return $data;
+    }
+
     public function suppliers(){
         $data = Supplier::where('is_active',1)->get()->map(function ($item) {
             return [

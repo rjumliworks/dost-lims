@@ -95,6 +95,7 @@ class SaveClass
                 'category_id' => $sample->category_id,
                 'customer_description' => $sample->customer_description,
                 'description' => $sample->description,
+                'remarks' => $sample->remarks,
             ]);
             foreach($sample->analyses as $analysis){
                 $a = $s->analyses()->create([

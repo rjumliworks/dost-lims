@@ -151,7 +151,7 @@
                 @if($configuration['agency']['member']['name'] == 'Department of Science and Technology - VI')
                 <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">OP-007-F1 (front page) <br/>Rev 4 | February 2, 2026</td>
                 @else
-                <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">OP-007-F1 (front page) <br/>Rev 13 | Feb 01, 2025</td>
+                <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">OP-007-F1 (front page) <br/>Rev 14 | May 01, 2026</td>
                 @endif
             </tr>   
         </table>
@@ -395,7 +395,7 @@
             </tfoot>
         </table>
         <div style="page-break-inside: avoid; break-inside: avoid;">
-            <h6 style="font-size: 10px; margin-top: 12px;">2. DESCRIPTION OF THE SAMPLE(S) / REMARK(S)</h6>
+            <h6 style="font-size: 10px; margin-top: 12px;">2. DESCRIPTION OF THE SAMPLE(S)</h6>
             <table style="border: 1px solid black; font-size: 9px; margin-top: -22px;">
                 <tbody>
                     <tr>
@@ -410,17 +410,21 @@
                 </tbody>
             </table>
         </div>
-        <h6 style="font-size: 10px; margin-top: 12px;">3. CUSTOMER WALLET</h6>
+        <h6 style="font-size: 10px; margin-top: 12px;">3. REMARK(S)</h6>
         <table style="border: 1px solid black; font-size: 9px; margin-top: -22px;">
-            <tbody>
-                <tr>
-                    <td>
-                        <?php echo trim($wallet,'₱ '); ?>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <h6 style="font-size: 10px; margin-top: 12px;">4. DISCUSSED WITH CUSTOMER INCLUDING THE TERMS AND CONDITIONS AT THE BACK</h6>
+                <tbody>
+                    <tr>
+                        <td>
+                             <ul style="margin-left: -30px; list-style: none; color: #072388; ">
+                                @foreach($tsr['descriptions'] as $desc)
+                                    <li>{{$desc['code']}} : <i>{{$desc['remarks'] ?? '-'}}</li>
+                                @endforeach
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <h6 style="font-size: 10px; margin-top: 12px;">4. AGREED WITH CUSTOMER INCLUDING THE TERMS AND CONDITIONS AT THE BACK</h6>
         <table style="border: 1px solid black; font-size: 10px; margin-top: -22px; page-break-inside: avoid;">
             <tbody>
                 <tr>

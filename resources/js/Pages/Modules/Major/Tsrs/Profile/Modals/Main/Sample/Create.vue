@@ -65,11 +65,15 @@
                 </BCol>
                 <BCol lg="6" class="mt-n1">
                     <InputLabel for="name" value="Description provided by customer"/>
-                    <Textarea id="name" v-model="form.customer_description" class="form-control" rows="7" :class="{ 'is-invalid': form.errors.customer_description }" :light="true"/>
+                    <Textarea id="name" v-model="form.customer_description" class="form-control" rows="5" :class="{ 'is-invalid': form.errors.customer_description }" :light="true"/>
                 </BCol>
                 <BCol lg="6" class="mt-n1">
                     <InputLabel for="name" value="Description based on the sample submitted"/>
-                    <Textarea id="name" v-model="form.description" class="form-control" rows="7" :class="{ 'is-invalid': form.errors.description }" :light="true"/>
+                    <Textarea id="name" v-model="form.description" class="form-control" rows="5" :class="{ 'is-invalid': form.errors.description }" :light="true"/>
+                </BCol>
+                <BCol lg="12" class="mt-1">
+                    <InputLabel for="name" value="Remarks"/>
+                    <Textarea id="name" v-model="form.remarks" class="form-control" rows="2" :class="{ 'is-invalid': form.errors.remarks }" :light="true"/>
                 </BCol>
             </BRow>
         </form>
@@ -100,6 +104,7 @@ export default {
                 name: null,
                 description: null,
                 customer_description: null,
+                remarks: null,
                 samplename_id: null,
                 sampletype_id: null,
                 category_id: null,
@@ -158,6 +163,7 @@ export default {
             this.form.id = data.id;
             this.form.name = data.name;
             this.form.description = data.description;
+            this.form.remarks = data.remarks;
             this.form.customer_description = data.customer_description;
             this.form.tsr_id = id;
             this.form.laboratory_id = laboratory;
@@ -173,6 +179,7 @@ export default {
             this.form.name = data.name;
             this.form.description = data.description;
             this.form.customer_description = data.customer_description;
+            this.form.remarks = data.remarks;
             this.form.laboratory_id = laboratory;
             this.setSample(data.category,data.sampletype,data.samplename);
             this.showModal = true;
