@@ -29,7 +29,7 @@
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Report number, TSR Code, Sample Code" class="form-control" style="width: 30%;">
                                 <Multiselect class="white" style="width: 17%;" :options="[]" v-model="filter.analyst" label="name" :searchable="true" placeholder="Select Analyst" />
-                                <Multiselect class="white" style="width: 17%;" :options="[]" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
+                                <Multiselect v-if="laboratories.length > 0" class="white" style="width: 17%;" :options="laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -165,7 +165,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, View, Create },
-    props: ['dropdowns','count'],
+    props: ['dropdowns','count','laboratories'],
     data(){
         return {
             currentUrl: window.location.origin,

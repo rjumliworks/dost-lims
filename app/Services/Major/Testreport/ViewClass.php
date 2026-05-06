@@ -6,6 +6,7 @@ use Hashids\Hashids;
 use App\Models\UserRole;
 use App\Models\TsrSample;
 use App\Models\TsrSampleReport;
+use App\Models\ListLaboratory;
 use App\Http\Resources\Major\Testreport\WithReportResource;
 use App\Http\Resources\Major\Testreport\NoReportResource;
 
@@ -210,4 +211,19 @@ class ViewClass
     //     });
     //     return $data;
     // }
+
+     public function laboratories(){
+        $laboratories = ListLaboratory::whereIn('id',$this->labs())->get()
+        ->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $laboratories;
+    }
+
+    private function labs(){
+        return UserRole::where('user_id',auth()->id())->whereIn('role_id',[3,5,10])->where('is_active',1)->pluck('laboratory_id');
+    }
 }

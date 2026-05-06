@@ -30,6 +30,8 @@ class ViewClass
 
     public function list($request){
         $code = $request->code;
+        $date = $request->date;
+        $laboratory = $request->laboratory;
         $data = SampleResource::collection(
             TsrSample::query()
             ->with(
@@ -38,11 +40,17 @@ class ViewClass
                 'analyses.sample',
                 'analyses.started.profile','analyses.ended.profile')
             ->with('disposal')
-            ->withWhereHas('tsr',function ($query) use ($code){
+            ->withWhereHas('tsr',function ($query) use ($code,$date,$laboratory){
                 $query->whereNotIn('status_id',[1,2]);
-                $query->select('id','due_at','code','created_at')->whereIn('laboratory_id',$this->labs());
+                $query->select('id','due_at','code','created_at');
                 $query->when($code, function ($query) use ($code){
                     $query->where('code', 'LIKE', "%{$code}%");
+                })
+                ->when($date, function ($query) use ($date){
+                    $query->where('due_at',$date);
+                })
+                ->when($laboratory, function ($query) use ($laboratory){
+                    $query->where('laboratory_id',$laboratory);
                 });
             })
             ->when($request->keyword, function ($query, $keyword) {
@@ -76,17 +84,6 @@ class ViewClass
         return $counts;
     }
 
-    public function laboratories(){
-        $laboratories = ListLaboratory::whereIn('id',$this->labs())->get()
-        ->map(function ($item) {
-            return [
-                'value' => $item->id,
-                'name' => $item->name
-            ];
-        });
-        return $laboratories;
-    }
-
     public function analysts(){
         $data = UserRole::with('user.profile')
         ->whereHas('user', function ($query){
@@ -104,7 +101,18 @@ class ViewClass
         return $data;
     }
 
+    public function laboratories(){
+        $laboratories = ListLaboratory::whereIn('id',$this->labs())->get()
+        ->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $laboratories;
+    }
+
     private function labs(){
-        return UserRole::where('user_id',auth()->id())->whereIn('role_id',[5,10])->where('is_active',1)->pluck('laboratory_id');
+        return UserRole::where('user_id',auth()->id())->whereIn('role_id',[3,5,10])->where('is_active',1)->pluck('laboratory_id');
     }
 }

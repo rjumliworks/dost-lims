@@ -35,12 +35,6 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
                     </Link>
                 </li>
-            </template>
-            <template v-if="['Laboratory Analyst', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
-                <li class="menu-title">
-                    <i class="ri-more-fill" aria-expanded="false"></i>
-                    <span data-key="t-menu">Analysts Modules</span>
-                </li>
                 <li class="nav-item">
                     <Link href="/samples" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Major/Samples') }">
@@ -56,6 +50,13 @@
                     </Link>
                 </li>
             </template>
+            <!-- <template v-if="['Laboratory Analyst', 'Technical Manager'].some(role => $page.props.roles.includes(role))"> -->
+                <!-- <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Analysts Modules</span>
+                </li> -->
+              
+            <!-- </template> -->
             <template v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

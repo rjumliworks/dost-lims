@@ -106,8 +106,15 @@ class DashboardController extends Controller
                             ]
                         ]);
                     break;
-                     case 'Laboratory Head':
+                    case 'Laboratory Head':
                         return inertia('Modules/Dashboard/LabHead/Index',[
+                            'dropdowns' => [
+                                'laboratories' => $this->agency->laboratories(),
+                            ]
+                        ]);
+                    break;
+                     case 'Releasing Officer':
+                        return inertia('Modules/Dashboard/Releasing/Index',[
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
                             ]

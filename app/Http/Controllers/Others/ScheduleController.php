@@ -34,6 +34,9 @@ class ScheduleController extends Controller
             case 'dues':
                 return $this->view->dues($request);
             break;
+            case 'duedate':
+                return $this->view->duedate($request);
+            break;
             default :
             return inertia('Others/Schedules/Index',[
                 'dropdowns' => [

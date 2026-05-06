@@ -6,6 +6,7 @@ use App\Models\Tsr;
 use App\Models\Schedule;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Http\Resources\Others\Schedules\DueResource;
 use App\Http\Resources\Others\Schedules\EventResource;
 
 class ViewClass
@@ -15,6 +16,16 @@ class ViewClass
         ->with('users.user:id','users.user.profile')
         ->with('information.customer.customer_name','information.customer.address','information.conforme')->get();
         return EventResource::collection($data);
+    }
+
+    public function duedate($request){
+        $data = Tsr::with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
+        ->with('laboratory')
+        ->with('customer.address:address,customer_id,region_code,province_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name')
+        // ->whereYear('due_at',2025)
+        ->whereNotIn('status_id',[4,5])
+        ->get();
+        return DueResource::collection($data);
     }
 
     public function dues($request){

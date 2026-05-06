@@ -27,11 +27,12 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Sample" class="form-control" style="width: 30%;">
-                                <input type="text" v-model="filter.sample" placeholder="Search Sample name" class="form-control">
+                                <input type="text" v-model="filter.keyword" placeholder="Search Sample" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.sample" placeholder="Search Sample name" class="form-control" style="width: 15%;">
+                                <input type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 15%">
                                 <Multiselect class="white" @search-change="checkTsr" style="width: 15%;" :options="tsrs" :searchable="true" v-model="filter.code" label="name" placeholder="Search Code" />
-                                <Multiselect v-if="this.$page.props.roles.length > 1" class="white" style="width: 13%;" :options="laboratories" :searchable="true" v-model="filter.laboratory" label="name" placeholder="Filter Laboratory" />
-                                <Multiselect class="white" style="width: 13%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
+                                <Multiselect v-if="laboratories.length > 0" class="white" style="width: 15%;" :options="laboratories" :searchable="true" v-model="filter.laboratory" label="name" placeholder="Filter Laboratory" />
+                                <Multiselect class="white" style="width: 8%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -80,12 +81,12 @@
                                     </th>
                                     <th style="width: 3%;" v-else></th>
                                     <th>Code</th>
-                                    <th style="width: 10%;" class="text-center">Analyses</th>
+                                    <th style="width: 7%;" class="text-center">Analyses</th>
                                     <th style="width: 15%;" class="text-center">Received Date</th>
-                                    <th style="width: 15%;" class="text-center">Due Date</th>
+                                    <th style="width: 10%;" class="text-center">Due Date</th>
                                     <th style="width: 15%;" class="text-center">Manner of Disposal</th>
                                     <th style="width: 12%;" class="text-center">Disposed Date</th>
-                                    <th style="width: 12%" class="text-center">Status</th>
+                                    <th style="width: 8%" class="text-center">Status</th>
                                     <th style="width: 4%;" ></th>
                                 </tr>
                             </thead>
@@ -101,7 +102,7 @@
                                     </td>
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary">{{list.code}}</h5>
-                                        <p class="fs-13 text-muted mb-0">{{list.samplename.name}}</p>
+                                        <p class="fs-12 text-muted mb-0">{{ (list.samplename.name != 'n/a') ? list.samplename.name : list.name}}</p>
                                     </td>
                                     <td class="text-center">{{ countCompleted(list.analyses) }} of {{ list.analyses.length }} </td>
                                     <td class="text-center">{{ list.created_at }}</td>
@@ -187,6 +188,7 @@ export default {
                 laboratory: null,
                 code: null,
                 sample: null,
+                date: null,
                 status: null,
                 year: new Date().getFullYear(),
             },
@@ -210,8 +212,14 @@ export default {
         "filter.year"(newVal){
             this.fetch();
         },
+        "filter.date"(newVal){
+            this.fetch();
+        },
         "filter.sample"(newVal){
             this.checkSearchStr(newVal);
+        },
+        "filter.laboratory"(newVal){
+            this.fetch();
         },
         mark(){
             if(this.mark){
@@ -252,6 +260,7 @@ export default {
                     code: this.filter.code,
                     sample: this.filter.sample,
                     status: this.filter.status,
+                    date: this.filter.date,
                     year: this.filter.year,
                     count: (this.filter.code) ? null : 10,
                     option: 'list'

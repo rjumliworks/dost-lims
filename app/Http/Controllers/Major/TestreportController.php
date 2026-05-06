@@ -31,7 +31,8 @@ class TestreportController extends Controller
             break;
             default :
                 return inertia('Modules/Major/Testreports/Index',[
-                    'count' => $this->view->count()
+                    'count' => $this->view->count(),
+                    'laboratories' => $this->view->laboratories()
                 ]);
         }
     }
