@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('equipment', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+            $table->integer('old_id')->nullable();
             $table->string('code')->unique();
             $table->string('name');
             $table->string('maintenance_plan')->nullable();
