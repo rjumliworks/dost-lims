@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tsr_releases', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
+            $table->date('mailed_at')->nullable();
             $table->date('released_at')->nullable();
             $table->unsignedSmallInteger('release_id')->nullable(); 
             $table->foreign('release_id')->references('id')->on('list_data')->onDelete('cascade');

@@ -101,6 +101,10 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/discounts', App\Http\Controllers\Executive\DiscountController::class);
 });
 
+Route::middleware(['role:Releasing Officer'])->group(function () {
+    Route::resource('/releasing', App\Http\Controllers\Major\ReleasingController::class);
+});
+
 Route::prefix('insights')->group(function () {
     Route::get('/customers', [App\Http\Controllers\Insights\CustomerController::class, 'index']);
     Route::get('/customer/location', [App\Http\Controllers\Insights\CustomerController::class, 'location']);

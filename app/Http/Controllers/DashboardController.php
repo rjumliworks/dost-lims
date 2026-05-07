@@ -10,6 +10,7 @@ use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
 use App\Services\Dashboard\CommonClass;
 use App\Services\Dashboard\LabHeadClass;
+use App\Services\Dashboard\ReleasingClass;
 use App\Services\AgencyClass;
 
 class DashboardController extends Controller
@@ -22,6 +23,7 @@ class DashboardController extends Controller
     protected DropdownClass $dropdown;
     protected AccountantClass $accountant;
     protected AgencyClass $agency;
+    protected ReleasingClass $releasing;
     
     public function __construct(
         CommonClass $common,
@@ -31,7 +33,8 @@ class DashboardController extends Controller
         CashierClass $cashier,
         DropdownClass $dropdown,
         AccountantClass $accountant,
-        AgencyClass $agency
+        AgencyClass $agency,
+        ReleasingClass $releasing
     ){
         $this->common = $common;
         $this->labhead = $labhead;
@@ -41,6 +44,7 @@ class DashboardController extends Controller
         $this->dropdown = $dropdown;
         $this->accountant = $accountant;
         $this->agency = $agency;
+        $this->releasing = $releasing;
     }
 
     public function index(Request $request){
@@ -117,6 +121,7 @@ class DashboardController extends Controller
                         return inertia('Modules/Dashboard/Releasing/Index',[
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
+                                'modes' => $this->dropdown->datas('Release')
                             ]
                         ]);
                     break;
@@ -158,6 +163,9 @@ class DashboardController extends Controller
             break;
             case 'tsr':
                 
+            break;
+            case 'releasing':
+                return $this->releasing->dashboard($request,$this->dropdown->datas('Release'));
             break;
         }
     }
