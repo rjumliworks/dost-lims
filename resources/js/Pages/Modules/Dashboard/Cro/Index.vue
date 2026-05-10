@@ -225,6 +225,87 @@
 
                 </div>
             </b-col>
+        </div> <div class="col-md-3">
+            <Link :href="`/accomplishments`" >
+                <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                    <div class="card-body bg-success-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-17">
+                                        <i class="ri-checkbox-circle-fill fs-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-12 text-success mb-1">Annual Target vs Accomplishment Report</h6>
+                                <p class="fs-11 text-muted mb-0">Displays yearly target and actual accomplishment data for evaluation and reporting.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        </div>
+         <div class="col-md-3">
+            <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                <div class="card-body bg-secondary-subtle">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar-sm">
+                                <div class="avatar-title bg-purple bg-opacity-10 text-purple rounded-circle fs-17">
+                                    <i class="ri-hand-coin-fill fs-24"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="fs-12 text-purple mb-1">Technical Service Request (TSR) Financial Summary</h6>
+                            <p class="fs-11 text-muted mb-0">Shows TSR financial details including services, payments, gratis, and discount classifications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="col-md-3">
+            <Link :href="`/accomplishments`" >
+                <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                    <div class="card-body bg-warning-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-warning bg-opacity-10 text-warning rounded-circle fs-17">
+                                        <i class="ri-group-2-fill fs-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-12 text-warning mb-1">Customer Classification Summary</h6>
+                                <p class="fs-11 text-muted mb-0">Shows customer breakdown and classification for monitoring and reporting purposes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        </div>
+         <div class="col-md-3">
+            <Link :href="`/insights/discounts`" >
+            <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                <div class="card-body bg-danger-subtle">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar-sm">
+                                <div class="avatar-title bg-danger bg-opacity-10 text-danger rounded-circle fs-17">
+                                    <i class="ri-gift-line fs-24"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="fs-12 text-danger mb-1">TSR Financial Discount Report</h6>
+                            <p class="fs-11 text-muted mb-0">Displays TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Link>
         </div>
         <div class="col-md-3 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
@@ -300,7 +381,7 @@
             </div>                            
                                        
         </div>
-        <div class="col-md-6 mt-n1">
+        <!-- <div class="col-md-6 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
                 <div class="card-header bg-light-subtle">
@@ -317,7 +398,6 @@
                             <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed, analyses conducted, and milestones achieved within a specific reporting period</p>
                         </div>
                         <div class="flex-shrink-0">
-                            <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
                         </div>
                     </div>
                 </div>
@@ -328,7 +408,7 @@
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
                                 <input v-if="filter.type == 'Daily'" type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 100px;">
-                                <!-- <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />-->
+                               
                                 <Multiselect v-if="filter.type == 'Monthly'" class="white" style="width: 15%;" :options="months" v-model="filter.month" label="name" :allow-empty="false" :searchable="true" placeholder="Select Month" />
                                 <Multiselect class="white" style="width: 15%;" :options="['Daily','Monthly']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" /> 
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
@@ -346,19 +426,19 @@
                         <table class="table table-nowrap table-bordered align-middle mb-0">
                             <thead class="table-light thead-fixed">
                                 <tr class="fs-10">
-                                    <th style="width: 20%;">Laboratory</th>
-                                    <th style="width: 9%;" class="text-center">Requests</th>
-                                    <th style="width: 9%;" class="text-center">Samples</th>
-                                    <th style="width: 9%;" class="text-center">Analyses</th>
+                                    <th style="width: 12%;">Laboratory</th>
+                                    <th style="width: 10%;" class="text-center">Requests</th>
+                                    <th style="width: 10%;" class="text-center">Samples</th>
+                                    <th style="width: 10%;" class="text-center">Analyses</th>
                                     <th style="width: 15%;" class="text-center">Fees Collected</th>
-                                    <th style="width: 12%;" class="text-center">Gratis</th>
-                                    <th style="width: 12%;" class="text-center">Discount</th>
-                                    <th style="width: 13%;" class="text-center">Gross</th>
+                                    <th style="width: 14%;" class="text-center">Gratis</th>
+                                    <th style="width: 14%;" class="text-center">Discount</th>
+                                    <th style="width: 14%;" class="text-center">Gross</th>
                                 </tr>
                             </thead>
                             <tbody class="fs-10">
                                 <tr v-for="(list,index) in laboratories" v-bind:key="index" >
-                                    <td> {{ list[0] }}</td>
+                                    <td class="text-primary fw-semibold"> {{ list[0] }}</td>
                                     <td class="text-center"> {{ list[1] }}</td>
                                     <td class="text-center"> {{ list[2] }}</td>
                                     <td class="text-center"> {{ list[3] }}</td>
@@ -385,7 +465,7 @@
                 </div>
 
             </div>
-        </div>
+        </div> -->
         <div class="col-md-3 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
@@ -455,6 +535,16 @@
                 </div>
             </div>                            
                                        
+        </div>
+        
+        <div class="col-md-3">
+
+        </div>
+        <div class="col-md-3">
+            
+            
+            
+            
         </div>
     </b-row>
 </template>
@@ -569,6 +659,9 @@ export default {
             this.fetchDaily();
         },
         'monthName'(val) {
+            this.fetch();
+        },
+        'filter.year'(val) {
             this.fetch();
         },
     },

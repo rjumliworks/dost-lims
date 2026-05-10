@@ -74,8 +74,33 @@
                 <hr class="text-muted mt-2 mb-2"/>
             </div>
         </div>
-
         <div class="row g-2 mt-n1 mb-1" v-if="selected.status.name != 'Pending'">
+            <div class="col-sm-6">
+                <div class="p-1 border border-dashed bg-white rounded">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-2">
+                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-account-circle-line"></i></div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="text-muted mb-0 fs-12">Start By :</p>
+                            <h5 class="mb-0 fs-12">{{(selected.started) ? selected.started : '-'}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="p-1 border border-dashed bg-white rounded">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-2">
+                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-account-circle-line"></i></div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="text-muted mb-0 fs-12">End By :</p>
+                            <h5 class="mb-0 fs-12">{{(selected.ended) ? selected.ended : '-'}}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-sm-6">
                 <div class="p-1 border border-dashed bg-white rounded">
                     <div class="d-flex align-items-center">
@@ -103,6 +128,8 @@
                 </div>
             </div>
         </div>
+
+     
 
         <div class="table-responsive mt-2 mb-2" v-if="selected.status.name == 'Pending' && selected.addfee.length > 0">
             <simplebar data-simplebar style="max-height: 200px;">

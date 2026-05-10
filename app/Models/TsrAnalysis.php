@@ -11,11 +11,12 @@ class TsrAnalysis extends Model
     use LogsActivity;
 
     protected $fillable = [
-        'status_id','sample_id','testservice_id','fee','started_by','ended_by','start_at','end_at'
+        'status_id','sample_id','testservice_id','fee','assigned_to','started_by','ended_by','start_at','end_at'
     ];
 
     public function status(){ return $this->belongsTo('App\Models\ListStatus', 'status_id', 'id'); }
     public function sample(){ return $this->belongsTo('App\Models\TsrSample', 'sample_id', 'id');}
+    public function assigned(){ return $this->belongsTo('App\Models\User', 'assigned_to', 'id');}
     public function started(){ return $this->belongsTo('App\Models\User', 'started_by', 'id');}
     public function ended(){ return $this->belongsTo('App\Models\User', 'ended_by', 'id');}
     public function testservice(){ return $this->belongsTo('App\Models\Testservice', 'testservice_id', 'id');}

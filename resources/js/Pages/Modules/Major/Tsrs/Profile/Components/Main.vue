@@ -12,8 +12,8 @@
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 fs-14"><span class="text-body">List of Samples Received</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">Generate and track quotations for lab services requested by customers.</p>
+                            <h5 class="mb-0 fs-14"><span class="text-body">Samples Received</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">Manage and review all samples on this request.</p>
                         </div>
                         <div class="flex-shrink-0">
                             <div class="form-check form-switch form-switch-right form-switch-md mt-2">
@@ -85,7 +85,7 @@
                                         <td :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">{{index+1}}</td>
                                         <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
                                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{(list.code) ? list.code : 'Not yet available'}}</h5>
-                                            <p class="fs-13 text-muted mb-0">{{ list.samplename?.name }}</p>
+                                            <p class="fs-13 text-muted mb-0">{{ (list.samplename?.name != 'n/a') ? list.samplename?.name : list.name }}</p>
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                             <i>{{list.customer_description}}</i>, {{list.description}}

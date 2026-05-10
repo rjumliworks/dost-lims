@@ -149,7 +149,7 @@ class AccomplishmentClass
 
             // === Build list row ===
             $lists[] = [
-                $laboratory->name,
+                $laboratory->short,
                 $req,
                 $sample,
                 $analysis,
