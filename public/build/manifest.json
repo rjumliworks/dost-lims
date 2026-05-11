@@ -40,12 +40,6 @@
     "src": "node_modules/leaflet/dist/leaflet-src.esm.js",
     "isDynamicEntry": true
   },
-  "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js": {
-    "file": "assets/apexcharts.ssr.esm-fe46cd2d-CEIEYvuU.js",
-    "name": "apexcharts.ssr.esm-fe46cd2d",
-    "src": "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js",
-    "isDynamicEntry": true
-  },
   "public/fonts/boxicons.eot": {
     "file": "assets/boxicons-CSrLvhY_.eot",
     "src": "public/fonts/boxicons.eot"
@@ -239,7 +233,7 @@
     "src": "public/images/small/3.jpg"
   },
   "resources/js/app.js": {
-    "file": "assets/app-krIlkaGw.js",
+    "file": "assets/app-0tIUeUc5.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -253,12 +247,10 @@
       "node_modules/leaflet/dist/leaflet-src.esm.js",
       "node_modules/leaflet/dist/leaflet-src.esm.js",
       "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/leaflet/dist/leaflet-src.esm.js",
-      "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js",
-      "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js"
+      "node_modules/leaflet/dist/leaflet-src.esm.js"
     ],
     "css": [
-      "assets/app-CvPldrok.css"
+      "assets/app-cj7FF0iE.css"
     ],
     "assets": [
       "assets/logo-sm-BMbbSDmV.png",

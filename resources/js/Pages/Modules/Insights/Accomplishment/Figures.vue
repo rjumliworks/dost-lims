@@ -456,7 +456,7 @@
                 </div>
             </div>
         </div>
-
+        <div class="col-md-6"></div>
         <div class="col-md-6 mt-n1">
             <div class="card shadow-none border">
                 <div class="card-header bg-light-subtle">
