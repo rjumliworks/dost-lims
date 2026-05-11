@@ -735,114 +735,111 @@ data(){
     },
     methods: {
         getChartData(kpiKey, index = 0) {
-            // 1. Return empty state if data hasn't loaded yet
-            if (!this.kpis || !this.kpis[kpiKey] || !this.kpis[kpiKey][index]) {
-                return { series: [], options: {} };
-            }
+    // 1. Return empty state if data hasn't loaded yet
+    if (!this.kpis || !this.kpis[kpiKey] || !this.kpis[kpiKey][index]) {
+        return { series: [], options: {} };
+    }
 
-            // 2. Extract Data First
-            const kpiData = this.kpis[kpiKey][index];
-            const targetValue = kpiData.target || 0;
-            const breakdowns = kpiData.breakdown || [];
-            const lists = kpiData.lists || [];
+    // 2. Extract Data First
+    const kpiData = this.kpis[kpiKey][index];
+    const targetValue = kpiData.target || 0;
+    const breakdowns = kpiData.breakdown || [];
+    const lists = kpiData.lists || [];
 
-            // 3. Check if it's an amount (Assuming your API returns 'is_amount' inside the item)
-            const isAmount = kpiData.is_amount == 1; 
-            const isConsolidated = kpiData.is_consolidated == 1; 
+    // 3. Check if it's an amount
+    const isAmount = kpiData.is_amount == 1; 
+    const isConsolidated = kpiData.is_consolidated == 1; 
 
-            // Capture your format method so ApexCharts can use it without losing 'this' context
-            const formatCurrency = this.formatMoney; 
+    // Capture your format method so ApexCharts can use it without losing 'this' context
+    const formatCurrency = this.formatMoney; 
 
-            // 4. Base configuration for the chart
-            const baseOptions = {
-                chart: { type: "bar", stacked: true, toolbar: { show: false } },
-                
-                // ADD THIS: Hides all background grid lines
-                grid: { 
-                    show: false 
-                },
-
-                legend: { show: false },
-                xaxis: { categories: ["Target", "Accomplishment"] },
-                yaxis: { 
-                    title: { text: "Target vs Accomplishment" },
-                    labels: { show: false } // Keeps the left axis numbers hidden
-                },
-                plotOptions: { 
-                    bar: { 
-                        columnWidth: "80%", 
-                        dataLabels: { hideOverflowingLabels: false } 
-                    } 
-                },
-                dataLabels: { 
-                    enabled: true, 
-                    style: {
-                        fontSize: '10px',
-                        fontWeight: 'bold',
-                    },
-                    background: {
-                        enabled: true,
-                        foreColor: '#000000',
-                        padding: 4,
-                        borderRadius: 2,
-                        borderWidth: 1,
-                        borderColor: '#ffffff',
-                        opacity: 0.9,
-                    },
-                    formatter: function (val) {
-                        if (val === 0) return "";
-                        return isAmount ? formatCurrency(val) : val;
-                    } 
-                },
-                tooltip: {
-                    y: {
-                        formatter: function (val) {
-                            return isAmount ? formatCurrency(val) : val;
-                        }
-                    }
-                }
-            };
-
-            // 5. Setup Target Series (First column)
-            let generatedSeries = [
-                {
-                    name: "Target",
-                    data: [targetValue, 0]
-                }
-            ];
-
-            // 6. Setup Accomplishment Breakdown Series (Second column stacked)
-            if(isConsolidated){
-                generatedSeries.push({
-                    name: "Total Accomplishment", // You can change this label if you want
-                    data: [0, kpiData.accomplish || 0] 
-                });
-            }else{
-                for (let i = breakdowns.length - 1; i >= 0; i--) {
-                    const item = breakdowns[i];
-                    
-                    // We use 'i' to guarantee the lab name still matches the correct data point!
-                    const labName = lists[i]?.laboratory?.name || `Accomplishment ${i + 1}`;
-                    
-                    generatedSeries.push({
-                        name: labName,
-                        data: [0, item.accomplish || 0] 
-                    });
-                }
-            }
-            const chartColors = [
-                "#2c456b", 
-                ...this.colors 
-            ];
-
-            return {
-                series: generatedSeries,
-                options: {
-                    ...baseOptions,
-                    colors: chartColors
-                }
-            };
+    // 4. Base configuration for the chart
+    const baseOptions = {
+        chart: { type: "bar", stacked: true, toolbar: { show: false } },
+        grid: { 
+            show: false 
         },
+        legend: { show: false },
+        xaxis: { categories: ["Target", "Accomplishment"] },
+        yaxis: { 
+            title: { text: "Target vs Accomplishment" },
+            labels: { show: false }
+        },
+        plotOptions: { 
+            bar: { 
+                columnWidth: "80%", 
+                dataLabels: { hideOverflowingLabels: false } 
+            } 
+        },
+        dataLabels: { 
+            enabled: true, 
+            style: {
+                fontSize: '10px',
+                fontWeight: 'bold',
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#ffffff',
+                opacity: 0.9,
+            },
+            formatter: function (val) {
+                // FIX: Use Number() to catch string "0" and return undefined to completely hide the label & background
+                if (!val || Number(val) === 0) return undefined;
+                return isAmount ? formatCurrency(val) : val;
+            } 
+        },
+        tooltip: {
+            y: {
+                formatter: function (val) {
+                    return isAmount ? formatCurrency(val) : val;
+                }
+            }
+        }
+    };
+
+    // 5. Setup Target Series (First column)
+    let generatedSeries = [
+        {
+            name: "Target",
+            data: [targetValue, 0]
+        }
+    ];
+
+    // 6. Setup Accomplishment Breakdown Series (Second column stacked)
+    if(isConsolidated){
+        generatedSeries.push({
+            name: "Total Accomplishment", 
+            data: [0, kpiData.accomplish || 0] 
+        });
+    } else {
+        for (let i = breakdowns.length - 1; i >= 0; i--) {
+            const item = breakdowns[i];
+            const labName = lists[i]?.laboratory?.name || `Accomplishment ${i + 1}`;
+            
+            generatedSeries.push({
+                name: labName,
+                data: [0, item.accomplish || 0] 
+            });
+        }
+    }
+    
+    const chartColors = [
+        "#2c456b", 
+        ...this.colors 
+    ];
+
+    return {
+        series: generatedSeries,
+        options: {
+            ...baseOptions,
+            colors: chartColors
+        }
+    };
+},
         fetch() {
             this.loading = true;
             axios.get('/accomplishments', {
