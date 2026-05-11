@@ -506,7 +506,7 @@
                                         </div>
                                     </div>
                                     <p class="mb-1 mt-1 ms-1 text-muted fs-12">
-                                        {{ list.laboratory.name }} ({{ formatMoney(kpis['OneLab KPI - Objective 1'][9].breakdown[index].accomplish) }})
+                                        {{ list.laboratory.name }} ({{ kpis['OneLab KPI - Objective 1'][9].breakdown[index].accomplish }})
                                     </p>
                                 </div>
                             </div>
@@ -566,7 +566,7 @@
                                         </div>
                                     </div>
                                     <p class="mb-1 mt-1 ms-1 text-muted fs-12">
-                                        {{ list.laboratory.name }} ({{ formatMoney(kpis['OneLab KPI - Objective 1'][10].breakdown[index].accomplish) }})
+                                        {{ list.laboratory.name }} ({{ kpis['OneLab KPI - Objective 1'][10].breakdown[index].accomplish }}) 
                                     </p>
                                 </div>
                             </div>
@@ -626,7 +626,7 @@
                                         </div>
                                     </div>
                                     <p class="mb-1 mt-1 ms-1 text-muted fs-12">
-                                        {{ list.laboratory.name }} ({{ formatMoney(kpis['OneLab KPI - Objective 1'][11].breakdown[index].accomplish) }})
+                                        {{ list.laboratory.name }} ({{kpis['OneLab KPI - Objective 1'][11].breakdown[index].accomplish }})
                                     </p>
                                 </div>
                             </div>
@@ -686,7 +686,7 @@
                                         </div>
                                     </div>
                                     <p class="mb-1 mt-1 ms-1 text-muted fs-12">
-                                        {{ list.laboratory.name }} ({{ formatMoney(kpis['OneLab KPI - Objective 1'][12].breakdown[index].accomplish) }})
+                                        {{ list.laboratory.name }} ({{ kpis['OneLab KPI - Objective 1'][12].breakdown[index].accomplish }})
                                     </p>
                                 </div>
                             </div>
