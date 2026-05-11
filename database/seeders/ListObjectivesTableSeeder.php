@@ -162,6 +162,50 @@ class ListObjectivesTableSeeder extends Seeder
                 'created_at' => '2025-07-02 16:41:43',
                 'updated_at' => '2025-07-02 16:41:43',
             ),
+            13 => 
+            array (
+                'id' => 14,
+                'name' => 'Number of Samples Referred from PSTOs',
+                'type_id' => 76,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
+            14 => 
+            array (
+                'id' => 15,
+                'name' => 'Number of Services Referred from PSTOs',
+                'type_id' => 76,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
+            15 => 
+            array (
+                'id' => 16,
+                'name' => 'Number of Referred Samples Received from other Laboratories',
+                'type_id' => 76,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
+            16 => 
+            array (
+                'id' => 17,
+                'name' => 'Number of Referred Services Conducted from other Laboratories',
+                'type_id' => 76,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
         ));
         
         

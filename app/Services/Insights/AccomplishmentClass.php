@@ -517,6 +517,42 @@ class AccomplishmentClass
                 })
                 ->count();
             break;
+            case 'Number of Samples Referred from PSTOs':
+            case 'Number of Referred Samples Received from other Laboratories':
+                // Determine the flag based on the current case
+                $isPsto = ($name === 'Number of Samples Referred from PSTOs') ? 1 : 0;
+
+                $count = TsrSample::whereMonth('created_at', $index + 1)
+                    ->whereYear('created_at', $year)
+                    ->whereHas('tsr', function ($query) use ($laboratory_id, $isPsto) {
+                        $query->whereHas('referral', function ($query) use ($isPsto) {
+                            $query->where('is_psto', $isPsto); // Use the dynamic flag
+                        });
+                        $query->where('laboratory_id', $laboratory_id)
+                            ->where('status_id', '!=', 5)
+                            ->where('is_referral', 1);
+                    })->count();
+                break;
+
+            case 'Number of Services Referred from PSTOs':
+            case 'Number of Referred Services Conducted from other Laboratories':
+                // Determine the flag based on the current case
+                $isPsto = ($name === 'Number of Services Referred from PSTOs') ? 1 : 0;
+
+                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id, $year, $index, $isPsto) {
+                        $query->where('status_id', '!=', 13);
+                        $query->whereHas('tsr', function ($query) use ($laboratory_id, $year, $index, $isPsto) {
+                            $query->whereHas('referral', function ($query) use ($isPsto) {
+                                $query->where('is_psto', $isPsto); // Use the dynamic flag
+                            });
+                            $query->where('is_referral', 1)
+                                ->where('laboratory_id', $laboratory_id)
+                                ->where('status_id', '!=', 5)
+                                ->whereMonth('created_at', $index + 1)
+                                ->whereYear('created_at', $year);
+                        });
+                    })->count();
+                break;
             default: 
             $count = 0;
         }

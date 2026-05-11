@@ -118,6 +118,7 @@ Route::prefix('insights')->group(function () {
 
 Route::prefix('accomplishments')->group(function () {
     Route::get('/', [App\Http\Controllers\Insights\AccomplishmentController::class, 'index']);
+    Route::get('/figures', [App\Http\Controllers\Insights\AccomplishmentController::class, 'figures']);
     Route::put('/update', [App\Http\Controllers\Insights\AccomplishmentController::class, 'update']);
 });
 

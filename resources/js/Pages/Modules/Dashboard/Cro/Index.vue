@@ -239,7 +239,7 @@
                             </div>
                             <div class="flex-grow-1 ms-3">
                                 <h6 class="fs-12 text-success mb-1">Annual Target vs Accomplishment Report</h6>
-                                <p class="fs-11 text-muted mb-0">Displays yearly target and actual accomplishment data for evaluation and reporting.</p>
+                                <p class="fs-11 text-muted mb-0">Shows yearly target and actual accomplishment data for evaluation and reporting.</p>
                             </div>
                         </div>
                     </div>
@@ -258,7 +258,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="fs-12 text-purple mb-1">Technical Service Request (TSR) Financial Summary</h6>
+                            <h6 class="fs-12 text-purple mb-1">TSR Financial Summary</h6>
                             <p class="fs-11 text-muted mb-0">Shows TSR financial details including services, payments, gratis, and discount classifications.</p>
                         </div>
                     </div>
@@ -300,7 +300,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="fs-12 text-danger mb-1">TSR Financial Discount Report</h6>
-                            <p class="fs-11 text-muted mb-0">Displays TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
+                            <p class="fs-11 text-muted mb-0">Shows TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
                         </div>
                     </div>
                 </div>

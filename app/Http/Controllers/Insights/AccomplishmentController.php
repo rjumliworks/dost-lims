@@ -29,6 +29,10 @@ class AccomplishmentController extends Controller
         }
     }
 
+    public function figures(){
+        return inertia('Modules/Insights/Accomplishment/Figures');
+    }
+
      public function update(Request $request){
         $result = $this->handleTransaction(function () use ($request) {     
             switch($request->option){
