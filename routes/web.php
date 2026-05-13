@@ -45,10 +45,15 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
         // Route::resource('folders', App\Http\Controllers\Viewer\FolderController::class);
         // Route::resource('downloads', App\Http\Controllers\Viewer\DownloadController::class);
         // Route::resource('/files', App\Http\Controllers\Viewer\FileController::class);
+        Route::post('/checkout', [App\Http\Controllers\Finance\PaymentController::class, 'checkout']);
+        Route::get('/payment/success', [App\Http\Controllers\Finance\PaymentController::class, 'success'])->name('payment.success');
+        Route::get('/payment/cancel', [App\Http\Controllers\Finance\PaymentController::class, 'cancel'])->name('payment.cancel');
+
+        
     });
 });
 
-
+Route::post('/webhook/paymongo', [App\Http\Controllers\Finance\WebhookController::class, 'handle']);
 Route::get('/pnpki', [App\Http\Controllers\Public\VerificationController::class, 'pnpki']);
 
 Route::get('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
@@ -125,5 +130,6 @@ Route::prefix('accomplishments')->group(function () {
 Route::prefix('reports')->group(function () {
     Route::get('/excel', [App\Http\Controllers\Finance\ReportController::class, 'excel']);
 });
+
 
 require __DIR__.'/auth.php';

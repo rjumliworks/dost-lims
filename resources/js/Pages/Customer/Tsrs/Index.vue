@@ -67,7 +67,7 @@
                                     <td class="text-center" v-else>{{ list.completed_report_count }} of {{ list.total_report_count }}</td>
                                     <!-- <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td> -->
                                     <td class="text-end">
-                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="openView(list)" class="btn btn-dark btn-sm w-md">Pay now</button>
+                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="payNow(list)" class="btn btn-dark btn-sm w-md">Pay now</button>
                                         <button v-else type="button" @click="openView(list)" class="btn btn-soft-dark btn-sm w-md">View TSR</button>
                                     </td>
                                 </tr>
@@ -90,6 +90,7 @@
 </template>
 <script>
 import _ from 'lodash';
+import { useForm } from '@inertiajs/vue3';
 import View from './Modals/View.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
@@ -105,7 +106,10 @@ export default {
                 keyword: null
             },
             index: null,
-            selectedRow: null
+            selectedRow: null,
+            form: useForm({
+                amount: null
+            }),
         }
     },
     created(){
@@ -136,7 +140,39 @@ export default {
         openView(data){
             this.$refs.view.show(data);
         },
+        
+        
+        async payNow(list) {
+    const rawAmount = list.payment.total;
+
+    const cleanAmount = Number(
+        rawAmount.toString().replace(/₱/g, '').replace(/,/g, '')
+    );
+
+    const res = await axios.post('/checkout', {
+        amount: cleanAmount
+    });
+
+    window.location.href = res.data.checkout_url;
+}
 
     }
 }
 </script>
+
+<!-- //     this.form.amount = cleanAmount;
+
+        //     // this.$inertia.post('/checkout', {
+        //     //     amount: cleanAmount
+        //     // });
+        //      this.form.post('/checkout',{
+        //         preserveScroll: true,
+        //         onSuccess: (page) => {
+        //     // IMPORTANT: get response from page props
+        //     const checkoutUrl = page.props.checkout_url;
+
+        //     if (checkoutUrl) {
+        //         window.location.href = checkoutUrl;
+        //     }
+        // },
+        //     }); -->

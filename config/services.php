@@ -44,5 +44,8 @@ return [
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
     ],
+    'paymongo' => [
+        'secret' => env('PAYMONGO_SECRET_KEY'),
+    ],
 
 ];
