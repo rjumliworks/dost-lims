@@ -10,6 +10,9 @@ class WebhookController extends Controller
 {
     public function handle(Request $request)
 {
+
+\Log::info('PAYMONGO WEBHOOK HIT');
+    \Log::info($request->all());
     $payload = $request->all();
 
     $type = $payload['data']['attributes']['type'] ?? null;
