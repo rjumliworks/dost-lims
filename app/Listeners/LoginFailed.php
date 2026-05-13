@@ -23,23 +23,25 @@ class LoginFailed
         $kradworkz = hash('sha256', $email);
         $user = User::where('kradworkz', $kradworkz)->first();
         
-        $userId = $user ? $user->id : null;
-        $ip = $this->request->ip();
+        if($user){
+            $userId = $user ? $user->id : null;
+            $ip = $this->request->ip();
 
-        $existingEntry = \DB::table('authentication_logs')
-        ->where('user_id', $userId)
-        ->where('lockout_at','>',now())
-        ->exists();
-        if (!$existingEntry){
-            \DB::table('authentication_logs')->insert([
-                'user_id' => $userId,
-                'ip_address' => $ip,
-                'user_agent' => $this->request->userAgent(),
-                'location' => json_encode(geoip()->getLocation($ip)->toArray()),
-                'is_failed' => true,
-                'lockout_at' => now()->addMinutes(1),
-                'created_at' => now(),
-            ]);
+            $existingEntry = \DB::table('authentication_logs')
+            ->where('user_id', $userId)
+            ->where('lockout_at','>',now())
+            ->exists();
+            if (!$existingEntry){
+                \DB::table('authentication_logs')->insert([
+                    'user_id' => $userId,
+                    'ip_address' => $ip,
+                    'user_agent' => $this->request->userAgent(),
+                    'location' => json_encode(geoip()->getLocation($ip)->toArray()),
+                    'is_failed' => true,
+                    'lockout_at' => now()->addMinutes(1),
+                    'created_at' => now(),
+                ]);
+            }
         }
     }
 }

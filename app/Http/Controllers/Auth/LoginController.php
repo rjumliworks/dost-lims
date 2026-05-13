@@ -29,33 +29,43 @@ class LoginController extends Controller
     }
 
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
-        $request->session()->regenerate();
-        $request->session()->put('two_factor_authenticated', false);
+{
+    // 1. Authenticate credentials
+    $request->authenticate();
+    $user = Auth::user();
+    
+    // 2. Check if active FIRST. If not, destroy the session immediately.
+    if (!$user->is_active) {
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        $user = Auth::user();
-        
-        if($user->is_active) {
-            if($user->must_change) {
-                do{
-                    $code = random_int(100000000, 999999999); // 9 digits
-                } while (\App\Models\User::where('code', $code)->exists());
-
-                $user->update(['code' => $code]);
-
-                
-                Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
-               
-                return redirect()->intended(route('activation', absolute: false));
-            }
-            return redirect()->intended(route('dashboard', absolute: false));
-        }else{
-            throw ValidationException::withMessages([
-                'email' => 'Account Locked, Please contact administrator.',
-            ]);
-        }
+        throw ValidationException::withMessages([
+            'email' => 'Account Locked. Please contact the administrator.',
+        ]);
     }
+
+    // 3. User is valid and active, safe to persist session
+    $request->session()->regenerate();
+    $request->session()->put('two_factor_authenticated', false);
+
+    // 4. Handle account activation/must change password flow
+    if ($user->must_change) {
+        
+        // Changed to 6 digits (100000 to 999999) to match your Vue UI
+        do {
+            $code = random_int(100000, 999999); 
+        } while (\App\Models\User::where('code', $code)->exists());
+
+        $user->update(['code' => $code]);
+        Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+        
+        return redirect()->intended(route('activation', absolute: false));
+    }
+
+    // 5. Successful standard login
+    return redirect()->intended(route('dashboard', absolute: false));
+}
 
     public function destroy(Request $request): RedirectResponse
     {

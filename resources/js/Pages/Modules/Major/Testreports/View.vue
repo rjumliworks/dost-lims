@@ -243,6 +243,8 @@
   </template>
 <script>
 import interact from 'interactjs';
+import * as pdfjsLib from "pdfjs-dist";
+import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
 import vueFilePond from 'vue-filepond';
 import 'filepond/dist/filepond.min.css';
 import Message from './Modals/Message.vue';
@@ -273,7 +275,8 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
             }
         },
         mounted() {
-            this.renderPdf();
+              pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+    this.renderPdf();
         },
         computed: {
             signRole() {
@@ -346,7 +349,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 const canvasEl = this.$refs.pdfCanvas;
                 const fileUrl = this.pdfUrl;
 
-                const loadingTask = pdfjsLib.getDocument(fileUrl);
+                const loadingTask = pdfjsLib.getDocument({ url: fileUrl });
 
                 loadingTask.promise.then(pdf => {
                     this.totalPages = pdf.numPages;

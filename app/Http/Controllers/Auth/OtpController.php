@@ -25,10 +25,30 @@ class OtpController extends Controller
         $normalized = $request->mobile;
         $mobileHash = hash('sha256', $normalized);
 
+        $key = 'otp-send:' . $mobileHash . ':' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            if (! $profile) {
+              throw ValidationException::withMessages([
+                'mobile' => 'Too many OTP requests. Please wait a minute.',
+            ]);
+            return back()->with([
+                'data' => 'error',
+                'message' => 'Too many OTP requests. Please wait a minute.',
+                'status' => 'error',
+                'retry_after' => RateLimiter::availableIn($key),
+            ]);
+        }
+
+        RateLimiter::hit($key, 60);
+
         $profile = UserProfile::where('mobile_hash', $mobileHash)->first();
 
         // 🔐 Prevent enumeration
         if (! $profile) {
+              throw ValidationException::withMessages([
+            'mobile' => 'If this mobile is registered, an OTP has been sent.',
+        ]);
             return back()->with([
                 'data' => 'success',
                 'message' => 'If this mobile is registered, an OTP has been sent.',

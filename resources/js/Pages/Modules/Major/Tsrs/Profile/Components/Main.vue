@@ -257,7 +257,7 @@ export default {
         },
         containerStyle() {
             let offset = 325;
-            if (this.selected.status.name === 'Ongoing') {offset = 360;}
+            if (this.selected.status.name === 'Ongoing') {offset = 380;}
             return {
                 maxHeight: `calc(100vh - ${offset}px)`,
                 overflow: 'auto'

@@ -9,7 +9,7 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                 </Link>
             </li>
-            <template v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
+            <template v-if="['Customer Relation Officer', 'Technical Manager', 'Laboratory Analyst'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Laboratory Modules</span>

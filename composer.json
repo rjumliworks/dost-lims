@@ -28,6 +28,7 @@
         "setasign/fpdi": "^2.5",
         "setasign/fpdi-tcpdf": "^2.3",
         "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-csp": "^3.25",
         "tecnickcom/tcpdf": "^6.11",
         "torann/geoip": "^3.0"
     },
