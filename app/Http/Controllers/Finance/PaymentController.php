@@ -49,7 +49,7 @@ class PaymentController extends Controller
         $checkoutId = $checkout['data']['id'];
 
         $hashids = new Hashids('krad', 10);
-        $id = $hashids->decode($request->reference)[0] ?? null;
+        $id = $hashids->decode($request->code)[0] ?? null;
 
         Payment::create([
             'checkout_session_id' => $checkoutId,
