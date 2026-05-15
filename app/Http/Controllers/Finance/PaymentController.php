@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Finance;
 
+use Hashids\Hashids;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -11,7 +12,14 @@ class PaymentController extends Controller
 {
     public function checkout(Request $request)
     {
-        $amount = $request->amount * 100; // centavos
+        // $amount = $request->amount * 100; // centavos
+
+        $baseAmount = $request->amount * 100;
+
+        $feeRate = 0.025;
+        $fee = round($baseAmount * $feeRate);
+
+        $totalAmount = $baseAmount + $fee;
 
         $response = Http::withBasicAuth(
             config('services.paymongo.secret'),
@@ -23,7 +31,7 @@ class PaymentController extends Controller
                         [
                             'name' => 'System Payment',
                             'quantity' => 1,
-                            'amount' => $amount,
+                            'amount' => $totalAmount,
                             'currency' => 'PHP',
                         ]
                     ],
@@ -40,10 +48,17 @@ class PaymentController extends Controller
         $checkout = $response->json();
         $checkoutId = $checkout['data']['id'];
 
+        $hashids = new Hashids('krad', 10);
+        $id = $hashids->decode($request->reference)[0] ?? null;
+
         Payment::create([
             'checkout_session_id' => $checkoutId,
-            'amount' => $amount,
-            'status' => 'pending'
+            'subtotal' => $request->amount,
+            'fee' => $fee,
+            'total' => $request->amount + $fee,
+            'amount' => $totalAmount,
+            'status' => 'pending',
+            'tsr_id' => $id
         ]);
 
       

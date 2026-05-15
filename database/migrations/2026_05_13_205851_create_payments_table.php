@@ -14,11 +14,19 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
+            $table->string('method')->nullable();
             $table->string('checkout_session_id')->nullable();
             $table->string('payment_intent_id')->nullable();
             $table->string('reference_number')->nullable();
-            $table->integer('amount');
+            $table->decimal('subtotal',12,2)->default(0.00);
+            $table->decimal('fee',12,2)->default(0.00);
+            $table->decimal('total',12,2)->default(0.00);
+            $table->decimal('amount',12,2)->default(0.00);
             $table->string('status')->default('pending');
+            $table->longText('payload')->nullable();
+            $table->unsignedBigInteger('tsr_id');
+            $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
+            $table->datetime('paid_at')->nullable();
             $table->timestamps();
         });
     }

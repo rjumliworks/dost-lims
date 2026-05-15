@@ -57,7 +57,7 @@
                             <tbody v-if="lists.length > 0">
                                 <tr v-for="(list,index) in lists" v-bind:key="index" class="fs-12">
                                     <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
-                                    <td>{{list.code}}</td>
+                                    <td>{{list}}</td>
                                     <td class="text-center">{{list.due_at}}</td>
                                     <td class="text-center">{{list.created_at}}</td>
                                     <td class="text-center">{{list.payment.total}}</td>
@@ -143,18 +143,19 @@ export default {
         
         
         async payNow(list) {
-    const rawAmount = list.payment.total;
+            const rawAmount = list.payment.total;
 
-    const cleanAmount = Number(
-        rawAmount.toString().replace(/₱/g, '').replace(/,/g, '')
-    );
+            const cleanAmount = Number(
+                rawAmount.toString().replace(/₱/g, '').replace(/,/g, '')
+            );
 
-    const res = await axios.post('/checkout', {
-        amount: cleanAmount
-    });
+            const res = await axios.post('/checkout', {
+                code: list.reference,
+                amount: cleanAmount
+            });
 
-    window.location.href = res.data.checkout_url;
-}
+            window.location.href = res.data.checkout_url;
+        }
 
     }
 }

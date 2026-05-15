@@ -18,6 +18,11 @@ class Payment extends Model
         'raw_response',
     ];
 
+     public function tsr()
+    {
+        return $this->belongsTo('App\Models\Tsr', 'tsr_id', 'id');
+    }
+
     protected $casts = [
         'raw_response' => 'array',
         'paid_at' => 'datetime',
