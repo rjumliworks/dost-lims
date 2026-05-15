@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('amount',12,2)->default(0.00);
             $table->string('status')->default('pending');
             $table->longText('payload')->nullable();
-            $table->unsignedBigInteger('tsr_id');
+            $table->unsignedBigInteger('tsr_id')->nullable();
             $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
             $table->datetime('paid_at')->nullable();
             $table->timestamps();
