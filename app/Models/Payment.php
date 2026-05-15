@@ -7,15 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     protected $fillable = [
-        'reference_id',
+        'method',
+        'subtotal',
+        'fee',
+        'total',
         'amount',
-        'currency',
         'status',
-        'provider',
+        'payload',
         'checkout_session_id',
         'payment_intent_id',
         'paid_at',
-        'raw_response',
+        'tsr_id',
+        'reference_number'
     ];
 
      public function tsr()
@@ -24,7 +27,7 @@ class Payment extends Model
     }
 
     protected $casts = [
-        'raw_response' => 'array',
+        'payload' => 'array',
         'paid_at' => 'datetime',
     ];
 
