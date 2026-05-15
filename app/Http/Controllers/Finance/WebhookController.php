@@ -18,11 +18,7 @@ class WebhookController extends Controller
 
             // 🔥 SAFE extraction (handles PayMongo variations)
             $data = $payload['data']['attributes']['data'] ?? [];
-
-            $checkoutId =
-                $data['id']
-                ?? $payload['data']['id']
-                ?? null;
+            $checkoutId = $data['id'] ?? $payload['data']['id'] ?? null;
 
             if (!$checkoutId) {
                 return response()->json(['error' => 'No checkout id']);
@@ -31,7 +27,7 @@ class WebhookController extends Controller
             $payment = Payment::where('checkout_session_id', $checkoutId)->first();
 
             if ($payment) {
-                $paymentIntentId = $data['attributes']['payment_intent_id'] ?? $data['payment_intent_id'] ?? null;
+                $paymentIntentId = data_get($data, 'attributes.payment_intent_id') ?? data_get($data, 'payment_intent_id');
                 $method = data_get($data, 'attributes.payments.0.attributes.source.type') ?? data_get($data, 'attributes.payment_method_used') ?? null;
                 $amount = data_get($data, 'attributes.payments.0.attributes.amount') ?? null;
                 $amount = $amount ? ($amount / 100) : $payment->amount;
@@ -50,6 +46,10 @@ class WebhookController extends Controller
                     'payment_id' => 22,
                     'status_id' => 7,
                     'paid_at' => now(), 
+                ]);
+
+                $payment->tsr->update([
+                    'status_id' => 3,
                 ]);
             }
         }
