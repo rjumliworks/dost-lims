@@ -1,50 +1,31 @@
 <template lang="">
-    <Head title="Discount Insights"/>
-    <PageHeader title="Dashboard" pageTitle="Menu" />
-    <b-row class="g-3">
-        <div class="col-md-12">
-            <b-card no-body class="bg-white-subtle border shadow-none">
-                <b-card-body>
-                    <div class="input-group mb-1">
-                        <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                        <input type="text" placeholder="Accomplishments" class="form-control" style="width: 40%;">
-                        <Multiselect class="white" style="width: 15%;" :options="laboratories" v-model="laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
-                        <Multiselect class="white" style="width: 15%;" :options="months" v-model="month" label="name" :allow-empty="false" :searchable="true" placeholder="Select Month" />
-                        <Multiselect class="white" style="width: 15%;" :options="years" v-model="year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
-                            <b-button type="button" variant="light" @click="openExcel()">
-                            Download Excel
-                        </b-button>
-                        <b-button type="button" variant="primary" @click="openCreate">
-                            <i class="ri-search-eye-fill align-bottom"></i>
-                        </b-button>
-                    </div>
-                </b-card-body>
-            </b-card>
-        </div>
-        <b-col lg="12" class="mt-n2">
-            <div class="card shadow-none">
-                <div class="card-header border bg-light-subtle">
-                    <div class="d-flex mb-n3">
-                        <div class="flex-shrink-0 me-3 mt-1">
-                            <div style="height:2rem;width:2rem;">
-                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                    <i class="ri-alarm-warning-fill text-primary fs-20"></i>
-                                </span>
+    <Head title="Target vs Accomplishment"/>
+    <div class="auth-page-wrapper d-flex min-vh-100">
+        <div class="auth-page-content">
+            <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
+                <div class="file-manager-content w-100 p-4 pb-0" ref="box">
+                     <b-row class="mt-2">
+                        <b-col lg>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                <input type="text" placeholder="Accomplishments" class="form-control" style="width: 40%;">
+                                <Multiselect class="white" style="width: 15%;" :options="months" v-model="month" label="name" :allow-empty="false" :searchable="true" placeholder="Select Month" />
+                                <Multiselect class="white" style="width: 15%;" :options="years" v-model="year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
+                                 <b-button type="button" variant="light" @click="openExcel()">
+                                    Download Excel
+                                </b-button>
+                                <b-button type="button" variant="primary" @click="openCreate">
+                                    <i class="ri-search-eye-fill align-bottom"></i>
+                                </b-button>
                             </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Discount Insights</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="shadow-none">
-                    <div class="table-responsive" style="margin-top: -1px; margin-bottom: 10px; height: calc(100vh - 350px); overflow: auto;">
+                        </b-col>
+                    </b-row>
+                    <div class="table-responsive" style="margin-top: 5px; height: calc(100vh - 80px); overflow: auto;">
                         <table class="table table-light table-bordered table-striped table-nowrap align-middle">
                             <thead class="thead-fixed text-primary fs-11">
                                 <tr class="bg-dark">
-                                    <th rowspan="3" class="text-center align-middle table-primary">No.</th>
-                                    <th rowspan="3" class="align-middle table-primary">Customer Name</th>
+                                    <th rowspan="3" class="align-middle">No.</th>
+                                    <th rowspan="3" class="align-middle">Customer Name</th>
                                     <th colspan="12" class="text-center align-middle table-info">Address / District</th>
                                     <th rowspan="2" colspan="2"  class="text-center align-middle table-success">Firm</th>
                                     <th colspan="5" class="text-center align-middle table-warning">Individual</th>
@@ -145,7 +126,7 @@
                                         <i v-if="item.isnew == 'yes'" class="text-success fs-16 ri-checkbox-circle-fill"></i>
                                         <i v-else-if="item.isnew == 'no'" class="text-danger fs-16 ri-close-circle-fill"></i>
                                         <i v-else class="text-warning fs-16 ri-close-circle-fill"></i>
-                                        <!-- {{newCount}} / {{oldCount}} / {{oldNone}} -->
+                                        {{newCount}} / {{oldCount}} / {{oldNone}}
                                     </td>
                                 </tr>
                             </tbody>
@@ -153,14 +134,15 @@
                     </div>
                 </div>
             </div>
-        </b-col>
-    </b-row>
+        </div>
+    </div>
 </template>
 <script>
 import Multiselect from "@vueform/multiselect";
 export default {
+    layout: null,
     components: { Multiselect },
-    props: ['years','selected','laboratories'],
+    props: ['years','selected'],
     data(){
         return {
             selectedRow: null,
@@ -168,7 +150,6 @@ export default {
             years: this.years,
             year: new Date().getFullYear(),
             month: new Date().getMonth(),
-            laboratory: null,
             selectedRow: null, 
             selectedColumn: null,
             expandedRows: {},
@@ -178,18 +159,7 @@ export default {
     created(){
         this.fetch();
     },
-    watch: {
-        'year'(){
-            this.fetch();
-        },
-        'month'(){
-            this.fetch();
-        },
-        'laboratory'(){
-            this.fetch();
-        },
-    },
-     computed: {
+    computed: {
         newCount() {
             return this.list.filter(item => item.isnew == 'yes').length;
         },
@@ -199,6 +169,14 @@ export default {
         oldNone() {
             return this.list.filter(item => item.isnew == 'none').length;
         }
+    },
+    watch: {
+        'month'(){
+            this.fetch();
+        },
+        'laboratory'(){
+            this.fetch();
+        },
     },
     methods: {
         fetch(){
@@ -224,18 +202,25 @@ export default {
             this.selectedColumn = (this.selectedColumn == index) ? null : index;
         },
         openExcel(){
-            window.open('/accomplishments?option=excel2&month='+this.month+'&year='+this.year+'&laboratory='+this.laboratory);
-        },
-        formatMoney(value) {
-            let val = (value / 1).toFixed(2).replace(',', '.');
-            return '₱' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            window.open('/accomplishments?option=excel&month='+this.month+'&year='+this.year);
         },
     }
 }
 </script>
-
 <style scoped>
-.table-bordered th {
+.auth-page-wrapper .auth-page-content {
+    padding-bottom: 0px;
+  width: 100%;
+  overflow: hidden;
+  background-color: #f3f3f9;
+}
+.file-manager-sidebar {
+  min-width: 24%;
+  max-width: 24%;
+  height: calc(100vh - 92px);
+}
+.table-bordered th,
+.table-bordered td {
   border: 1px solid #dee2e6;
 }
 </style>

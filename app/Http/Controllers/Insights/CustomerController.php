@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insights;
 use App\Models\Target;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\AgencyClass;
 use App\Services\DropdownClass;
 use App\Services\Insights\Customer\TopClass;
 use App\Services\Insights\Customer\BarClass;
@@ -14,10 +15,11 @@ use App\Services\Insights\Customer\DiscountClass;
 
 class CustomerController extends Controller
 {
-    public function __construct(DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount, TopClass $top){
+    public function __construct(AgencyClass $agency, DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount, TopClass $top){
         $this->bar = $bar;
         $this->top = $top;
         $this->data = $data;
+        $this->agency = $agency;
         $this->location = $location;
         $this->discount = $discount;
         $this->dropdown = $dropdown;
@@ -47,8 +49,11 @@ class CustomerController extends Controller
             case 'location':
                 return $this->location->data($request);
             break;
-            case 'discount':
+            case 'discounts':
                 return $this->discount->data($request);
+            break;
+            case 'discount':
+                return $this->discount->per($request);
             break;
             default: 
                 return inertia('Modules/Insights/Customer/Index',[
@@ -70,10 +75,20 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function discount(Request $request){
+    public function discounts(Request $request){
         return inertia('Modules/Insights/Customer/Discount',[
             'year' => date('Y'),
-            'years' => Target::distinct()->pluck('year')
+            'years' => Target::distinct()->pluck('year'),
+            'laboratories' => $this->agency->laboratories(),
+        ]);
+    }
+
+    public function discount(Request $request){
+        return inertia('Modules/Insights/Customer/PerDiscount',[
+            'year' => date('Y'),
+            'years' => Target::distinct()->pluck('year'),
+            'laboratories' => $this->agency->laboratories(),
+            'discounts' => $this->agency->discounts(),
         ]);
     }
 }

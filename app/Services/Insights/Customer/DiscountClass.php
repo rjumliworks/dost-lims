@@ -76,4 +76,69 @@ class DiscountClass
         });
     }
 
+    public function per($request)
+    {
+        $laboratory = $request->laboratory;
+        $discount = $request->discount;
+        $year = $request->year;
+        $monthInput = $request->month;
+
+        if (is_null($monthInput)) {
+            // $month = date('m'); // current month (01–12)
+            $month = null;
+        } else {
+            $month = date('m', strtotime($monthInput));
+        }
+
+        $query = Tsr::with([
+            'customer:id,name,sex_id,name_id,is_new',
+            'customer.customer_name:id,name',
+            'payment.discounted'
+        ])
+        ->withCount([
+            'samples',
+            'samples as analyses_count' => function ($q) {
+                $q->join('tsr_analyses', 'tsr_analyses.sample_id', '=', 'tsr_samples.id');
+            }
+        ])
+        ->when($discount !== null, function ($q) use ($discount) {
+            $q->whereHas('payment',function ($query) use ($discount){
+                $query->where('discount_id',$discount);
+            });
+        })
+        ->when($laboratory, function ($query, $laboratory) {
+            $query->where('laboratory_id',$laboratory);
+        })
+        ->whereYear('created_at', $year)
+        // ->whereMonth('created_at', $month)
+         ->when($month !== null, function ($q) use ($month) {
+            $q->whereMonth('created_at', $month);
+        })
+        ->where('status_id','!=',5)
+        ->orderBy('code', 'ASC');
+
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+        return $query->get()->map(function ($item) {
+            // $discount = optional($item->payment->discounted)->name;
+            $formattedDiscount = isset($item->payment->discount) ? '₱' . number_format($item->payment->discount, 2) : '-';
+
+            $discount = $formattedDiscount;
+
+            $name = ($item->customer->name == 'Main') ? '' : ' - '.$item->customer->name;
+
+            return [
+                'code' => $item->code,
+                'name' => $item->customer->customer_name->name.' '.$name,
+                'samples' => $item->samples_count,
+                'analyses' => $item->analyses_count,
+                'fees' => $item->payment->total,
+                'discount' => $discount,
+                'gross' => ($item->payment->subtotal != $item->payment->total) ? ($item->payment->discount == '0.00') ? $item->payment->total : $item->payment->subtotal : $item->payment->subtotal
+               
+            ];
+        });
+    }
+
 }

@@ -7,7 +7,8 @@
                 <b-card-body>
                     <div class="input-group mb-1">
                         <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                        <input type="text" placeholder="Accomplishments" class="form-control" style="width: 40%;">
+                        <input type="text" placeholder="Accomplishments" class="form-control" style="width: 20%;">
+                        <Multiselect class="white" style="width: 15%;" :options="discounts" v-model="discount" label="name" :allow-empty="false" :searchable="true" placeholder="Select Discount" />
                         <Multiselect class="white" style="width: 15%;" :options="laboratories" v-model="laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
                         <Multiselect class="white" style="width: 15%;" :options="months" v-model="month" label="name" :allow-empty="false" :searchable="true" placeholder="Select Month" />
                         <Multiselect class="white" style="width: 15%;" :options="years" v-model="year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
@@ -42,27 +43,15 @@
                     <div class="table-responsive" style="margin-top: -1px; margin-bottom: 10px; height: calc(100vh - 350px); overflow: auto;">
                         <table class="table table-bordered table-striped table-nowrap align-middle">
                             <thead class="thead-fixed text-primary fs-11">
-                                <tr class="bg-dark">
-                                    <th rowspan="2" class="text-center align-middle table-primary">No.</th>
-                                    <th rowspan="2" class="text-center align-middle table-primary">TSR No.</th>
-                                    <th rowspan="2" class="align-middle table-primary">Customer Name</th>
-                                    <th rowspan="2" class="text-center align-middle table-primary">No. of Samples</th>
-                                    <th rowspan="2" class="text-center align-middle table-primary">No. of Services</th>
-                                    <th rowspan="2" class="text-center align-middle table-primary">Fees Collected</th>
-                                    <th colspan="3"  class="text-center align-middle table-info">Gratis</th>
-                                    <th colspan="5"  class="text-center align-middle table-danger">Discount</th>
-                                    <th rowspan="2" class="text-center align-middle table-success">Gross Amount</th>
-                                </tr>
-                                <tr class="text-center align-middle">
-                                    <th class="table-info">Calibration</th>
-                                    <th class="table-info">QC</th>
-                                    <th class="table-info">R&D</th>
-                                    <th class="table-danger">Health Units</th>
-                                    <th class="table-danger">Student</th>
-                                    <th class="table-danger">Senior Citizen</th>
-                                    <th class="table-danger">PWD</th>
-                                    <th class="table-danger">Women's</th>
-                                
+                                <tr class="">
+                                    <th class="text-center align-middle table-primary">No.</th>
+                                    <th class="text-center align-middle table-primary">TSR No.</th>
+                                    <th class="align-middle table-primary">Customer Name</th>
+                                    <th class="text-center align-middle table-primary">No. of Samples</th>
+                                    <th class="text-center align-middle table-primary">No. of Services</th>
+                                    <th class="text-center align-middle table-primary">Fees Collected</th>
+                                    <th class="text-center align-middle table-danger">Discount</th>
+                                    <th class="text-center align-middle table-success">Grouss Amount</th>
                                 </tr>
                             </thead>
                             <tbody class="fs-10">
@@ -73,14 +62,7 @@
                                     <td class="text-center align-middle">{{item.samples}}</td>
                                     <td class="text-center align-middle">{{item.analyses}}</td>
                                     <td class="text-center align-middle">{{item.fees}}</td>
-                                    <td class="text-center align-middle">{{item.calibration}}</td>
-                                    <td class="text-center align-middle">{{item.qc}}</td>
-                                    <td class="text-center align-middle">{{item.rd}}</td>
-                                    <td class="text-center align-middle">{{item.health}}</td>
-                                    <td class="text-center align-middle">{{item.student}}</td>
-                                    <td class="text-center align-middle">{{item.senior}}</td>
-                                    <td class="text-center align-middle">{{item.pwd}}</td>
-                                    <td class="text-center align-middle">{{item.women}}</td>
+                                    <td class="text-center align-middle">{{item.discount}}</td>
                                     <td class="text-center align-middle">{{item.gross}}</td>
                                 </tr>
                             </tbody>
@@ -90,14 +72,7 @@
                                     <td class="text-center table-light">{{ totals.samples }}</td>
                                     <td class="text-center table-light">{{ totals.analyses }}</td>
                                     <td class="text-center table-light">{{ formatMoney(totals.fees) }}</td>
-                                    <td class="text-center table-info">{{ formatMoney(totals.calibration) }}</td>
-                                    <td class="text-center table-info">{{ formatMoney(totals.qc) }}</td>
-                                    <td class="text-center table-info">{{ formatMoney(totals.rd) }}</td>
-                                    <td class="text-center table-danger">{{ formatMoney(totals.health) }}</td>
-                                    <td class="text-center table-danger">{{ formatMoney(totals.student) }}</td>
-                                    <td class="text-center table-danger">{{ formatMoney(totals.senior) }}</td>
-                                    <td class="text-center table-danger">{{ formatMoney(totals.pwd) }}</td>
-                                    <td class="text-center table-danger">{{ formatMoney(totals.women) }}</td>
+                                    <td class="text-center table-danger">{{ formatMoney(totals.discount) }}</td>
                                     <td class="text-center table-success">{{ formatMoney(totals.gross) }}</td>
                                 </tr>
                             </tfoot>
@@ -112,7 +87,7 @@
 import Multiselect from "@vueform/multiselect";
 export default {
     components: { Multiselect },
-    props: ['years','selected','laboratories'],
+    props: ['years','selected','laboratories','discounts'],
     data(){
         return {
             selectedRow: null,
@@ -121,6 +96,7 @@ export default {
             year: new Date().getFullYear(),
             month: new Date().getMonth(),
             laboratory: null,
+            discount: null,
             selectedRow: null, 
             selectedColumn: null,
             expandedRows: {},
@@ -140,6 +116,9 @@ export default {
         'laboratory'(){
             this.fetch();
         },
+         'discount'(){
+            this.fetch();
+        }
     },
     computed: {
         totals() {
@@ -161,14 +140,7 @@ export default {
                 acc.samples += clean(item.samples);
                 acc.analyses += clean(item.analyses);
                 acc.fees += clean(item.fees);
-                acc.calibration += clean(item.calibration);
-                acc.qc += clean(item.qc);
-                acc.rd += clean(item.rd);
-                acc.health += clean(item.health);
-                acc.student += clean(item.student);
-                acc.senior += clean(item.senior);
-                acc.pwd += clean(item.pwd);
-                acc.women += clean(item.women);
+                acc.discount += clean(item.discount);
                 acc.gross += clean(item.gross);
 
                 return acc;
@@ -178,13 +150,7 @@ export default {
                 analyses: 0,
                 fees: 0,
                 calibration: 0,
-                qc: 0,
-                rd: 0,
-                health: 0,
-                student: 0,
-                senior: 0,
-                pwd: 0,
-                women: 0,
+                discount: 0,
                 gross: 0
             });
         }
@@ -195,8 +161,9 @@ export default {
                 params : {
                     month: this.month,
                     year: this.year,
+                    discount: this.discount,
                     laboratory: this.laboratory,
-                    option: 'discounts'
+                    option: 'discount'
                 }
             })
             .then(response => {
