@@ -70,7 +70,13 @@ export default {
                     this.qrUrl = response.data.qr;
                     this.expiresAt = response.data.expires_at;
                     this.startCountdown();
-                     this.startPolling();
+                    if(response.data.status == 'succeeded'){
+                        alert('Payment Successful');
+                       
+                        // this.$emit('completed',response.data.tsr);
+                    }else{
+                        this.startPolling();
+                    }
                     
                     // this.qrUrl = res.next_action?.code?.image_url ?? null;
                     // this.expiresAt = res.next_action?.code?.expires_at;
@@ -111,10 +117,9 @@ export default {
                     this.paymentStatus = response.data.status;
 
                     if (this.paymentStatus === 'succeeded'){
-                        clearInterval(this.interval)
-                        alert('Payment Successful')
-                        this.closeModal()
-                        window.location.reload()
+                        
+                        this.$emit('completed',response.data.tsr);
+                       this.hide();
                     }
 
                     if(this.paymentStatus === 'failed'){
@@ -128,50 +133,24 @@ export default {
             }, 3000)
         },
         startCountdown() {
-            clearInterval(this.timerInterval)
+            clearInterval(this.timerInterval);
 
             this.timerInterval = setInterval(() => {
                 const now = new Date().getTime()
                 const expiry = new Date(this.expiresAt).getTime()
                 const distance = expiry - now
 
-                /*
-                |--------------------------------------------------------------------------
-                | EXPIRED
-                |--------------------------------------------------------------------------
-                */
-
                 if (distance <= 0) {
-
                     clearInterval(this.timerInterval)
-
                     this.countdown = 'Expired'
-
                     return
                 }
 
-                /*
-                |--------------------------------------------------------------------------
-                | TIME COMPUTATION
-                |--------------------------------------------------------------------------
-                */
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                const minutes = Math.floor(
-                    (distance % (1000 * 60 * 60))
-                    / (1000 * 60)
-                )
-
-                const seconds = Math.floor(
-                    (distance % (1000 * 60))
-                    / 1000
-                )
-
-                this.countdown =
-                    `${minutes}:${seconds
-                        .toString()
-                        .padStart(2, '0')}`
-
-            }, 1000)
+                this.countdown = `${minutes}:${seconds.toString().padStart(2, '0')}`
+            }, 1000);
         },
         beforeUnmount() {
             clearInterval(this.interval)

@@ -7,7 +7,9 @@ use Hashids\Hashids;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Models\Tsr;
 use App\Models\Payment;
+use App\Http\Resources\Public\Customer\TsrResource;
 
 class PaymentController extends Controller
 {
@@ -106,7 +108,6 @@ class PaymentController extends Controller
         Payment::create([
             'method' => 'qrph',
             'payment_intent_id' => $intentId,
-            'qr_id' => $attach['data']['attributes']['next_action'] ? $attach['data']['attributes']['next_action']['code']['id'] : null,
             'expires_at' => $attach['data']['attributes']['next_action'] ?  Carbon::parse($attach['data']['attributes']['next_action']['code']['expires_at']) : null,
             'subtotal' => $request->amount,
             'fee' => $fee,
@@ -138,9 +139,63 @@ class PaymentController extends Controller
 
         $data = $response->json();
 
+        if($data['data']['attributes']['status'] == 'succeeded'){
+            $date = $data['data']['attributes']['payments'][0]['attributes']['paid_at'];
+            $payment = Payment::where('payment_intent_id', $id)->first();
+            $payment->update([
+                'status' => 'paid',
+                'reference' => $data['data']['attributes']['payments'][0]['id'],
+                'paid_at' => Carbon::createFromTimestamp($date),
+            ]);
+            $payment->tsr->payment->update([
+                'is_paid' => 1,
+                'collection_id' => 54,
+                'payment_id' => 22,
+                'status_id' => 7,
+                'paid_at' => Carbon::createFromTimestamp($date),
+            ]);
+            $payment->tsr->update([
+                'status_id' => 3,
+            ]);
+
+            $tsr = Tsr::with('payment.status','onlinepayment','status','samples.report.signatory','samples.samplename','samples.analyses')
+            ->withCount([
+                'samples as total_report_count' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT tsr_sample_reports.code)'))
+                        ->join('tsr_sample_reports', 'tsr_sample_reports.sample_id', '=', 'tsr_samples.id');
+                },
+                'samples as completed_report_count' => function ($query) {
+                    $query->select(\DB::raw('COUNT(DISTINCT tsr_sample_reports.code)'))
+                        ->join('tsr_sample_reports', 'tsr_sample_reports.sample_id', '=', 'tsr_samples.id')
+                        ->join('tsr_sample_report_signatories', 'tsr_sample_report_signatories.report_id', '=', 'tsr_sample_reports.id')
+                        ->where('tsr_sample_report_signatories.status_id', 42);
+                }
+            ])
+            ->where('id',$payment->tsr_id)
+            ->first();
+        }else{
+            $tsr = null;
+        }
+
         return response()->json([
-            'status' =>
-                $data['data']['attributes']['status']
+            'status' => $data['data']['attributes']['status'],
+            'tsr' => $tsr
+        ]);
+    }
+
+    public function payments($id)
+    {
+        $response = Http::withBasicAuth(
+            config('services.paymongo.secret'),
+            ''
+        )->get(
+            "https://api.paymongo.com/v1/payment_intents/{$id}"
+        );
+
+        $data = $response->json();
+
+        return response()->json([
+            'data' => $data
         ]);
     }
 
@@ -154,12 +209,35 @@ class PaymentController extends Controller
         );
 
         $data = $response->json();
+        $date = $data['data']['attributes']['payments'][0]['attributes']['paid_at'];
+        if($data['data']['attributes']['status'] == 'succeeded'){
+            $payment = Payment::where('payment_intent_id', $id)->first();
+            $payment->update([
+                'status' => 'paid',
+                'paid_at' => Carbon::createFromTimestamp($date),
+            ]);
+            $payment->tsr->payment->update([
+                'is_paid' => 1,
+                'collection_id' => 54,
+                'payment_id' => 22,
+                'status_id' => 7,
+                'paid_at' => Carbon::createFromTimestamp($date),
+            ]);
+            $payment->tsr->update([
+                'status_id' => 3,
+            ]);
+        }
 
         return response()->json([
+            'data' => $data['data'],
            'status' => $data['data']['attributes']['status'],
            'qr' => $data['data']['attributes']['next_action']['code']['image_url'] ?? null,
            'expires_at' => $data['data']['attributes']['next_action']['code']['expires_at'] ?? null,
         ]);
+    }
+
+    public function update($status,$id){
+
     }
 
     public function webhook(Request $request)

@@ -20,6 +20,14 @@ class AgencyConfiguration extends Model
             if (! Auth::check()) {
                 return;
             }
+
+            if (! auth()->guard('web')->check()) {
+                $customerId = auth()->guard('customer')->id(); // returns logged-in customer id
+
+              
+                return;
+            }
+
             $user = Auth::user();
             if ($user->hasRole('Administrator')) {
                 return;

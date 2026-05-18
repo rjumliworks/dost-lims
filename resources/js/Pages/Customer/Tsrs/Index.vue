@@ -46,12 +46,12 @@
                              <thead class="table-light thead-fixed">
                                 <tr class="fs-10">
                                     <th style="width: 4%;"></th>
-                                    <th style="width: 20%;">Code</th>
+                                    <th>Code</th>
                                     <th style="width: 15%;" class="text-center">Due At</th>
                                     <th style="width: 15%;" class="text-center">Request At</th>
                                     <th style="width: 15%;" class="text-center">Total</th>
                                     <th style="width: 16%;" class="text-center">Status</th>
-                                    <th style="width: 10%;" class="text-center"></th>
+                                    <th style="width: 15%;" class="text-center"></th>
                                 </tr>
                             </thead>
                             <tbody v-if="lists.length > 0">
@@ -67,9 +67,12 @@
                                     <td class="text-center" v-else>{{ list.completed_report_count }} of {{ list.total_report_count }}</td>
                                     <!-- <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td> -->
                                     <td class="text-end">
-                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="pay(list)" class="btn btn-danger btn-sm w-md">Pay with QRPH</button>
+                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="pay(list,index)" class="btn btn-danger btn-sm w-md">Pay with QRPH</button>
                                         <!-- <button v-if="list.status.name == 'For Payment'" type="button" @click="payNow(list)" class="btn btn-dark btn-sm w-md">Pay now</button> -->
                                         <button v-else type="button" @click="openView(list)" class="btn btn-soft-dark btn-sm w-md">View TSR</button>
+                                          <b-button @click="openPrint(list.reference)" variant="info" class="ms-1" v-b-tooltip.hover title="Print" size="sm">
+                                            <i class="ri-printer-fill align-bottom"></i>
+                                        </b-button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -88,7 +91,7 @@
         </div>
     </BRow>
     <View ref="view"/>
-    <Payment ref="payment"/>
+    <Payment @completed="updateTsr" ref="payment"/>
 </template>
 <script>
 import _ from 'lodash';
@@ -141,10 +144,22 @@ export default {
             .catch(err => console.log(err));
         },
         openView(data){
+            console.log(data);
+              const response = axios.get(
+                        `/payments/${data.onlinepayment.payment_intent_id}`
+                        
+                    );
+                    console.log(response);
             this.$refs.view.show(data);
         },
-        
-        pay(list){
+        updateTsr(data){
+            console.log(data);
+            this.lists[this.index] = data;
+        },
+        openPrint(reference){
+            window.open('/tsrs?option=print&id='+reference);
+        },
+        pay(list,index){
             const rawAmount = list.payment.total;
             const cleanAmount = Number(
                 rawAmount.toString()
@@ -157,6 +172,7 @@ export default {
                 code: list.reference,
                 online: list.onlinepayment
             });
+            this.index = index;
         },
         async payNow(list) {
             const rawAmount = list.payment.total;

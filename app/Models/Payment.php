@@ -15,6 +15,7 @@ class Payment extends Model
         'status',
         'payload',
         'qr_id',
+        'reference',
         'payment_intent_id',
         'paid_at',
         'expires_at',

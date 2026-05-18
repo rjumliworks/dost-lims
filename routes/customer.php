@@ -31,6 +31,7 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
         Route::get('/payment/cancel', [App\Http\Controllers\Finance\PaymentController::class, 'cancel'])->name('payment.cancel');
 
         Route::post('/payments/qrph', [App\Http\Controllers\Finance\PaymentController::class, 'createQrph']);
+         Route::get('/payments/{id}', [App\Http\Controllers\Finance\PaymentController::class, 'payments']);
         Route::get('/payments/{id}/status', [App\Http\Controllers\Finance\PaymentController::class, 'status']);
         Route::get('/payments/{id}/qr', [App\Http\Controllers\Finance\PaymentController::class, 'qr']);
         Route::post('/payments/webhook', [App\Http\Controllers\Finance\PaymentController::class, 'webhook']);
