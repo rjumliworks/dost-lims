@@ -57,7 +57,7 @@
                             <tbody v-if="lists.length > 0">
                                 <tr v-for="(list,index) in lists" v-bind:key="index" class="fs-12">
                                     <td class="text-center">{{ (meta.current_page - 1) * meta.per_page + index + 1 }}.</td>
-                                    <td>{{list}}</td>
+                                    <td>{{list.code}}</td>
                                     <td class="text-center">{{list.due_at}}</td>
                                     <td class="text-center">{{list.created_at}}</td>
                                     <td class="text-center">{{list.payment.total}}</td>
@@ -67,7 +67,8 @@
                                     <td class="text-center" v-else>{{ list.completed_report_count }} of {{ list.total_report_count }}</td>
                                     <!-- <td class="text-center"><span :class="'badge '+list.status.color">{{list.status.name}}</span></td> -->
                                     <td class="text-end">
-                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="payNow(list)" class="btn btn-dark btn-sm w-md">Pay now</button>
+                                        <button v-if="list.status.name == 'For Payment'" type="button" @click="pay(list)" class="btn btn-danger btn-sm w-md">Pay with QRPH</button>
+                                        <!-- <button v-if="list.status.name == 'For Payment'" type="button" @click="payNow(list)" class="btn btn-dark btn-sm w-md">Pay now</button> -->
                                         <button v-else type="button" @click="openView(list)" class="btn btn-soft-dark btn-sm w-md">View TSR</button>
                                     </td>
                                 </tr>
@@ -87,15 +88,17 @@
         </div>
     </BRow>
     <View ref="view"/>
+    <Payment ref="payment"/>
 </template>
 <script>
 import _ from 'lodash';
 import { useForm } from '@inertiajs/vue3';
 import View from './Modals/View.vue';
+import Payment from './Modals/Payment.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, View },
+    components: { PageHeader, Pagination, View, Payment },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -141,7 +144,20 @@ export default {
             this.$refs.view.show(data);
         },
         
-        
+        pay(list){
+            const rawAmount = list.payment.total;
+            const cleanAmount = Number(
+                rawAmount.toString()
+                    .replace(/₱/g, '')
+                    .replace(/,/g, '')
+            );
+
+            this.$refs.payment.show({
+                amount: cleanAmount,
+                code: list.reference,
+                online: list.onlinepayment
+            });
+        },
         async payNow(list) {
             const rawAmount = list.payment.total;
 

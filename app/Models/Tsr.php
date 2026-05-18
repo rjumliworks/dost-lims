@@ -39,6 +39,7 @@ class Tsr extends Model
 
     public function samples(){ return $this->hasMany('App\Models\TsrSample', 'tsr_id');}
     public function payment(){ return $this->hasOne('App\Models\TsrPayment', 'tsr_id');}
+    public function onlinepayment(){ return $this->hasOne('App\Models\Payment', 'tsr_id');}
     public function release(){ return $this->hasOne('App\Models\TsrRelease', 'tsr_id');}
     public function referral(){ return $this->hasOne('App\Models\TsrReferral', 'tsr_id');}
     public function report(){ return $this->hasOne('App\Models\TsrReport', 'tsr_id');}

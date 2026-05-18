@@ -14,9 +14,10 @@ class Payment extends Model
         'amount',
         'status',
         'payload',
-        'checkout_session_id',
+        'qr_id',
         'payment_intent_id',
         'paid_at',
+        'expires_at',
         'tsr_id',
         'reference_number'
     ];

@@ -15,9 +15,8 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('method')->nullable();
-            $table->string('checkout_session_id')->nullable();
             $table->string('payment_intent_id')->nullable();
-            $table->string('reference_number')->nullable();
+            $table->string('qr_id')->nullable();
             $table->decimal('subtotal',12,2)->default(0.00);
             $table->decimal('fee',12,2)->default(0.00);
             $table->decimal('total',12,2)->default(0.00);
@@ -27,6 +26,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tsr_id')->nullable();
             $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
             $table->datetime('paid_at')->nullable();
+            $table->datetime('expires_at')->nullable();
             $table->timestamps();
         });
     }

@@ -20,7 +20,7 @@ class TsrController extends Controller
     }
 
     private function list(Request $request){
-        $data = Tsr::with('payment.status','status','samples.report.signatory','samples.samplename','samples.analyses')
+        $data = Tsr::with('payment.status','onlinepayment','status','samples.report.signatory','samples.samplename','samples.analyses')
         ->withCount([
             'samples as total_report_count' => function ($query) {
                 $query->select(\DB::raw('COUNT(DISTINCT tsr_sample_reports.code)'))
