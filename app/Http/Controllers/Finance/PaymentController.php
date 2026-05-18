@@ -140,7 +140,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'status' =>
-                $data['data']
+                $data['data']['attributes']['status']
         ]);
     }
 
