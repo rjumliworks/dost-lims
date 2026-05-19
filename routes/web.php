@@ -35,6 +35,8 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
     Route::get('/fetch', [App\Http\Controllers\DashboardController::class, 'fetch']);
     Route::get('/search', [App\Http\Controllers\SearchController::class, 'search']);
 
+    Route::resource('/monitoring', App\Http\Controllers\Common\MonitoringController::class);
+
     Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
     Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);
     Route::resource('/testservices', App\Http\Controllers\Common\TestserviceController::class);

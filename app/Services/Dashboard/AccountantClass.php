@@ -223,9 +223,9 @@ class AccountantClass
                 $query->where('facility_id', $this->facility);
             })
             ->whereHas('payment',function ($query){
-                $query->where('payment_id',NULL)->where('collection_id',NULL);
+                $query->where('payment_id',NULL)->where('collection_id',NULL)->where('is_free',0);
             })
-            ->where('status_id',2)
+            ->whereIn('status_id',[2,3])
             ->get()
         );
         return $data;

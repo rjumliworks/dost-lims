@@ -152,7 +152,7 @@ class DashboardController extends Controller
                     $this->common->calendar($request)
                 );
             break;
-             case 'labhead':
+            case 'labhead':
                 return array_merge(
                     $this->labhead->dashboard($request),
                     $this->common->calendar($request)

@@ -9,7 +9,15 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                 </Link>
             </li>
+           
             <template v-if="['Customer Relation Officer', 'Technical Manager', 'Laboratory Analyst'].some(role => $page.props.roles.includes(role))">
+                <li class="nav-item">
+                    <Link href="/monitoring" class="nav-link menu-link"
+                    :class="{ 'active': $page.url === '/monitoring' }">
+                    <i class="ri-robot-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Monitoring</span>
+                    </Link>
+                </li>
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Laboratory Modules</span>
