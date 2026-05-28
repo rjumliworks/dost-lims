@@ -129,7 +129,7 @@
         <div class="col-md-6 mt-n2">
             <div class="row g-3">
                 <template v-if="counts.length > 0">
-                    <b-col lg="4" v-for="(item, index) of counts" :key="index" @click="">
+                    <b-col lg="4" v-for="(item, index) of counts" :key="index" @click="openReminder">
                         <b-card no-body :class="item.color" class="border shadow-none">
                             <b-card-body>
                                 <div class="d-flex align-items-center">
