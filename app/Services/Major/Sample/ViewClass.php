@@ -4,9 +4,12 @@ namespace App\Services\Major\Sample;
 
 use Hashids\Hashids;
 use App\Models\UserRole;
+use App\Models\Tsr;
 use App\Models\TsrSample;
 use App\Models\ListLaboratory;
 use App\Http\Resources\Major\Tsr\SampleResource;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 
 class ViewClass
 {
@@ -110,6 +113,53 @@ class ViewClass
             ];
         });
         return $laboratories;
+    }
+
+    public function qrcode_list($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->id);
+        $samples = TsrSample::with('samplename:id,name')
+        ->with('analyses:id,sample_id,testservice_id','analyses.testservice:id,testname_id','analyses.testservice.testname:id,name')
+        ->with('tsr:id,due_at,created_at')
+        ->where('tsr_id',$id)->get();
+        $lists = [];
+        foreach($samples as $sample){
+            $testnames = [];
+
+            foreach ($sample->analyses as $analysis) {
+                if (isset($analysis->testservice->testname->name)) {
+                    $testnames[] = $analysis->testservice->testname->name;
+                }
+            }
+
+            $code = $sample->code;
+            $result = new Builder(
+                writer: new PngWriter(),
+                data: $code,
+                size: 300,
+                margin: 10,
+            );
+
+            $qrCodeImageString = $result->build()->getString();
+            $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+
+            $lists[] = [
+                'qrCodeImage' => $base64Image,
+                'sample_code' => $code,
+                'sample_name' => ($sample->samplename->name != 'n/a') ? $sample->samplename->name : $sample->name,
+                'due_at' => $sample->tsr->due_at,
+                'created_at' => $sample->tsr->created_at,
+                'testnames' => $testnames
+            ];
+
+        }
+        $array = [
+            'lists' => $lists
+        ];
+        $width = 6.20 * 28.35; 
+        $height = 6.00 * 28.35;
+        $pdf = \PDF::loadView('qrcodes.list-sample',$array)->setPaper([0, 0, $width, $height], 'portrait');
+        return $pdf->stream(Tsr::where('id',$id)->value('code').'_qrcodes.pdf');
     }
 
     private function labs(){

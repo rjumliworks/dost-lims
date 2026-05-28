@@ -30,7 +30,8 @@
                                 <input type="text" v-model="filter.keyword" placeholder="Search Report number, TSR Code, Sample Code" class="form-control" style="width: 30%;">
                                 <Multiselect class="white" style="width: 17%;" :options="[]" v-model="filter.analyst" label="name" :searchable="true" placeholder="Select Analyst" />
                                 <Multiselect v-if="laboratories.length > 0" class="white" style="width: 17%;" :options="laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
-                                <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
+                                <Multiselect class="white" style="width: 8%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
+                                    <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
                                 <b-button type="button" variant="primary" @click="openCreate">
@@ -165,7 +166,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, View, Create },
-    props: ['dropdowns','count','laboratories'],
+    props: ['dropdowns','count','laboratories','years'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -176,7 +177,8 @@ export default {
                 keyword: null,
                 laboratory: null,
                 analyst: null,
-                status: 'with'
+                status: 'with',
+                year: new Date().getFullYear(),
             },
             index: null,
             selectedIndex: null,

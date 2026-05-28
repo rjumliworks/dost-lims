@@ -55,11 +55,11 @@ class ViewClass
                         $query->where('code', 'LIKE', "%{$keyword}%");
                         $query->orwhereHas('tsr', function ($query) use ($keyword){
                             $query->where('code', 'LIKE', "%{$keyword}%");
-                            $query->when($this->laboratory, function ($query) {
-                                if(in_array(4, $this->role->toArray(), false)){
-                                    $query->whereIn('laboratory_id',$this->laboratory);
-                                }
-                            });
+                            // $query->when($this->laboratory, function ($query) {
+                            //     if(in_array(4, $this->role->toArray(), false)){
+                            //         $query->whereIn('laboratory_id',$this->laboratory);
+                            //     }
+                            // });
                         });
                     });
                 })

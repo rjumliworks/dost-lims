@@ -141,8 +141,8 @@ class MigrateTsrs extends Command
                     ]);
 
                     $newTsrId = DB::table('tsrs')->insertGetId([
-
                         'code' => $tsr->code,
+                        'old_id' => $tsr->id,
                         'agency_id' => 14,
                         'laboratory_id' => $tsr->laboratory_id,
                         'purpose_id' => $tsr->purpose_id ?? 1,
@@ -158,7 +158,6 @@ class MigrateTsrs extends Command
                         'due_at' => $tsr->due_at,
                         'created_at' => $tsr->created_at,
                         'updated_at' => $tsr->updated_at
-
                     ]);
 
                     $tsrMap[$tsr->id] = $newTsrId;

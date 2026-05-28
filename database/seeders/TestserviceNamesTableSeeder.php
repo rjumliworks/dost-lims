@@ -4114,6 +4114,58 @@ class TestserviceNamesTableSeeder extends Seeder
                 'created_at' => '2026-03-18 01:54:56',
                 'updated_at' => '2026-03-18 01:54:56',
             ),
+            315 => 
+            array (
+                'id' => 316,
+                'name' => 'Titrimetric Method',
+                'short' => 'AOAC 944.10',
+                'is_active' => 1,
+                'type_id' => 28,
+                'laboratory_id' => 1,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-05-25 11:19:08',
+                'updated_at' => '2026-05-25 11:19:08',
+            ),
+            316 => 
+            array (
+                'id' => 317,
+                'name' => 'Enterobacteriacea',
+                'short' => NULL,
+                'is_active' => 1,
+                'type_id' => 31,
+                'laboratory_id' => 2,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-05-28 15:14:53',
+                'updated_at' => '2026-05-28 15:14:53',
+            ),
+            317 => 
+            array (
+                'id' => 318,
+                'name' => 'AOAC 2003.01',
+                'short' => NULL,
+                'is_active' => 1,
+                'type_id' => 28,
+                'laboratory_id' => 2,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-05-28 15:15:49',
+                'updated_at' => '2026-05-28 15:15:49',
+            ),
+            318 => 
+            array (
+                'id' => 319,
+                'name' => 'Official Methods of Analysis of AOAC International',
+                'short' => NULL,
+                'is_active' => 1,
+                'type_id' => 29,
+                'laboratory_id' => 2,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-05-28 15:16:38',
+                'updated_at' => '2026-05-28 15:16:38',
+            ),
         ));
         
         

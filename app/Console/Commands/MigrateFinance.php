@@ -2,8 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Tsr;
+use App\Models\User;
+use App\Models\Customer;
+use App\Models\FinanceName;
+use App\Models\FinanceItem;
 use Illuminate\Console\Command;
-
+use Illuminate\Support\Facades\DB;
 class MigrateFinance extends Command
 {
     protected $signature = 'migrate:finance';
@@ -34,184 +39,141 @@ class MigrateFinance extends Command
         }
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        // 3️⃣ Migrate customer_names (only those with customers with TSRS)
-        $oldNames = DB::connection('old_db')
-            ->table('customer_names as cn')
-            ->join('customers as c', 'c.name_id', '=', 'cn.id')
-            ->join('tsrs as t', 't.customer_id', '=', 'c.id')
-            ->where('t.agency_id', 14)
-            ->select(
-                'cn.id',
-                'cn.name',
-                DB::raw('MIN(c.industry_id) as industry_id'),
-                DB::raw('MIN(c.classification_id) as classification_id'),
-                DB::raw('MIN(c.type_id) as type_id'),
-                'cn.has_branches',
-                'cn.is_active',
-                'cn.created_at',
-                'cn.updated_at'
-            )
-            ->groupBy(
-                'cn.id',
-                'cn.name',
-                'cn.has_branches',
-                'cn.is_active',
-                'cn.created_at',
-                'cn.updated_at'
-            )
-            ->get();
+        $series = DB::connection('old_db')
+            ->table('finance_orseries')
+            ->where('agency_id', 14)
+            ->orderBy('id')->get();
 
-        $nameMapping = [];
-        $ignore = [
-            'of', 'the', 'and', 'de', 'la', 'del',
-            'in', 'on', 'at', 'for', 'to', 'from',
-            'a', 'an', 'by', 'with'
-        ];
-        foreach ($oldNames as $oldName) {
-            if($oldName->classification_id == 8) {
-                $cleanName = preg_replace('/[^a-zA-Z0-9\s]/', '', $oldName->name);
-                $words = preg_split('/\s+/', strtolower(trim($cleanName)));
-                $filtered = collect($words)
-                    ->filter()
-                    ->reject(fn($word) => in_array($word, $ignore));
-                $alias = $filtered
-                    ->map(fn($word) => strtoupper(substr($word, 0, 1)))
-                    ->implode('');
-            }
-
-            $newNameId = DB::table('customer_names')->insertGetId([
-                'name' => $oldName->name,
-                'alias' => $alias,
+        foreach ($series as $ser) {
+            DB::table('finance_orseries')->insert([
+                'name' => $ser->name,
+                'start' => $ser->start,
+                'end' => $ser->end,
+                'next' => $ser->next,
                 'agency_id' => 14,
-                'has_branches' => $oldName->has_branches,
-                'industry_id' => $oldName->industry_id,
-                'classification_id' => $oldName->classification_id,
-                'type_id' => $oldName->type_id,
-                'is_active' => $oldName->is_active,
-                'created_at' => $oldName->created_at,
-                'updated_at' => $oldName->updated_at,
+                'is_active' => $ser->is_active,
+                'is_finished' => $ser->is_finished,
+                'user_id' => User::where('old_id', $ser->user_id)->value('id') ?? 1,
+                'created_at' => $ser->created_at,
+                'updated_at' => $ser->updated_at
             ]);
-            $nameMapping[$oldName->id] = $newNameId;
+
+            $this->info("Migrated series ID {$ser->id}");
         }
 
-        // 4️⃣ Migrate customers with TSRS
-        $query = DB::connection('old_db')
-            ->table('customers')
-            ->whereExists(function ($q) {
-                $q->select(DB::raw(1))
-                    ->from('tsrs')
-                    ->whereColumn('tsrs.customer_id', 'customers.id')
-                    ->where('tsrs.agency_id', 14)->whereIn('tsrs.status_id', [2,3,4]);
-            })
-            ->orderBy('id');
 
-     
+        $names = DB::connection('old_db')
+            ->table('finance_names')
+            ->orderBy('id')->get();
 
-        $query->chunk(100, function ($oldCustomers) use ($nameMapping) {
+        foreach ($names as $name) {
+            DB::table('finance_names')->insert([
+                'name' => $name->name,
+                'is_individual' => $name->is_individual,
+                'is_active' => $name->is_active,
+                'old_id' => $name->id,
+                'created_at' => $name->created_at,
+                'updated_at' => $name->updated_at
+            ]);
 
-            foreach ($oldCustomers as $oldCustomer) {
-
-                DB::transaction(function () use ($oldCustomer, $nameMapping) {
-
-                    // 4a️⃣ Insert customer
-                    $newCustomerId = DB::table('customers')->insertGetId([
-                        'name_id' => $nameMapping[$oldCustomer->name_id] ?? null,
-                        'code' => $oldCustomer->code,
-                        'name' => $oldCustomer->name,
-                        'sex_id' => $oldCustomer->sex_id,
-                        'led_id' => $oldCustomer->female_id,
-                        'is_active' => $oldCustomer->is_active,
-                        'is_internal' => $oldCustomer->is_internal,
-                        'is_main' => $oldCustomer->is_main,
-                        'user_id' => User::where('old_id', $oldCustomer->user_id)->value('id') ?? 1,
-                        'is_new' => $oldCustomer->is_new,
-                        'agency_id' => $oldCustomer->agency_id,
-                        'created_at' => $oldCustomer->created_at,
-                        'updated_at' => $oldCustomer->updated_at,
-                        'old_id' => $oldCustomer->id
-                    ]);
-
-                    $wallet = DB::connection('old_db')
-                        ->table('wallets')
-                        ->where('customer_id', $oldCustomer->id)
-                        ->first();
-                    if($wallet) {
-                        DB::table('wallets')->insert([
-                            'customer_id' => $newCustomerId,
-                            'old_id' => $oldCustomer->id,
-                            'total' => $wallet->total,
-                            'available' => $wallet->available,
-                            'deduction' => $wallet->deduction,
-                            'created_at' => $wallet->created_at,
-                            'updated_at' => $wallet->updated_at,
-                        ]);
-                    }
+            $this->info("Migrated name ID {$name->id}");
+        }
 
 
-                    // // 4b️⃣ Migrate customer_conformes
-                    // $conformes = DB::connection('old_db')
-                    //     ->table('customer_conformes')
-                    //     ->where('customer_id', $oldCustomer->id)
-                    //     ->get();
+        $itemss = DB::connection('old_db')
+            ->table('finance_items')
+            ->orderBy('id')->get();
 
-                    // foreach ($conformes as $c) {
-                    
-                    //     DB::table('customer_conformes')->insert([
-                    //         'customer_id' => $newCustomerId,
-                    //         'name' => $c->name ?: 'None',
-                    //         'contact_no' => $c->contact_no,
-                    //     ]);
-                    // }
+        foreach ($itemss as $item) {
+            DB::table('finance_items')->insert([
+                'name' => $item->name,
+                'old_id' => $item->id,
+                'amount' => $item->amount,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at
+            ]);
 
-                    // 4c️⃣ Migrate customer_contacts
-                    $contacts = DB::connection('old_db')
-                        ->table('customer_contacts')
-                        ->where('customer_id', $oldCustomer->id)
-                        ->get();
+            $this->info("Migrated item ID {$item->id}");
+        }
 
-                    $existingEmails = [];
 
-                    foreach ($contacts as $c) {
-                     
-                        DB::table('customer_contacts')->insert([
-                            'customer_id' => $newCustomerId,
-                            'email' => $c->email ?: 'none@onelab.com',
-                            'kradworkz' => $c->email 
-                            ? hash('sha256', $c->email)
-                            : hash('sha256', 'none@onelab.com'),
-                            'contact_no' => $c->contact_no,
-                        ]);
-                    }
+        $finances = DB::connection('old_db')
+            ->table('finance_ops')
+            ->where('agency_id', 14)
+            ->orderBy('id')->get();
 
-                    // 4d️⃣ Migrate customer_addresses
-                    $addr = DB::connection('old_db')
-                        ->table('customer_addresses')
-                        ->where('customer_id', $oldCustomer->id)
-                        ->first();
+        foreach ($finances as $finance) {
+            $newOpId = DB::table('finance_ops')->insertGetId([
+                'code' => $finance->code,
+                'total' => $finance->total,
+                'status_id' => $finance->status_id,
+                'collection_id' => $finance->collection_id,
+                'payment_id' => $finance->payment_id,
+                'payorable_id' => ($finance->payorable_type == 'App\Models\Customer') ? Customer::where('old_id', $finance->payorable_id)->value('id') : FinanceName::where('old_id', $finance->payorable_id)->value('id'),
+                'payorable_type' => $finance->payorable_type,
+                'created_by' => User::where('old_id', $finance->created_by)->value('id') ?? 1,
+                'agency_id' => 14, 
+                'created_at' => $finance->created_at,
+                'updated_at' => $finance->updated_at
+            ]);
 
-                    if ($addr) {
-                        DB::table('customer_addresses')->insert([
-                            'customer_id' => $newCustomerId,
-                            'address' => $addr->address ?: '-',
-                            'longitude' => $addr->longitude,
-                            'latitude' => $addr->latitude,
-                            'district_code' => $addr->district_code,
-                            'barangay_code' => $addr->barangay_code,
-                            'municipality_code' => $addr->municipality_code,
-                            'province_code' => $addr->province_code,
-                            'region_code' => $addr->region_code,
-                            'created_at' => $addr->created_at,
-                            'updated_at' => $addr->updated_at,
-                        ]);
-                    }
+            $items = DB::connection('old_db')
+                ->table('finance_op_items')
+                ->where('op_id',$finance->id)
+                ->get();
 
-                }); // end transaction
-
-                $this->info("Migrated customer ID {$oldCustomer->id}");
+            foreach ($items as $item) {
+                DB::table('finance_op_items')->insert([
+                    'op_id' => $newOpId,
+                    'itemable_type' => $item->itemable_type,
+                    'itemable_id' => ($item->itemable_type == 'App\Models\Tsr') ? Tsr::where('old_id', $item->itemable_id)->value('id') : FinanceItem::where('old_id', $item->itemable_id)->value('id'),
+                    'amount' => $item->amount,
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at
+                ]);
             }
 
-        });
+            $receipts = DB::connection('old_db')
+                ->table('finance_receipts')
+                ->where('op_id',$finance->id)
+                ->get();
 
-        $this->info("Customer migration completed successfully.");
+            foreach ($receipts as $receipt) {
+                $newReceiptId = DB::table('finance_receipts')->insertGetId([
+                    'op_id' => $newOpId,
+                    'number' => $receipt->number,
+                    'is_deposit' => $receipt->is_deposit,
+                    'orseries_id' => $receipt->orseries_id,
+                    'deposit_id' => $receipt->deposit_id,
+                    'created_by' => User::where('old_id', $receipt->created_by)->value('id') ?? 1,
+                    'agency_id' => 14,
+                    'created_at' => $receipt->created_at,
+                    'updated_at' => $receipt->updated_at
+                ]);
+
+                $details = DB::connection('old_db')
+                ->table('finance_receipt_details')
+                ->where('receipt_id',$receipt->id)
+                ->get();
+
+
+                foreach ($details as $detail) {
+                    DB::table('finance_receipt_details')->insert([
+                        'receipt_id' => $newReceiptId,
+                        'amount' => $detail->amount,
+                        'is_cheque' => $detail->is_cheque,
+                        'number' => $detail->number,
+                        'bank' => $detail->bank,
+                        'date_at' => $detail->date_at,
+                        'created_at' => $detail->created_at,
+                        'updated_at' => $detail->updated_at
+                    ]);
+                }
+            }
+
+            $this->info("Migrated finance ID {$finance->id}");
+        }
+
+        $this->info("Finance migration completed successfully.");
     }
 }

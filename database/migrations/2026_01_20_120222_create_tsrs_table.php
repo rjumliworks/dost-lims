@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tsrs', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
+            $table->integer('old_id')->nullable();
             $table->string('code')->unique()->nullable();
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

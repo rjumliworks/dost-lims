@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('finance_items', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
+            $table->integer('old_id')->nullable();
             $table->decimal('amount',12,2);
             $table->string('name');
             $table->timestamps(); 

@@ -47,7 +47,27 @@ class ViewClass
         ->when($request->industry, fn ($q, $v) => $q->where('industry_id', $v))
         ->when($request->sex, fn ($q, $v) => $q->where('sex_id', $v))
         ->when($request->individual, fn ($q, $v) => $q->where('type_id', $v))
-        ->orderBy('customer_names.name', 'asc')
+        ->when($request->region, function ($query, $region) {
+            $query->whereHas('address',function ($query) use ($region) {
+                $query->where('region_code',$region);
+            });
+        })
+        ->when($request->province, function ($query, $province) {
+            $query->whereHas('address',function ($query) use ($province) {
+                $query->where('province_code',$province);
+            });
+        })
+        ->when($request->municipality, function ($query, $municipality) {
+            $query->whereHas('address',function ($query) use ($municipality) {
+                $query->where('municipality_code',$municipality);
+            });
+        })
+        ->when($request->barangay, function ($query, $barangay) {
+            $query->whereHas('address',function ($query) use ($barangay) {
+                $query->where('barangay_code',$barangay);
+            });
+        })
+        // ->orderBy('customer_names.name', 'asc')
         ->orderBy('customers.created_at', 'desc')
         ->orderBy('customers.id', 'asc')
         ->paginate($request->count ?? 20);
@@ -96,7 +116,7 @@ class ViewClass
     public function pick($request){
         $keyword = $request->keyword;
         $id = $request->id;
-        $data = Customer::with('conformes','contact','sex:id,name')->with('customer_name.classification:id,name')
+        $data = Customer::with('conformes','contact','sex:id,name','address.municipality')->with('customer_name.classification:id,name')
         ->where(function($query) use ($keyword,$id) {
             $query->where('name', 'LIKE', "%{$keyword}%")
                 ->where('id','!=',$id)
@@ -106,8 +126,21 @@ class ViewClass
                     });
                 });
         })
+        ->where('is_active',1)
         ->get()->map(function ($item) {
-            $name = ($item->customer_name->has_branches) ? ($item->is_main) ? $item->customer_name->name :  $item->customer_name->name.' - '.$item->name : $item->customer_name->name;
+            // $name = ($item->customer_name->has_branches) ? ($item->is_main) ? $item->customer_name->name :  $item->customer_name->name.' - '.$item->name : $item->customer_name->name;
+            
+            $mainCount = Customer::where('name_id', $item->name_id)
+            ->where('is_main', 1)
+            ->count();
+
+            if($mainCount > 1){
+                // $name = $item->customer_name->name.' - '.$item->address->municipality->name ;
+                $name = ($item->customer_name->has_branches) ? ($item->is_main) ? $item->customer_name->name.' - '.$item->address->municipality->name :  $item->customer_name->name.' - '.$item->name : $item->customer_name->name;
+            }else{
+                $name = ($item->customer_name->has_branches) ? ($item->is_main) ? $item->customer_name->name :  $item->customer_name->name.' - '.$item->name : $item->customer_name->name;
+            }
+
             return [
                 'value' => $item->id,
                 'name' => $name,

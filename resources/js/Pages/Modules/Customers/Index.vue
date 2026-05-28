@@ -32,9 +32,12 @@
                                 <input type="text" v-model="filter.keyword" placeholder="Search Customer" class="form-control" style="width: 20%;">
                                 <Multiselect class="white" style="width: 13%;" :options="dropdowns.sexs" v-model="filter.sex" label="name" :searchable="true" placeholder="Select Sex" />
                                 <Multiselect v-if="filter.industry == 107" class="white" style="width: 17%;" :options="dropdowns.individuals" v-model="filter.individual" label="name" :searchable="true" placeholder="Select Individual" />
-                                <Multiselect class="white" style="width: 17%;" :options="dropdowns.industries" v-model="filter.industry" label="name" :searchable="true" placeholder="Select Industry" />
+                                <Multiselect v-if="filter.class == 8" class="white" style="width: 17%;" :options="dropdowns.industries" v-model="filter.industry" label="name" :searchable="true" placeholder="Select Industry" />
                                 <Multiselect v-if="$page.props.roles.includes('Admnistrator')" class="white" style="width: 15%;" :options="dropdowns.agencies" v-model="filter.agency" label="short" :searchable="true" placeholder="Select Agency" />
-                                <Multiselect class="white" style="width: 13%;" :options="['New Customer','Old Customer','Not Identified']" v-model="filter.type" label="name" :searchable="true" placeholder="Select Type" />
+                                <Multiselect class="white" style="width: 15%;" :options="dropdowns.classes" v-model="filter.class" label="name" :searchable="true" placeholder="Select Classification" />
+                                <span @click="filterAddress()" class="input-group-text" v-b-tooltip.hover title="Filter by Address" style="cursor: pointer;"> 
+                                    <i class="ri-map-pin-fill search-icon"></i>
+                                </span>
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -55,10 +58,10 @@
                                     <i class="ri-apps-2-fill me-1 align-bottom"></i> All Customers
                                     </BLink>
                                 </li>
-                                <li class="nav-item" v-for="(list,index) in dropdowns.classes" v-bind:key="index">
+                                <li class="nav-item" v-for="(list,index) in types" v-bind:key="index">
                                     <BLink @click="viewClass(index,list.value)" class="nav-link py-3" :class="index2 === index ? `${list.others} active` : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
                                         <i :class="icons[index]" class="me-1 align-bottom"></i>
-                                        {{ list.name }} 
+                                        {{ list }} 
                                     </BLink>
                                 </li>
                             </ul>
@@ -78,8 +81,7 @@
                                 <tr class="fs-11">
                                     <th style="width: 3%;"></th>
                                     <th>Name</th>
-                                    <th style="width: 13%;" class="text-center">Email</th>
-                                    <th style="width: 10%;" class="text-center">Contact No.</th>
+                                    <th style="width: 13%;" class="text-center">Contact Details</th>
                                     <th style="width: 13%;" class="text-center">Date Created</th>
                                     <th style="width: 7%;" class="text-center">Status</th>
                                     <th style="width: 4%;" ></th>
@@ -97,8 +99,10 @@
                                         <h5 class="fs-13 mb-0 text-dark">{{list.customer}}</h5>
                                         <p class="fs-12 text-muted mb-0">{{ list.address?.name || '—' }}</p>
                                     </td>
-                                    <td class="text-center fs-12">{{list.email}}</td>
-                                    <td class="text-center fs-12">{{list.contact_no}}</td>
+                                    <td class="text-center fs-12">
+                                        <h5 class="fs-11 mb-0 text-dark">{{list.email}}</h5>
+                                        <p class="fs-11 text-muted mb-0">{{list.contact_no}}</p>
+                                    </td>
                                     <td class="text-center fs-11">{{list.created_at}}</td>
                                     <td class="text-center">
                                         <span v-if="list.is_active" class="badge bg-success">Active</span>
@@ -150,6 +154,7 @@
             </div>
         </div>
     </BRow>
+    <Filter @submit="handleSubmit" :regions="dropdowns.regions" :region="region" ref="filter"/>
     <Activation @update="updateData" ref="activation"/>
     <Create @message="fetch()" :dropdowns="dropdowns" :region="region" ref="create"/>
     <Edit :dropdowns="dropdowns" :region="region" @update="fetch()" ref="edit"/>
@@ -158,12 +163,13 @@
 import _ from 'lodash';
 import Edit from './Modals/Edit.vue';
 import Create from './Modals/Create.vue';
+import Filter from './Modals/Filter.vue';
 import Activation from './Modals/Activation.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Edit, Activation },
+    components: { PageHeader, Pagination, Multiselect, Create, Filter, Edit, Activation },
     props: ['region','dropdowns'],
     data(){
         return {
@@ -179,6 +185,13 @@ export default {
                 individual: null,
                 type: null
             },
+            location: {
+                region: null,
+                province: null,
+                municipality: null,
+                province: null
+            },
+            types: ['New Customer','Old Customer','Not Identified'],
             icons: ['ri-building-2-fill','ri-user-fill'],
             index: null,
             index2: null,
@@ -215,6 +228,10 @@ export default {
                     sex: this.filter.sex,
                     type: this.filter.type,
                     individual: this.filter.individual,
+                    region: this.location.region,
+                    province: this.location.province,
+                    municipality: this.location.municipality,
+                    barangay: this.location.barangay,
                     count: 10,
                     option: 'list'
                 }
@@ -246,6 +263,16 @@ export default {
         viewClass(index,data){
             this.index2 = index;
             this.filter.class = data;
+        },
+        filterAddress(){
+            this.$refs.filter.show();
+        },
+        handleSubmit(data) {
+            this.location.region = data.form.region;
+            this.location.province = data.form.province?.value;
+            this.location.municipality = data.form.municipality?.value;
+            this.location.barangay = data.form.barangay?.value;
+            this.fetch();
         },
         selectRow(index) {
             if (this.selectedRow === index) {

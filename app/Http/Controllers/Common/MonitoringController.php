@@ -7,24 +7,30 @@ use Illuminate\Http\Request;
 use App\Traits\HandlesTransaction;
 use App\Services\AgencyClass;
 use App\Services\DropdownClass;
+use App\Services\Common\Monitoring\ViewClass;
 
 class MonitoringController extends Controller
 {
     use HandlesTransaction;
 
+    protected ViewClass $view;
     protected AgencyClass $agency;
     protected DropdownClass $dropdown;
 
-    public function __construct(AgencyClass $agency, DropdownClass $dropdown){
+    public function __construct(ViewClass $view, AgencyClass $agency, DropdownClass $dropdown){
+        $this->view = $view;
         $this->dropdown = $dropdown;
         $this->agency = $agency;
     }
 
     public function index(Request $request){
         switch($request->option){
-            // case 'list':
-            //     return $this->view->list($request);
-            // break;
+            case 'list':
+                return $this->view->list($request);
+            break;
+            case 'counts':
+                return $this->view->dashboard($request,$this->agency->laboratories());
+            break;
             default:
             return inertia('Modules/Monitoring/Index',[
                 'dropdowns' => [

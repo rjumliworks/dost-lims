@@ -38,10 +38,10 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => NULL,
                 'email_verified_at' => '2024-05-15 08:46:33',
                 'password_changed_at' => '2026-02-11 15:01:02',
-                'last_login_at' => '2026-05-06 17:38:24',
+                'last_login_at' => '2026-05-25 10:44:34',
                 'two_factor_confirmed_at' => NULL,
                 'created_at' => '2026-02-11 14:59:41',
-                'updated_at' => '2026-05-06 17:38:24',
+                'updated_at' => '2026-05-25 10:44:34',
             ),
             1 => 
             array (
@@ -62,10 +62,10 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => NULL,
                 'email_verified_at' => '2026-02-11 15:26:59',
                 'password_changed_at' => '2026-03-03 09:09:33',
-                'last_login_at' => '2026-05-06 15:07:15',
+                'last_login_at' => '2026-05-25 09:49:48',
                 'two_factor_confirmed_at' => NULL,
                 'created_at' => '2026-02-11 15:26:59',
-                'updated_at' => '2026-05-06 15:07:15',
+                'updated_at' => '2026-05-25 09:49:48',
             ),
             2 => 
             array (
@@ -494,10 +494,10 @@ class UsersTableSeeder extends Seeder
                 'remember_token' => NULL,
                 'email_verified_at' => '2026-02-11 16:54:53',
                 'password_changed_at' => '2026-03-01 13:59:40',
-                'last_login_at' => '2026-03-03 10:15:03',
+                'last_login_at' => '2026-05-25 10:40:17',
                 'two_factor_confirmed_at' => NULL,
                 'created_at' => '2026-02-11 16:54:53',
-                'updated_at' => '2026-03-03 10:15:03',
+                'updated_at' => '2026-05-25 10:40:17',
             ),
             20 => 
             array (
@@ -546,6 +546,30 @@ class UsersTableSeeder extends Seeder
                 'two_factor_confirmed_at' => NULL,
                 'created_at' => '2026-02-11 17:00:33',
                 'updated_at' => '2026-02-11 17:00:33',
+            ),
+            22 => 
+            array (
+                'id' => 23,
+                'username' => 'sehakittoh',
+                'email' => 'eyJpdiI6IitrUTNUdDdnSUdlTTNDOEUxbE1XdEE9PSIsInZhbHVlIjoiMVBOMEc4TmRqSVZ5UUpsb2tobFIrcWVvVFhnSkFiTmsvNDNIb3dRblR5TT0iLCJtYWMiOiIzODZmYWJmMTljMGM5MTUzZDA2ZDg4YTQzYjE4MjY3YjA3N2U3ZGIxNTk0Y2RiY2Q4NTA1ZGYxYmI4ZjBlYWNiIiwidGFnIjoiIn0=',
+                'kradworkz' => 'c91a41d705a8e9d7f104e0875f02e08e6ac3e250da2d3c965816356bc6ae0d27',
+                'password' => '$2y$10$3geP7Jgue0wBv9cwj4dfGuFzP9t977lzEztfwfnAKmKlBkX9xnmsC',
+                'code' => NULL,
+                'old_id' => 65,
+                'is_active' => 0,
+                'is_locked' => 0,
+                'must_change' => 1,
+                'two_factor_secret' => NULL,
+                'two_factor_recovery_codes' => NULL,
+                'provider' => NULL,
+                'provider_id' => NULL,
+                'remember_token' => NULL,
+                'email_verified_at' => '2026-05-25 10:48:33',
+                'password_changed_at' => NULL,
+                'last_login_at' => NULL,
+                'two_factor_confirmed_at' => NULL,
+                'created_at' => '2026-05-25 10:48:33',
+                'updated_at' => '2026-05-25 10:48:33',
             ),
         ));
         

@@ -82,8 +82,15 @@ class UpdateClass
 
         $data = Customer::select('customers.*', 'customers.name as branch_name')
         ->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
-        ->with('customer_name:id,name','classification:id,name','sex:id,name','led:id,name','type:id,name','industry:id,name,industry_id,is_main,is_alone,is_active')
-        ->with('address.region:code,name,region','address.province:code,name','address.municipality:code,name','address.barangay:code,name')->where('customers.id',$id[0])->first();
+        ->with([
+            'customer_name.classification:id,name',
+            'customer_name.type:id,name',
+            'customer_name.industry:id,name,industry_id,is_main,is_alone,is_active',
+            'sex:id,name',
+            'led:id,name'
+        ])
+        ->with('address.region:code,name,region','address.province:code,name','address.municipality:code,name','address.barangay:code,name')
+        ->where('customers.id',$id[0])->first();
         return [
             'data' => new IndexResource($data),
             'message' => 'Customer Status', 

@@ -29,6 +29,12 @@ class SampleController extends Controller
             case 'list':
                 return $this->view->list($request);
             break;
+            case 'qrcode':
+                return $this->view->qrcode($request);
+            break;
+            case 'qrcode-list':
+                return $this->view->qrcode_list($request);
+            break;
             default :
                 return inertia('Modules/Major/Samples/Index',[
                     'counts' => $this->view->counts(),

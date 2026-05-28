@@ -64,6 +64,14 @@
                                 </h4>
                             </div>
                         </div>
+                        <div v-else>
+                            <p class="card-text placeholder-glow mb-1">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                            </p>
+                        </div>
                     </b-card-body>
                 </b-card>
             </b-col>
@@ -110,30 +118,47 @@
         
         <div class="col-md-6 mt-n1">
             <div class="row g-3">
-                <b-col lg="4" v-for="(item, index) of counts" :key="index">
-                    <b-card no-body :class="item.color" class="border shadow-none">
-                        <b-card-body>
-                            <div class="d-flex align-items-center">
-                                <!-- <div class="avatar-sm flex-shrink-0">
-                                    <span class="avatar-title bg-light text-primary rounded-circle fs-3">
-                                        <i :class="`${item.icon} align-middle`"></i>
-                                    </span>
-                                </div> -->
-                                <div class="flex-grow-1">
-                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                                        {{ item.name }}
-                                    </p>
-                                    <h4 class="mb-0">
-                                        <span class="counter-value">{{item.total}}</span>
-                                    </h4>
+                <template v-if="counts.length > 0">
+                    <b-col lg="4" v-for="(item, index) of counts" :key="index">
+                        <b-card no-body :class="item.color" class="border shadow-none">
+                            <b-card-body>
+                                <div class="d-flex align-items-center">
+                                    <!-- <div class="avatar-sm flex-shrink-0">
+                                        <span class="avatar-title bg-light text-primary rounded-circle fs-3">
+                                            <i :class="`${item.icon} align-middle`"></i>
+                                        </span>
+                                    </div> -->
+                                    <div class="flex-grow-1">
+                                        <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                            {{ item.name }}
+                                        </p>
+                                        <h4 class="mb-0">
+                                            <span class="counter-value">{{item.total}}</span>
+                                        </h4>
+                                    </div>
+                                    <div class="flex-shrink-0 align-self-end">
+                                        <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
+                                    </div>
                                 </div>
-                                <div class="flex-shrink-0 align-self-end">
-                                    <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
-                                </div>
-                            </div>
-                        </b-card-body>
-                    </b-card>
-                </b-col>
+                            </b-card-body>
+                        </b-card>
+                    </b-col>
+                </template>
+                <template v-else>
+                    <b-col lg="4" v-for="n in 3" :key="n">
+                        <b-card no-body class="border shadow-none">
+                            <b-card-body>
+                                <p class="card-text placeholder-glow mb-1">
+                                    <span class="placeholder col-7"></span>
+                                    <span class="placeholder col-4"></span>
+                                    <span class="placeholder col-4"></span>
+                                    <span class="placeholder col-6"></span>
+                                </p>
+                            </b-card-body>
+                        </b-card>
+                    </b-col>
+                </template>
+            
                 <b-col lg="12" class="mt-n2">
                     <div class="card bg-light-subtle shadow-none border">
                         <div class="card-header bg-light-subtle">
@@ -152,9 +177,9 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                            <apexchart ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
+                            <apexchart  ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
                                 :options="chartOptions1">
-                            </apexchart>
+                            </apexchart> 
                         </div>
                     </div>
                 </b-col>
@@ -180,6 +205,14 @@
                                     <span class="counter-value">{{ target.percentage }}</span>
                                 </h4>
                             </div>
+                        </div>
+                        <div v-else>
+                            <p class="card-text placeholder-glow mb-1">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                            </p>
                         </div>
                     </b-card-body>
                 </b-card>
@@ -247,26 +280,7 @@
             </Link>
         </div>
          <div class="col-md-3">
-            <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
-                <div class="card-body bg-secondary-subtle">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="avatar-sm">
-                                <div class="avatar-title bg-purple bg-opacity-10 text-purple rounded-circle fs-17">
-                                    <i class="ri-hand-coin-fill fs-24"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="fs-12 text-purple mb-1">TSR Financial Summary</h6>
-                            <p class="fs-11 text-muted mb-0">Shows TSR financial details including services, payments, gratis, and discount classifications.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-         <div class="col-md-3">
-            <Link :href="`/accomplishments`" >
+            <Link :href="`/insights/location`" >
                 <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
                     <div class="card-body bg-warning-subtle">
                         <div class="d-flex align-items-center">
@@ -286,8 +300,29 @@
                 </div>
             </Link>
         </div>
+        <div class="col-md-3">
+            <Link :href="`/insights/discounts`" target="_blank">
+            <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                <div class="card-body bg-secondary-subtle">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="avatar-sm">
+                                <div class="avatar-title bg-purple bg-opacity-10 text-purple rounded-circle fs-17">
+                                    <i class="ri-hand-coin-fill fs-24"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="fs-12 text-purple mb-1">TSR Financial Summary</h6>
+                            <p class="fs-11 text-muted mb-0">Shows TSR financial details including services, payments, gratis, and discount classifications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </Link>
+        </div>
          <div class="col-md-3">
-            <Link :href="`/insights/discounts`" >
+            <Link :href="`/insights/discount`" target="_blank">
             <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
                 <div class="card-body bg-danger-subtle">
                     <div class="d-flex align-items-center">

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->boolean('is_individual')->default(0);
             $table->boolean('is_active')->default(1);
+            $table->integer('old_id')->nullable();
             $table->timestamps();
         });
     }

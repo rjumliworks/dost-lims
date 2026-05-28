@@ -415,6 +415,24 @@ class UserProfilesTableSeeder extends Seeder
                 'created_at' => '2026-02-11 17:00:33',
                 'updated_at' => '2026-02-11 17:00:33',
             ),
+            22 => 
+            array (
+                'id' => 23,
+                'lastname' => 'Kittoh',
+                'firstname' => 'eyJpdiI6IjFtSHhIS3pzNjBnbS9iTWRYREhwZXc9PSIsInZhbHVlIjoiUzZ2d1p3dTRxRHZQTmpOZ3R4cCtLQT09IiwibWFjIjoiMTk5MDM3M2UxOTFjNDI2MDcwYjJlNzk4MTYxMTkyNjY2OTkyNWI2MmU1Y2VlNGZhYTdkNmRlYTRhMmNhNTgxMyIsInRhZyI6IiJ9',
+                'middlename' => 'eyJpdiI6IkNaekJZcVZ2WG41OTdVTW8wRThUdXc9PSIsInZhbHVlIjoiQjA3WUZoTWVYQ0czKzc5SGtKZFBtdz09IiwibWFjIjoiMWNhMTVhOTU0ZWZiMGYxZmFjMzk0MzJkZmM3ZGQ2ODUxZmUxZGU4ODY4NzdkNzdmMGZhZjI1MWM2YTJlYjI2MSIsInRhZyI6IiJ9',
+                'mobile' => 'eyJpdiI6IjU2SU4vQWMvMU9idzdHWmVmZGUyQmc9PSIsInZhbHVlIjoiWmRCTzJXS1l2Qm5FRWdDNEgyOG41QT09IiwibWFjIjoiMGMxOTY0ODlkM2NkOTEwNDM4YTA0MDMzNmE0YmY2ZTgxZjlmMWI5OTc4NjI4ZmQyODJiYjc5OTNiNzM1NmRjYyIsInRhZyI6IiJ9',
+                'mobile_hash' => '0fc631b6b7e84863303cbaa416490c1760875f145c5f84acb7b994f569cb121d',
+                'avatar' => 'noavatar.jpg',
+                'signature' => 'nosig.jpg',
+                'suffix_id' => NULL,
+                'sex_id' => 8,
+                'facility_id' => 1,
+                'agency_id' => 14,
+                'user_id' => 23,
+                'created_at' => '2026-05-25 10:48:34',
+                'updated_at' => '2026-05-25 10:48:34',
+            ),
         ));
         
         
