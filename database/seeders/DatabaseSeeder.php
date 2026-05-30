@@ -90,8 +90,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(ListEventsTableSeeder::class);
         // $this->call(TargetsTableSeeder::class);
         // $this->call(TargetBreakdownsTableSeeder::class);
-        $this->call(SchedulesTableSeeder::class);
-        $this->call(ScheduleInformationTableSeeder::class);
-        $this->call(ScheduleUsersTableSeeder::class);
+        // $this->call(SchedulesTableSeeder::class);
+        // $this->call(ScheduleInformationTableSeeder::class);
+        // $this->call(ScheduleUsersTableSeeder::class);
     }
 }

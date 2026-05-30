@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 <div class="cards border-bottom shadow-none" no-body>
-                    <div class="card-body" style="height: calc(100vh - 530px); overflow: auto;">
+                    <div class="card-body" style="height: calc(100vh - 535px); overflow: auto;">
                         <div class="table-responsive table-card">
                             <table class="table align-middle table-centered table-bordered table-striped mb-0">
                                 <thead class="table-light thead-fixed">
