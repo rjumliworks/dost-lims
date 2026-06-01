@@ -81,7 +81,9 @@ export default {
         show(data,id,tsr){
             this.form.tsr_id = tsr;
             this.form.id = id;
-            this.services = data.map(service => ({
+            this.services = data
+            .sort((a, b) => Number(a.is_child) - Number(b.is_child))
+            .map(service => ({
                 ...service,
                 selected: false,
                 original_fee: service.fee,
