@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tsr_analyses', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
-            $table->integer('quantity')->default(1);
             $table->decimal('fee',12,2);
             $table->unsignedTinyInteger('status_id');
             $table->foreign('status_id')->references('id')->on('list_statuses')->onDelete('cascade');
