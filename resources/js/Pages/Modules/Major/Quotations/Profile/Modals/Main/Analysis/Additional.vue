@@ -16,7 +16,7 @@
         :unchecked-value="false"
         switch
       >
-        {{ item.name }} - {{ item.fee }}
+        {{ item.name }} -  {{ getDisplayFee(item) }}
       </b-form-checkbox>
 
       <b-form-input
@@ -27,10 +27,6 @@
         min="1"
         placeholder="Enter quantity"
       />
-    </div>
-
-    <div v-if="services.length > 1">
-       
     </div>
 
     <template v-slot:footer>
@@ -66,6 +62,23 @@ export default {
         }
     },
     methods: { 
+        getDisplayFee(item) {
+            if (Number(item.is_child) === 1) {
+                return this.formatMoney(this.parseMoney(item.fee));
+            }
+
+            const childTotal = this.services
+                .filter(s => Number(s.is_child) === 1 && s.selected)
+                .reduce((sum, child) => {
+                    return sum + (this.parseMoney(child.fee) * Number(child.quantity));
+                }, 0);
+            
+            item.fee = this.parseMoney(item.original_fee || item.fee) + childTotal;
+             return this.formatMoney(item.fee);
+        },
+        parseMoney(value) {
+            return Number(String(value).replace(/₱|,/g, '')) || 0;
+        },
         show(data,id,quotation){
             this.form.quotation_id = quotation;
             this.form.id = id;
@@ -75,6 +88,7 @@ export default {
             .map(service => ({
                 ...service,
                 selected: false,
+                 original_fee: service.fee,
                 fee: service.fee,
                 quantity: 1
             }));

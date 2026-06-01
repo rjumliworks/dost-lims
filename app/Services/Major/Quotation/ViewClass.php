@@ -194,8 +194,8 @@ class ViewClass
                     foreach ($analysis['addfee'] as $addfee) {
                         // Extract fee info
                         $feeName = $addfee['service']['name'] ?? null;
-                        $feeAmount = isset($addfee['service']['fee']) 
-                            ? floatval(str_replace(['₱', ','], '', $addfee['service']['fee'])) 
+                        $feeAmount = isset($addfee['fee']) 
+                            ? floatval(str_replace(['₱', ','], '', $addfee['fee'])) 
                             : 0;
                         $feeQuantity = isset($addfee['quantity']) ? (int) $addfee['quantity'] : 1;
                         $feeTotal = isset($addfee['total']) 
