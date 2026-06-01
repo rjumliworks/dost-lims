@@ -29,6 +29,10 @@
       />
     </div>
 
+    <div v-if="services.length > 1">
+       
+    </div>
+
     <template v-slot:footer>
       <b-button @click="hide()" variant="light" block>Close</b-button>
       <b-button @click="submit()" variant="primary" :disabled="form.processing" block>Submit</b-button>
@@ -49,6 +53,7 @@ export default {
                 services: [],
                 option: 'fee'
             }),
+            w: null,
             services: [],
             showModal: false
         }
@@ -64,13 +69,15 @@ export default {
         show(data,id,quotation){
             this.form.quotation_id = quotation;
             this.form.id = id;
-            this.services = data.map(service => ({
+            this.w = data;
+            this.services = data
+            .sort((a, b) => Number(a.is_child) - Number(b.is_child))
+            .map(service => ({
                 ...service,
                 selected: false,
                 fee: service.fee,
                 quantity: 1
             }));
-
             this.showModal = true;
         },
          onServiceToggle(item) {
@@ -81,6 +88,7 @@ export default {
                 .filter(s => s.selected)
                 .map(s => ({
                     id: s.id,
+                    is_child: s.is_child,
                     quantity: s.quantity,
                     fee: s.fee
                 }));
