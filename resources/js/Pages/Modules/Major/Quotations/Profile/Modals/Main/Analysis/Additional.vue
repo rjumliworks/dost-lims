@@ -88,7 +88,7 @@ export default {
             .map(service => ({
                 ...service,
                 selected: false,
-                 original_fee: service.fee,
+                original_fee: service.fee,
                 fee: service.fee,
                 quantity: 1
             }));

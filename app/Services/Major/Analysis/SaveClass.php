@@ -141,8 +141,10 @@ class SaveClass
         $data = TsrAnalysis::find($id);
         $fee = (float) trim(str_replace(',','',$data->fee),'₱ ');
         if($data->delete()){
-            $service = TsrService::where('typeable_type','App\Models\TsrAnalysis')->where('typeable_id',$id)->first();
-            $total_service = ($service) ? (float) trim(str_replace(',','',$service->total),'₱ ') : 0;
+           $total_service = TsrService::where('typeable_type', 'App\Models\TsrAnalysis')
+            ->where('typeable_id', $id)
+            ->get()
+            ->sum(fn ($service) => (float) str_replace(['₱', ',', ' '], '', $service->total));
             $payment = TsrPayment::with('discounted')->where('tsr_id',$tsr_id)->first();
             $subtotal = (float) trim(str_replace(',','',$payment->subtotal),'₱ ');
             $total = (float) trim(str_replace(',','',$payment->total),'₱ ');
