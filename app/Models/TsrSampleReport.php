@@ -14,7 +14,7 @@ class TsrSampleReport extends Model
         'information',
         'passkey',
         'attachment',
-        'sample_id',
+        'tsr_id',
         'user_id',
         'cro_id',
         'tm_id'
@@ -27,9 +27,13 @@ class TsrSampleReport extends Model
         return (new Hashids('krad', 10))->encode($this->id);
     }
 
-    public function sample()
+    // public function sample()
+    // {
+    //     return $this->belongsTo('App\Models\TsrSample', 'sample_id', 'id');
+    // }
+    public function tsr()
     {
-        return $this->belongsTo('App\Models\TsrSample', 'sample_id', 'id');
+        return $this->belongsTo('App\Models\Tsr', 'tsr_id', 'id');
     }
 
     public function user()

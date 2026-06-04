@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sample_id');
             $table->foreign('sample_id')->references('id')->on('tsr_samples')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['report_id', 'sample_id']);    
         });
     }
 

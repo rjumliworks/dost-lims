@@ -28,7 +28,7 @@ class OtpController extends Controller
         $key = 'otp-send:' . $mobileHash . ':' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($key, 1)) {
-            if (! $profile) {
+            if (!$profile) {
               throw ValidationException::withMessages([
                 'mobile' => 'Too many OTP requests. Please wait a minute.',
             ]);

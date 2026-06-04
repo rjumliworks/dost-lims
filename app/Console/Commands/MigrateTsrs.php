@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use App\Models\Tsr;
+use App\Models\TsrSampleReport;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\CustomerConforme;
@@ -32,6 +33,7 @@ class MigrateTsrs extends Command
             'tsr_sample_reports',
             'tsr_sample_disposals',
             'tsr_sample_report_lists',
+            'tsr_sample_report_signatories',
             'tsr_payments',
             'tsr_payment_deductions',
             'tsr_releases',
@@ -292,44 +294,95 @@ class MigrateTsrs extends Command
 
                         }
 
-                        $reports = DB::connection('old_db')
+                        $report = DB::connection('old_db')
                             ->table('tsr_sample_reports')
                             ->where('sample_id',$sample->id)
-                            ->get();
+                            ->first();
 
-                        if ($reports->count() > 0) {
+                        if($report){
+                            $newReportId = DB::table('tsr_sample_reports')->insertGetId([
+                                'old_id' => $report->id,
+                                'code' => $report->code,
+                                'passkey' => $report->passkey,
+                                'information' => $report->information,
+                                'attachment' => $report->attachment,
+                                'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 1,
+                                'tm_id' => $report->tm_id,
+                                'tsr_id' => $newTsrId,
+                                'created_at' => $report->created_at,
+                                'updated_at' => $report->updated_at
+                            ]);
 
-                            foreach ($reports as $report) {
+                            DB::table('tsr_sample_report_lists')->insert([
+                                'report_id' => $newReportId,
+                                'sample_id' => $newSampleId,
+                                'created_at' => $report->created_at,
+                                'updated_at' => $report->updated_at
+                            ]);
 
-                                $newReportId = DB::table('tsr_sample_reports')->insertGetId([
-                                    'code' => $report->code,
-                                    'passkey' => $report->passkey,
-                                    'information' => $report->information,
-                                    'attachment' => $report->attachment,
-                                    'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 1,
-                                    'tm_id' => $report->tm_id,
-                                    'sample_id' => $newSampleId,
-                                    'created_at' => $report->created_at,
-                                    'updated_at' => $report->updated_at
-                                ]);
-
-                                // ✅ get ALL lists related to THIS report
-                                $lists = DB::connection('old_db')
-                                    ->table('tsr_sample_report_lists')
-                                    ->where('report_id', $report->id)
-                                    ->get();
-
-                                foreach ($lists as $list) {
-                                    DB::table('tsr_sample_report_lists')->insert([
-                                        'report_id' => $newReportId,
-                                        'sample_id' => $newSampleId,
-                                        'created_at' => $list->created_at,
-                                        'updated_at' => $list->updated_at
-                                    ]);
-                                }
-
-                            }
+                            DB::table('tsr_sample_report_signatories')->insert([
+                                'report_id' => $newReportId,
+                                'status_id' => 38,
+                                'approved_by' => 3,
+                                'created_at' => $report->created_at,
+                                'updated_at' => $report->updated_at
+                            ]);
                         }
+
+                         $report1 = DB::connection('old_db')
+                            ->table('tsr_sample_report_lists')
+                            ->where('sample_id',$sample->id)
+                            ->first();
+
+                        if($report1){
+                            DB::table('tsr_sample_report_lists')->insert([
+                                'report_id' => TsrSampleReport::where('old_id', $report1->report_id)->value('id'),
+                                'sample_id' => $newSampleId,
+                                'created_at' => $report1->created_at,
+                                'updated_at' => $report1->updated_at
+                            ]);
+                        }
+
+                       
+
+                        // $reports = DB::connection('old_db')
+                        //     ->table('tsr_sample_reports')
+                        //     ->where('sample_id',$sample->id)
+                        //     ->get();
+
+                        // if ($reports->count() > 0) {
+
+                        //     foreach ($reports as $report) {
+
+                        //         $newReportId = DB::table('tsr_sample_reports')->insertGetId([
+                        //             'code' => $report->code,
+                        //             'passkey' => $report->passkey,
+                        //             'information' => $report->information,
+                        //             'attachment' => $report->attachment,
+                        //             'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 1,
+                        //             'tm_id' => $report->tm_id,
+                        //             'sample_id' => $newSampleId,
+                        //             'created_at' => $report->created_at,
+                        //             'updated_at' => $report->updated_at
+                        //         ]);
+
+                        //         // ✅ get ALL lists related to THIS report
+                        //         $lists = DB::connection('old_db')
+                        //             ->table('tsr_sample_report_lists')
+                        //             ->where('report_id', $report->id)
+                        //             ->get();
+
+                        //         foreach ($lists as $list) {
+                        //             DB::table('tsr_sample_report_lists')->insert([
+                        //                 'report_id' => $newReportId,
+                        //                 'sample_id' => $list->sample_id,
+                        //                 'created_at' => $list->created_at,
+                        //                 'updated_at' => $list->updated_at
+                        //             ]);
+                        //         }
+
+                        //     }
+                        // }
                     }
 
                     /*

@@ -9,8 +9,10 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Models\ListLaboratory;
+use App\Models\TsrSample;
 use App\Models\TsrSequence;
 use App\Models\TsrSampleReport;
+use App\Models\TsrSampleReportList;
 use App\Models\TsrSampleReportSignatory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -32,35 +34,142 @@ class SaveClass
         ];
     }
 
+    public function multiple($request){
+
+        $laboratory_id = $request->laboratory_id;
+        $lists = $request->checked;
+
+        $head = UserRole::with('user:id')
+        ->where('laboratory_id',$laboratory_id)->whereHas('role',function ($query){
+            $query->where('name','Technical Manager');
+        })->where('is_active',1)->pluck('user_id');
+
+        if($request->is_single){
+            $codes = [];
+            $tsr_id = TsrSample::where('id',$lists[0])->first()->tsr_id;
+            $code = TsrSequence::getNextCode($laboratory_id,11);
+            $check = TsrSampleReport::where('code',$code)->count();
+            if($check == 0){
+                $data = TsrSampleReport::create([
+                    'code' => $code,
+                    'tsr_id' => $tsr_id,
+                    'passkey' => $this->generatePasskey(),
+                    'user_id' => \Auth::user()->id,
+                    'tm_id' => $head[0]
+                ]);
+                if($data){
+                    foreach($lists as $i => $list){
+                        $tspl = TsrSampleReportList::create([
+                            'sample_id' => $list,
+                            'report_id' => $data->id
+                        ]);
+                        if($tspl){
+                            $data->signatory()->create([
+                                'approved_by' => 3, //JTF ID
+                                'status_id' => 38
+                            ]);
+                        }
+
+                        $codes[] = [
+                            'id' => $list,
+                            'code' => $code
+                        ];
+                    }
+                }
+            }
+        }else{
+            $codes = [];
+            foreach($lists as $i => $list){
+                $count = TsrSampleReportList::where('sample_id',$list)->count();
+                if($count == 0){
+                    $tsr_id = TsrSample::where('id',$list)->first()->tsr_id;
+                    $code = TsrSequence::getNextCode($laboratory_id,11);
+                    $check = TsrSampleReport::where('code',$code)->count();
+                    if($check == 0){
+                        $errors = [];
+                        $data = TsrSampleReport::create([
+                            'code' => $code,
+                            'tsr_id' => $tsr_id,
+                            'passkey' => $this->generatePasskey(),
+                            'user_id' => \Auth::user()->id,
+                            'tm_id' => $head[0]
+                        ]);
+                        if($data){
+                            $tspl = TsrSampleReportList::create([
+                                'sample_id' => $list,
+                                'report_id' => $data->id
+                            ]);
+                            if($tspl){
+                                $data->signatory()->create([
+                                    'approved_by' => 3, //JTF ID
+                                    'status_id' => 38
+                                ]);
+                            }
+                        }
+                        $codes[] = [
+                            'id' => $list,
+                            'code' => $code
+                        ];
+                    }
+                }else{
+                    $errors[] = 'A report number has already been assigned to the sample . '.$list;
+                    $codes[] = [
+                        'id' => $list,
+                        'code' => TsrSampleReport::where('sample_id',$list)->value('code')
+                    ];
+                }
+            }
+        }
+
+        return [
+            'data' => $codes,
+            'message' => 'Report number successfully generated!',
+            'info' => "The laboratory analyst result has been recorded and the report number has been created."
+        ];
+    }
+
     public function single($request){
         $laboratory_id = $request->laboratory_id;
 
-        $lab_type = ListLaboratory::select('short')->where('id',$laboratory_id)->first();
-        $c = TsrSampleReport::whereHas('sample',function ($query) use ($laboratory_id){
-            $query->whereHas('tsr',function ($query) use ($laboratory_id){
-                $query->where('laboratory_id',$laboratory_id);
-            });
-        })
-        ->whereYear('created_at',date('Y'))->where('code','!=',NULL)->count();
+        $head = UserRole::with('user:id')
+        ->where('laboratory_id',$laboratory_id)->whereHas('role',function ($query){
+            $query->where('name','Technical Manager');
+        })->where('is_active',1)->pluck('user_id');
+
+        // $lab_type = ListLaboratory::select('short')->where('id',$laboratory_id)->first();
+        // $c = TsrSampleReport::whereHas('sample',function ($query) use ($laboratory_id){
+        //     $query->whereHas('tsr',function ($query) use ($laboratory_id){
+        //         $query->where('laboratory_id',$laboratory_id);
+        //     });
+        // })
+        // ->whereYear('created_at',date('Y'))->where('code','!=',NULL)->count();
 
         $code = TsrSequence::getNextCode($laboratory_id,11);
 
         $head = UserRole::with('user:id')
-       ->where('laboratory_id',$laboratory_id)->whereHas('role',function ($query){
+        ->where('laboratory_id',$laboratory_id)->whereHas('role',function ($query){
             $query->where('name','Technical Manager');
         })->where('is_active',1)->pluck('user_id');
 
         $check = TsrSampleReport::where('code',$code)->count();
         if($check == 0){
-            $count = TsrSampleReport::where('sample_id',$request->id)->count();
+            $count = TsrSampleReportList::where('sample_id',$request->id)->count();
+            // $count = TsrSampleReport::where('sample_id',$request->id)->count();
             if($count == 0){
+                $tsr_id = TsrSample::where('id',$request->id)->first()->tsr_id;
                 $data = TsrSampleReport::create([
                     'code' => $code,
-                    'sample_id' => $request->id,
+                    'tsr_id' => $tsr_id,
                     'passkey' => $this->generatePasskey(),
                     'user_id' => \Auth::user()->id,
                     'tm_id' => $head[0]
                 ]);
+                if($data){
+                    TsrSampleReportList::create([
+                        'sample_id' => $request->id,
+                        'report_id' => $data->id
+                    ]);
+                }
                 if($data){
                     $data->signatory()->create([
                         'approved_by' => 3, //JTF ID

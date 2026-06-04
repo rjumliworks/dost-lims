@@ -435,10 +435,11 @@ export default {
             if(status == 'Completed'){
                 this.$refs.view.show(data,status,this.filter.type)
             }else{
-                (this.filter.type == 'Sample Code') ? this.$refs.view.show(data,status,this.filter.type) : this.$refs.show.show2(data,status,this.filter.type);
+                (this.filter.type == 'Sample Code' || this.filter.type == 'TSR Code') ? this.$refs.view.show(data,status,this.filter.type) : this.$refs.show.show2(data,status,this.filter.type);
             }
         }, 
         updateList(){
+            this.filter.keyword = null;
             this.fetch();
             this.checked1 = [];
             this.checked2 = [];

@@ -48,12 +48,12 @@ class TsrSample extends Model
         return $this->belongsTo('App\Models\SampleCategory', 'category_id', 'id');
     }
 
-    public function report()
-    {
-        return $this->hasOne('App\Models\TsrSampleReport', 'sample_id');
-    }
+    // public function report()
+    // {
+    //     return $this->hasOne('App\Models\TsrSampleReport', 'sample_id');
+    // }
 
-    public function reportlist()
+    public function report()
     {
         return $this->hasOne('App\Models\TsrSampleReportList', 'sample_id');
     }

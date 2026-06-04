@@ -22,11 +22,15 @@ class ViewClass
                 'name' => 'Memorandum of Agreement',
                 'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))->where('status_id',3)->whereHas('payment', function ($query) { $query->where('status_id',18); })->whereYear('created_at', $year)->count(),
                 'icon' => 'ri-error-warning-fill text-warning',
+                'type' => 'Memorandum of Agreement (MOA)'
             ],
             [
                 'name' => 'Ongoing Analyses',
-                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))->where('status_id', 3)->whereYear('created_at', $year)->count(),
+                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))->where('status_id', 3)->whereHas('samples.analyses', function ($q) {
+                            $q->whereIn('status_id', [10,11]);
+                        })->whereYear('created_at', $year)->count(),
                 'icon' => 'ri-time-fill text-info',
+                'type' => 'Ongoing Analyses'
             ],
             [
                 'name' => 'Pending Report',
@@ -38,6 +42,7 @@ class ViewClass
                 })
                 ->whereYear('created_at', $year)->count(),
                 'icon' => 'ri-close-circle-fill text-danger',
+                'type' => 'Completed with no report number'
             ],
         ];
     }
@@ -100,7 +105,6 @@ class ViewClass
                     }
                 ]);
                 $query->withExists('report');
-                $query->withExists('reportlist');
             }])
             ->when($request->datetype && $request->date, function ($query) use ($request) {
                 $query->whereDate($request->datetype, $request->date);
@@ -142,7 +146,12 @@ class ViewClass
                     case 'Completed with no report number':
                         $query->where('status_id',4)->whereHas('samples', function ($query) {
                             $query->doesntHave('report');
-                        }, '=', 0);
+                        }, '>', 0);
+                    break;
+                    case 'Ongoing Analyses':
+                        $query->whereHas('samples.analyses', function ($q) {
+                            $q->whereIn('status_id', [10,11]);
+                        });
                     break;
                 }
             })  

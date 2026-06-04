@@ -80,14 +80,14 @@
                                 </BCol>
                             </BRow>
 
-                            <!-- <BRow class="g-0">
-                                <BCol>
-                                    <BLink class="dropdown-icon-item" href="#!">
-                                        <img src="@assets/images/brands/dropbox.png" alt="dropbox" />
-                                        <span>Dropbox</span>
+                            <BRow class="g-0">
+                                 <BCol>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/laboratories')">
+                                        <img src="@assets/images/apps/laboratory.png" alt="laboratoryt" />
+                                        <span>Testservices</span>
                                     </BLink>
                                 </BCol>
-                                <BCol>
+                                <!-- <BCol>
                                     <BLink class="dropdown-icon-item" href="#!">
                                         <img src="@assets/images/brands/mail_chimp.png" alt="mail_chimp" />
                                         <span>Mail Chimp</span>
@@ -98,8 +98,8 @@
                                         <img src="@assets/images/brands/slack.png" alt="slack" />
                                         <span>Slack</span>
                                     </BLink>
-                                </BCol>
-                            </BRow> -->
+                                </BCol> -->
+                            </BRow>
                         </div>
                     </BDropdown>
 

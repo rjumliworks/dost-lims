@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Request Monitoring & Alerts</span></h5>
+                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Ongoing TSR's</span></h5>
                             <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
         <div class="col-md-6 mt-n2">
             <div class="row g-3">
                 <template v-if="counts.length > 0">
-                    <b-col lg="4" v-for="(item, index) of counts" :key="index" @click="openReminder">
+                    <b-col lg="4" v-for="(item, index) of counts" :key="index" @click="openReminder(item.type)" style="cursor: pointer;">
                         <b-card no-body :class="item.color" class="border shadow-none">
                             <b-card-body>
                                 <div class="d-flex align-items-center">
@@ -187,8 +187,8 @@
                     </div>
                 </div>
                 <div class="cards border-bottom shadow-none" no-body>
-                    <div class="card-body" style="height: calc(100vh - 535px); overflow: auto;">
-                        <div class="table-responsive table-card">
+                    <div class="card-body">
+                        <div class="table-responsive table-card" style="height: calc(100vh - 535px); overflow: auto;">
                             <table class="table align-middle table-centered table-bordered table-striped mb-0">
                                 <thead class="table-light thead-fixed">
                                     <tr class="fs-11">
@@ -303,6 +303,7 @@ export default {
             filter: {
                 keyword: null,
                 laboratory: null,
+                reminder: null,
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
             },
@@ -335,6 +336,7 @@ export default {
                 params : {
                     keyword: this.filter.keyword,
                     year: this.filter.year,
+                    reminder: this.filter.reminder,
                     count: 10,
                     option: 'list'
                 }
@@ -366,6 +368,10 @@ export default {
             })
             .catch(err => console.log(err));
         },
+        openReminder(type){
+            this.filter.reminder = type;
+            this.fetch();
+        }
     }
 }
 </script>

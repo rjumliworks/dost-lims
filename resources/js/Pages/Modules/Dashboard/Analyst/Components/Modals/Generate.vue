@@ -50,7 +50,8 @@
                                     <tbody class="bg-light-subtle fs-12" v-if="selected">
                                         <tr class="fs-13 table-info">
                                             <td>
-                                                <input type="checkbox"  @change="toggleChecked($event, selected, 5000)" v-model="selected.selected" class="form-check-input" />
+                                                <span v-if="selected.report">-</span>
+                                                <input v-else type="checkbox" @change="toggleChecked($event, selected, 5000)" v-model="selected.selected" class="form-check-input" />
                                             </td>
                                             <td class="fw-semibold text-primary">{{selected.name}}</td>
                                             <td class="text-center">{{(!selected.report) ? '-' : selected.report}}</td>
@@ -72,7 +73,8 @@
                                     <tbody class="bg-light-subtle fs-12" v-if="selected">
                                         <tr v-for="(list,index) in selected.related" v-bind:key="index" class="fs-13" :class="(list.selected) ? 'table-info' : ''">
                                             <td>
-                                                <input type="checkbox" @change="toggleChecked($event, list, index)" v-model="list.selected" class="form-check-input" />
+                                                <span v-if="list.report">-</span>
+                                                <input v-else type="checkbox" @change="toggleChecked($event, selected, 5000)" v-model="selected.selected" class="form-check-input" />
                                             </td>
                                             <td class="fw-semibold text-primary">{{list.name}}</td>
                                             <td style="width: 50%" class="text-center">{{(!list.report) ? '-' : list.report}}</td>
@@ -90,6 +92,7 @@
                     </div>
                 </BCol>
             </BRow>
+            <Confirm @update="updateData" ref="confirm"/>
         </form>
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Close</b-button>
@@ -99,13 +102,14 @@
 </template>
 <script>
 import _ from 'lodash';
+import Confirm from './Confirm.vue';
 import simplebar from "simplebar-vue";
 import { useForm } from '@inertiajs/vue3';
 import Multiselect from "@vueform/multiselect";
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
-    components: { Multiselect, InputLabel, TextInput, simplebar },
+    components: { Multiselect, InputLabel, TextInput, simplebar, Confirm },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -127,11 +131,17 @@ export default {
         mark(){
             if(this.mark){
                 this.selected.related.forEach(item => {
-                    item.selected = true;
-                    this.checked.push(item.value);
+                    // item.selected = true;
+                    // this.checked.push(item.value);
+                    if (!item.report) { // only select if report is empty/null
+                        item.selected = true;
+                        this.checked.push(item.value);
+                    }
                 });
-                this.selected.selected = true;
-                this.checked.push(this.selected.value);
+                if (!this.selected.report) {
+                    this.selected.selected = true;
+                    this.checked.push(this.selected.value);
+                }
             }else{
                 if(this.selected){
                     this.selected.related.forEach(item => {
@@ -215,7 +225,7 @@ export default {
                     relatedItem.report = relatedMatch.code;
                 }
             });
-
+            this.checked = [];
             this.$emit('update',true);
         },
         handleInput(field) {

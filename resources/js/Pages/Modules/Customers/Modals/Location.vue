@@ -99,6 +99,11 @@ export default {
             }
             this.fetchDistrict(newVal);
             this.fetchBarangay(newVal);
+        },
+         "form.barangay": function (val) {
+            if (val) {
+                this.flyToBarangay(val);
+            }
         }
     },
     computed: {
@@ -108,6 +113,44 @@ export default {
         }
     },
     methods: { 
+        async flyToBarangay(barangay) {
+            if (!barangay) return;
+
+            const query = [
+                barangay.name,
+                this.form.municipality?.name,
+                this.form.province?.name,
+                this.form.region?.name,
+                "Philippines"
+            ]
+            .filter(Boolean)
+            .join(", ");
+
+            try {
+                const res = await axios.get(
+                    "https://nominatim.openstreetmap.org/search",
+                    {
+                        params: {
+                            q: query,
+                            format: "json",
+                            limit: 1
+                        }
+                    }
+                );
+
+                if (res.data.length > 0) {
+                    const lat = parseFloat(res.data[0].lat);
+                    const lng = parseFloat(res.data[0].lon);
+
+                    this.form.latitude = lat;
+                    this.form.longitude = lng;
+
+                    this.$refs.map.flyTo(lat, lng);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
         handleCoordinates(coords) {
             this.coordinates = coords;
             this.form.longitude = this.coordinates.lng;
@@ -205,3 +248,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.multiselect.is-active {
+    z-index: 9999;
+}
+.multiselect-dropdown {
+    z-index: 10000 !important;
+}
+</style>

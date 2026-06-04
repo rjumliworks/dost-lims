@@ -35,6 +35,9 @@ class TestserviceController extends Controller
             case 'list':
                 return $this->view->list($request);
             break;
+            case 'sample':
+                return $this->view->sample($request);
+            break;
             case 'search':
                 return $this->view->search($request);
             break;
@@ -49,6 +52,9 @@ class TestserviceController extends Controller
             break;
             case 'download':
                 return $this->view->download($request);
+            break;
+            case 'print':
+                return $this->view->print($request);
             break;
             default:
             return inertia('Modules/Testservices/Index',[
@@ -147,6 +153,17 @@ class TestserviceController extends Controller
         $service = $this->view->view($id);
         return inertia('Modules/Testservices/Profile/Index',[
             'service' => $service
+        ]);
+    }
+
+    public function reports(){
+        return inertia('Modules/Testservices/Report',[
+            'dropdowns' => [
+                'laboratories' => $this->dropdown->laboratories(),
+                'statuses' => $this->dropdown->statuses('Testservice'),
+                'regions' => $this->dropdown->regions(),
+            ],
+            'region' => $this->view->region()
         ]);
     }
 }

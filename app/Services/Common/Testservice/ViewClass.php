@@ -10,6 +10,8 @@ use App\Models\SampleCategory;
 use App\Models\SampleType;
 use App\Models\SampleName;
 use App\Models\ListLaboratory;
+use App\Models\TsrSample;
+use App\Models\TsrAnalysis;
 use App\Exports\TestServiceExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\Common\TestserviceResource;
@@ -21,10 +23,78 @@ use App\Http\Resources\ActivityResource;
 class ViewClass
 {
     public function counts($statuses){
+        $counts = [];
         foreach($statuses as $status){
             $counts[] = Testservice::where('status_id',$status['value'])->count();
         }
         return $counts;
+    }
+
+    public function sample($request){
+        $keyword = strtolower($request->keyword);
+
+        $query = TsrSample::query()
+        ->with([
+            'tsr.customer.address',
+            'analyses.testservice.testname'
+        ])->withSum('analyses', 'fee');
+        $query->whereRaw('LOWER(tsr_samples.name) LIKE ?', ["%{$keyword}%"]);
+        if ($request->region) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('region_code', $request->region);
+            });
+        }
+
+        if ($request->province) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('province_code', $request->province);
+            });
+        }
+
+        if ($request->municipality) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('municipality_code', $request->municipality);
+            });
+        }
+
+        if ($request->barangay) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('barangay_code', $request->barangay);
+            });
+        }
+
+        $data = $query->get()
+        ->groupBy(fn ($sample) => strtolower($sample->name))
+        ->map(function ($samples, $name) {
+
+            $allAnalyses = $samples->flatMap->analyses;
+
+            $testnames = $allAnalyses
+            ->groupBy(fn ($a) => $a->testservice->id)
+            ->map(function ($analyses) {
+
+                $first = $analyses->first();
+
+                return [
+                    'id' => $first->testservice->id,
+                    'name' => $first->testservice->testname->name,
+                    'count' => $analyses->count(),
+                    'total_fee' => $analyses->sum(function ($a) {
+                        return (float) str_replace([',', '₱', ' '], '', $a->fee);
+                    }),
+                ];
+            })->values();
+
+            return [
+                'sample_name' => $name,
+                'total_fee' => $testnames->sum(function ($t) {
+                    return (float) str_replace([',', '₱', ' '], '', $t['total_fee']);
+                }),
+                'testnames' => $testnames,
+            ];
+        })->values();
+
+        return $data;  
     }
 
     public function list($request){
@@ -203,6 +273,79 @@ class ViewClass
         return ListResource::collection($testservices);
     }
 
+    public function print($request){
+       $keyword = strtolower($request->keyword);
+
+        $query = TsrSample::query()
+        ->with([
+            'tsr.customer.address',
+            'analyses.testservice.testname'
+        ])->withSum('analyses', 'fee');
+        $query->whereRaw('LOWER(tsr_samples.name) LIKE ?', ["%{$keyword}%"]);
+        if ($request->region) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('region_code', $request->region);
+            });
+        }
+
+        if ($request->province) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('province_code', $request->province);
+            });
+        }
+
+        if ($request->municipality) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('municipality_code', $request->municipality);
+            });
+        }
+
+        if ($request->barangay) {
+            $query->whereHas('tsr.customer.address', function ($q) use ($request) {
+                $q->where('barangay_code', $request->barangay);
+            });
+        }
+
+        $data = $query->get()
+        ->groupBy(fn ($sample) => strtolower($sample->name))
+        ->map(function ($samples, $name) {
+
+            $allAnalyses = $samples->flatMap->analyses;
+
+            $testnames = $allAnalyses
+            ->groupBy(fn ($a) => $a->testservice->id)
+            ->map(function ($analyses) {
+
+                $first = $analyses->first();
+
+                return [
+                    'id' => $first->testservice->id,
+                    'name' => $first->testservice->testname->name,
+                    'count' => $analyses->count(),
+                    'total_fee' => $analyses->sum(function ($a) {
+                        return (float) str_replace([',', '₱', ' '], '', $a->fee);
+                    }),
+                ];
+            })->values();
+
+            return [
+                'sample_name' => $name,
+                'total_fee' => $testnames->sum(function ($t) {
+                    return (float) str_replace([',', '₱', ' '], '', $t['total_fee']);
+                }),
+                'testnames' => $testnames,
+            ];
+        })->values();
+
+ 
+
+       $pdf = \PDF::loadView('reports.testservice', [
+            'samples' => $data
+        ])->setPaper('a4', 'portrait');
+         return $pdf->stream('test-service-report.pdf');
+
+    }
+
     public function activitylogs($request)
     {
         $test = Testservice::findOrFail(\Auth::user()->id);
@@ -214,5 +357,9 @@ class ViewClass
         $laboratory = ($request->laboratory) ? $request->laboratory : null;
         $name = ListLaboratory::where('id',$laboratory)->value('short');
         return Excel::download(new TestServiceExport($laboratory), $name.'-testservices.xlsx');
+    }
+
+     public function region(){
+        return \Auth::user()->profile?->agency?->address?->region_code;
     }
 }

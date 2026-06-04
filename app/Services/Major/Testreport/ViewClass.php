@@ -18,11 +18,11 @@ class ViewClass
         $data = new WithReportResource(
             TsrSampleReport::query()
             ->with('lists.sample:id,code','lists.sample.analyses:testservice_id,sample_id','lists.sample.analyses.testservice:id,testname_id','lists.sample.analyses.testservice.testname:id,name')
-            ->with('sample.tsr','user:id','user.profile:user_id,firstname,lastname,middlename,suffix_id')
+            ->with('tsr','user:id','user.profile:user_id,firstname,lastname,middlename,suffix_id')
             ->with('signatory.analyzed:id','signatory.analyzed.profile:user_id,firstname,middlename,lastname,suffix_id')
             ->with('signatory.certified:id','signatory.certified.profile:user_id,firstname,middlename,lastname,suffix_id')
             ->with('signatory.approved:id','signatory.approved.profile:user_id,firstname,middlename,lastname,suffix_id')
-            ->with('sample.analyses:testservice_id,sample_id','sample.analyses.testservice:id,testname_id','sample.analyses.testservice.testname:id,name')
+            // ->with('sample.analyses:testservice_id,sample_id','sample.analyses.testservice:id,testname_id','sample.analyses.testservice.testname:id,name')
             ->where('id',$id[0])
             ->first()
         );
@@ -33,7 +33,7 @@ class ViewClass
     public function count(){
         $count = TsrSample::where('is_completed', 1)
         ->doesntHave('report')
-        ->doesntHave('reportlist')
+        // ->doesntHave('reportlist')
         ->whereHas('tsr', function ($query) {
             $query->where('status_id','!=',5);
         })
@@ -46,9 +46,8 @@ class ViewClass
             $data = WithReportResource::collection(
                 TsrSampleReport::query()
                 ->with('lists.sample:id,code','lists.sample.analyses:testservice_id,sample_id','lists.sample.analyses.testservice:id,testname_id','lists.sample.analyses.testservice.testname:id,name')
-                ->with('sample.tsr','user.profile')
+                ->with('tsr','user.profile')
                 ->with('signatory.analyzed.profile:id,firstname,middlename,lastname,suffix_id')
-                ->with('sample.analyses:testservice_id,sample_id','sample.analyses.testservice:id,testname_id','sample.analyses.testservice.testname:id,name')
                 ->when($request->keyword, function ($query, $keyword) {
                     $query->where('code', 'LIKE', "%{$keyword}%");
                     $query->orWhereHas('sample', function ($query) use ($keyword){
@@ -66,11 +65,9 @@ class ViewClass
                 ->when($request->analyst, function ($query, $analyst) {
                     $query->where('user_id',$analyst);
                 })
-                ->whereHas('sample', function ($query) use ($request){
-                    $query->whereHas('tsr', function ($query) use ($request){
-                        $query->when($request->laboratory , function ($query, $labtype) {
-                            $query->where('laboratory_id',$labtype);
-                        });
+                ->whereHas('tsr', function ($query) use ($request){
+                    $query->when($request->laboratory , function ($query, $labtype) {
+                        $query->where('laboratory_id',$labtype);
                     });
                 })
                 ->orderBy('created_at','DESC')
@@ -100,7 +97,6 @@ class ViewClass
             ->whereYear('created_at', 2026)
             ->where('is_completed', 1)
             ->doesntHave('report')
-            ->doesntHave('reportlist')
             ->whereHas('analyses', function ($query) {
                 $query->where('status_id', 12);
             })
@@ -121,7 +117,6 @@ class ViewClass
             })
             ->where('is_completed', 1)
             ->doesntHave('report')
-            ->doesntHave('reportlist')
             ->whereHas('analyses', function ($query) {
                 $query->where('status_id', 12);
             })

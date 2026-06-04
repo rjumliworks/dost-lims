@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tsr_sample_reports', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
+            $table->integer('old_id')->nullable();
             $table->string('code')->unique();
             $table->longText('passkey')->nullable();
             $table->longText('information')->nullable();
@@ -22,8 +23,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedInteger('tm_id')->nullable();
             $table->foreign('tm_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('sample_id');
-            $table->foreign('sample_id')->references('id')->on('tsr_samples')->onDelete('cascade');
+            $table->unsignedBigInteger('tsr_id');
+            $table->foreign('tsr_id')->references('id')->on('tsrs')->onDelete('cascade');
             $table->timestamps();
         });
     }

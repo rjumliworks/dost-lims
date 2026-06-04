@@ -10,7 +10,7 @@
                 </Link>
             </li>
            
-            <template v-if="['Customer Relation Officer', 'Technical Manager', 'Laboratory Analyst'].some(role => $page.props.roles.includes(role))">
+            <template v-if="['Customer Relation Officer', 'Technical Manager', 'Laboratory Analyst', 'Calibration Officer'].some(role => $page.props.roles.includes(role))">
                 <li class="nav-item">
                     <Link href="/monitoring" class="nav-link menu-link"
                     :class="{ 'active': $page.url === '/monitoring' }">
@@ -43,6 +43,26 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
                     </Link>
                 </li>
+                <!-- <li class="nav-item">
+                    <Link href="/samples" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Major/Samples') }">
+                    <i class="ri-todo-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Sample Register</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/testreports" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Major/Testreports') }">
+                    <i class="ri-file-paper-2-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Test Reports</span>
+                    </Link>
+                </li> -->
+            </template>
+            <template v-if="['Laboratory Analyst', 'Technical Manager', 'Calibration Officer'].some(role => $page.props.roles.includes(role))">
+                <!-- <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Analysts Modules</span>
+                </li> -->
                 <li class="nav-item">
                     <Link href="/samples" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Major/Samples') }">
@@ -58,13 +78,6 @@
                     </Link>
                 </li>
             </template>
-            <!-- <template v-if="['Laboratory Analyst', 'Technical Manager'].some(role => $page.props.roles.includes(role))"> -->
-                <!-- <li class="menu-title">
-                    <i class="ri-more-fill" aria-expanded="false"></i>
-                    <span data-key="t-menu">Analysts Modules</span>
-                </li> -->
-              
-            <!-- </template> -->
             <template v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>

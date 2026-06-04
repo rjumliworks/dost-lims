@@ -39,6 +39,7 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
 
     Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
     Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);
+    Route::get('/testservices/reports', [App\Http\Controllers\Common\TestserviceController::class, 'reports']);
     Route::resource('/testservices', App\Http\Controllers\Common\TestserviceController::class);
     Route::resource('/packages', App\Http\Controllers\Common\PackageController::class);
 
