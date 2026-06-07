@@ -14,6 +14,7 @@ use App\Http\Resources\Public\Verification\SampleResource;
 class VerificationController extends Controller
 {   
     public function sample_verification($code){
+    
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($code);
 
@@ -28,7 +29,7 @@ class VerificationController extends Controller
         })
         ->orderBy('created_at','ASC')
         ->get();
-
+        
         $tsr = Tsr::query()->where('id',$samples[0]->tsr_id)
         ->with('received:id','received.profile:id,firstname,lastname,user_id')
         ->with('laboratory:id,name','status:id,name,color,others')

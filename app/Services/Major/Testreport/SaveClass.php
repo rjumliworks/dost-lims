@@ -275,7 +275,7 @@ class SaveClass
                 file_get_contents($pdf->getRealPath()),
                 $file_name
             )->post('http://127.0.0.1:8000/normalize',[
-                'verification_url' => url('/verification/'.$data->reference)
+                'verification_url' => url('/verification/sample/'.$data->reference)
             ]);
 
             if (!$response->successful()) {

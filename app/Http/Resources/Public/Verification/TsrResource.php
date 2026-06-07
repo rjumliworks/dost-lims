@@ -11,6 +11,7 @@ class TsrResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        dd($this);
         $hashids = new Hashids('krad',10);
         $code = $hashids->encode($this->id);
 
