@@ -60,7 +60,7 @@ class VerificationController extends Controller
         }
         $analyses = array_values($groupedData);
 
-        return inertia('Modules/Public/Verification',[
+        return inertia('Public/Verification',[
             'tsr' => new IndexResource($tsr),
             'samples' => SampleResource::collection($samples),
             'analyses' => $analyses
@@ -115,7 +115,7 @@ class VerificationController extends Controller
         }
         $analyses = array_values($groupedData);
 
-        return inertia('Modules/Public/Verification',[
+        return inertia('Public/Verification',[
             'tsr' => new TsrResource($tsr),
             'samples' => SampleResource::collection($samples),
             'analyses' => $analyses
