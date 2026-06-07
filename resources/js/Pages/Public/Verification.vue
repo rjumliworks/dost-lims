@@ -23,17 +23,6 @@
                         </BCard>
                         <BCard no-body style="height: 600px; overflow: auto;">
                             <BCardBody class="p-4">
-                                <!-- <div class="row mb-2">
-                                    <div class="col-2">
-                                        <img src="@assets/images/logo-sm.png" alt="" class="avatar-sm">
-                                    </div>
-                                    <div class="col-10">
-                                        <div class="text-primary mt-1">
-                                            <h4 class="fs-16 fw-semibold">ONELAB - TSR Verification </h4>
-                                            <p class="mt-n2">The One-Stop Shop Laboratory</p>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 <div class="p-2">
                                     <center style="margin-top: 0px; font-size: 12px; background-color: #000; color:#fff; font-weight: bold; padding: 5px;">TECHNICAL SERVICE REQUEST DETAILS</center>
                                     <table class="table table-sm table-bordered">
