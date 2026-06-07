@@ -25,8 +25,11 @@ require __DIR__.'/customer.php';
 Route::post('/webhook/paymongo', [App\Http\Controllers\Finance\WebhookController::class, 'handle']);
 Route::get('/pnpki', [App\Http\Controllers\Public\VerificationController::class, 'pnpki']);
 
-Route::get('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
-Route::post('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verify']);
+Route::get('/verification/{code}', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
+Route::get('/verification/sample/{code}', [App\Http\Controllers\Public\VerificationController::class, 'sample_verification']);
+
+// Route::get('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verification']);
+// Route::post('/verification', [App\Http\Controllers\Public\VerificationController::class, 'verify']);
 
 Route::middleware(['2fa','auth','verified'])->group(function () {
     Route::get('/', [App\Http\Controllers\DashboardController::class, 'index']);
