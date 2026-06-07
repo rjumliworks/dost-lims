@@ -209,7 +209,7 @@ class ViewClass
 
         $data = new ViewResource(
             Tsr::query()
-            ->with('samples.report',
+            ->with('samples.report.report.user.profile','samples.report.report.signatory',
                 'samples.sampletype',
                 'samples.samplename',
                 'samples.category',

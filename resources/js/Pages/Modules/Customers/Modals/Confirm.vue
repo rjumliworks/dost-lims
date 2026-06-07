@@ -129,6 +129,7 @@ export default {
             }
             this.$emit('confirm', this.is_new);
             this.confirm = false;
+            this.showModal = false;
         },
         hide(){
             this.showModal = false;

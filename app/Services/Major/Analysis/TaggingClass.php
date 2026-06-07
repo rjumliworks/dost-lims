@@ -212,6 +212,7 @@ class TaggingClass
             })
             ->when($request->keyword, function ($q) use ($request) {
                 if ($request->type === 'Sample Code') $q->where('code', 'LIKE', "%{$request->keyword}%");
+                else if ($request->type === 'TSR Code') $q->whereHas('tsr', fn($q) => $q->where('code', 'LIKE', "%{$request->keyword}%"));
                 else $q->where('name', 'LIKE', "%{$request->keyword}%");
             })
         ->whereDoesntHave('report')

@@ -58,18 +58,15 @@ class SaveClass
                     'tm_id' => $head[0]
                 ]);
                 if($data){
+                    $data->signatory()->create([
+                        'approved_by' => 3, //JTF ID
+                        'status_id' => 38
+                    ]);
                     foreach($lists as $i => $list){
                         $tspl = TsrSampleReportList::create([
                             'sample_id' => $list,
                             'report_id' => $data->id
                         ]);
-                        if($tspl){
-                            $data->signatory()->create([
-                                'approved_by' => 3, //JTF ID
-                                'status_id' => 38
-                            ]);
-                        }
-
                         $codes[] = [
                             'id' => $list,
                             'code' => $code
@@ -95,16 +92,14 @@ class SaveClass
                             'tm_id' => $head[0]
                         ]);
                         if($data){
+                            $data->signatory()->create([
+                                'approved_by' => 3, //JTF ID
+                                'status_id' => 38
+                            ]);
                             $tspl = TsrSampleReportList::create([
                                 'sample_id' => $list,
                                 'report_id' => $data->id
                             ]);
-                            if($tspl){
-                                $data->signatory()->create([
-                                    'approved_by' => 3, //JTF ID
-                                    'status_id' => 38
-                                ]);
-                            }
                         }
                         $codes[] = [
                             'id' => $list,
@@ -217,7 +212,7 @@ class SaveClass
         $id = $hashids->decode($request->id);
         $data = TsrSampleReport::where('id',$id[0])->first();
         $attach = $this->upload($data,$request);
-        
+
         if(isset($attach['error']) && $attach['error']){
             return [
                 'data' => [],
@@ -262,6 +257,62 @@ class SaveClass
         ];
     }
 
+     public function reupload($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->id);
+        $data = TsrSampleReport::where('id',$id[0])->first();
+        $name = $data->code;
+        $attach = null;
+
+        if ($request->hasFile('pdf')) {
+            $pdf = $request->file('pdf');
+            $extension = strtolower($pdf->getClientOriginalExtension());
+            $file_name = strtolower($name) . '.' . $extension;
+            $file_path = 'uploads/testreports/' . $file_name;
+
+            $response = Http::attach(
+                'file',
+                file_get_contents($pdf->getRealPath()),
+                $file_name
+            )->post('http://127.0.0.1:8000/normalize',[
+                'verification_url' => url('/verification/'.$data->reference)
+            ]);
+
+            if (!$response->successful()) {
+                return [
+                    'error' => true,
+                    'message' => 'Normalization failed'
+                ];
+            }
+
+            $normalizedPdf = $response->body();
+
+            \Storage::disk('public')->put($file_path, $normalizedPdf);
+            $signatory = TsrSampleReportSignatory::where('report_id', $data->id)->first();
+            $signatory->analyzed_date = null;
+            $signatory->certified_date = null;
+            $signatory->approved_date = null;
+            $signatory->status_id = 38;
+            $signatory->save(); 
+            $attach = [
+                'name' => $file_name,
+                'file' => $file_path,
+                'added_by' => \Auth::user()->id,
+                'created_at' => now()->format('M d, Y g:i a'),
+            ];
+        }
+
+        $data->attachment = $attach;
+
+        if($data->save()){
+            return [
+                'data' => $data->attachment,
+                'message' => 'Testreport updated.', 
+                'info' => 'Testreport details have been successfully updated.',
+            ];
+        }
+    }
+
     public function upload($data, $request)
     {
         $name = $data->code;
@@ -278,7 +329,9 @@ class SaveClass
                     'file',
                     file_get_contents($pdf->getRealPath()),
                     $file_name
-                )->post('http://127.0.0.1:8000/normalize');
+                )->post('http://127.0.0.1:8000/normalize',[
+                    'verification_url' => url('/verification/'.$data->reference)
+                ]);
 
                 if (!$response->successful()) {
                     return [
@@ -291,12 +344,10 @@ class SaveClass
 
                 \Storage::disk('public')->put($file_path, $normalizedPdf);
                 $signatory = TsrSampleReportSignatory::where('report_id', $data->id)->first();
-                // $signatory->analyzed_timestamp = null;
                 $signatory->analyzed_date = null;
-                // $signatory->certified_timestamp = null;
                 $signatory->certified_date = null;
-                // $signatory->approved_timestamp = null;
                 $signatory->approved_date = null;
+                $signatory->status_id = 38;
                 $signatory->save(); 
                 return [
                     'name' => $file_name,

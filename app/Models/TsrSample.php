@@ -89,20 +89,20 @@ class TsrSample extends Model
         $this->attributes['name'] = $value;
     }
 
-    public function getCodeAttribute($value)
-    {
-        if (!$value) return null;
-
-        // Match pattern like CHE-00995
-        preg_match('/^[A-Z]+-\d+/', $value, $matches);
-
-        return $matches[0] ?? $value;
-    }
-
     // public function getCodeAttribute($value)
     // {
-    //      return implode('-', array_slice(explode('-', $value), 1));
+    //     if (!$value) return null;
+
+    //     // Match pattern like CHE-00995
+    //     preg_match('/^[A-Z]+-\d+/', $value, $matches);
+
+    //     return $matches[0] ?? $value;
     // }
+
+    public function getCodeAttribute($value)
+    {
+         return implode('-', array_slice(explode('-', $value), 1));
+    }
 
     // public function getCodeAttribute($value)
     // {

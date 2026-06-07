@@ -8,13 +8,14 @@ use App\Traits\HandlesTransaction;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Major\Testreport\ViewClass;
 use App\Services\Major\Testreport\SaveClass;
+use App\Models\UserRole;
 
 class TestreportController extends Controller
 {
     use HandlesTransaction;
 
-    protected $view;
-    protected $save;
+    protected ViewClass $view;
+    protected SaveClass $save;
 
     public function __construct(ViewClass $view, SaveClass $save){
         $this->view = $view;
@@ -22,12 +23,16 @@ class TestreportController extends Controller
     }
 
     public function index(Request $request){
+        $laboratory = UserRole::where('user_id', auth()->id())->where('is_active', 1)->pluck('laboratory_id');
         switch($request->option){
             case 'list':
-                return $this->view->list($request);
+                return $this->view->list($request,$laboratory);
             break;
             case 'samples':
                 return $this->view->samples($request);
+            break;
+            case 'qrcode':
+                return $this->view->qrcode($request);
             break;
             default :
                 return inertia('Modules/Major/Testreports/Index',[
@@ -50,6 +55,9 @@ class TestreportController extends Controller
                 break;
                 case 'report':
                     return $this->save->report($request);
+                break;
+                case 'reupload':
+                    return $this->save->reupload($request);
                 break;
                 case 'signatory':
                     return $this->save->signatory($request);

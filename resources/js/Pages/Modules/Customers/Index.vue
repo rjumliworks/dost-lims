@@ -145,6 +145,11 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <div class="d-flex flex-column justify-content-center align-items-center h-100" v-if="lists.length == 0">
+                        
+                            <i class="ri-user-search-line fs-24 text-muted"></i>
+                            <p class="mt-2 fs-12 text-muted mb-0">No customers have been added to the list.</p>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer">

@@ -17,6 +17,7 @@ class WithReportResource extends JsonResource
             'tsr_code' => $this->tsr->code,
             // 'analyses' => $this->sample->analyses,
             'user' => $this->user->profile->fullname,
+            'user_id' => $this->user->id,
             'lists' => $this->lists,
             'attachment' => json_decode($this->attachment),
             'signatory' => $this->signatory,

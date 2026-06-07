@@ -50,6 +50,11 @@
                 <div class="file-manager-sidebar" style="margin-left: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
                         <div class="row g-2 p-3">
+                            <div class="col-sm-12 mb-2">
+                                <p class="text-muted fs-12 mb-1">List of Sample Codes :</p>
+                                <span class="badge bg-primary ms-1" v-for="list in selected.lists" :key="list.id"> {{ list.sample.code }}</span>
+                                <hr class="text-muted mb-0"/>
+                            </div>
                             <div class="col-sm-12">
                                 <div class="p-1 border border-dashed rounded">
                                     <div class="d-flex align-items-center">
@@ -228,7 +233,7 @@
                             </div>
                         </div>
                         </div>
-                        <div class="col-md-12 mt-3">
+                        <div class="col-md-12 mt-3" v-if="this.$page.props.user.data.id == selected.user_id">
                             <file-pond name="pdf" ref="pond" allow-multiple="false" max-files="1" accepted-file-types="application/pdf"
                             label-idle='Drag & Drop your PDF or <span class="filepond--label-action">Browse</span>' 
                             :allow-process="false" @addfile="handleAddFile"/>
@@ -447,7 +452,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 const formData = new FormData();
                 formData.append('pdf', file);
                 formData.append('id', this.selected.reference);
-                formData.append('option', 'report');
+                formData.append('option', (this.selected.attachment) ? 'reupload' : 'report');
 
                 this.$inertia.post('/testreports', formData, {
                     preserveScroll: true,

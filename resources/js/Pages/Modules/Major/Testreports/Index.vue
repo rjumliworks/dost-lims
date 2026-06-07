@@ -71,10 +71,11 @@
                                 <tr class="fs-11">
                                     <th style="width: 3%;"></th>
                                     <th>Report Number</th>
-                                    <th style="width: 15%;" class="text-center">Sample Code</th>
-                                    <th style="width: 20%;" class="text-center">TSR Code</th>
+                                    <th style="width: 15%;" class="text-center">TSR Code</th>
                                     <th style="width: 20%;" class="text-center">Analyst</th>
-                                    <th style="width: 15%" class="text-center">Report Date</th>
+                                    <th style="width: 5%;" class="text-center">Attachment</th>
+                                    <th style="width: 13%" class="text-center">Report Date</th>
+                                    <th style="width: 8%" class="text-center">Status</th>
                                     <th style="width: 4%;" ></th>
                                 </tr>
                             </thead>
@@ -87,19 +88,17 @@
                                         <h5 v-if="list.code" class="fs-12 mb-0 fw-semibold text-primary">{{list.code}}</h5>
                                         <p v-else class="fs-12 mb-0  text-muted">Not yet set</p>
                                     </td>
-                                    <td class="text-center">{{list.sample_code}}</td>
                                     <td class="text-center">{{list.tsr_code}}</td>
                                     <td class="text-center">{{ (list.user) ? list.user : '-'}}</td>
+                                    <td class="text-center">
+                                        <i v-if="list.attachment" class="ri-checkbox-circle-fill text-success fs-16"></i>
+                                        <i v-else class="ri-close-circle-fill text-danger fs-16"></i>
+                                    </td>
                                     <td class="text-center">{{(list.created_at) ? list.created_at : '-'}}</td>
+                                    <td class="text-center">
+                                        <span :class="'badge '+list.signatory?.status.color">{{list.signatory?.status.name}}</span>
+                                    </td>
                                     <td class="text-end">
-                                        <!-- <a :href="`/testreports/${list.qr}`" target="_blank">
-                                            <b-button :variant="(filter.status) ? 'soft-info' : 'info'"  class="me-1" v-b-tooltip.hover title="View" size="sm">
-                                                <i class="ri-eye-fill align-bottom"></i>
-                                            </b-button>
-                                        </a>
-                                        <b-button @click="openView(list)" variant="soft-primary" v-b-tooltip.hover title="View" size="sm">
-                                            <i class="ri-eye-fill align-bottom"></i>
-                                        </b-button> -->
                                         <div class="d-flex gap-3 justify-content-center">
                                             <div class="dropdown">
                                                 <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
@@ -227,8 +226,8 @@ export default {
         openCreate(){
             this.$refs.create.show();
         },
-        openView(data){
-            this.$refs.view.show(data);
+        openPrint(id){
+            window.open('/testreports?option=qrcode&id='+id);
         },
         viewStatus(status){
             this.filter.status = status;

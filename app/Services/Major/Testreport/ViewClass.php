@@ -7,6 +7,8 @@ use App\Models\UserRole;
 use App\Models\TsrSample;
 use App\Models\TsrSampleReport;
 use App\Models\ListLaboratory;
+use Endroid\QrCode\Builder\Builder;
+use Endroid\QrCode\Writer\PngWriter;
 use App\Http\Resources\Major\Testreport\WithReportResource;
 use App\Http\Resources\Major\Testreport\NoReportResource;
 
@@ -41,33 +43,31 @@ class ViewClass
         return $count;
     }
 
-    public function list($request){
+    public function list($request,$laboratory){
+        
         if($request->status == 'with'){
             $data = WithReportResource::collection(
                 TsrSampleReport::query()
                 ->with('lists.sample:id,code','lists.sample.analyses:testservice_id,sample_id','lists.sample.analyses.testservice:id,testname_id','lists.sample.analyses.testservice.testname:id,name')
                 ->with('tsr','user.profile')
-                ->with('signatory.analyzed.profile:id,firstname,middlename,lastname,suffix_id')
+                ->with('signatory.analyzed.profile:id,firstname,middlename,lastname,suffix_id','signatory.status')
                 ->when($request->keyword, function ($query, $keyword) {
                     $query->where('code', 'LIKE', "%{$keyword}%");
-                    $query->orWhereHas('sample', function ($query) use ($keyword){
+                    $query->orWhereHas('tsr', function ($query) use ($keyword){
                         $query->where('code', 'LIKE', "%{$keyword}%");
-                        $query->orwhereHas('tsr', function ($query) use ($keyword){
-                            $query->where('code', 'LIKE', "%{$keyword}%");
-                            // $query->when($this->laboratory, function ($query) {
-                            //     if(in_array(4, $this->role->toArray(), false)){
-                            //         $query->whereIn('laboratory_id',$this->laboratory);
-                            //     }
-                            // });
+                    });
+                    $query->orWhereHas('lists', function ($query) use ($keyword){
+                        $query->whereHas('sample', function ($q) use ($keyword){
+                            $q->where('code', 'LIKE', "%{$keyword}%");
                         });
                     });
                 })
                 ->when($request->analyst, function ($query, $analyst) {
                     $query->where('user_id',$analyst);
                 })
-                ->whereHas('tsr', function ($query) use ($request){
-                    $query->when($request->laboratory , function ($query, $labtype) {
-                        $query->where('laboratory_id',$labtype);
+                ->whereHas('tsr', function ($query) use ($laboratory){
+                    $query->when($laboratory , function ($query, $labtype) {
+                        $query->whereIn('laboratory_id',$labtype);
                     });
                 })
                 ->orderBy('created_at','DESC')
@@ -206,6 +206,24 @@ class ViewClass
     //     });
     //     return $data;
     // }
+
+    public function qrcode($request){
+        $id = $request->id;
+        $url = $_SERVER['HTTP_HOST'].'/verification/'.$id;
+        $result = new Builder(
+            writer: new PngWriter(),
+            data: $url,
+            size: 100,
+            margin: 5,
+        );
+
+        $qrCodeImageString = $result->build()->getString();
+        $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+
+        return response($qrCodeImageString)
+        ->header('Content-Type', 'image/png')
+        ->header('Content-Disposition', 'inline; filename="sample_qrcode.png"');
+    }
 
      public function laboratories(){
         $laboratories = ListLaboratory::whereIn('id',$this->labs())->get()
