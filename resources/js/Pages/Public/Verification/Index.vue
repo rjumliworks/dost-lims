@@ -215,7 +215,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 .auth-page-wrapper {
     background-color: hsl(201, 80%, 82%);
 }

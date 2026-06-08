@@ -29,8 +29,8 @@ class SaveClass
         $data = TsrSampleReportSignatory::where('id',$request->id)->update($payload);
         return [
             'data' => $data,
-            'message' => 'wew', 
-            'info' => "You've successfully generated the report number."
+            'message' => 'Signatory Assigned', 
+            'info' => "The signatory has been assigned successfully."
         ];
     }
 

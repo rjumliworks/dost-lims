@@ -84,7 +84,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card border-bottom shadow-none" no-body style="height: calc(100vh - 493px);">
+                    <div class="shadow-none" no-body style="height: calc(100vh - 470px);">
                        
                         <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
                             <li class="list-group-item px-0" v-for="(list,index) in releasing_summary" v-bind:key="index">
@@ -178,7 +178,7 @@
                             </div>
                         </div>
                         <div class="card-body bg-white rounded-bottom">
-                            <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 575px)" v-if="filter.reminder != 'For Release' && filter.reminder != 'Unclaimed Reports'">
+                            <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 578px)" v-if="filter.reminder != 'For Release' && filter.reminder != 'Unclaimed Reports'">
                                 <table class="table align-middle table-striped table-centered mb-0">
                                     <thead class="table-light thead-fixed">
                                         <tr class="fs-11">
@@ -261,7 +261,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card border-bottom shadow-none" no-body style="height: calc(100vh - 493px);">
+                    <div class="rounded-circle shadow-none" no-body style="height: calc(100vh - 470px);">
                          <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
                             <li class="list-group-item px-0" v-for="(list,index) in releasing_age" v-bind:key="index">
                                 <div class="d-flex">

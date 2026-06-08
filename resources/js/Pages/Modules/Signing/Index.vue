@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 
-                <div class="card bg-white border-bottom shadow-none" no-body>
+                <div class="card bg-white border-bottom shadow-none" no-body v-if="!selected">
                     <div class="table-responsive mb-2" style="height: calc(100vh - 325px); overflow: auto;">
                         <table class="table table-nowrap table-striped align-middle">
                             <thead class="table-light thead-fixed">
@@ -42,6 +42,257 @@
                         </table>
                     </div>
                 </div>
+                <div class="bg-white rounded-bottom shadow-none" style="height: calc(100vh - 292px);"" no-body v-else>
+                    <div class="row g-2 p-3">
+                        <div class="col-sm-12">
+                            <div class="p-1 border border-dashed rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm me-2">
+                                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <p class="text-muted mb-0 fs-12">Report Number :</p>
+                                        <h5 class="mb-0 fs-12 fw-semibold text-primary">{{selected.code}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <hr class="text-muted mt-1 mb-1"/>
+                            <p class="ms-1 mt-3 mb-0 text-primary fs-12 fw-semibold flex-grow-1">List of Samples : </p>
+                            <div v-for="(row, rowIndex) in chunkedTags" :key="rowIndex" class="mb-1 mt-2">
+                                <ul class="list-unstyled fs-12 mb-0 d-flex">
+                                    <li class="py-0 me-3 d-flex align-items-center" style="min-width: 160px;" v-for="(list, index) in row" :key="index">
+                                        <i class="mdi mdi-circle-medium me-1 text-muted"></i> {{ list.sample.code}}
+                                    </li>
+                                </ul>
+                            </div>
+                            <hr class="text-muted mt-3 mb-1"/>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="profile-timeline ms-n2">
+
+                                <!-- Analyzed -->
+                                <div class="accordion-item border-0">
+                                    <div class="accordion-header">
+                                        <a class="accordion-button p-2 shadow-none"
+                                            :class="{ collapsed: activeCollapse !== 'analyzed' }"
+                                            href="javascript:void(0)"
+                                            @click="toggleCollapse('analyzed')">
+
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 avatar-xs">
+                                                    <div class="avatar-title bg-light rounded-circle">
+                                                        <i
+                                                            class="fs-18"
+                                                            :class="selected.signatory.analyzed_date
+                                                                ? 'ri-checkbox-circle-fill text-success'
+                                                                : 'ri-time-line text-warning'"
+                                                        ></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="fs-12 mb-0"> {{ selected.signatory.analyzed?.profile?.fullname || 'Not Assigned' }}</h6>
+                                                    <small class="text-muted">
+                                                       Analyzed By
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div v-show="activeCollapse === 'analyzed'" class="accordion-body ms-4 ps-4 pt-0">
+            
+                                        <table class="table table-nowrap table-bordered align-middle table-sm">
+                                            <thead class="table-light thead-fixed">
+                                                <tr class="fs-11">
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center" width="50%">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center"> 
+                                                        <span class="badge" :class="selected.signatory.analyzed_date ? 'bg-success' : 'bg-warning'">
+                                                        {{ selected.signatory.analyzed_date ? 'Completed' : 'Pending' }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ (selected.signatory.analyzed_date) ?? '-' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Certified -->
+                                <div class="accordion-item border-0">
+                                    <div class="accordion-header">
+                                        <a class="accordion-button p-2 shadow-none"
+                                            :class="{ collapsed: activeCollapse !== 'certified' }"
+                                            href="javascript:void(0)"
+                                            @click="toggleCollapse('certified')">
+
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 avatar-xs">
+                                                    <div class="avatar-title bg-light rounded-circle">
+                                                        <i
+                                                            class="fs-18"
+                                                            :class="selected.signatory.certified_date
+                                                                ? 'ri-checkbox-circle-fill text-success'
+                                                                : 'ri-time-line text-warning'"
+                                                        ></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="fs-12 mb-0">{{ selected.signatory.certified?.profile?.fullname || 'Not Assigned' }}</h6>
+                                                    <small class="text-muted">
+                                                        Certified By
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div v-show="activeCollapse === 'certified'" class="accordion-body ms-2 ps-4 pt-0">
+                                        <table class="table table-nowrap table-bordered align-middle table-sm">
+                                            <thead class="table-light thead-fixed">
+                                                <tr class="fs-11">
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center" width="50%">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center"> 
+                                                        <span class="badge" :class="selected.signatory.certified_date ? 'bg-success' : 'bg-warning'">
+                                                        {{ selected.signatory.certified_date ? 'Completed' : 'Pending' }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ (selected.signatory.certified_date) ?? '-' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Approved -->
+                                <div class="accordion-item border-0">
+                                    <div class="accordion-header">
+                                        <a class="accordion-button p-2 shadow-none"
+                                            :class="{ collapsed: activeCollapse !== 'approved' }"
+                                            href="javascript:void(0)"
+                                            @click="toggleCollapse('approved')">
+
+                                            <div class="d-flex align-items-center">
+                                                <div class="flex-shrink-0 avatar-xs">
+                                                    <div class="avatar-title bg-light rounded-circle">
+                                                        <i
+                                                            class="fs-18"
+                                                            :class="selected.signatory.approved_date
+                                                                ? 'ri-checkbox-circle-fill text-success'
+                                                                : 'ri-time-line text-warning'"
+                                                        ></i>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex-grow-1 ms-3">
+                                                    <h6 class="fs-12 mb-0">{{ selected.signatory.approved?.profile?.fullname || 'Not Assigned' }}</h6>
+                                                    <small class="text-muted">
+                                                        Approved By
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div v-show="activeCollapse === 'approved'" class="accordion-body ms-2 ps-4 pt-0">
+                                        <table class="table table-nowrap table-bordered align-middle table-sm">
+                                            <thead class="table-light thead-fixed">
+                                                <tr class="fs-11">
+                                                    <th class="text-center">Status</th>
+                                                    <th class="text-center" width="50%">Date</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="text-center"> 
+                                                        <span class="badge" :class="selected.signatory.approved_date ? 'bg-success' : 'bg-warning'">
+                                                        {{ selected.signatory.approved_date ? 'Completed' : 'Pending' }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        {{ (selected.signatory.approved_date) ?? '-' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <hr class="text-muted mt-1 mb-1"/>
+                            </div>
+                        <div class="col-md-12 margin-space">
+                            <div class="d-flex mt-2">
+                                <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-file-text-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="margin-custom fs-12 text-muted">TSR Code :</p> 
+                                    <h6 class="text-truncate mb-0 fs-12">{{selected.tsr.code}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 margin-space">
+                            <div class="d-flex mt-2">
+                                <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-calendar-todo-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="margin-custom fs-12 text-muted">Due Date :</p>
+                                    <h6 class="text-truncate mb-0 fs-12">{{selected.tsr.due_at}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 margin-space">
+                            <div class="d-flex mt-2">
+                                <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-calendar-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="margin-custom fs-12 text-muted">Date Created :</p>
+                                    <h6 class="text-truncate mb-0"> <span class="fs-12">{{selected.created_at}}</span></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="d-flex mt-2">
+                                <div class="flex-shrink-0 avatar-xs align-self-center me-3">
+                                    <div class="avatar-title bg-light rounded-circle fs-16 text-primary"><i class="ri-account-circle-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 overflow-hidden">
+                                    <p class="margin-custom fs-12 text-muted">Created By :</p>
+                                    <h6 class="text-truncate mb-0"> <span class="fs-12">{{selected.user.profile.fullname}}</span></h6>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="col-sm-12">
+                            <hr class="text-muted mt-3 mb-1"/>
+                        </div> -->
+                    </div>
+                </div>
             </div>
         </b-col>
         <b-col lg="9">
@@ -57,39 +308,22 @@
                         </div>
                         <div class="flex-grow-1" v-if="selected">
                             <h5 class="mb-0 fs-14"><span class="text-body">{{ selected.code }}</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">A comprehensive list of all TSRs (Test Service Requests) and Conformes, including their statuses and associated details.</p>
+                            <p class="text-muted text-truncate-two-lines fs-12">Click <strong>Sign</strong> and <strong>Save</strong> to complete the process.</p>
+                        </div>
+                        <div class="flex-shrink-0" style="width: 45%;">
+                            <div class="float-end" v-if="showSave">  
+                                <b-button variant="primary" class="w-sm" @click="savePdfWithSignature" block><i class="ri-save-fill me-2"></i> Save</b-button>
+                            </div>
+                            <div v-else class="float-end" @click="placeSignature">  
+                                <b-button variant="warning" class="w-sm" block><i class="ri-ball-pen-fill me-2"></i>Sign</b-button>
+                            </div>
+                            <div class="float-end" @click="selected = null">  
+                                <b-button variant="light" class="w-sm me-2"  block><i class="ri-close-circle-fill text-danger me-2"></i>Close</b-button>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="card bg-white border-bottom shadow-none" no-body v-if="selected">
-                    <div class="d-flex p-3">
-                        <div class="flex-grow-1">
-                            <!-- {{ selected }} -->
-                            <h4>{{ selected.code }}</h4>
-                            <div class="hstack gap-3 flex-wrap">
-                                <div><a href="#" class="text-primary fw-semibold d-block">{{ selected.tsr.code }}</a></div>
-                                <div class="vr"></div>
-                                <div class="text-muted">Date Due : <span class="text-body fw-medium">{{ selected.tsr.due_at }}</span></div>
-                                <div class="vr"></div>
-                                <div class="text-muted">Date Created : <span class="text-body fw-medium">{{ selected.created_at }}</span></div>
-                            </div>
-                        </div>
-                        <div class="flex-shrink-0">
-                            <div  @click="placeSignature">  
-                                <b-button variant="warning" block><i class="ri-ball-pen-fill me-1"></i>Sign</b-button>
-                            </div>
-                            <div v-if="showSave">  
-                                            <b-button variant="primary" @click="savePdfWithSignature" block><i class="ri-save-fill me-1"></i> Save</b-button>
-                                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body bg-white rounded-bottom" 
-                    :style="{
-                        marginTop: selected ? '-23px' : '0px',
-                        height: selected ? 'calc(100vh - 377px)' : 'calc(100vh - 292px)',
-                        overflow: 'auto'
-                    }" v-if="selected">
+                <div class="card-body bg-white rounded-bottom" :style="{ height: selected ? 'calc(100vh - 292px)' : 'calc(100vh - 292px)', overflow: 'auto'}" v-if="selected">
                     <div ref="pdfContainer" class="position-relative w-100">
                         <img
                             v-show="showSignature"
@@ -98,13 +332,7 @@
                             id="signature"
                             style="position: absolute; width: auto; height: 120px; cursor: move;"
                         />
-                        <canvas
-                            ref="pdfCanvas"
-                            id="pdfcanvas"
-                            class="border border-dashed rounded"
-                            style="width: 100%; height: auto;"
-                        ></canvas>
-
+                        <canvas ref="pdfCanvas" id="pdfcanvas" class="border border-dashed rounded" style="width: 100%; height: auto;"></canvas>
                         <div v-if="isRendering" class="loading-overlay-inside">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -115,7 +343,7 @@
                 <div class="card-body rounded-bottom"  style="height: calc(100vh - 224px); overflow: auto;" v-if="!selected">
                      <div class="d-flex flex-column justify-content-center align-items-center h-100">
                         
-                        <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                        <img src="/images/icons/contract.png" style="height:80px;" class="mb-3"/>
                         <p class="mt-2 fs-12 text-muted mb-0">No test report selected. Please choose a test report to sign...</p>
                     </div>
                 </div>
@@ -148,7 +376,8 @@ export default {
             showSave: false,
             currentDateTime: new Date().toLocaleString(),
             selected: null,
-            index: null
+            index: null,
+            activeCollapse: null
         }
     },
     mounted() {
@@ -186,6 +415,21 @@ export default {
                 });
             }
         }
+    },
+    computed: {
+        chunkedTags() {
+            const tags = this.selected.lists || [];
+            let chunkSize = 3;
+
+            if (tags.length >= 6) chunkSize = 2;  
+            else if (tags.length >= 4) chunkSize = 2; 
+
+            const chunks = [];
+            for (let i = 0; i < tags.length; i += chunkSize) {
+                chunks.push(tags.slice(i, i + chunkSize));
+            }
+            return chunks;
+        },
     },
     methods: {
         async renderPdf(selected, index, pageNum = 1) {
@@ -320,11 +564,11 @@ export default {
             formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
             formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
 
-            this.$inertia.post('/testreports', formData, {
+            this.$inertia.post('/signing', formData, {
                 preserveScroll: true,
                 forceFormData: true,
                 onSuccess: () => {
-                    this.renderPdf(this.reports[this.index]);
+                    this.renderPdf(this.$page.props.flash.data);
                 },
                 onError: () => (this.errors = this.$page.props.errors),
             });
@@ -345,7 +589,18 @@ export default {
                 return 'approved';
             }
             return null;
+        },
+        toggleCollapse(id) {
+            this.activeCollapse = this.activeCollapse === id ? null : id;
         }
     }
 }
 </script>
+<style scoped>
+.margin-custom {
+    margin-bottom: -0.5px; margin-top: -2px;
+}
+.margin-space {
+    margin-bottom: -3px;
+}
+</style>

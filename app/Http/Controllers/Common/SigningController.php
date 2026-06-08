@@ -19,17 +19,12 @@ class SigningController extends Controller
     }
 
     public function index(Request $request){
-         $user = auth()->user(); // or your target user
+        $user = auth()->user();
         $signature = null;
 
         if ($user->certificate && $user->certificate->signature) {
-            // Get S3 bytes
             $signatureBytes = Storage::disk('s3')->get($user->certificate->signature);
-
-            // Get MIME type
             $mime = Storage::disk('s3')->mimeType($user->certificate->signature);
-
-            // Convert to base64
             $signature = 'data:' . $mime . ';base64,' . base64_encode($signatureBytes);
         }
 
@@ -40,5 +35,22 @@ class SigningController extends Controller
                 'signature' => $signature
             ]);
         }
+    }
+
+    public function store(Request $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            switch($request->option){
+                case 'report':
+                    return $this->view->save($request);
+                break; 
+            }
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
     }
 }
