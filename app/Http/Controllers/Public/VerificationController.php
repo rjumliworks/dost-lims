@@ -6,6 +6,7 @@ use Hashids\Hashids;
 use App\Models\Tsr;
 use App\Models\TsrSample;
 use App\Models\TsrAnalysis;
+use App\Models\TsrSampleReportList;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\Public\Verification\TsrResource;
@@ -18,8 +19,9 @@ class VerificationController extends Controller
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($code);
 
+        $sample_ids = TsrSampleReportList::where('report_id',$id)->pluck('sample_id');
 
-        $samples = TsrSample::query()->where('id',$id)
+        $samples = TsrSample::query()->whereIn('id',$sample_ids)
             ->with('analyses.status','analyses.testservice.method.method','analyses.testservice.testname','analyses.sample')
             ->orderBy('created_at','ASC')
             ->get();
@@ -62,7 +64,7 @@ class VerificationController extends Controller
         $analyses = array_values($groupedData);
 
         return inertia('Public/Verification/Index',[
-            'tsr' => new IndexResource($tsr),
+            'tsr' => new TsrResource($tsr),
             'samples' => SampleResource::collection($samples),
             'analyses' => $analyses
         ]);

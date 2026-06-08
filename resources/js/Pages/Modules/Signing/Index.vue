@@ -153,8 +153,8 @@ export default {
     },
     mounted() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+        this.renderPdf();
     },
-   
     watch: {
         showSignature(val) {
             if (val && this.$refs.signature) {
@@ -188,48 +188,61 @@ export default {
         }
     },
     methods: {
-        renderPdf(selected,index,pageNum = 1) {
+        async renderPdf(selected, index, pageNum = 1) {
             if (!selected) return;
+
             this.selected = selected;
             this.index = index;
+
+            await this.$nextTick();
+
+            const canvasEl = this.$refs.pdfCanvas;
+
+            if (!canvasEl) {
+                console.error('pdfCanvas ref not found');
+                return;
+            }
 
             this.currentPage = pageNum;
             this.showSignature = false;
             this.isRendering = true;
 
-            // PDF URL with cache busting
-            this.pdfUrl = `/storage/uploads/testreports/${JSON.parse(this.selected.attachment).name}?v=${Date.now()}`;
+            this.pdfUrl = `/storage/uploads/testreports/${
+                JSON.parse(this.selected.attachment).name
+            }?v=${Date.now()}`;
 
-            const canvasEl = this.$refs.pdfCanvas;
-            const fileUrl = this.pdfUrl;
+            const loadingTask = pdfjsLib.getDocument({
+                url: this.pdfUrl
+            });
 
-            const loadingTask = pdfjsLib.getDocument({ url: fileUrl });
+            try {
+                const pdf = await loadingTask.promise;
 
-            loadingTask.promise.then(pdf => {
                 this.totalPages = pdf.numPages;
 
-                if (pageNum < 1) pageNum = 1;
-                if (pageNum > pdf.numPages) pageNum = pdf.numPages;
+                pageNum = Math.max(1, Math.min(pageNum, pdf.numPages));
 
-                pdf.getPage(pageNum).then(page => {
-                    // Get the viewport with your scale
-                    const viewport = page.getViewport({ scale: this.scale });
+                const page = await pdf.getPage(pageNum);
 
-                    // Set the canvas drawing resolution
-                    canvasEl.width = viewport.width;
-                    canvasEl.height = viewport.height;
-
-                    const context = canvasEl.getContext('2d');
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport
-                    };
-
-                    page.render(renderContext).promise.then(() => {
-                        this.isRendering = false;
-                    });
+                const viewport = page.getViewport({
+                    scale: this.scale
                 });
-            });
+
+                canvasEl.width = viewport.width;
+                canvasEl.height = viewport.height;
+
+                const context = canvasEl.getContext('2d');
+
+                await page.render({
+                    canvasContext: context,
+                    viewport
+                }).promise;
+
+                this.isRendering = false;
+            } catch (error) {
+                console.error(error);
+                this.isRendering = false;
+            }
         },
         placeSignature() {
             this.showSignature = true;
