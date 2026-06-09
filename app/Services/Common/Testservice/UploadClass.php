@@ -7,6 +7,7 @@ use App\Models\Testservice;
 use App\Models\TestserviceName;
 use App\Models\TestserviceMethod;
 use App\Models\SampleType;
+use App\Models\SampleName;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UploadClass
@@ -18,6 +19,7 @@ class UploadClass
             if($row[0] != 'Sample Type'){
                 $information[] = [
                     'types' => explode(', ', $row[1]),
+                    'names' => explode(', ', $row[2]),
                     'testname' => $row[3],
                     'code' => $row[4],
                     'method' => $row[5],
@@ -30,7 +32,6 @@ class UploadClass
     }
 
     public function save($request){
-
         if (empty($request->laboratory_id)) {
             return [
                 'success' => [],
@@ -111,6 +112,28 @@ class UploadClass
                 ])->first();
 
                 if ($existing) {
+
+                    foreach ($row['names'] as $name) {
+                        $type_id = SampleName::where('name', $name)->value('type_id');
+
+                        $sampleRecord = SampleType::where('id', $type_id)->first();
+
+                        if ($sampleRecord) {
+                            // Laravel automatically sets sampleable_id and sampleable_type here
+                           $exists = $sampleRecord->services()
+    ->where('testservice_id', $service->id)
+    ->exists();
+
+if (!$exists) {
+    $sampleRecord->services()->create([
+        'testservice_id' => $existing->id
+    ]);
+}
+                        }else{
+                            $results['names'][] = $name;
+                        }
+                    }
+
                     $results['duplicate'][] = [
                         'row' => $index + 1,
                         'data' => $row,
@@ -126,14 +149,35 @@ class UploadClass
                     'status_id' => 32
                 ]);
                 if($service){
-                    foreach ($row['types'] as $name) {
-                        $sampleRecord = SampleType::where('name', $name)->first();
+                    // foreach ($row['types'] as $name) {
+                    //     $sampleRecord = SampleType::where('name', $name)->first();
+
+                    //     if ($sampleRecord) {
+                    //         // Laravel automatically sets sampleable_id and sampleable_type here
+                    //         $sampleRecord->services()->create([
+                    //             'testservice_id' => $service->id
+                    //         ]);
+                    //     }else{
+                    //         $results['unknown'][] = $name;
+                    //     }
+                    // }
+
+                    foreach ($row['names'] as $name) {
+                        $type_id = SampleName::where('name', $name)->value('type_id');
+
+                        $sampleRecord = SampleType::where('id', $type_id)->first();
 
                         if ($sampleRecord) {
                             // Laravel automatically sets sampleable_id and sampleable_type here
-                            $sampleRecord->services()->create([
-                                'testservice_id' => $service->id
-                            ]);
+                            $exists = $sampleRecord->services()
+    ->where('testservice_id', $service->id)
+    ->exists();
+
+if (!$exists) {
+    $sampleRecord->services()->create([
+        'testservice_id' => $service->id
+    ]);
+}
                         }else{
                             $results['unknown'][] = $name;
                         }
