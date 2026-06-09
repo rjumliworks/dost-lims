@@ -496,10 +496,8 @@ class AccomplishmentClass
             break;
             case 'Number of Reports Generated ':
                 $count = TsrSampleReport::whereMonth('created_at',$index+1)->whereYear('created_at',$year)
-                ->whereHas('sample', function ($query) use ($laboratory_id){
-                    $query->whereHas('tsr', function ($query) use ($laboratory_id) {
-                        $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
-                    });
+                ->whereHas('tsr', function ($query) use ($laboratory_id) {
+                    $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
                 })
                 ->count();
             break;
