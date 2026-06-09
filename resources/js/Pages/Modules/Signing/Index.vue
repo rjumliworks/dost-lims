@@ -314,7 +314,7 @@
                             <div class="float-end" v-if="showSave">  
                                 <b-button variant="primary" class="w-sm" @click="savePdfWithSignature" block><i class="ri-save-fill me-2"></i> Save</b-button>
                             </div>
-                            <div v-else class="float-end" @click="placeSignature">  
+                            <div v-if="!showSignature" class="float-end" @click="placeSignature">  
                                 <b-button variant="warning" class="w-sm" block><i class="ri-ball-pen-fill me-2"></i>Sign</b-button>
                             </div>
                             <div class="float-end" @click="selected = null">  

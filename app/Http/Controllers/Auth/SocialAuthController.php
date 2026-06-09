@@ -9,6 +9,9 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Mail\AccountActivationCode; 
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 
 class SocialAuthController extends Controller
 {
@@ -35,19 +38,27 @@ class SocialAuthController extends Controller
             $user = User::where('kradworkz', $kradworkz)->first();
 
             if ($user) {
-                // Link existing account
+
+                if (!$user->is_active) {
+                    throw ValidationException::withMessages([
+                        'email' => 'Account Locked. Please contact the administrator.',
+                    ]);
+                }
+
+                do{
+                    $code = random_int(100000000, 999999999); // 9 digits
+                } while (\App\Models\User::where('code', $code)->exists());
+
+                $user->update(['email_verified_at' => now(), 'code' => $code]);
+                Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+
                 $user->update([
                     'provider'    => $provider,
                     'provider_id' => $socialUser->getId(),
                     // 'avatar'      => $socialUser->getAvatar(),
                 ]);
             } else {
-                // Create new user
-                $user = User::create([
-                    'provider'    => $provider,
-                    'provider_id' => $socialUser->getId(),
-                    'email_verified_at' => now()
-                ]);
+                return redirect('/login')->withErrors('Unable to login.');
             }
         }
 
