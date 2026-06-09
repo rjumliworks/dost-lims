@@ -120,15 +120,15 @@ class UploadClass
 
                         if ($sampleRecord) {
                             // Laravel automatically sets sampleable_id and sampleable_type here
-                           $exists = $sampleRecord->services()
-    ->where('testservice_id', $service->id)
-    ->exists();
+                            $exists = $sampleRecord->services()
+                                ->where('testservice_id', $service->id)
+                                ->exists();
 
-if (!$exists) {
-    $sampleRecord->services()->create([
-        'testservice_id' => $existing->id
-    ]);
-}
+                            if (!$exists) {
+                                $sampleRecord->services()->create([
+                                    'testservice_id' => $existing->id
+                                ]);
+                            }
                         }else{
                             $results['names'][] = $name;
                         }
