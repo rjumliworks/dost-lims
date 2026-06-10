@@ -1,6 +1,6 @@
 <template>
     <Head title="Monitoring"/>
-    <PageHeader title="Monitoring" pageTitle="List" />
+    <PageHeader title="ONGOING tECHNICAL SERVICE REQUESST" pageTitle="List" />
     <BRow class="g-3">
 
         <div class="col-md-12">
@@ -48,7 +48,50 @@
         <div class="col-md-3 mt-n2">
             <b-card no-body class="bg-info-subtle border shadow-none">
                 <b-card-body>
-                    <div class="d-flex align-items-center" v-if="fee">
+                    <div class="d-flex align-items-center" v-if="laboratories.length > 0">
+                        <div class="flex-shrink-0">
+                          <div
+                                class="donut-chart mx-auto"
+                                :style="{
+                                    background: `conic-gradient(#0ab39c ${overallPercentage}%, #e9ebec 0)`
+                                }"
+                            >
+                                <div class="donut-inner">
+                                    {{ overallPercentage.toFixed(0) }}%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1" style="margin-top: -5px;">
+                                Laboratory Progress
+                            </p>
+                            <h4 class="mb-0 fs-12">
+                                {{ totalOngoing }} / {{ totalOverall }}
+                            </h4>
+                            <small class="text-muted fs-10">
+                                Ongoing analyses across all laboratories
+                            </small>
+                        </div>
+                    </div>
+                   <!-- <div class="mt-auto text-center">
+    <div
+        class="donut-chart mx-auto"
+        :style="{
+            background: `conic-gradient(#0ab39c ${overallPercentage}%, #e9ebec 0)`
+        }"
+    >
+        <div class="donut-inner">
+            {{ overallPercentage.toFixed(0) }}%
+        </div>
+    </div>
+
+    <div class="mt-2">
+        <small class="text-muted">
+            {{ totalOngoing }}/{{ totalOverall }} Tasks
+        </small>
+    </div>
+</div> -->
+                    <!-- <div class="d-flex align-items-center" v-if="laboratories.length > 0">
                         <div class="avatar-xs flex-shrink-0">
                             <span class="avatar-title bg-light text-primary rounded-circle fs-4">
                                 <i class="ri-loader-2-line align-middle`"></i>
@@ -56,10 +99,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                            {{ fee.name }}
+                            {{ totalOngoing }}
                             </p>
                             <h4 class="mb-0">
-                                <span class="counter-value">{{ formatMoney(fee.total) }}</span>
+                                <span class="counter-value"></span>
                             </h4>
                         </div>
                     </div>
@@ -70,11 +113,15 @@
                             <span class="placeholder col-4"></span>
                             <span class="placeholder col-6"></span>
                         </p>
-                    </div>
+                    </div> -->
                 </b-card-body>
             </b-card>
 
-            <div class="card shadow-none border mt-n1">
+            
+
+
+
+<div class="card shadow-none border mt-n1">
                 <div class="card-header bg-light-subtle">
                     <div class="d-flex mb-n3">
                         <div class="flex-shrink-0 me-3 mt-1">
@@ -85,44 +132,116 @@
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Ongoing TSR's</span></h5>
+                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Monitoring & Alerts</span></h5>
                             <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                         </div>
                     </div>
                 </div>
-                <div class="card border-bottom shadow-none" no-body style="height: calc(100vh - 498px); overflow: auto;">
-                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
-                        <li class="list-group-item px-0" v-for="(list,index) in laboratories" v-bind:key="index">
-                            <div class="">
-                                <div class="d-flex mb-1">
-                                    <h6 class="fs-13 fw-semibold mb-0 flex-grow-1 text-truncate text-primary task-title">{{list.name}}</h6>
-                                    <div class="dropdown">
-                                        <a href="javascript:void(0);" class="text-muted" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"><i class="ri-more-fill"></i></a>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
-                                            <li><a class="dropdown-item" href="apps-tasks-details.html"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
-                                            <li><a class="dropdown-item" href="#"><i class="ri-edit-2-line align-bottom me-2 text-muted"></i> Edit</a></li>
-                                            <li><a class="dropdown-item" data-bs-toggle="modal" href="#deleteRecordModal"><i class="ri-delete-bin-5-line align-bottom me-2 text-muted"></i> Delete</a></li>
-                                        </ul>
-                                    </div>
+                <div class="shadow-none" no-body style="height: 380px; overflow: auto;">
+                    <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                        <li class="list-group-item px-0" v-for="(list,index) in dues" v-bind:key="index">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 avatar-xs">
+                                    <span class="avatar-title bg-light p-1 rounded-circle fs-17">
+                                        <i :class="list.icon+' '+list.color"></i>
+                                    </span>
                                 </div>
-                                <div class="mb-2">
-                                    <div class="d-flex mb-1">
-                                        <div class="flex-grow-1">
-                                            <h6 class="text-muted mb-0"><span class="text-secondary">{{list.ongoing}}</span> of {{list.overall}} </h6>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <span class="text-muted">{{list.percentage}}%</span>
-                                        </div>
-                                    </div>
-                                    <div class="progress rounded-3 progress-sm">
-                                        <div class="progress-bar bg-danger" role="progressbar" :style="{ width: list.percentage + '%' }" :aria-valuenow="list.percentage" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                    <p class="fs-11 mb-0 text-muted">{{ list.info }}</p>
+                                </div>
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="mt-2 fs-12">{{list.count}}</h6>
+                                    <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <hr class="text-muted"/>
+                    <ul class="list-group list-group-flush border-dashed mt-n4 p-3 mt-n2">
+                        <li class="list-group-item px-0" v-for="(list,index) in serves" v-bind:key="index">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0 avatar-xs">
+                                    <span class="avatar-title bg-light p-1 rounded-circle fs-17">
+                                        <i :class="list.icon+' '+list.color"></i>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                    <p class="fs-11 mb-0 text-muted">{{ list.info }}</p>
+                                </div>
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="mt-2 fs-12">{{list.count}}</h6>
+                                    <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
                                 </div>
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
+
+
+
+
+
+
+            <div class="card shadow-none border mt-n1">
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-hand-coin-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Memorandum of Agreement</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Process results ready for release.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center">
+                        <div class="col-6">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-0 fs-14">{{ moa.length }}</h5>
+                                <p class="text-muted mb-0 fs-12">Count</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-0 fs-14">{{formatMoney(totalIncome)}}</h5>
+                                <p class="text-muted mb-0 fs-12">Total Amount</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shadow-none" no-body>
+                    <div class="table-responsive mb-2" style="height: 300px; overflow: auto;">
+                        <table class="table table-nowrap table-striped align-middle">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th class="text-center" width="10%">#</th>
+                                    <th>TSR Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                             
+                                <tr class="ribbon-box" v-for="(list,index) in moa" v-bind:key="index" @click="renderPdf(list,index)">
+                                    <td class="text-center">{{  index + 1 }}.</td>
+                                    <td>
+                                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.code}}</h5>
+                                        <p class="fs-11 text-muted mb-0">{{list.customer.fullname}}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            
         </div>
 
 
@@ -187,8 +306,19 @@
                     </div>
                 </div>
                 <div class="cards border-bottom shadow-none" no-body>
+                    <div class="car-body bg-white border-bottom shadow-none">
+                    <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
+                        <b-col lg>
+                            <div class="input-group mb-1">
+                                <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control">
+                               
+                            </div>
+                        </b-col>
+                    </b-row>
+                </div>
                     <div class="card-body">
-                        <div class="table-responsive table-card" style="height: calc(100vh - 535px); overflow: auto;">
+                        <div class="table-responsive table-card" style="height: 263px; overflow: auto;">
                             <table class="table align-middle table-centered table-bordered table-striped mb-0">
                                 <thead class="table-light thead-fixed">
                                     <tr class="fs-11">
@@ -225,7 +355,7 @@
                                             <i v-else class="ri-close-circle-fill text-warning fs-18" v-b-tooltip.hover title="Pending"></i>
                                         </td>
                                         <td class="text-center fs-12">
-                                            <i v-if="list.samples.every(s => s.report_exists && s.reportlist_exists)" class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover title="Complete Report"></i>
+                                            <i v-if="list.samples.every(s => s.report_exists)" class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover title="Complete Report"></i>
                                             <i v-else-if="list.samples.some(s => s.report_exists || s.reportlist_exists)" class="ri-error-warning-fill text-warning fs-18" v-b-tooltip.hover title="Incomplete Report"></i>
                                             <i v-else class="ri-close-circle-fill text-danger fs-18" v-b-tooltip.hover title="No Report"></i>
                                         </td>
@@ -285,6 +415,102 @@
                     </div>
                 </b-card-body>
             </b-card>
+
+            
+
+            <div class="card shadow-none border mt-n1">
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-alarm-warning-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Ongoing TSR's</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="shadow-none" no-body style="height: 380px; overflow: auto;">
+                    <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                        <li class="list-group-item px-0" v-for="(list,index) in laboratories" v-bind:key="index">
+                            <div class="">
+                                <div class="d-flex mb-1">
+                                    <h6 class="fs-12 mb-0 flex-grow-1 text-truncate text-primary task-title">{{list.name}}</h6>
+                                </div>
+                                <div class="mb-2">
+                                    <div class="d-flex mb-1">
+                                        <div class="flex-grow-1">
+                                            <h6 class="text-muted mb-0"><span class="text-secondary">{{list.ongoing}}</span> of {{list.overall}} </h6>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <span class="text-muted">{{list.percentage}}%</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress rounded-3 progress-sm">
+                                        <div class="progress-bar bg-danger" role="progressbar" :style="{ width: list.percentage + '%' }" :aria-valuenow="list.percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card shadow-none border mt-n1">
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3 mt-1">
+                            <div style="height:2rem;width:2rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-hand-coin-fill text-primary fs-20"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">For Release</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-11">Process results ready for release.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="card-header p-0 border-0 bg-light-subtle">
+                    <div class="row g-0 text-center">
+                        <div class="col-12">
+                            <div class="p-3 border border-dashed border-start-0">
+                                <h5 class="mb-0 fs-14">{{ releases.length }}</h5>
+                                <p class="text-muted mb-0 fs-12">Count</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="shadow-none" no-body>
+                    <div class="table-responsive mb-2" style="height: 300px; overflow: auto;">
+                        <table class="table table-nowrap table-striped align-middle">
+                            <thead class="table-light thead-fixed">
+                                <tr class="fs-11">
+                                    <th class="text-center" width="10%">#</th>
+                                    <th>TSR Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                             
+                                <tr class="ribbon-box" v-for="(list,index) in releases" v-bind:key="index" @click="renderPdf(list,index)">
+                                    <td class="text-center">{{  index + 1 }}.</td>
+                                    <td>
+                                        <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.code}}</h5>
+                                        <p class="fs-11 text-muted mb-0">{{list.customer.fullname}}</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            
         </div>
     </BRow>
 </template>
@@ -310,6 +536,10 @@ export default {
             month: new Date().getMonth() + 1,
             counts: [],
             laboratories: [],
+            releases: [],
+            moa: [],
+            serves: [],
+            dues: [],
             index: null,
             selectedRow: null,
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
@@ -325,6 +555,34 @@ export default {
             this.fetch();
             this.fetchCounts();
         },
+    },
+    computed: {
+        totalIncome() {
+            return this.moa.reduce((sum, sample) => {
+                const fee = String(sample.payment.total || 0)
+                    .replace(/₱/g, '')
+                    .replace(/,/g, '');
+
+                return sum + Number(fee);
+            }, 0);
+        },
+        totalOverall() {
+            return this.laboratories.reduce(
+                (sum, lab) => sum + Number(lab.overall || 0),
+                0
+            );
+        },
+        totalOngoing() {
+            return this.laboratories.reduce(
+                (sum, lab) => sum + Number(lab.ongoing || 0),
+                0
+            );
+        },
+       overallPercentage() {
+    return this.totalOverall > 0
+        ? (this.totalOngoing / this.totalOverall) * 100
+        : 0;
+}
     },
     methods: {
         checkSearchStr: _.debounce(function(string) {
@@ -364,6 +622,10 @@ export default {
                 if(response){
                     this.laboratories = response.data.laboratories;  
                     this.counts = response.data.counts;      
+                    this.releases = response.data.release;
+                    this.moa = response.data.moa;
+                    this.serves = response.data.serves;
+                    this.dues = response.data.dues;
                 }
             })
             .catch(err => console.log(err));
@@ -371,7 +633,30 @@ export default {
         openReminder(type){
             this.filter.reminder = type;
             this.fetch();
+        },
+        formatMoney(value) {
+            let val = (value / 1).toFixed(2).replace(',', '.');
+            return '₱' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
     }
 }
 </script>
+<style scoped>
+.donut-chart {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.donut-inner {
+    position: absolute;
+    inset: 8px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 10px;
+}</style>

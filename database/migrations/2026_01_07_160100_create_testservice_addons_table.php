@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description');
             $table->integer('old_id')->nullable();
             $table->boolean('is_additional')->default(0);
+            $table->boolean('is_child')->default(1);
             $table->boolean('is_active')->default(1);
             $table->unsignedInteger('typeable_id');
             $table->string('typeable_type');

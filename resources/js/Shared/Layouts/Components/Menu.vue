@@ -31,7 +31,9 @@
                     <Link href="/signing" class="nav-link menu-link"
                     :class="{ 'active': $page.url === '/signing' }">
                     <i class="ri-quill-pen-fill"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Signing</span>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Signatory
+                        
+                    </span>
                     </Link>
                 </li>
                 <li class="menu-title">

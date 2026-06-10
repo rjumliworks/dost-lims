@@ -17,7 +17,7 @@ class CustomerResource extends JsonResource
             'tin' => $this->contact->tin,
             'name' => ($this->customer_name->has_branches) ? ($this->is_main) ? $this->customer_name->name :  $this->customer_name->name.' - '.$this->name : $this->customer_name->name,
             'address' => new AddressResource($this->address),
-            'industry' => ($this->industry) ? $this->industry->name : '',
+            'industry' => ($this->customer_name->industry) ? $this->customer_name->industry->name : '-',
             'wallet' => $this->wallet,
             'conformes' => ConformeResource::collection($this->conformes),
         ];
