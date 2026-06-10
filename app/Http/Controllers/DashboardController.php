@@ -11,6 +11,7 @@ use App\Services\Dashboard\AccountantClass;
 use App\Services\Dashboard\CommonClass;
 use App\Services\Dashboard\LabHeadClass;
 use App\Services\Dashboard\ReleasingClass;
+use App\Services\Dashboard\TechnicalManagerClass;
 use App\Services\AgencyClass;
 
 class DashboardController extends Controller
@@ -24,6 +25,7 @@ class DashboardController extends Controller
     protected AccountantClass $accountant;
     protected AgencyClass $agency;
     protected ReleasingClass $releasing;
+    protected TechnicalManagerClass $manager;
     
     public function __construct(
         CommonClass $common,
@@ -34,7 +36,8 @@ class DashboardController extends Controller
         DropdownClass $dropdown,
         AccountantClass $accountant,
         AgencyClass $agency,
-        ReleasingClass $releasing
+        ReleasingClass $releasing,
+        TechnicalManagerClass $manager
     ){
         $this->common = $common;
         $this->labhead = $labhead;
@@ -45,6 +48,7 @@ class DashboardController extends Controller
         $this->accountant = $accountant;
         $this->agency = $agency;
         $this->releasing = $releasing;
+        $this->manager = $manager;
     }
 
     public function index(Request $request){
@@ -112,6 +116,13 @@ class DashboardController extends Controller
                     break;
                     case 'Laboratory Head':
                         return inertia('Modules/Dashboard/LabHead/Index',[
+                            'dropdowns' => [
+                                'laboratories' => $this->agency->laboratories(),
+                            ]
+                        ]);
+                    break;
+                    case 'Technical Manager':
+                        return inertia('Modules/Dashboard/TechnicalManager/Index',[
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
                             ]
