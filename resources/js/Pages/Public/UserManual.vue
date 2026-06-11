@@ -18,7 +18,7 @@
                                         <p class="text-white fs-11"><span class="fw-semibold">One<span class="text-info">DOST</span>4U</span> : <span class="text-muted">Laboratory Information Management System</span></p>
                                     </div>
                                     <div class="flex-shrink-0">
-                                        <h5 class="mb-0 mt-2 fs-24 me-3 fw-semibold text-uppercase text-white">USER MANUAL</h5>
+                                        <h5 class="mb-0 mt-2 fs-24 me-3 fw-semibold text-uppercase text-white">USER MANUAL 1.0</h5>
                                     </div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                                 <h1 class="fs-22 fw-semibold mb-0 lh-base">Account Activation and <span class="text-success">First-Time Login Guide</span></h1>
                                                 <p class="lead fs-14 text-muted lh-base">This guide will help you complete account activation and successfully access the system for the first time.</p>
                                                
-                                                <div class="alert alert-warning material-shadow m-4 fs-12 mx-auto" role="alert" style="max-width: 750px;">
+                                                <div class="alert alert-info material-shadow m-4 fs-12 mx-auto" role="alert" style="max-width: 750px;">
                                                     <i class="ri-information-line me-1"></i>
                                                     <strong>Important Notice:</strong> <br /> The new Laboratory Information Management System (LIMS) will be accessible through <br/>
                                                     <strong class="text-danger fs-14">https://limsv3.dost9.ph</strong> starting on <strong class="text-danger fs-14">Monday, June 15, 2026</strong>. <br/> Please use this new link for all future access to the system.
