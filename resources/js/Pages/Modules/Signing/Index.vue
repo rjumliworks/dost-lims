@@ -42,7 +42,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="bg-white rounded-bottom shadow-none" style="height: calc(100vh - 292px);"" no-body v-else>
+                <div class="bg-white rounded-bottom shadow-none" style="height: calc(100vh - 292px);" no-body v-else>
                     <div class="row g-2 p-3">
                         <div class="col-sm-12">
                             <div class="p-1 border border-dashed rounded">

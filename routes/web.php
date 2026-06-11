@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Inertia\Inertia;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/usermanual', function () {
+    return Inertia::render('Public/UserManual');
+});
+
 Route::domain('gad.' . config('app.app_host'))->as('gad.')->group(function () {
     Route::get('/', [App\Http\Controllers\Others\GadController::class, 'index']);
     Route::get('/workforce', [App\Http\Controllers\Others\GadController::class, 'workforce']);
