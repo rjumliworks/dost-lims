@@ -245,7 +245,7 @@ export default {
                         '4.jpg','4-2.jpg'
                     ],
                     notice:
-                        'Use the photo where you are wearing the BLUE POLO UNIFORM. This image will be used for identification purposes within the system.'
+                        'Use the photo where you are wearing the ASEAN-Inspired Attire of RSTL. This image will be used for identification purposes within the system.'
                     },
                 {
                 title: 'Review and Activate Account',
