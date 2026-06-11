@@ -259,7 +259,7 @@ export default {
                         'Your account is now active and ready to use.'
                     ],
                     images: [
-                        '7.jpg'
+                        '6.jpg'
                         ],
                     }
             ]
