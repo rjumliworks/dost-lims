@@ -242,7 +242,7 @@ export default {
                         'Click "Next" button'
                     ],
                     images: [
-                        '4.jpg','4-1.jpg'
+                        '4.jpg','4-2.jpg'
                     ],
                     notice:
                         'Use the photo where you are wearing the BLUE POLO UNIFORM. This image will be used for identification purposes within the system.'
