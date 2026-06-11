@@ -42,7 +42,7 @@
 
             <BCol lg="3">
                 <div class="subscribe-modals-cover h-100">
-                    <img src="images/auth-one-bg.jpg" alt=""
+                    <img src="images/aw.jpg" alt=""
                     class="h-100 w-100 object-fit-cover"
                     style="clip-path: polygon(100% 0%, 100% 100%, 100% 100%, 0% 100%, 25% 50%, 0% 0%);">
                 </div>
