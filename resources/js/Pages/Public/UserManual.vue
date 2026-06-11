@@ -13,10 +13,6 @@
                                         <img src="@assets/images/logo-sm.png" alt="" class="avatar-sm">
                                         </div>
                                     </div>
-                                    <!-- <div class="flex-grow-1">
-                                        <h5 class="mb-0 mt-2 fs-14"><span class="text-white fw-semibold text-uppercase fs-13">Department Of Science and Technology</span></h5>
-                                        <p class="text-white fs-11">Unified Information Management System</p>
-                                    </div> -->
                                      <div class="flex-grow-1">
                                         <h5 class="mb-0 mt-2 fs-14 fw-semibold text-uppercase text-white" style="font-size: 10.7px">DEPARTMENT OF SCIENCE AND TECHNOLOGY</h5>
                                         <p class="text-white fs-11"><span class="fw-semibold">One<span class="text-info">DOST</span>4U</span> : <span class="text-muted">Laboratory Information Management System</span></p>
@@ -34,6 +30,16 @@
                                             <div class="text-center mt-lg-5">
                                                 <h1 class="fs-22 fw-semibold mb-0 lh-base">Account Activation and <span class="text-success">First-Time Login Guide</span></h1>
                                                 <p class="lead fs-14 text-muted lh-base">This guide will help you complete account activation and successfully access the system for the first time.</p>
+                                               
+                                                <div class="alert alert-warning material-shadow m-4 fs-12 mx-auto" role="alert" style="max-width: 750px;">
+                                                    <i class="ri-information-line me-1"></i>
+                                                    <strong>Important Notice:</strong> <br /> The new Laboratory Information Management System (LIMS) will be accessible through <br/>
+                                                    <strong class="text-danger fs-14">https://limsv3.dost9.ph</strong> starting on <strong class="text-danger fs-14">Monday, June 15, 2026</strong>. <br/> Please use this new link for all future access to the system.
+                                                </div>
+
+                                                 <div class="d-flex gap-2 justify-content-center mt-4">
+                                                    <a href="login" target="_blank" class="btn btn-primary fs-12">Click here to login</a>
+                                                </div>
                                             </div>
                                         </div>
 
