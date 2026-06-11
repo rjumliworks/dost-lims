@@ -118,5 +118,6 @@ export default {
             </p>
         </div>
     </b-modal>
-    <Survey v-if="showSurveyModal" v-model="surveyRequired"  @success="handleSurveySubmit"/>
+    <Survey   @success="handleSurveySubmit"/> 
+    <!-- v-if="showSurveyModal" v-model="surveyRequired" -->
 </template>
