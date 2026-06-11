@@ -5,15 +5,23 @@ import Vertical from "./Vertical.vue";
 import Horizontal from "./Horizontal.vue";
 import HorizontalGad from "./HorizontalGad.vue";
 import TwoColumns from "./Twocolumn.vue";
+import Survey from './Components/Survey.vue';
 export default {
     components: {
         Vertical,
         Horizontal,
         HorizontalGad,
-        TwoColumns
+        TwoColumns,
+        Survey
+    },
+    created() {
+        this.surveyRequired = true;
     },
     computed: {
         ...layoutComputed,
+        showSurveyModal() {
+            return this.surveyRequired === true;
+        },
         customer() {
             return this.$page.props.customer;
         },
@@ -63,6 +71,10 @@ export default {
                 this.changeTopbar({ topbar: "dark" });
             }
         },
+        handleSurveySubmit() {
+            this.surveyRequired = false;
+            this.showSurveyModal = false;
+        }
     }
 };
 </script>
@@ -106,4 +118,5 @@ export default {
             </p>
         </div>
     </b-modal>
+    <Survey v-if="showSurveyModal" v-model="surveyRequired"  @success="handleSurveySubmit"/>
 </template>
