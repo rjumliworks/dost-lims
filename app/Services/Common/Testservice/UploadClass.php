@@ -110,18 +110,22 @@ class UploadClass
                     'method_id' => $methodCombo->id,
                     'laboratory_id' => $request->laboratory_id
                 ])->first();
-
+                $laboratory_id = $request->laboratory_id;
                 if ($existing) {
 
                     foreach ($row['names'] as $name) {
                         $type_id = SampleName::where('name', $name)->value('type_id');
 
-                        $sampleRecord = SampleType::where('id', $type_id)->first();
+                        $sampleRecord = SampleType::where('id', $type_id)
+                        ->whereHas('category', function ($q) use ($laboratory_id) {
+                            $q->where('laboratory_id', $laboratory_id);
+                        })
+                        ->first();
 
                         if ($sampleRecord) {
                             // Laravel automatically sets sampleable_id and sampleable_type here
                             $exists = $sampleRecord->services()
-                                ->where('testservice_id', $service->id)
+                                ->where('testservice_id', $existing->id)
                                 ->exists();
 
                             if (!$exists) {
@@ -165,19 +169,23 @@ class UploadClass
                     foreach ($row['names'] as $name) {
                         $type_id = SampleName::where('name', $name)->value('type_id');
 
-                        $sampleRecord = SampleType::where('id', $type_id)->first();
+                        $sampleRecord = SampleType::where('id', $type_id)
+                        ->whereHas('category', function ($q) use ($laboratory_id) {
+                            $q->where('laboratory_id', $laboratory_id);
+                        })
+                        ->first();
 
                         if ($sampleRecord) {
                             // Laravel automatically sets sampleable_id and sampleable_type here
                             $exists = $sampleRecord->services()
-    ->where('testservice_id', $service->id)
-    ->exists();
+                                ->where('testservice_id', $service->id)
+                                ->exists();
 
-if (!$exists) {
-    $sampleRecord->services()->create([
-        'testservice_id' => $service->id
-    ]);
-}
+                            if (!$exists) {
+                                $sampleRecord->services()->create([
+                                    'testservice_id' => $service->id
+                                ]);
+                            }
                         }else{
                             $results['unknown'][] = $name;
                         }

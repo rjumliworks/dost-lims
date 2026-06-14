@@ -140,6 +140,7 @@ export default {
                 conforme: null,
                 laboratory: null,
                 laboratory_id: null,
+                facility_id: null,
                 release_id: null,
                 purpose_id: null,
                 discount_id: null,
@@ -246,11 +247,11 @@ export default {
 
             this.form.post('/tsrs', {
                 preserveScroll: true,
+                preserveState: false,
                 onSuccess: () => {
                     this.names = [];
                     this.$emit('success',this.$page.props.flash.data);
                     this.hide();
-                    this.$refs.confirm.hide();
                 }
             });
         },
@@ -293,6 +294,7 @@ export default {
         },
         hide(){
             this.form.reset();
+            this.form.clearErrors();
             this.editable = false;
             this.showModal = false;
         }

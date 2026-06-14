@@ -64,8 +64,8 @@
                     <b-col lg>
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                            <!-- <Multiselect class="white" @search-change="checkSearchSample" style="width: 45%;" :options="sampletypes" v-model="sampletype" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/> -->
                             <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 40%;">
+                            <Multiselect class="white" @search-change="checkSearchSample" :can-clear="false" :can-deselect="false" style="width: 45%;" :options="['Tagged to Sample','Not Tagged to Sample']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
                             <b-button type="button" variant="primary">
                                 <i class="ri-search-eye-line align-bottom me-1"></i> 
                             </b-button>
@@ -78,12 +78,12 @@
                     <div>
                         <table class="table table-centered table-bordered table-nowrap mb-0">
                             <tbody>
-                                <tr v-for="(list,index) in sortedTestservices" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
+                                <tr class="align-middle" v-for="(list,index) in sortedTestservices" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
                                     <td style="width: 7%;" class="text-center"> 
                                         <input class="form-check-input me-1" type="checkbox" :checked="isItemChecked(list.id)" @change="toggleChecked(list,$event)">
                                     </td>
                                     <td style="width: 25%;" class="text-center fs-11">{{list.testname}}</td>
-                                    <td style="width: 53%;" class="text-center fs-11">{{list.method}} <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span></td>
+                                    <td style="width: 53%;" class="text-center fs-11">{{list.method}}<br /> <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span></td>
                                     <td style="width: 15%;" class="text-center fs-11">{{list.fee}}</td>
                                 </tr>
                             </tbody>
@@ -119,6 +119,7 @@ export default {
             }),
             filter: {
                 keyword: null,
+                type: 'Tagged to Sample'
             },
             testservices: [],
             selected: {},
@@ -126,6 +127,18 @@ export default {
             sampletypes: [],
             type: null,
             showModal: false
+        }
+    },
+    watch: {
+        'filter.keyword'(newVal) {
+            if(this.filter.type != 'Tagged to Sample'){
+                this.checkSearchStr(newVal)
+            }
+        },
+        'filter.type'(val){
+            this.filter.keyword = null;
+            this.testservices = [];
+            this.fetchTest();
         }
     },
     computed: {
@@ -194,6 +207,9 @@ export default {
         amount(val){
             this.form.fee = val;
         },
+        checkSearchStr: _.debounce(function(string) {
+            this.fetchTest();
+        }, 300),
         fetchTest(code){
             axios.get('/analyses',{
                 params: {
@@ -201,6 +217,7 @@ export default {
                     laboratory_id: this.form.laboratory_id,
                     sampletypes: this.sampletypes,
                     ids: this.checkedItems.map(item => item.id),
+                    type: this.filter.type,
                     keyword: this.filter.keyword,
                 }
             })
@@ -223,7 +240,7 @@ export default {
             this.checkedItems = [];
             this.testservices = [];
             this.form.fee = null;
-            // this.$refs.multiselectS.clear();
+            this.$refs.multiselectS.clear();
             this.form.reset();
             this.form.clearErrors();
             this.editable = false;

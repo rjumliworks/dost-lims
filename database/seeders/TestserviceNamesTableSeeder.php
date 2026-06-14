@@ -4166,6 +4166,19 @@ class TestserviceNamesTableSeeder extends Seeder
                 'created_at' => '2026-05-28 15:16:38',
                 'updated_at' => '2026-05-28 15:16:38',
             ),
+            319 => 
+            array (
+                'id' => 320,
+                'name' => 'Electrical Simulation using 3 V AC Source',
+                'short' => NULL,
+                'is_active' => 1,
+                'type_id' => 31,
+                'laboratory_id' => 3,
+                'agency_id' => 14,
+                'added_by' => 2,
+                'created_at' => '2026-06-14 15:47:16',
+                'updated_at' => '2026-06-14 15:47:16',
+            ),
         ));
         
         

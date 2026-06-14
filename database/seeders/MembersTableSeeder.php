@@ -6,8 +6,9 @@ use Illuminate\Database\Seeder;
 
 class MembersTableSeeder extends Seeder
 {
+
     /**
-     * Auto generated seeder file.
+     * Auto generated seed file
      *
      * @return void
      */
@@ -129,7 +130,7 @@ class MembersTableSeeder extends Seeder
             9 => 
             array (
                 'id' => 10,
-                'name' => 'Department of Science and Technology - IX',
+                'name' => 'Department of Science and Technology - Zamboanga Peninsula',
                 'acronym' => 'DOST-IX',
                 'website' => 'http://region9.dost.gov.ph/',
                 'avatar' => 'dost.png',
@@ -439,7 +440,7 @@ class MembersTableSeeder extends Seeder
                 'updated_at' => '2021-01-31 02:27:57',
             ),
         ));
-
+        
         
     }
 }

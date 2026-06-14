@@ -22,7 +22,7 @@ class TsrSequencesTableSeeder extends Seeder
             0 => 
             array (
                 'id' => 1,
-                'next_sequence' => 1,
+                'next_sequence' => 241,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
@@ -34,7 +34,7 @@ class TsrSequencesTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'next_sequence' => 1,
+                'next_sequence' => 276,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
@@ -46,7 +46,7 @@ class TsrSequencesTableSeeder extends Seeder
             2 => 
             array (
                 'id' => 3,
-                'next_sequence' => 1,
+                'next_sequence' => 505,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
@@ -58,7 +58,7 @@ class TsrSequencesTableSeeder extends Seeder
             3 => 
             array (
                 'id' => 4,
-                'next_sequence' => 1,
+                'next_sequence' => 18,
                 'year' => 2026,
                 'type_id' => 9,
                 'facility_id' => 1,
@@ -70,7 +70,7 @@ class TsrSequencesTableSeeder extends Seeder
             4 => 
             array (
                 'id' => 5,
-                'next_sequence' => 1,
+                'next_sequence' => 626,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
@@ -82,7 +82,7 @@ class TsrSequencesTableSeeder extends Seeder
             5 => 
             array (
                 'id' => 6,
-                'next_sequence' => 1,
+                'next_sequence' => 739,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
@@ -94,7 +94,7 @@ class TsrSequencesTableSeeder extends Seeder
             6 => 
             array (
                 'id' => 7,
-                'next_sequence' => 1,
+                'next_sequence' => 1378,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
@@ -106,7 +106,7 @@ class TsrSequencesTableSeeder extends Seeder
             7 => 
             array (
                 'id' => 8,
-                'next_sequence' => 1,
+                'next_sequence' => 112,
                 'year' => 2026,
                 'type_id' => 10,
                 'facility_id' => 1,
@@ -118,7 +118,7 @@ class TsrSequencesTableSeeder extends Seeder
             8 => 
             array (
                 'id' => 9,
-                'next_sequence' => 1,
+                'next_sequence' => 516,
                 'year' => 2026,
                 'type_id' => 11,
                 'facility_id' => 1,
@@ -130,7 +130,7 @@ class TsrSequencesTableSeeder extends Seeder
             9 => 
             array (
                 'id' => 10,
-                'next_sequence' => 1,
+                'next_sequence' => 666,
                 'year' => 2026,
                 'type_id' => 11,
                 'facility_id' => 1,
@@ -142,7 +142,7 @@ class TsrSequencesTableSeeder extends Seeder
             10 => 
             array (
                 'id' => 11,
-                'next_sequence' => 1,
+                'next_sequence' => 733,
                 'year' => 2026,
                 'type_id' => 11,
                 'facility_id' => 1,
@@ -154,7 +154,7 @@ class TsrSequencesTableSeeder extends Seeder
             11 => 
             array (
                 'id' => 12,
-                'next_sequence' => 1,
+                'next_sequence' => 92,
                 'year' => 2026,
                 'type_id' => 11,
                 'facility_id' => 1,
@@ -166,7 +166,7 @@ class TsrSequencesTableSeeder extends Seeder
             12 => 
             array (
                 'id' => 13,
-                'next_sequence' => 1,
+                'next_sequence' => 338,
                 'year' => 2026,
                 'type_id' => 12,
                 'facility_id' => 1,

@@ -13,56 +13,33 @@ class ViewClass
     public function dashboard($request, $laboratories){
         return [
             'laboratories' => $this->laboratories($laboratories,$request),
-            'counts' => $this->counts($laboratories,$request),
             'release' => $this->release($request),
             'moa' => $this->moa($request),
-            'serves' => $this->serves($request),
-            'dues' => $this->dues($request)
+            'counts' => $this->counts($request),
+            'dues' => $this->dues($request),
+            'alerts' => $this->alerts($laboratories,$request),
         ];
     }
 
-    public function counts($laboratories,$request){
-        $year = $request->year;
-        return [
-            [
-                'name' => 'Memorandum of Agreement',
-                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))->whereIn('status_id',[3,4])->whereHas('payment', function ($query) { $query->where('status_id',18)->where('paid_at',null); })->whereYear('created_at', $year)->count(),
-                'icon' => 'ri-error-warning-fill text-warning',
-                'type' => 'Memorandum of Agreement (MOA)'
-            ],
-            [
-                'name' => 'Ongoing Analyses',
-                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))->where('status_id', 3)->whereHas('samples.analyses', function ($q) {
-                            $q->whereIn('status_id', [10,11]);
-                        })->whereYear('created_at', $year)->count(),
-                'icon' => 'ri-time-fill text-info',
-                'type' => 'Ongoing Analyses'
-            ],
-            [
-                'name' => 'Pending Report',
-                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))->where('status_id', 4)
-                ->whereHas('samples',function ($query){
-                    $query->whereDoesntHave('report')->whereHas('analyses', function ($query) {
-                        $query->where('status_id', 12);
-                    });
-                })
-                ->whereYear('created_at', $year)->count(),
-                'icon' => 'ri-close-circle-fill text-danger',
-                'type' => 'Completed with no report number'
-            ],
-        ];
-    }
-
+    
     public function laboratories($laboratories,$request){
-        $year = $request->year ?? Carbon::now()->year;
-        return $laboratories->map(function ($lab) use ($year) {
+        $year = $request->year;
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
+
+        return $laboratories->map(function ($lab) use ($year,$month) {
             $overall = Tsr::where('laboratory_id', $lab['value'])
                 ->whereIn('status_id', [3,4])
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at',$month);
+                }) 
                 ->whereYear('created_at', $year)
                 ->count();
 
             $ongoing = Tsr::where('laboratory_id', $lab['value'])
                 ->where('status_id', 3)
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at',$month);
+                }) 
                 ->whereYear('created_at', $year)
                 ->count();
 
@@ -80,6 +57,8 @@ class ViewClass
     }
 
     public function list($request){
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
+
         $data = MonitoringResource::collection(
             Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
@@ -116,7 +95,9 @@ class ViewClass
                 $query->whereDate($request->datetype, $request->date);
             })
             ->when($request->laboratory , function ($query, $labtype ) {
-                (is_array($labtype)) ?  $query->whereIn('laboratory_id',$labtype ) : $query->where('laboratory_id',$labtype );
+                // (is_array($labtype)) ?  
+                $query->where('laboratory_id',$labtype );
+                // : $query->where('laboratory_id',$labtype );
             }) 
             ->when($request->reminder, function ($query, $reminder) {
                 switch($reminder){
@@ -129,7 +110,7 @@ class ViewClass
                         $query->whereBetween('due_at', [Carbon::now()->startOfDay(), Carbon::now()->addDays(5)->endOfDay()])->where('status_id','!=',4);
                     break;
                     case 'Overdue Request':
-                        $query->whereNotIn('status_id',[4,5])->whereDate('due_at','<',Carbon::now());
+                        $query->whereDate('due_at','<',Carbon::now());
                     break;
                     case 'Report Pending':
                         $query->whereHas('samples',function ($query){
@@ -164,6 +145,9 @@ class ViewClass
             ->when($request->type, function ($query, $type) {
                 ($type == 'Referral') ? $query->where('is_referral',1) : $query->where('is_referral', 0);
             })
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at', $month);
+            })
             ->when($request->year, function ($query, $year) {
                 $query->whereYear('created_at', $year);
             })
@@ -189,6 +173,7 @@ class ViewClass
     }
 
     public function release($request){
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
         $data =  Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
             ->with('laboratory:id,name','status:id,name,color,others')
@@ -220,12 +205,23 @@ class ViewClass
                             ->orWhere('code', '');
                     });
                 });
-            })->get();
+            })
+            ->when($request->laboratory, function ($query, $laboratory) {
+                $query->where('laboratory_id', $laboratory);
+            })
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at', $month);
+            })
+            ->when($request->year, function ($query, $year) {
+                $query->whereYear('created_at', $year);
+            })
+            ->get();
 
         return $data;
     }
 
     public function moa($request){
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
         $data =  Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
             ->with('laboratory:id,name','status:id,name,color,others')
@@ -249,13 +245,24 @@ class ViewClass
                 $query->where('status_id', 18)
                     ->whereNull('paid_at');
             })
+            ->when($request->laboratory, function ($query, $laboratory) {
+                $query->where('laboratory_id', $laboratory);
+            })
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at', $month);
+            })
+            ->when($request->year, function ($query, $year) {
+                $query->whereYear('created_at', $year);
+            })
            ->get();
 
         return $data;
     }
 
-    public function serves($request){
+    public function counts($request){
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
         $year = $request->year;
+        $laboratory = $request->laboratory;
         return [
             [
                 'name' => 'Customer Served',
@@ -276,6 +283,12 @@ class ViewClass
                             ->whereNull('paid_at');
                     });
                 })
+                ->when($request->laboratory, function ($query, $laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at', $month);
+                })
                 ->whereYear('created_at',$year)->count(),
                 'color' => 'text-primary',
                 'info' => 'Number of customers with ongoing TSRs.'
@@ -283,8 +296,15 @@ class ViewClass
             [
                 'name' => 'Samples Received',
                 'icon' => 'ri-inbox-archive-fill',
-                'count' => TsrSample::whereYear('created_at',$year)->whereHas('tsr', function ($query){
-                    $query->where('status_id',3)
+                'count' => TsrSample::whereYear('created_at',$year)
+                ->whereHas('tsr', function ($query) use ($year,$month,$laboratory){
+                    $query->where('status_id',3)->whereYear('created_at', $year)
+                    ->when($month, function ($query, $month) {
+                        $query->whereMonth('created_at', $month);
+                    })
+                    ->when($laboratory, function ($query, $laboratory) {
+                        $query->where('laboratory_id', $laboratory);
+                    })
                     ->where(function ($query) {
                         $query->whereHas('samples', function ($query) {
                             $query->where(function ($q) {
@@ -307,9 +327,15 @@ class ViewClass
             [
                 'name' => 'Services Conducted',
                 'icon' => 'ri-flask-fill',
-                'count' => TsrAnalysis::whereYear('created_at',$year)->whereHas('sample', function ($query){
-                    $query->whereHas('tsr', function ($query){
-                        $query->where('status_id',3)
+                'count' => TsrAnalysis::whereYear('created_at',$year)->whereHas('sample', function ($query) use ($year,$month,$laboratory){
+                    $query->whereHas('tsr', function ($query) use ($year,$month,$laboratory){
+                    $query->where('status_id',3)->whereYear('created_at', $year)
+                        ->when($month, function ($query, $month) {
+                            $query->whereMonth('created_at', $month);
+                        })
+                        ->when($laboratory, function ($query, $laboratory) {
+                            $query->where('laboratory_id', $laboratory);
+                        })
                         ->where(function ($query) {
                             $query->whereHas('samples', function ($query) {
                                 $query->where(function ($q) {
@@ -335,7 +361,10 @@ class ViewClass
     }
 
     public function dues($request){
-         $year = $request->year;
+        $year = $request->year;
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
+        $laboratory = $request->laboratory;
+
         return [
             [
                 'name' => 'Due Soon',
@@ -356,9 +385,19 @@ class ViewClass
                             ->whereNull('paid_at');
                     });
                 })
+                ->when($laboratory, function ($query, $laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at', $month);
+                })
+                ->when($request->year, function ($query, $year) {
+                    $query->whereYear('created_at', $year);
+                })
                 ->whereIn('status_id',[3,4])->count(),
                 'color' => 'text-warning',
-                'info' => '5 days ahead of the due date'
+                'info' => '5 days ahead of the due date',
+                'type' => 'Due Soon'
             ],
             [
                 'name' => 'Overdue Request',
@@ -369,8 +408,7 @@ class ViewClass
                         $query->where(function ($q) {
                             $q->whereDoesntHave('report')
                             ->orWhereHas('report', function ($q) {
-                                $q->whereNull('code')
-                                ->orWhere('code', '');
+                                $q->whereNull('code')->orWhere('code', '');
                             });
                         });
                     })
@@ -379,10 +417,86 @@ class ViewClass
                             ->whereNull('paid_at');
                     });
                 })
-                ->where('status_id',3)->count(),
+                ->when($laboratory, function ($query, $laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at', $month);
+                })
+                ->when($request->year, function ($query, $year) {
+                    $query->whereYear('created_at', $year);
+                })
+                ->whereIn('status_id',[3,4])->count(),
                 'color' => 'text-danger',
-                'info' => 'Due date has already passed'
+                'info' => 'Due date has already passed',
+                'type' => 'Overdue Request'
             ]
         ];            
     }
+
+    public function alerts($laboratories,$request){
+        $year = $request->year;
+        $month = $request->month ? Carbon::parse($request->month)->month : null;
+        $laboratory = $request->laboratory;
+
+        return [
+            [
+                'name' => 'Memorandum of Agreement',
+                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))
+                ->whereIn('status_id',[3,4])
+                ->whereHas('payment', function ($query) { 
+                    $query->where('status_id',18)->where('paid_at',null); 
+                })
+                ->when($laboratory, function ($query, $laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at', $month);
+                })
+                ->whereYear('created_at', $year)->count(),
+                'icon' => 'ri-error-warning-fill text-warning',
+                'type' => 'Memorandum of Agreement (MOA)',
+                'info' => 'Total samples currently being processed.'
+            ],
+            [
+                'name' => 'Ongoing Analyses',
+                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))
+                ->where('status_id', 3)
+                ->whereHas('samples.analyses', function ($q) {
+                    $q->whereIn('status_id', [10,11]);
+                })
+                ->when($laboratory, function ($query, $laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at', $month);
+                })
+                ->whereYear('created_at', $year)->count(),
+                'icon' => 'ri-time-fill text-info',
+                'type' => 'Ongoing Analyses',
+                'info' => 'Total samples currently being processed.'
+            ],
+            [
+                'name' => 'Pending Report',
+                'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))
+                ->where('status_id', 4)
+                ->whereHas('samples',function ($query){
+                    $query->whereDoesntHave('report')->whereHas('analyses', function ($query) {
+                        $query->where('status_id', 12);
+                    });
+                })
+                ->when($laboratory, function ($query, $laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($month, function ($query, $month) {
+                    $query->whereMonth('created_at', $month);
+                })
+                ->whereYear('created_at', $year)->count(),
+                'icon' => 'ri-close-circle-fill text-danger',
+                'type' => 'Completed with no report number',
+                'info' => 'Total samples currently being processed.'
+            ],
+        ];
+    }
+
 }
