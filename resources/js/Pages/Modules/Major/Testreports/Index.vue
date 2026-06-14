@@ -153,7 +153,7 @@
             </div>
         </div>
     </BRow>
-    <Create @update="fetch()" ref="create"/>
+    <Create :year="filter.year" :laboratory="this.laboratories[0].value" @update="fetch()" ref="create"/>
     <View ref="view"/>
 </template>
 <script>
@@ -174,7 +174,7 @@ export default {
             links: {},
             filter: {
                 keyword: null,
-                laboratory: null,
+                laboratory: this.laboratories[0].value,
                 analyst: null,
                 status: 'with',
                 year: new Date().getFullYear(),

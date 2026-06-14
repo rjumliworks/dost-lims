@@ -11,7 +11,6 @@
                     v-model="selected" 
                     object label="name"
                     :searchable="true" 
-                    @input="handleInput('sample')"
                     placeholder="Select Sample"/>
                 </BCol>
                 <BCol lg="12">
@@ -109,6 +108,7 @@ import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
     components: { Multiselect, InputLabel, TextInput, simplebar, Confirm },
+    props: ['year','laboratory'],
     data(){
         return {
             currentUrl: window.location.origin,
@@ -130,11 +130,17 @@ export default {
         mark(){
             if(this.mark){
                 this.selected.related.forEach(item => {
-                    item.selected = true;
-                    this.checked.push(item.value);
+                    // item.selected = true;
+                    // this.checked.push(item.value);
+                    if (!item.report) { // only select if report is empty/null
+                        item.selected = true;
+                        this.checked.push(item.value);
+                    }
                 });
-                this.selected.selected = true;
-                this.checked.push(this.selected.value);
+                if (!this.selected.report) {
+                    this.selected.selected = true;
+                    this.checked.push(this.selected.value);
+                }
             }else{
                 if(this.selected){
                     this.selected.related.forEach(item => {
@@ -148,7 +154,7 @@ export default {
     },
     methods: { 
         checkSearchStr: _.debounce(function(string) {
-            this.fetchSample();
+            this.fetchSample(string);
         }, 300),
         show(){
             this.mark = null;
@@ -176,16 +182,20 @@ export default {
             });
         },
         fetchSample(code){
-            axios.get('/testreports',{
-                params: {
-                    option: 'samples',
-                    keyword: code
-                }
-            })
-            .then(response => {
-                this.samples.unshift(response.data);
-            })
-            .catch(err => console.log(err));
+            if(code){
+                axios.get('/testreports',{
+                    params: {
+                        option: 'reports',
+                        year: this.year,
+                        laboratory: this.laboratory,
+                        keyword: code
+                    }
+                })
+                .then(response => {
+                    this.samples = response.data;
+                })
+                .catch(err => console.log(err));
+            }
         },
         toggleChecked(event, item, index) {
             const isChecked = event.target.checked;
@@ -218,7 +228,8 @@ export default {
                     relatedItem.report = relatedMatch.code;
                 }
             });
-
+            this.mark = null;
+            this.checked = [];
             this.$emit('update',true);
         },
         handleInput(field) {

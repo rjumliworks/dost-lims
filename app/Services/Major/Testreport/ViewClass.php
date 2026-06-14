@@ -161,6 +161,55 @@ class ViewClass
         return $data;
     }
 
+    public function reports($request){
+        $code = $request->keyword;
+        $year = $request->year;
+        $laboratory = $request->laboratory;
+
+        $data = TsrSample::with('tsr')
+            ->whereHas('tsr', function ($query) use ($year,$laboratory){
+                $query->whereYear('created_at',$year)->where('laboratory_id',$laboratory);
+            })
+            ->when($code, function ($query) use ($code){
+                $query->where('code', 'LIKE', "%{$code}%");
+            })
+            ->whereYear('created_at','!=',2024)
+            ->where('is_completed', 1)
+            ->doesntHave('report')
+            ->whereHas('analyses', function ($query) {
+                $query->where('status_id', 12);
+            })
+            ->get()->map(function ($item) {
+                $tsr = $item->tsr_id;
+                $related = TsrSample::with('tsr')->whereHas('tsr', function ($query) use ($tsr){
+                    $query->where('id',$tsr);
+                })
+                ->where('is_completed', 1)
+                ->doesntHave('report')
+                ->whereHas('analyses', function ($query) {
+                    $query->where('status_id', 12);
+                })
+                ->where('id', '!=', $item->id)
+                ->get()->map(function ($item1) {
+                    return [
+                        'value' => $item1->id,
+                        'report' => null,
+                        'name' => $item1->code,
+                        'selected' => null
+                    ];
+                });
+            return [
+                'value' => $item->id,
+                'report' => null,
+                'name' => $item->code,
+                'related' => $related,
+                'selected' => null,
+                'laboratory_id' => $item->tsr->laboratory_id
+            ];
+        });
+        return $data;
+    }
+
 
     // public function samples($request){
 

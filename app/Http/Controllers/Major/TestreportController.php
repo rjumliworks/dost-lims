@@ -31,6 +31,9 @@ class TestreportController extends Controller
             case 'samples':
                 return $this->view->samples($request);
             break;
+            case 'reports':
+                return $this->view->reports($request);
+            break;
             case 'qrcode':
                 return $this->view->qrcode($request);
             break;
