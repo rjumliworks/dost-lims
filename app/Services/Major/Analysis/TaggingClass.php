@@ -106,7 +106,12 @@ class TaggingClass
                     $q->where('code', 'LIKE', "%{$keyword}%");
                 });
                 $q->select('id', 'code', 'laboratory_id', 'due_at');
-                $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories)->where('status_id',3);
+                // $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories)->where('status_id',3);
+                if($request->laboratory){
+                    $q->where('laboratory_id', $request->laboratory)->where('status_id',3);
+                }else{
+                    $q->whereIn('laboratory_id', $laboratories)->where('status_id',3);
+                }
                 if ($request->month) $q->whereMonth('due_at', $request->month);
                 $q->when($request->year, function ($query, $year) {
                     $query->whereYear('created_at', $year);
@@ -193,7 +198,12 @@ class TaggingClass
             ->pluck('laboratory_id');
         return TsrSample::query()
             ->withWhereHas('tsr', function ($q) use ($request, $laboratories) {
-                $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories);
+                // $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories);
+                if($request->laboratory){
+                    $q->where('laboratory_id', $request->laboratory);
+                }else{
+                    $q->whereIn('laboratory_id', $laboratories);
+                }
                 if ($request->month) $q->whereMonth('due_at', $request->month);
                 $q->when($request->year, function ($query, $year) {
                     $query->whereYear('created_at', $year);
