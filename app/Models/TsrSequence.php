@@ -52,8 +52,9 @@ class TsrSequence extends Model
                     return "{$agencyCode}-{$monthYear}-{$labCode}-{$seqStr}";
                 break;
                 case 10:
+                    $year = date('Y');
                     $seqStr = str_pad($next, 5, '0', STR_PAD_LEFT);
-                    return "{$agencyCode}-{$labCode}-{$seqStr}";
+                    return "{$labCode}-{$seqStr}-{$year}{$agencyCode}";
                 break;
                 case 11:
                     $monthDateYear = date('m').date('d'). $year;
