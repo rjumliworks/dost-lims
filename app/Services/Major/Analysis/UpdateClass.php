@@ -7,7 +7,7 @@ use App\Models\TsrSample;
 use App\Models\TsrAnalysis;
 use App\Models\TsrSampleDisposal;
 use App\Http\Resources\Major\Tsr\SampleResource;
-use App\Http\Resources\Major\TsR\AnalysisResource;
+use App\Http\Resources\Major\Tsr\AnalysisResource;
 
 class UpdateClass
 {
