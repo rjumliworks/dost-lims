@@ -180,4 +180,12 @@ class DashboardController extends Controller
             break;
         }
     }
+
+    public function analyst(Request $request){
+        return inertia('Modules/Dashboard/Analyst/Index',[
+            'reminders' => $this->analyst->reminders($request),
+            'tasks' => $this->analyst->tasks($request),
+            'laboratories' => $this->analyst->laboratories($request)
+        ]);
+    }
 }

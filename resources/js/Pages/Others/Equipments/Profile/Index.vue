@@ -17,7 +17,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h5 class="mb-0 fs-14"><span class="text-body">Item Transaction Logs</span></h5>
+                                    <h5 class="mb-0 fs-14"><span class="text-body">Equipment Logs</span></h5>
                                     <p class="text-muted text-truncate-two-lines fs-12">A comprehensive list of all TSRs (Test Service Requests) and Conformes, including their statuses and associated details.</p>
                                 </div>
                             </div>
@@ -37,7 +37,7 @@
                         </div>
                         <div class="card-body bg-white rounded-bottom">
                             <div class="table-responsive table-card">
-                                <simplebar data-simplebar style="max-height: 200px;">
+                                <simplebar data-simplebar style="max-height: 500px;">
                                     <table class="table table-bordered table-nowrap align-middle mb-0">
                                         <thead class="table-primary thead-fixed">
                                             <tr class="fs-11">
