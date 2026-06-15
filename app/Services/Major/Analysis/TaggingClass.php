@@ -63,7 +63,12 @@ class TaggingClass
                 ->whereHas('sample', function($q) use ($request, $laboratories) {
                     $q->whereHas('tsr', function($q) use ($request, $laboratories) {
                         $q->select('id', 'code', 'laboratory_id', 'due_at');
-                        $q->whereIn('laboratory_id', $request->laboratory ?? $laboratories)->where('status_id',3);
+                        if($request->laboratory){
+                            $q->where('laboratory_id', $request->laboratory)->where('status_id',3);
+                        }else{
+                            $q->whereIn('laboratory_id', $laboratories)->where('status_id',3);
+                        }
+
                         if ($request->month) $q->whereMonth('due_at', $request->month);
                         $q->when($request->year, function ($query, $year) {
                             $query->whereYear('created_at', $year);
