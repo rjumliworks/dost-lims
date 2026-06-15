@@ -99,15 +99,15 @@ class TsrSample extends Model
     //     return $matches[0] ?? $value;
     // }
 
-//     public function getCodeAttribute($value)
-// {
-//     $parts = explode('-', $value);
-
-//     return implode('-', array_slice($parts, 0, -1));
-// }
-
     public function getCodeAttribute($value)
-    {
-        return Str::after($value, '-');
-    }
+{
+    $parts = explode('-', $value);
+
+    return implode('-', array_slice($parts, 0, -1));
+}
+
+    // public function getCodeAttribute($value)
+    // {
+    //     return Str::after($value, '-');
+    // }
 }
