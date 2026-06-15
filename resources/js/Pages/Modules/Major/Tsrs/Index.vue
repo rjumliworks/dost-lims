@@ -32,6 +32,7 @@
                                 <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />
                                 <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
                                 <Multiselect class="white" style="width: 10%;" :options="['Local','Referral']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" />
+                                <Multiselect class="white" style="width: 10%;" :options="years" v-model="filter.year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
                                 <span @click="filterAddress()" class="input-group-text" v-b-tooltip.hover title="Filter by Address" style="cursor: pointer;"> 
                                     <i class="bx bxs-map search-icon" :class="{'bx-tada text-danger': hasAddressFilter}"></i>
                                 </span>
@@ -198,13 +199,14 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, Create, Cancel, Edit, Filter },
-    props: ['counts','dropdowns','region','facility'],
+    props: ['dropdowns','region','facility','years'],
     data(){
         return {
             currentUrl: window.location.origin,
             lists: [],
             meta: {},
             links: {},
+            counts: [],
             index: null,
             filter: {
                 keyword: null,
@@ -214,7 +216,8 @@ export default {
                 sort: 'desc',
                 datetype: null,
                 date: null,
-                type: null
+                type: null,
+                year: new Date().getFullYear()
             },
             location: {
                 region: null,
@@ -263,6 +266,9 @@ export default {
         "filter.date"(newVal){
             this.fetch();
         },
+        "filter.year"(newVal){
+            this.fetch();
+        },
         "filter.datetype"(newVal){
             if(this.filter.date){
                 this.fetch();
@@ -304,6 +310,7 @@ export default {
                     municipality: this.location.municipality,
                     barangay: this.location.barangay,
                     type: this.filter.type,
+                    year: this.filter.year,
                     count: 10,
                     option: 'lists'
                 }
@@ -312,7 +319,8 @@ export default {
                 if(response){
                     this.lists = response.data.data;
                     this.meta = response.data.meta;
-                    this.links = response.data.links;          
+                    this.links = response.data.links;   
+                    this.counts = response.data.summary;       
                 }
             })
             .catch(err => console.log(err));

@@ -20,7 +20,7 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class ViewClass
 {
-    public function counts($statuses){
+    public function counts($statuses,$year){
         foreach($statuses as $status){
             if ($status['value'] == '2') {
                 $counts[] = Tsr::where(function ($query) {
@@ -43,6 +43,7 @@ class ViewClass
                 //     }
                 // })
                 // ->where('agency_id',$this->agency)
+                ->whereYear('created_at',$year)
                 ->count();
             } else {
                 $counts[] = Tsr::where('status_id',$status['value'])
@@ -57,13 +58,14 @@ class ViewClass
                 //     }
                 // })
                 // ->where('agency_id',$this->agency)
+                ->whereYear('created_at',$year)
                 ->count();
             }
         }
         return $counts;
     }
 
-    public function lists($request){
+    public function lists($request,$statuses){
         $data = ListResource::collection(
             Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
@@ -198,8 +200,13 @@ class ViewClass
             ->when($request->type, function ($query, $type) {
                 ($type == 'Referral') ? $query->where('is_referral',1) : $query->where('is_referral', 0);
             })
+            ->when($request->year, function ($query, $year) {
+                $query->whereYear('created_at',$year);
+            })
             ->paginate($request->count)
-        );
+        )->additional([
+            'summary' => $this->counts($statuses,$request->year)
+        ]);
         return $data;
     }
 

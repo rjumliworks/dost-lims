@@ -40,7 +40,7 @@ class HandleInertiaRequests extends Middleware
                 : null,
             'is_gad' => str_starts_with($request->getHost(), 'gad.'),
             'show' => (\Auth::guard('web')->check()) ? AgencyConfiguration::value('show_others') : null,
-            'years' => (\Auth::guard('web')->check()) ? Target::distinct()->pluck('year') : null,
+            'years' => (\Auth::guard('web')->check()) ? Target::distinct()->orderBy('year','desc')->pluck('year') : null,
             'flash' => [
                 'data'    => session('data') ?? null,
                 'message' => session('message') ?? null,

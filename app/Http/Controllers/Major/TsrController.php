@@ -37,7 +37,7 @@ class TsrController extends Controller
     public function index(Request $request){
         switch($request->option){
             case 'lists':
-                return $this->view->lists($request);
+                return $this->view->lists($request,$this->dropdown->statuses('Request'));
             break;
             case 'print':
                 return $this->view->print($request);
@@ -56,7 +56,7 @@ class TsrController extends Controller
                     'years' => $this->dropdown->years()
                 ],
                 // 'facility' => \Auth::user()->profile->facility_id,
-                'counts' => $this->view->counts($this->dropdown->statuses('Request')),
+                // 'counts' => $this->view->counts($this->dropdown->statuses('Request')),
                 'region' => $this->view->region()
             ]);
         }

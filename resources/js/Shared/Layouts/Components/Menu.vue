@@ -185,7 +185,29 @@
                 </li>
             </tempalte>
             <template v-if="$page.props.show">
-                <template v-if="['Customer Relation Officer','Releasing Officer','Laboratory Analyst','Calibration Officer','Technical Manager','Laboratory Head'].some(role => $page.props.roles.includes(role))">
+                <template v-if="['Releasing Officer'].some(role => $page.props.roles.includes(role))">
+                    <li class="menu-title">
+                        <i class="ri-more-fill" aria-expanded="false"></i>
+                        <span data-key="t-menu">Other Modules</span>
+                    </li>
+                    <li class="nav-item">
+                        <Link href="/schedules" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Others/Schedules') }">
+                        <i class="ri-hand-coin-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Released</span>
+                        </Link>
+                    </li>
+                    <li class="nav-item">
+                        <Link href="/schedules" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Others/Schedules') }">
+                        <i class="ri-calendar-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
+                        </Link>
+                    </li>
+                </template>
+            </template>
+            <template v-if="$page.props.show">
+                <template v-if="['Customer Relation Officer','Laboratory Analyst','Calibration Officer','Technical Manager','Laboratory Head'].some(role => $page.props.roles.includes(role))">
                     <li class="menu-title">
                         <i class="ri-more-fill" aria-expanded="false"></i>
                         <span data-key="t-menu">Other Modules</span>
