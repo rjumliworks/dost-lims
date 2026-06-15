@@ -82,7 +82,7 @@
                                 <b-button @click="openView(list)" variant="soft-info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                     <i class="ri-eye-fill align-bottom"></i>
                                 </b-button>
-                                <b-button @click="openPrint(list.id)" variant="soft-success" class="me-1" v-b-tooltip.hover title="Print" size="sm">
+                                <b-button @click="openPrint(list.reference)" variant="soft-success" class="me-1" v-b-tooltip.hover title="Print" size="sm">
                                     <i class="ri-printer-fill align-bottom"></i>
                                 </b-button>
                                 <!-- <b-button @click="openDelete(list)" v-if="$page.props.user.data.assigned_role == 'Accountant' && list.status.name == 'Pending'" variant="soft-danger" class="me-1" v-b-tooltip.hover title="Delete" size="sm">
