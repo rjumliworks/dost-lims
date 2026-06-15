@@ -32,6 +32,7 @@ class ViewResource extends JsonResource
             'industry' => $this->customer_name->industry,
             'sex' => $this->sex,
             'address' => new AddressResource($this->address),
+            'wallet' => new WalletResource($this->wallet),
             'conformes' => $this->conformes,
             'payors' => $this->payors,
             'created_at' => $this->created_at

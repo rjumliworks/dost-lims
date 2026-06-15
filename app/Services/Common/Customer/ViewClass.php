@@ -81,6 +81,7 @@ class ViewClass
 
         $data = new ViewResource(
             Customer::query()
+            ->with('wallet.transactions.receipt')
             ->with('conformes','payors')
             ->with('customer_name:id,name,classification_id,industry_id,type_id','customer_name.classification:id,name','customer_name.industry:id,name','customer_name.type:id,name','sex:id,name','led:id,name')
             ->with('address.region:code,name,region','address.province:code,name','address.municipality:code,name','address.barangay:code,name')
