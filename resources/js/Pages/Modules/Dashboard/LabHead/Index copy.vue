@@ -3,7 +3,6 @@
     <PageHeader title="Dashboard" pageTitle="Menu" />
     <b-row class="g-3">
         
-
         <div class="col-md-12">
             <b-card no-body class="bg-white-subtle border shadow-none">
                 <b-card-body>
@@ -21,7 +20,7 @@
                                                 <div class="input-group">
                                                     <select style="width: 250px;" v-model="filter.laboratory" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Laboratories</option>
-                                                        <option :value="list.value" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
+                                                        <option :value="list" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
                                                     </select>
                                                     <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Months</option>
@@ -45,137 +44,49 @@
                 </b-card-body>
             </b-card>
         </div>
-
-        <div class="col-md-12 mt-n2" style="height: calc(100vh - 310px); overflow-y: auto; overflow-x: hidden;">
-            <div class="row g-3">
-
-
-                <div class="col-md-3">
-                    <b-card no-body class="bg-info-subtle border shadow-none">
-                        <b-card-body>
-                            <div class="d-flex align-items-center" v-if="fee">
-                                <div class="avatar-xs flex-shrink-0">
-                                    <span class="avatar-title bg-light text-primary rounded-circle fs-4">
-                                        <i class="ri-loader-2-line align-middle`"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                                    {{ fee.name }}
-                                    </p>
-                                    <h4 class="mb-0">
-                                        <span class="counter-value">{{ formatMoney(fee.total) }}</span>
-                                    </h4>
-                                </div>
+       
+        <div class="col-md-3 mt-n1">
+            <b-col lg="12">
+                <b-card no-body class="bg-info-subtle border shadow-none">
+                    <b-card-body>
+                        <div class="d-flex align-items-center" v-if="fee">
+                            <div class="avatar-xs flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle fs-4">
+                                    <i class="ri-loader-2-line align-middle`"></i>
+                                </span>
                             </div>
-                            <div v-else>
-                                <p class="card-text placeholder-glow mb-1">
-                                    <span class="placeholder col-7"></span>
-                                    <span class="placeholder col-4"></span>
-                                    <span class="placeholder col-4"></span>
-                                    <span class="placeholder col-6"></span>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                {{ fee.name }}
                                 </p>
-                            </div>
-                        </b-card-body>
-                    </b-card>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="row g-3">
-                        <template v-if="counts.length > 0">
-                            <b-col lg="4" v-for="(item, index) of counts" :key="index">
-                                <b-card no-body :class="item.color" class="border shadow-none">
-                                    <b-card-body>
-                                        <div class="d-flex align-items-center">
-                                            <!-- <div class="avatar-sm flex-shrink-0">
-                                                <span class="avatar-title bg-light text-primary rounded-circle fs-3">
-                                                    <i :class="`${item.icon} align-middle`"></i>
-                                                </span>
-                                            </div> -->
-                                            <div class="flex-grow-1">
-                                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                                                    {{ item.name }}
-                                                </p>
-                                                <h4 class="mb-0">
-                                                    <span class="counter-value">{{item.total}}</span>
-                                                </h4>
-                                            </div>
-                                            <div class="flex-shrink-0 align-self-end">
-                                                <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
-                                            </div>
-                                        </div>
-                                    </b-card-body>
-                                </b-card>
-                            </b-col>
-                        </template>
-                        <template v-else>
-                            <b-col lg="4" v-for="n in 3" :key="n">
-                                <b-card no-body class="border shadow-none">
-                                    <b-card-body>
-                                        <p class="card-text placeholder-glow mb-1">
-                                            <span class="placeholder col-7"></span>
-                                            <span class="placeholder col-4"></span>
-                                            <span class="placeholder col-4"></span>
-                                            <span class="placeholder col-6"></span>
-                                        </p>
-                                    </b-card-body>
-                                </b-card>
-                            </b-col>
-                        </template>
-                    </div>
-                </div>
-
-                <div class="col-md-3">
-                    <b-card no-body class="bg-success-subtle border shadow-none">
-                        <b-card-body>
-                            <div class="d-flex align-items-center" v-if="target">
-                                <div class="avatar-xs flex-shrink-0">
-                                    <span class="avatar-title bg-light text-primary rounded-circle fs-4">
-                                        <i class="ri-loader-2-line align-middle`"></i>
-                                    </span>
-                                </div>
-                                <div class="flex-grow-1 ms-3">
-                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                                    {{ target.name }}
-                                    </p>
-                                    <h4 class="mb-0">
-                                        <span class="counter-value">{{ target.percentage }}</span>
-                                    </h4>
-                                </div>
-                            </div>
-                            <div v-else>
-                                <p class="card-text placeholder-glow mb-1">
-                                    <span class="placeholder col-7"></span>
-                                    <span class="placeholder col-4"></span>
-                                    <span class="placeholder col-4"></span>
-                                    <span class="placeholder col-6"></span>
-                                </p>
-                            </div>
-                        </b-card-body>
-                    </b-card>
-                </div>
-
-
-
-                <div class="col-md-3 mt-n2">
-                    <div class="card shadow-none border">
-                        <div class="card-header bg-light-subtle">
-                            <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3 mt-1">
-                                    <div style="height:2rem;width:2rem;">
-                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                            <i class="ri-alarm-warning-fill text-primary fs-20"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Request Monitoring & Alerts</span></h5>
-                                    <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
-                                </div>
+                                <h4 class="mb-0">
+                                    <span class="counter-value">{{ formatMoney(fee.total) }}</span>
+                                </h4>
                             </div>
                         </div>
-                        <div class="card border-bottom shadow-none" no-body style="height: 340px;">
-                            <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                    </b-card-body>
+                </b-card>
+            </b-col>
+            <b-col lg="12" class="mt-n2">
+                <div class="card shadow-none border">
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-secure-payment-fill text-primary fs-20"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Collection Summary</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                       
+                        <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
                             <li class="list-group-item px-0" v-for="(list,index) in collection" v-bind:key="index">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 avatar-xs">
@@ -214,12 +125,57 @@
                                 </div>
                             </li>
                         </ul>
-                        </div>
+                       
+                        <!-- <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in reminders" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul> -->
                     </div>
                 </div>
-
-
-                <div class="col-md-6 mt-n2">
+            </b-col>
+        </div>
+        
+        <div class="col-md-6 mt-n1">
+            <div class="row g-3">
+                <b-col lg="4" v-for="(item, index) of counts" :key="index">
+                    <b-card no-body :class="item.color" class="border shadow-none">
+                        <b-card-body>
+                            <div class="d-flex align-items-center">
+                                <!-- <div class="avatar-sm flex-shrink-0">
+                                    <span class="avatar-title bg-light text-primary rounded-circle fs-3">
+                                        <i :class="`${item.icon} align-middle`"></i>
+                                    </span>
+                                </div> -->
+                                <div class="flex-grow-1">
+                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                        {{ item.name }}
+                                    </p>
+                                    <h4 class="mb-0">
+                                        <span class="counter-value">{{item.total}}</span>
+                                    </h4>
+                                </div>
+                                <div class="flex-shrink-0 align-self-end">
+                                    <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
+                                </div>
+                            </div>
+                        </b-card-body>
+                    </b-card>
+                </b-col>
+                <b-col lg="12" class="mt-n2">
                     <div class="card bg-light-subtle shadow-none border">
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
@@ -236,100 +192,144 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card border-bottom shadow-none" no-body style="height: 340px;">
-                            <apexchart  ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
+                        <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                            <apexchart ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
                                 :options="chartOptions1">
-                            </apexchart> 
+                            </apexchart>
                         </div>
                     </div>
-                </div>
+                </b-col>
+            </div>
+            
+        </div>
 
-                <div class="col-md-3 mt-n2">
-                    <div class="card bg-light-subtle shadow-none border">
+        <div class="col-md-3 mt-n1">
+            <b-col lg="12">
+                <b-card no-body class="bg-success-subtle border shadow-none">
+                    <b-card-body>
+                        <div class="d-flex align-items-center" v-if="target">
+                            <div class="avatar-xs flex-shrink-0">
+                                <span class="avatar-title bg-light text-primary rounded-circle fs-4">
+                                    <i class="ri-loader-2-line align-middle`"></i>
+                                </span>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                {{ target.name }}
+                                </p>
+                                <h4 class="mb-0">
+                                    <span class="counter-value">{{ target.percentage }}</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </b-card-body>
+                </b-card>
+            </b-col>
+            <b-col lg="12" class="mt-n2">
+                <div class="card bg-light-subtle shadow-none border">
                     
-                        <div class="card-header bg-light-subtle">
-                            <div class="d-flex mb-n3">
-                                <div class="flex-shrink-0 me-3 mt-1">
-                                    <div style="height:2rem;width:2rem;">
-                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
-                                            <i class="ri-group-2-fill text-primary fs-24"></i>
+                    <div class="card-header bg-light-subtle">
+                        <div class="d-flex mb-n3">
+                            <div class="flex-shrink-0 me-3 mt-1">
+                                <div style="height:2rem;width:2rem;">
+                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                        <i class="ri-group-2-fill text-primary fs-24"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h5 class="mb-0 fs-13"><span class="text-body">Customer Summary</span></h5>
+                                <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                    <!-- <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in statuses" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
                                         </span>
                                     </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                    </div>
                                 </div>
-                                <div class="flex-grow-1">
-                                    <h5 class="mb-0 fs-13"><span class="text-body">Customer Summary</span></h5>
-                                    <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed</p>
+                            </li>
+                        </ul> -->
+                         <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
+                            <li class="list-group-item px-0" v-for="(list,index) in customer" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mt-2 fs-12">{{list.total}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <hr class="text-muted"/>
+                        <ul class="list-group list-group-flush border-dashed mb-0 mt-n4 p-3">
+                            <li class="list-group-item px-0" v-for="(list,index) in customer_summary" v-bind:key="index">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 avatar-xs">
+                                        <span class="avatar-title bg-light p-1 rounded-circle">
+                                            <i :class="list.icon+' '+list.color"></i>
+                                        </span>
+                                    </div>
+                                    <div class="flex-grow-1 ms-2">
+                                        <h6 class="mb-0 fs-12">{{list.name}}</h6>
+                                        <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
+                                    </div>
+                                    <div class="flex-shrink-0 text-end">
+                                        <h6 class="mb-1 fs-12">{{list.total}}</h6>
+                                        <!-- <p class="text-success fs-12 mb-0">$19,405.12</p> -->
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </b-col>
+        </div>
+        <div class="col-xl-12 mt-n2">
+            <div class="card shadow-none border crm-widget">
+                <div class="card-body p-0 mb-n2 mt-n2">
+                    <div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 g-0">
+                        <div class="col" v-for="(list,index) in reminders" v-bind:key="index">
+                            <div class="py-4 px-3">
+                                <h5 class="text-muted text-uppercase fs-13">{{ list.name }}<i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i :class="list.icon+' '+list.color" class="display-6 fs-14"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h2 class="mb-0 fs-14"><span class="counter-value" data-target="197">{{list.count}}</span></h2>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                            <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
-                                <li class="list-group-item px-0" v-for="(list,index) in customer" v-bind:key="index">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 avatar-xs">
-                                            <span class="avatar-title bg-light p-1 rounded-circle">
-                                                <i :class="list.icon+' '+list.color"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-grow-1 ms-2">
-                                            <h6 class="mb-0 fs-12">{{list.name}}</h6>
-                                            <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
-                                        </div>
-                                        <div class="flex-shrink-0 text-end">
-                                            <h6 class="mt-2 fs-12">{{list.total}}</h6>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <hr class="text-muted"/>
-                            <ul class="list-group list-group-flush border-dashed mb-0 mt-n4 p-3">
-                                <li class="list-group-item px-0" v-for="(list,index) in customer_summary" v-bind:key="index">
-                                    <div class="d-flex">
-                                        <div class="flex-shrink-0 avatar-xs">
-                                            <span class="avatar-title bg-light p-1 rounded-circle">
-                                                <i :class="list.icon+' '+list.color"></i>
-                                            </span>
-                                        </div>
-                                        <div class="flex-grow-1 ms-2">
-                                            <h6 class="mb-0 fs-12">{{list.name}}</h6>
-                                            <p class="fs-11 mb-0 text-muted">{{ list.description }}</p>
-                                        </div>
-                                        <div class="flex-shrink-0 text-end">
-                                            <h6 class="mb-1 fs-12">{{list.total}}</h6>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
+                        </div><!-- end col -->
+                        
 
-                    </div>
-                </div>
-
-
-                <div class="col-xl-12 mt-n2">
-                    <div class="card shadow-none border crm-widget">
-                        <div class="card-body p-0 mb-n2 mt-n2">
-                            <div class="row row-cols-xxl-5 row-cols-md-3 row-cols-1 g-0">
-                                <div class="col" v-for="(list,index) in reminders" v-bind:key="index">
-                                    <div class="py-4 px-3">
-                                        <h5 class="text-muted text-uppercase fs-13">{{ list.name }}<i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i></h5>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0">
-                                                <i :class="list.icon+' '+list.color" class="display-6 fs-14"></i>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h2 class="mb-0 fs-14"><span class="counter-value" data-target="197">{{list.count}}</span></h2>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-md-3 mt-n1">
+                    </div><!-- end row -->
+                </div><!-- end card body -->
+            </div><!-- end card -->
+        </div>
+        <div class="col-md-3 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
                 <div class="card-header bg-light-subtle">
@@ -598,13 +598,6 @@
             </div>                            
                                        
         </div>
-
-
-
-            </div>
-        </div>
-                          
-            
     </b-row>
 </template>
 <script>
@@ -723,10 +716,6 @@ export default {
         'filter.type'(val) {
             this.fetchDaily();
         },
-         'filter.laboratory'(val){
-            this.fetch();
-            this.fetchDaily();
-        },
         'monthName'(val) {
             this.fetch();
         },
@@ -777,7 +766,6 @@ export default {
                     date: this.filter.date,
                     month: this.filter.month,
                     year: this.filter.year,
-                    laboratory: this.filter.laboratory,
                     type: this.filter.type.toLowerCase(),
                     option: 'accomplishment',
                 }

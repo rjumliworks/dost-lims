@@ -29,7 +29,7 @@ class Customer extends Authenticatable
         'is_new'
     ];
 
-    protected $appends = ['fulladdress','fullname'];
+    protected $appends = ['fullname','reference'];
 
     public function getFulladdressAttribute()
     {
@@ -37,6 +37,19 @@ class Customer extends Authenticatable
         $name = "{$this->address->barangay->name}, {$this->address->municipality->name}, {$this->address->province->name}, {$this->address->region->region}";
         return $name;
     }
+
+    // public function getFulladdressAttribute()
+    // {
+    //     if (!$this->relationLoaded('address')) {
+    //         return null;
+    //     }
+
+    //     if (!$this->address) {
+    //         return null;
+    //     }
+
+    //     return "{$this->address->barangay->name}, {$this->address->municipality->name}, {$this->address->province->name}, {$this->address->region->region}";
+    // }
 
     public function getFullnameAttribute()
     {

@@ -41,9 +41,16 @@ class LabHeadClass
     private function fees($request){
         $month = ($request->month) ? \DateTime::createFromFormat('F', $request->month)->format('m') : date('m');  
         $year = ($request->year) ? $request->year : date('Y');
+        $laboratory = $request->laboratory;
 
-        $total = TsrPayment::where('paid_at','!=',NULL)->whereHas('tsr', function ($query) use ($month,$year){
-            $query->whereMonth('created_at',$month)->whereYear('created_at',$year)->where('status_id','!=',5);
+        $total = TsrPayment::where('paid_at','!=',NULL)->whereHas('tsr', function ($query) use ($month,$year,$laboratory){
+            $query->when($month, function ($query) use ($month) {
+                $query->whereMonth('created_at', $month);
+            })
+            ->when($laboratory, function ($query) use ($laboratory) {
+                $query->where('laboratory_id', $laboratory);
+            })
+            ->whereYear('created_at',$year)->where('status_id','!=',5);
         })->sum('total');
 
         return $arr = [
@@ -221,6 +228,7 @@ public function count($name,$index,$year,$month,$laboratory_id){
     private function tsrs($request){
         $year = $request->year;
         $monthInput = $request->month;
+        $laboratory = $request->laboratory;
 
         if (is_null($monthInput)) {
             $month = null; 
@@ -233,6 +241,9 @@ public function count($name,$index,$year,$month,$laboratory_id){
         // ->whereBetween('created_at', [$this->start, $this->end])
         ->when($month, function ($query) use ($month) {
             $query->whereMonth('created_at', $month);
+        })
+        ->when($laboratory, function ($query) use ($laboratory) {
+            $query->where('laboratory_id', $laboratory);
         })
         ->whereYear('created_at', $year)
         ->groupBy(\DB::raw('DATE(created_at)'))
@@ -254,14 +265,19 @@ public function count($name,$index,$year,$month,$laboratory_id){
             'color' => '',
             'series' => $series,
             'total' => Tsr::when($month, function ($query) use ($month) {
-                    $query->whereMonth('created_at', $month);
-                })->whereYear('created_at',$year)->whereIn('status_id',[1,2,3,4])->count()
+                $query->whereMonth('created_at', $month);
+            })
+            ->when($laboratory, function ($query) use ($laboratory) {
+                $query->where('laboratory_id', $laboratory);
+            })
+            ->whereYear('created_at',$year)->whereIn('status_id',[1,2,3,4])->count()
         ];
     }
 
     private function samples($request){
         $year = $request->year;
         $monthInput = $request->month;
+        $laboratory = $request->laboratory;
 
         if (is_null($monthInput)) {
             $month = null; 
@@ -270,10 +286,12 @@ public function count($name,$index,$year,$month,$laboratory_id){
         }
         $series = [];
         $data = TsrSample::select(\DB::raw('DATE(created_at) AS x'), \DB::raw('count(*) AS y'))
-        ->whereHas('tsr', function ($query){
-            $query->whereIn('status_id',[1,2,3,4]);
+        ->whereHas('tsr', function ($query) use ($laboratory){
+            $query->whereIn('status_id',[1,2,3,4])
+            ->when($laboratory, function ($query) use ($laboratory) {
+                $query->where('laboratory_id', $laboratory);
+            });
         })
-        // ->whereBetween('created_at', [$this->start, $this->end])
         ->when($month, function ($query) use ($month) {
             $query->whereMonth('created_at', $month);
         })
@@ -298,8 +316,11 @@ public function count($name,$index,$year,$month,$laboratory_id){
             'series' => $series,
             'total' => TsrSample::when($month, function ($query) use ($month) {
                     $query->whereMonth('created_at', $month);
-                })->whereYear('created_at', $year)->whereHas('tsr', function ($query){
-                $query->whereIn('status_id',[1,2,3,4]);
+                })->whereYear('created_at', $year)->whereHas('tsr', function ($query) use ($laboratory){
+                $query->whereIn('status_id',[1,2,3,4])
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                });
             })->count()
         ];
     }
@@ -307,6 +328,7 @@ public function count($name,$index,$year,$month,$laboratory_id){
     private function testservices($request){
         $year = $request->year;
         $monthInput = $request->month;
+        $laboratory = $request->laboratory;
 
         if (is_null($monthInput)) {
             $month = null; 
@@ -315,9 +337,12 @@ public function count($name,$index,$year,$month,$laboratory_id){
         }
         $series = [];
         $data = TsrAnalysis::select(\DB::raw('DATE(created_at) AS x'), \DB::raw('count(*) AS y'))
-        ->whereHas('sample', function ($query){
-            $query->whereHas('tsr', function ($query){
-                $query->whereIn('status_id',[1,2,3,4]);
+        ->whereHas('sample', function ($query) use ($laboratory){
+            $query->whereHas('tsr', function ($query) use ($laboratory){
+                $query->whereIn('status_id',[1,2,3,4])
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                });
             });
         })
         // ->whereBetween('created_at', [$this->start, $this->end])
@@ -345,9 +370,12 @@ public function count($name,$index,$year,$month,$laboratory_id){
             'series' => $series,
             'total' => TsrAnalysis::when($month, function ($query) use ($month) {
                     $query->whereMonth('created_at', $month);
-                })->whereYear('created_at', $year)->whereHas('sample', function ($query){
-                    $query->whereHas('tsr', function ($query){
-                        $query->whereIn('status_id',[1,2,3,4]);
+                })->whereYear('created_at', $year)->whereHas('sample', function ($query) use ($laboratory){
+                    $query->whereHas('tsr', function ($query) use ($laboratory){
+                        $query->whereIn('status_id',[1,2,3,4])
+                        ->when($laboratory, function ($query) use ($laboratory) {
+                            $query->where('laboratory_id', $laboratory);
+                        });
                     });
                 })->count()
         ];
