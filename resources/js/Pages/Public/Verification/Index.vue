@@ -132,7 +132,7 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <center style="font-size: 12px; background-color: #000; color:#fff; font-weight: bold; padding: 5px;">TESTING OR CALIBRATION SERVICES</center>
+                                    <!-- <center style="font-size: 12px; background-color: #000; color:#fff; font-weight: bold; padding: 5px;">TESTING OR CALIBRATION SERVICES</center>
                                     <table class="table table-sm table-bordered">
                                         <thead class="table-light text-center fs-10">
                                             <tr>
@@ -173,7 +173,7 @@
                                                 <th>{{tsr.data.payment.total}}</th>
                                             </tr>
                                         </tfoot>
-                                    </table>
+                                    </table> -->
                                 </div>
                             </BCardBody>
                         </BCard>

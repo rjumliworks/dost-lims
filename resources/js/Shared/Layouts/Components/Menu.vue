@@ -205,8 +205,8 @@
                         </Link>
                     </li>
                     <li class="nav-item">
-                        <Link href="/schedules" class="nav-link menu-link"
-                        :class="{'active': $page.component.startsWith('Others/Schedules') }">
+                        <Link href="/releasing" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Modules/Major/Releasing') }">
                         <i class="ri-hand-coin-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Released</span>
                         </Link>

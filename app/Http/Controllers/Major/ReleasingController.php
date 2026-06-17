@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Major;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\AgencyClass;
+use App\Services\DropdownClass;
 use App\Http\Requests\Major\ReleaseRequest;
 use App\Services\Major\Releasing\SaveClass;
 use App\Services\Major\Releasing\ViewClass;
@@ -15,25 +17,37 @@ class ReleasingController extends Controller
 
     protected ViewClass $view;
     protected SaveClass $save;
+    protected AgencyClass $agency;
+    protected DropdownClass $dropdown;
 
-    public function __construct(SaveClass $save, ViewClass $view){
+    public function __construct(SaveClass $save, ViewClass $view, AgencyClass $agency,  DropdownClass $dropdown){
         $this->view = $view;
         $this->save = $save;
+        $this->dropdown = $dropdown;
+        $this->agency = $agency;
+        
     }
     
     public function index(Request $request){
         switch($request->option){
             case 'list':
-                // return $this->releasing->lists($request);
                 return $this->view->list($request);
             break;
             case 'filter':
-                // return $this->releasing->filter($request);
+                
             break;
-             case 'search':
+            case 'search':
                 return $this->view->search($request->keyword);
-                // return $this->releasing->filter($request);
             break;
+            default:
+                return inertia('Modules/Major/Releasing/Index',[
+                    'dropdowns' => [
+                        'laboratories' => $this->agency->laboratories(),
+                        'releases' => $this->dropdown->datas('Release'),
+                        'regions' => $this->dropdown->regions(),
+                        'years' => $this->dropdown->years()
+                    ],
+                ]);
         }
     }
 
