@@ -30,6 +30,10 @@ class ReleasingController extends Controller
             case 'filter':
                 // return $this->releasing->filter($request);
             break;
+             case 'search':
+                return $this->view->search($request->keyword);
+                // return $this->releasing->filter($request);
+            break;
         }
     }
 

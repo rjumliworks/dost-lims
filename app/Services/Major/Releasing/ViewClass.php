@@ -3,6 +3,7 @@
 namespace App\Services\Major\Releasing;
 
 use Carbon\Carbon;
+use App\Models\Tsr;
 use App\Models\TsrRelease;
 use App\Http\Resources\Major\Releasing\IndexResource;
 
@@ -49,4 +50,34 @@ class ViewClass
         return $data;
     }
 
+    public function search($keyword){
+        $data =  Tsr::with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
+        ->whereDoesntHave('release')
+        ->when($keyword, function ($query) use ($keyword){
+            $query->where('code', 'LIKE', "%{$keyword}%")->where('status_id',4)
+            ->whereDoesntHave('release')
+            ->orWhereHas('customer',function ($query) use ($keyword) {
+                $query->whereHas('customer_name',function ($query) use ($keyword) {
+                    $query->where('name', 'LIKE', "%{$keyword}%");
+                });
+            });
+            $query->whereHas('samples', function ($query) {
+                $query->whereHas('report'); 
+            });
+        })
+        ->limit(5)->get()->map(function ($item) {
+            $name = ($item->customer->name == 'Main') ? '' : ' - '.$item->customer->name;
+            return [
+                'value' => $item->id,
+                'name' => $item->code,
+                'customer' =>  $item->customer->customer_name->name.$name,
+            ];
+        });
+        
+        if($keyword){
+            return $data;
+        }else{
+            return [];
+        }
+    }
 }

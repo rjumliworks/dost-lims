@@ -153,6 +153,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="car-body bg-white border-bottom shadow-none">
+                            <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
+                                <b-col lg>
+                                    <div class="input-group mb-1" style="margin-top: -3px;">
+                                        <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
+                                        <input type="text" v-model="filter.keyword" placeholder="Search Code" class="form-control" style="width: 20%;">
+                                        <Multiselect class="white" style="width: 40%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
+                                        <b-button type="button" variant="primary" @click="openCreate">
+                                            <i class="ri-add-circle-fill align-bottom me-1"></i> Create
+                                        </b-button>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                        </div>
                         <div class="card bg-white border-bottom shadow-none" no-body>
                             <div class="d-flex">
                                 <div class="flex-grow-1">
@@ -178,7 +192,7 @@
                             </div>
                         </div>
                         <div class="card-body bg-white rounded-bottom">
-                            <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 578px)" v-if="filter.reminder != 'For Release' && filter.reminder != 'Unclaimed Reports'">
+                            <div class="table-responsive table-card" style="margin-top: -39px; height: calc(100vh - 637px)" v-if="filter.reminder != 'For Release' && filter.reminder != 'Unclaimed Reports'">
                                 <table class="table align-middle table-striped table-centered mb-0">
                                     <thead class="table-light thead-fixed">
                                         <tr class="fs-11">
@@ -353,6 +367,9 @@ export default {
         'filter.year'(val) {
             this.fetch();
             this.fetchDaily();
+        },
+        "filter.keyword"(newVal){
+            this.checkSearchStr(newVal)
         },
     },
     created(){

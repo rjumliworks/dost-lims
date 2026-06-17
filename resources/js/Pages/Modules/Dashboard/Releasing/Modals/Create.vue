@@ -55,7 +55,7 @@ export default {
         },
         submit(){
             this.form.tsr_id = (this.tsr) ? this.tsr.value : null;
-            this.form.post('/release',{
+            this.form.post('/releasing',{
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.$emit('success',this.$page.props.flash.data);
@@ -64,9 +64,9 @@ export default {
             });
         },
         fetchTsr(code){
-            axios.get('/search',{
+            axios.get('/releasing',{
                 params: {
-                    option: 'tsrs',
+                    option: 'search',
                     keyword: code
                 }
             })
