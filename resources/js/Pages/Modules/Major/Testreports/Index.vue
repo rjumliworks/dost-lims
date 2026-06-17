@@ -71,7 +71,7 @@
                                 <tr class="fs-11">
                                     <th style="width: 3%;"></th>
                                     <th>Report Number</th>
-                                    <th style="width: 15%;" class="text-center">TSR Code</th>
+                                    <th style="width: 20%;" class="text-center">Sample Code</th>
                                     <th style="width: 20%;" class="text-center">Analyst</th>
                                     <th style="width: 5%;" class="text-center">Attachment</th>
                                     <th style="width: 13%" class="text-center">Report Date</th>
@@ -85,10 +85,24 @@
                                         {{ (meta.current_page - 1) * meta.per_page + index + 1 }}.
                                     </td>
                                     <td>
-                                        <h5 v-if="list.code" class="fs-12 mb-0 fw-semibold text-primary">{{list.code}}</h5>
-                                        <p v-else class="fs-12 mb-0  text-muted">Not yet set</p>
+                                        <template v-if="list.code">
+                                            <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.code}}</h5>
+                                            <p class="fs-12 mb-0  text-muted">{{list.tsr_code}}</p>
+                                        </template>
+                                        <template v-else>
+                                            <p class="fs-12 mb-0  text-muted">Not yet set</p>
+                                        </template>
+                                        
                                     </td>
-                                    <td class="text-center">{{list.tsr_code}}</td>
+                                    <td class="text-center">
+                                          <!-- <span v-for="(item, index) in list.lists" :key="item.id">
+                                            {{ item.sample.code }}<span v-if="index < list.lists.length - 1">, </span>
+                                        </span> -->
+                                        <span class="badge bg-primary me-1" v-for="(item, index) in list.lists" :key="item.id">
+                                             {{ item.sample.code }}
+                                        </span>
+                                    </td>
+                                    <!-- <td class="text-center">{{list.tsr_code}}</td> -->
                                     <td class="text-center">{{ (list.user) ? list.user : '-'}}</td>
                                     <td class="text-center">
                                         <i v-if="list.attachment" class="ri-checkbox-circle-fill text-success fs-16"></i>

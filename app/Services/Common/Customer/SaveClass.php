@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Crypt;
 class SaveClass
 {
     public function conforme($request){
+      
         $data = CustomerConforme::create($request->all());
         $customer = CustomerConforme::findOrFail($data->id);
         $conforme = [
