@@ -161,13 +161,13 @@
                                                             <i class="ri-calendar-fill me-2"></i>Update Date
                                                         </a>
                                                     </li> -->
-                                                    <li><hr class="dropdown-divider"></li>
+                                                    <!-- <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
                                                             <span v-if="list.is_active"><i class="ri-lock-2-fill me-2"></i> Deactivate</span>
                                                             <span v-else><i class="ri-lock-unlock-line me-2"></i> Activate</span>
                                                         </a>
-                                                    </li>
+                                                    </li> -->
                                                 </BDropdown>
                                             </div>
                                         </div>
