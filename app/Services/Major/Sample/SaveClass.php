@@ -56,6 +56,7 @@ class SaveClass
         $data->category_id = (int) $request->category_id;
         $data->customer_description = $request->customer_description;
         $data->description = $request->description;
+        $data->remarks = $request->remarks;
         if($data->save()){
             $this->report->update($data->tsr_id);
         }
