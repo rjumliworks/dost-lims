@@ -66,6 +66,7 @@
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                             <!-- <Multiselect class="white" @search-change="checkSearchSample" style="width: 45%;" :options="sampletypes" v-model="sampletype" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/> -->
                             <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 40%;">
+                            <Multiselect class="white" @search-change="checkSearchSample" :can-clear="false" :can-deselect="false" style="width: 45%;" :options="['Tagged to Sample','Not Tagged to Sample']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
                             <b-button type="button" variant="primary">
                                 <i class="ri-search-eye-line align-bottom me-1"></i> 
                             </b-button>
@@ -120,6 +121,7 @@ export default {
             }),
             filter: {
                 keyword: null,
+                type: 'Tagged to Sample'
             },
             testservices: [],
             selected: {},
@@ -127,6 +129,18 @@ export default {
             sampletypes: [],
             type: null,
             showModal: false
+        }
+    },
+     watch: {
+        'filter.keyword'(newVal) {
+            if(this.filter.type != 'Tagged to Sample'){
+                this.checkSearchStr(newVal)
+            }
+        },
+        'filter.type'(val){
+            this.filter.keyword = null;
+            this.testservices = [];
+            this.fetchTest();
         }
     },
     computed: {
@@ -203,6 +217,7 @@ export default {
                     sampletypes: this.sampletypes,
                     ids: this.checkedItems.map(item => item.id),
                     keyword: this.filter.keyword,
+                    type: this.filter.type,
                 }
             })
             .then(response => {
