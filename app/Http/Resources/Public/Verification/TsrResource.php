@@ -11,12 +11,10 @@ class TsrResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $hashids = new Hashids('krad',10);
-        $code = $hashids->encode($this->id);
 
         return [
             'id' => $this->id,
-            'qr' => $code,
+            'qr' => $this->reference,
             'code' => $this->code,
             'laboratory' => $this->laboratory,
             'laboratory_type' => $this->laboratory_type,
