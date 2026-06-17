@@ -26,8 +26,8 @@ class VerificationController extends Controller
             ->orderBy('created_at','ASC')
             ->get();
         $analyses = TsrAnalysis::query()->with('testservice.method.method','testservice.testname','sample')
-        ->whereHas('sample',function ($query) use ($id) {
-            $query->where('id',$id);
+        ->whereHas('sample',function ($query) use ($sample_ids) {
+            $query->whereIn('id',$sample_ids);
         })
         ->orderBy('created_at','ASC')
         ->get();
