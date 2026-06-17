@@ -262,8 +262,8 @@ class ViewClass
         $result = new Builder(
             writer: new PngWriter(),
             data: $url,
-            size: 100,
-            margin: 5,
+            size: 120,
+            margin: 0,
         );
 
         $qrCodeImageString = $result->build()->getString();
