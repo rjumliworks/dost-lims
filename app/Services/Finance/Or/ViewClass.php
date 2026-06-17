@@ -34,16 +34,19 @@ class ViewClass
             ->when($request->mode, function ($query, $mode) {
                 $query->where('payment_id',$mode);
             })
-            ->when($request->keyword, function ($query, $keyword) {
-                $query->where('payorable_type', 'App\Models\Customer') // Ensures only 'Customer' types are filtered
-                ->whereHasMorph('payorable', ['App\Models\Customer'], function ($query) use ($keyword) {
-                    $query->whereHas('customer_name', function ($query) use ($keyword) {
-                        $query->where('name', 'like', '%' . $keyword . '%');
+           ->when($request->keyword, function ($query, $keyword) {
+                $query->where(function ($q) use ($keyword) {
+
+                    $q->whereHasMorph('payorable', ['App\Models\Customer'], function ($q) use ($keyword) {
+                        $q->whereHas('customer_name', function ($q) use ($keyword) {
+                            $q->where('name', 'like', "%{$keyword}%");
+                        });
+                    })
+                    ->orWhere('code', 'like', "%{$keyword}%")
+                    ->orWhereHas('activeReceipt', function ($q) use ($keyword) {
+                        $q->where('number', 'like', "%{$keyword}%");
                     });
-                })
-                ->orWhere('code', 'like', '%' . $keyword . '%')
-                ->orWhereHas('or', function ($query) use ($keyword) {
-                    $query->where('number', 'like', '%' . $keyword . '%');
+
                 });
             })
             ->where('payorable_type', 'App\Models\Customer')
