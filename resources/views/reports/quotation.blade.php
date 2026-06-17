@@ -345,9 +345,15 @@
                 <tbody>
                     <tr>
                         <td>
-                            <ul style="margin-left: -30px; list-style: none;">
+                             <ul style="margin-left: -30px; list-style: none;">
                                 @foreach($descs as $desc)
-                                    <li>&#62; {{$desc['name']}} : <i>{{$desc['customer_description']}}</i>, {{$desc['description']}}</li>
+                                    @if($desc['customer_description'] !== '-' || $desc['description'] !== '-')
+                                        <li>
+                                            &#62; {{ $desc['name'] }} :
+                                            <i>{{ $desc['customer_description'] }}</i>,
+                                            {{ $desc['description'] }}
+                                        </li>
+                                    @endif
                                 @endforeach
                             </ul>
                             
