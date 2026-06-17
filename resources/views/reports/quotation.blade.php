@@ -415,13 +415,13 @@
                             <td width="33.3%" style="vertical-align: bottom; position: relative; height: 40px; text-align: center;">
                                 <div style="position: relative; height: 40px;">
                                     <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
-                                        @if(!empty($signatory['prepared_date']))
+                                        {{-- @if(!empty($signatory['prepared_date']))
                                             <img 
                                                 src="{{ public_path('storage/profile-signatures/' . $signatory['prepared']['profile']['signature']) }}" 
                                                 alt="Signature" 
                                                 style="height: 60px; width: auto;"
                                                 />
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </div>
                                 <div style="position: absolute; bottom: 2; width: 100%;">
@@ -431,13 +431,13 @@
                             <td width="33.3%" style="vertical-align: bottom; position: relative; height: 40px; text-align: center;">
                                 <div style="position: relative; height: 40px;">
                                     <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);">
-                                        @if(!empty($signatory['approved']['approved_date']))
+                                        {{-- @if(!empty($signatory['approved']['approved_date']))
                                             <img 
                                                 src="{{ public_path('storage/profile-signatures/' . $signatory['approved']['profile']['signature']) }}" 
                                                 alt="Signature" 
                                                 style="height: 60px; width: auto;"
                                             >
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </div>
                                 <div style="position: absolute; bottom: 2; width: 100%;">
