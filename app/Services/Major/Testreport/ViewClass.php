@@ -258,7 +258,7 @@ class ViewClass
 
     public function qrcode($request){
         $id = $request->id;
-        $url = $_SERVER['HTTP_HOST'].'/verification/'.$id;
+        $url = $_SERVER['HTTP_HOST'].'/verification/sample/'.$id;
         $result = new Builder(
             writer: new PngWriter(),
             data: $url,
