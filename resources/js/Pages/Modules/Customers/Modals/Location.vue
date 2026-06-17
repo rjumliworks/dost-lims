@@ -109,7 +109,7 @@ export default {
     computed: {
         isFormValid() {
             const districtRequired = this.districts.length > 0;
-            return this.form.region && this.form.province && this.form.municipality && this.form.barangay && this.form.longitude && this.form.latitude &&  (!districtRequired || this.form.district);
+            return this.form.region && this.form.province && this.form.municipality && this.form.barangay && this.form.address && this.form.longitude && this.form.latitude &&  (!districtRequired || this.form.district);
         }
     },
     methods: { 
@@ -142,8 +142,8 @@ export default {
                     const lat = parseFloat(res.data[0].lat);
                     const lng = parseFloat(res.data[0].lon);
 
-                    this.form.latitude = lat;
-                    this.form.longitude = lng;
+                    // this.form.latitude = lat;
+                    // this.form.longitude = lng;
 
                     this.$refs.map.flyTo(lat, lng);
                 }
