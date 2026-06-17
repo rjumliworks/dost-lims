@@ -190,6 +190,20 @@
                         <i class="ri-more-fill" aria-expanded="false"></i>
                         <span data-key="t-menu">Other Modules</span>
                     </li>
+                     <li class="nav-item">
+                    <Link href="/tsrs" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Major/Tsrs') }">
+                    <i class="ri-hand-coin-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
+                    </Link>
+                </li>
+                    <li class="nav-item">
+                        <Link href="/monitoring" class="nav-link menu-link"
+                        :class="{ 'active': $page.url === '/monitoring' }">
+                        <i class="ri-robot-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Monitoring</span>
+                        </Link>
+                    </li>
                     <li class="nav-item">
                         <Link href="/schedules" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Schedules') }">

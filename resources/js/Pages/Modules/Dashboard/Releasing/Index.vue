@@ -288,15 +288,19 @@
         </div>
        
     </b-row>
+    <Create @success="fetch()" ref="create"/>
+    <Update @update="updateData" ref="update"/>
 </template>
 <script>
 import _ from 'lodash';
+import Create from './Modals/Create.vue';
+import Update from './Modals/Update.vue';
 import flatPickr from "vue-flatpickr-component";
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, flatPickr },
+    components: { PageHeader, Pagination, Multiselect, flatPickr, Create, Update },
     props: ['dropdowns','years'],
     data(){
         return {
@@ -396,6 +400,13 @@ export default {
                 }
             })
             .catch(err => console.log(err));
+        },
+        openCreate(){
+            this.$refs.create.show();
+        },
+        openUpdate(data,index){
+            this.index = index;
+            this.$refs.update.show(data);
         },
         viewMode(index,status){
             this.index = index;
