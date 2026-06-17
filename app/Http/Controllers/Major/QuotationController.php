@@ -67,6 +67,9 @@ class QuotationController extends Controller
                 case 'copy':
                     return $this->save->copy($request);
                 break;
+                case 'duplicate':
+                    return $this->save->duplicate($request);
+                break;
                 case 'sample':
                     return $this->save->sample($request);
                 break;

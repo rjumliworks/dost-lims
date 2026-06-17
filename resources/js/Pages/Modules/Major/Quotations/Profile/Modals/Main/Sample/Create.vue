@@ -106,6 +106,8 @@ export default {
                 quotation_id: null,
                 option: 'sample',
                 count: 1,
+                include_testservices: null,
+                option: null
             }),
             action: null,
             category: null,
@@ -152,22 +154,28 @@ export default {
         edit(id, laboratory, data){
             this.empty();
             this.action = 'Edit';
+            this.form.option = 'edit';
             this.form.id = data.id;
             this.form.name = data.name;
             this.form.description = data.description;
+            this.form.remarks = data.remarks;
             this.form.customer_description = data.customer_description;
-            this.form.quotation_id = id;
+            this.form.tsr_id = id;
             this.form.laboratory_id = laboratory;
             this.setSample(data.category,data.sampletype,data.samplename);
             this.showModal = true;
         },
         copy(id, laboratory, data){
+            console.log(data);
             this.empty();
             this.action = 'Copy';
-            this.form.quotation_id = id;
+            this.form.option = 'duplicate';
+            this.form.id = data.id;
+            this.form.quotation_id = data.quotation_id;
             this.form.name = data.name;
             this.form.description = data.description;
             this.form.customer_description = data.customer_description;
+            this.form.remarks = data.remarks;
             this.form.laboratory_id = laboratory;
             this.setSample(data.category,data.sampletype,data.samplename);
             this.showModal = true;

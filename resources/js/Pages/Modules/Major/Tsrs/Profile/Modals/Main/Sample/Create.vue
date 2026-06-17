@@ -222,7 +222,7 @@ export default {
         },
         submit(){
             this.form.category_id = this.category;
-            if(this.action == 'Edit'){
+            if(this.action == 'edit'){
                 this.form.put('/samples/update',{
                     preserveScroll: true,
                     onSuccess: () => this.hide(),

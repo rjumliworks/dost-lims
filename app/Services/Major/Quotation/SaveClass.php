@@ -395,6 +395,40 @@ class SaveClass
         ];
     }
 
+    public function duplicate($request){
+        $count = (int) $request->count;
+        for ($i = 0; $i < $count; $i++) {
+            $sample = QuotationSample::create($request->all());
+            if($request->include_testservices){
+                $old_sample = QuotationSample::with('analyses.addfee')->where('id',$request->id)->first();
+                foreach($old_sample->analyses as $analysis){
+                    $a = $sample->analyses()->create([
+                        'fee' => $analysis->fee,
+                        'testservice_id' => $analysis->testservice_id
+                    ]);
+                    $total =  $this->updateTotal($sample->quotation_id,$analysis->fee);
+                    if($analysis->addfee->isNotEmpty()) {
+                        foreach ($analysis->addfee as $addfee) {
+                            $a->addfee()->create([
+                                'fee' => $addfee->fee,
+                                'total' => $addfee->total,
+                                'quantity' => $addfee->quantity,
+                                'service_id' => $addfee->service_id,
+                                'is_additional' => $addfee->is_additional
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return [
+            'data' => true,
+            'message' => 'Sample Copied Successfully', 
+            'info' => "The sample has been added and is now linked to this TSR."
+        ];
+    }
+
     private function updateTotal($id,$fee){
         $data = Quotation::with('discounted')->where('id',$id)->first();
         $fee = (float) trim(str_replace(',','',$fee),'₱ ');
