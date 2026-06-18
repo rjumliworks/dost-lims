@@ -146,6 +146,7 @@ export default {
             this.empty();
             this.editable = false;
             this.action = null;
+            this.form.option = 'sample';
             this.form.quotation_id = id;
             this.form.laboratory_id = laboratory;
             this.showModal = true;
