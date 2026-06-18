@@ -218,6 +218,7 @@ class UpdateClass
                 'subtotal' => $tsr->payment->subtotal,
                 'discount' => $tsr->payment->discount,
                 'total' => $tsr->payment->total,
+                'discounted' => $tsr->payment->discounted->name,
             ],
             'samples' => $samples,
             'descriptions' => $descs    
