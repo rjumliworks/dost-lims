@@ -232,7 +232,7 @@ class ViewClass
             ->with('services.service')
             ->with('mode','release:id','release.mode','release.user.profile')
             ->with('referral.agency.member','referral.province')
-            ->with('received:id','received.profile:id,firstname,lastname,user_id')
+            ->with('received:id','received.profile:id,firstname,middlename,suffix_id,lastname,user_id')
             ->with('agency','laboratory:id,name','status:id,name,color,others')
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches,industry_id','customer.wallet','customer.customer_name.industry:id,name')
             ->with('customer.address:address,customer_id,region_code,province_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name','customer.conformes')

@@ -24,7 +24,7 @@ class ViewResource extends JsonResource
             'release' => $this->release,
             'conforme_id' => $this->conforme->id, 
             'conforme_no' => $this->conforme->contact_no, 
-            'received' => $this->received->profile->firstname.' '.$this->received->profile->lastname,
+            'received' => $this->received->profile->fullname,
             'has_parent' => ($this->parent) ? true : false,
             'payment' => $this->payment,
             'purpose' => $this->purpose,

@@ -15,7 +15,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'avatar' => $this->profile?->avatar,
             'avatar_name' => $this->profile->avatar,
-            'name' => ucwords($this->profile->firstname.' '.$this->profile->lastname),
+            'name' => $this->profile->fullname,
             'firstname' => $this->profile->firstname,
             'lastname' => $this->profile->lastname,
             'middlename' => $this->profile->middlename,

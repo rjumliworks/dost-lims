@@ -46,18 +46,38 @@ class UserProfile extends Model
 
     public function getFullnameAttribute()
     {
-        $middleInitial = $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
-        $name = trim("{$this->firstname} {$middleInitial} {$this->lastname}");
+        $firstname = $this->formatNamePart($this->firstname);
+        $lastname = $this->formatNamePart($this->lastname);
+
+        $middleInitial = $this->middlename
+            ? strtoupper($this->middlename[0]) . '.'
+            : '';
+
+        $name = trim("{$firstname} {$middleInitial} {$lastname}");
+
         if ($this->suffix?->name) {
             $name .= ', ' . $this->suffix->name;
         }
+
         return $name;
     }
 
     public function getNameAttribute()
     {
-        $middleInitial = $this->middlename ? strtoupper($this->middlename[0]) . '.' : '';
-        $parts = [trim($this->lastname) . ',', trim($this->firstname), $middleInitial, $this->suffix?->name];
+        $lastname = $this->formatNamePart($this->lastname);
+        $firstname = $this->formatNamePart($this->firstname);
+
+        $middleInitial = $this->middlename
+            ? strtoupper($this->middlename[0]) . '.'
+            : '';
+
+        $parts = [
+            $lastname . ',',
+            $firstname,
+            $middleInitial,
+            $this->suffix?->name,
+        ];
+
         return implode(' ', array_filter($parts));
     }
 
@@ -125,5 +145,23 @@ class UserProfile extends Model
         ->useLogName('User Profile')
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();
+    }
+
+    private function formatNamePart($value)
+    {
+        if (!$value) {
+            return $value;
+        }
+
+        return collect(explode(' ', trim($value)))
+            ->map(function ($word) {
+                if (str_contains($word, '-')) {
+                    [$first, $rest] = explode('-', $word, 2);
+                    return ucfirst(strtolower($first)) . '-' . strtolower($rest);
+                }
+
+                return ucfirst(strtolower($word));
+            })
+            ->implode(' ');
     }
 }

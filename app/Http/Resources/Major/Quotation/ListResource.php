@@ -20,7 +20,7 @@ class ListResource extends JsonResource
             'laboratory' => $this->laboratory,
             'status' => $this->status,
             'customer' => ($this->customer->customer_name->has_branches) ? ($this->customer->is_main) ? $this->customer->customer_name->name :  $this->customer->customer_name->name.' - '.$this->customer->name : $this->customer->customer_name->name,
-            'received' => $this->received->profile->firstname.' '.$this->received->profile->lastname,
+            'received' => $this->received->profile->fullname,
             'updated_at' => $this->updated_at,
             'created_at' => $this->created_at,
         ];

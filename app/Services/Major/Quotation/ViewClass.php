@@ -39,7 +39,7 @@ class ViewClass
         $data = ListResource::collection(
             Quotation::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
-            ->with('received:id','received.profile:id,firstname,lastname,user_id')
+            ->with('received:id','received.profile:id,firstname,middlename,suffix_id,lastname,user_id')
             ->with('laboratory:id,name','status:id,name,color,others')
             ->when($request->keyword, function ($query, $keyword) {
                 $query->where(function ($q) use ($keyword) {
@@ -103,7 +103,7 @@ class ViewClass
             ->with('services.service')
             ->with('mode')
             ->with('referral.agency.member','referral.province')
-            ->with('received:id','received.profile:id,firstname,lastname,user_id')
+            ->with('received:id','received.profile:id,firstname,middlename,suffix_id,lastname,user_id')
             ->with('agency','laboratory:id,name','status:id,name,color,others')
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches','customer.wallet')
             ->with('customer.customer_name.industry:id,name')
