@@ -84,7 +84,7 @@
                                         <td :class="(selected.status.name == 'Pending') ? '' : 'text-center'" width="3%">{{index+1}}</td>
                                         <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
                                             <h5 class="fs-13 mb-0 fw-semibold text-primary">{{(list.code) ? list.code : 'Not yet available'}}</h5>
-                                            <p class="fs-13 text-muted mb-0">{{ (list.samplename?.name != 'n/a') ? list.samplename?.name : list.name }}</p>
+                                            <p class="fs-13 text-muted mb-0"> {{ list.name ? list.name : list.samplename?.name }}</p>
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                             <i>{{list.customer_description}}</i>, {{list.description}}
