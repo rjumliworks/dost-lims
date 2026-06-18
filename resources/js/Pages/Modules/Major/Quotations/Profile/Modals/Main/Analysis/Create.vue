@@ -209,6 +209,9 @@ export default {
         amount(val){
             this.form.fee = val;
         },
+        checkSearchStr: _.debounce(function(string) {
+            this.fetchTest();
+        }, 300),
         fetchTest(code){
             axios.get('/analyses',{
                 params: {
