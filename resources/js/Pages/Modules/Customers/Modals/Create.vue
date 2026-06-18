@@ -20,7 +20,7 @@
                                 </div>
                             </BCol>
                             <template v-if="typeof form.customer === 'object' && form.customer?.classification == 8">
-                            <BCol lg="12" v-if="typeof form.customer?.value != 'number'">
+                            <BCol lg="12">
                                 <BRow class="g-3">
                                     <BCol lg="12"><hr class="text-muted mb-0" :class="(form.customer) ? 'mt-1' : 'mt-3'"/></BCol>
                                     <BCol lg="8"  style="margin-top: 13px; margin-bottom: -12px;" class="fs-12" :class="(form.errors.has_branches) ? 'text-danger' : ''">Does the new customer represent a branch?</BCol>
@@ -42,9 +42,6 @@
                                     </BCol>
                                     <BCol lg="12"><hr class="text-muted mt-n2" :class="(form.customer && form.has_branches) ? '' : 'mb-n3'"/></BCol>
                                 </BRow>
-                            </BCol>
-                            <BCol lg="12" v-else>
-                                <hr class="text-muted mt-2"/>
                             </BCol>
                             <BCol :lg="(typeof form.customer?.value === 'number') ? 6 : 12" v-if="form.has_branches" class="mt-n2 mb-0">
                                 <InputLabel for="name" value="Branch" :message="form.errors.name"/>
