@@ -156,10 +156,76 @@ class ViewClass
         ->where('quotation_id',$id)
         ->get();
 
-        $samples = QuotationSample::with('analyses.testservice.method.method','analyses.testservice.testname','analyses.addfee.service')
-        ->whereHas('quotation',function ($query) use ($id) {
-            $query->where('id',$id);
-        })->get();
+        $samples = QuotationSample::with(
+            'analyses.testservice.method.method',
+            'analyses.testservice.testname',
+            'analyses.addfee.service'
+        )
+        ->whereHas('quotation', function ($query) use ($id) {
+            $query->where('id', $id);
+        })
+        ->get();
+
+        $groupedData = [];
+        $displayedSamples = [];
+
+        foreach ($samples as $row) {
+
+            $sampleName = $row['name'] ?: $row['samplename']['name'];
+            $sampleType = $row['sampletype']['name'];
+
+            foreach ($row['analyses'] as $analysis) {
+
+                $testName = $analysis['testservice']['testname']['name'];
+                $testMethod = $analysis['testservice']['method']['method']['name'];
+                $shortMethod = $analysis['testservice']['method']['method']['short'];
+
+                $additionalFees = [];
+
+                foreach ($analysis['addfee'] as $addfee) {
+
+                    $feeName = $addfee['service']['name'] ?? null;
+
+                    $feeAmount = isset($addfee['fee'])
+                        ? floatval(str_replace(['₱', ','], '', $addfee['fee']))
+                        : 0;
+
+                    $feeQuantity = isset($addfee['quantity'])
+                        ? (int) $addfee['quantity']
+                        : 1;
+
+                    $feeTotal = isset($addfee['total'])
+                        ? floatval(str_replace(['₱', ','], '', $addfee['total']))
+                        : ($feeAmount * $feeQuantity);
+
+                    $additionalFees[] = [
+                        'name' => $feeName,
+                        'fee' => $feeAmount,
+                        'quantity' => $feeQuantity,
+                        'total' => $feeTotal,
+                    ];
+                }
+
+                $showSample = !isset($displayedSamples[$sampleName]);
+
+                $groupedData[] = [
+                    'samplename' => $showSample ? $sampleName : '',
+                    'sampletype' => $showSample ? $sampleType : '',
+                    'testname'   => $testName,
+                    'method'     => $shortMethod ?: $testMethod,
+                    'count'      => 1,
+                    'fee'        => $analysis['fee'],
+                    'additional' => $additionalFees,
+                ];
+
+                $displayedSamples[$sampleName] = true;
+            }
+        }
+
+        // $samples = QuotationSample::with('analyses.testservice.method.method','analyses.testservice.testname','analyses.addfee.service')
+        // ->whereHas('quotation',function ($query) use ($id) {
+        //     $query->where('id',$id);
+        // })->get();
 
         // $groupedData = [];
 
@@ -231,47 +297,6 @@ class ViewClass
                 
         //     }
         // }
-
-        $groupedData = [];
-
-        foreach ($samples as $row) {
-            $sampleName = !empty($row['name'])
-                ? $row['name']
-                : ($row['samplename']['name'] ?? '-');
-
-            $sampleType = $row['sampletype']['name'] ?? '-';
-
-            foreach ($row['analyses'] as $analysis) {
-                $testName = $analysis['testservice']['testname']['name'] ?? '-';
-                $testMethod = $analysis['testservice']['method']['method']['name'] ?? '-';
-                $shortMethod = $analysis['testservice']['method']['method']['short'] ?? null;
-
-                $additional = [];
-
-                foreach ($analysis['addfee'] ?? [] as $addfee) {
-                    $additional[] = [
-                        'name' => $addfee['service']['name'] ?? null,
-                        'fee' => isset($addfee['fee'])
-                            ? floatval(str_replace(['₱', ','], '', $addfee['fee']))
-                            : 0,
-                        'quantity' => $addfee['quantity'] ?? 1,
-                        'total' => isset($addfee['total'])
-                            ? floatval(str_replace(['₱', ','], '', $addfee['total']))
-                            : 0,
-                    ];
-                }
-
-                $groupedData[] = [
-                    'samplename' => $sampleName,
-                    'sampletype' => $sampleType,
-                    'testname' => $testName,
-                    'method' => $shortMethod ?: $testMethod,
-                    'count' => 1,
-                    'fee' => $analysis['fee'] ?? 0,
-                    'additional' => $additional,
-                ];
-            }
-        }
 
         $samples2 = array_values($groupedData);
         $services = null;
