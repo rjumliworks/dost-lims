@@ -5,6 +5,7 @@ namespace App\Services\Major\Quotation;
 use Carbon\Carbon;
 use App\Models\UserRole;
 use App\Models\Quotation;
+use App\Models\QuotationSample;
 use App\Models\TsrSequence;
 
 class UpdateClass
@@ -72,6 +73,24 @@ class UpdateClass
                 'info' => 'This Quotation has already been processed and can no longer be modified.'
             ];
         }
+    }
+
+     public function edit($request){
+        $data = QuotationSample::findOrFail($request->id);
+        $data->name = $request->name;
+        $data->samplename_id = (int) $request->samplename_id;
+        $data->sampletype_id = (int) $request->sampletype_id;
+        $data->category_id = (int) $request->category_id;
+        $data->customer_description = $request->customer_description;
+        $data->description = $request->description;
+        $data->save();
+        
+        
+        return [
+            'data' => $data,
+            'message' => 'Sample Updated Successfully', 
+            'info' => "The sample details have been updated and saved to the TSR."
+        ];
     }
 
     private function updateTotal($id,$fee){

@@ -106,6 +106,7 @@ export default {
                 quotation_id: null,
                 option: 'sample',
                 count: 1,
+                reference: null,
                 include_testservices: null,
                 option: null
             }),
@@ -157,6 +158,7 @@ export default {
             this.action = 'Edit';
             this.form.option = 'edit';
             this.form.id = data.id;
+            this.form.reference = data.reference;
             this.form.name = data.name;
             this.form.description = data.description;
             this.form.remarks = data.remarks;
@@ -219,7 +221,7 @@ export default {
         },
         submit(){
             this.form.category_id = this.category;
-            if(this.action == 'edit'){
+            if(this.action == 'Edit'){
                 this.form.put('/quotations/update',{
                     preserveScroll: true,
                     onSuccess: () => this.hide(),

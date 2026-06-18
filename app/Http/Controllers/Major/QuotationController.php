@@ -119,6 +119,9 @@ class QuotationController extends Controller
                 case 'update':
                     return $this->update->quotation($request);
                 break;  
+                case 'edit':
+                    return $this->update->edit($request);
+                break;  
                 case 'save': 
                     return $this->update->save($request);
                 break;

@@ -82,7 +82,7 @@
                                     <th style="width: 15%;" class="text-center">Created At</th>
                                     <th style="width: 10%;" class="text-center">Status</th>
                                     <th style="width: 10%;" class="text-center">Total</th>
-                                    <th style="width: 4%;"></th>
+                                    <th style="width: 10%;"></th>
                                 </tr>
                             </thead>
                               <!-- :class="{
@@ -118,15 +118,15 @@
                                     </td>
                                     <td class="text-center fs-12">{{list.total}}</td>
                                     <td class="text-end">
-                                        <!-- <a :href="`/tsrs/${list.qr}`" target="_blank">
+                                        <a :href="`/quotations/${list.reference}`" target="_blank">
                                             <b-button :variant="(filter.status) ? 'soft-info' : 'info'"  class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
                                             </b-button>
                                         </a>
-                                        <b-button @click="openPrint(list.qr)" v-if="list.status.name != 'Pending'" :variant="(filter.status) ? 'soft-success' : 'success'" class="me-1" v-b-tooltip.hover title="Print" size="sm">
+                                        <b-button @click="openPrint(list.reference)" v-if="list.status.name != 'Pending'" :variant="(filter.status) ? 'soft-success' : 'success'" class="me-1" v-b-tooltip.hover title="Print" size="sm">
                                             <i class="ri-printer-fill align-bottom"></i>
-                                        </b-button> -->
-                                        <div class="d-flex gap-3 justify-content-center">
+                                        </b-button>
+                                        <!-- <div class="d-flex gap-3 justify-content-center">
                                             <div class="dropdown">
                                                 <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
                                                     <template #button-content> 
@@ -142,12 +142,12 @@
                                                             <i class="ri-printer-line me-2"></i>Print
                                                         </a>
                                                     </li>
-                                                    <!-- <li><hr class="dropdown-divider"></li>
+                                                    <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-calendar-fill me-2"></i>Update Date
                                                         </a>
-                                                    </li> -->
+                                                    </li>
                                                     <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
@@ -157,7 +157,7 @@
                                                     </li>
                                                 </BDropdown>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </td>
                                 </tr>
                             </tbody>
