@@ -121,31 +121,42 @@ export default {
             types: [],
             names: [],
             showModal: false,
-            editable: false
+            editable: false,
+            initializing: false
         }
     },
     watch: {
-        "sampletype"(newVal){
-            if(this.action == null){
-                if(newVal){
-                    this.form.sampletype_id = this.sampletype.value;
-                    this.names = this.sampletype.names;
-                }else{
-                    this.form.sampletype_id = null;
-                    this.form.samplename_id = null;
-                    this.names = [];
-                }
-            }
-        },
-        "category"(newVal){
-            if(!newVal){
-                this.types = null;
-                this.sampletype = null;
-            }else{
-                this.fetchType(newVal);
-            }
+    sampletype(newVal) {
+
+        if (this.initializing) return;
+
+        if (newVal) {
+            this.form.sampletype_id = newVal.value;
+            this.names = newVal.names || [];
+            this.form.samplename_id = null;
+        } else {
+            this.form.sampletype_id = null;
+            this.form.samplename_id = null;
+            this.names = [];
         }
     },
+
+    category(newVal) {
+
+        if (this.initializing) return;
+
+        this.sampletype = null;
+        this.form.sampletype_id = null;
+        this.form.samplename_id = null;
+        this.names = [];
+
+        if (newVal) {
+            this.fetchType(newVal);
+        } else {
+            this.types = [];
+        }
+    }
+},
     methods: { 
         show(id, laboratory){
             this.empty();
@@ -158,6 +169,7 @@ export default {
         },
         edit(id, laboratory, data){
             this.empty();
+            this.initializing = true;
             this.action = 'Edit';
             this.form.option = 'edit';
             this.form.id = data.id;
@@ -168,7 +180,11 @@ export default {
             this.form.tsr_id = id;
             this.form.laboratory_id = laboratory;
             this.setSample(data.category,data.sampletype,data.samplename);
+            this.fetchCategory();
             this.showModal = true;
+            this.$nextTick(() => {
+                this.initializing = false;
+            });
         },
         copy(id, laboratory, data){
             this.empty();
