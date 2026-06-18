@@ -80,38 +80,38 @@
             page-break-after: always;
         }
         .letter-p {
-        position: relative;
-        font-size: 100px;
-        font-weight: bold;
-        display: inline-block;
-        color: black;
-    }
+    position: relative;
+    font-size: 100px;
+    font-weight: bold;
+    display: inline-block;
+    color: black;
+  }
 
-    /* First line */
-    .letter-p::before {
-        content: '';
-        position: absolute;
-        width: 60%; /* adjust length */
-        height: 5px; /* line thickness */
-        background-color: red; /* line color */
-        top: 20%; /* vertical position */
-        left: 20%; /* horizontal start */
-        transform: rotate(-10deg); /* optional tilt */
-    }
+  /* First line */
+  .letter-p::before {
+    content: '';
+    position: absolute;
+    width: 60%; /* adjust length */
+    height: 5px; /* line thickness */
+    background-color: red; /* line color */
+    top: 20%; /* vertical position */
+    left: 20%; /* horizontal start */
+    transform: rotate(-10deg); /* optional tilt */
+  }
 
-    /* Second line */
-    .letter-p::after {
-        content: '';
-        position: absolute;
-        width: 50%;
-        height: 5px;
-        background-color: blue;
-        top: 50%;
-        left: 25%;
-        transform: rotate(5deg);
-    }
-        </style>
-    </head>
+  /* Second line */
+  .letter-p::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 5px;
+    background-color: blue;
+    top: 50%;
+    left: 25%;
+    transform: rotate(5deg);
+  }
+    </style>
+</head>
 <?php 
 
     $form = $configuration['form'] = $configuration['form'];
@@ -151,7 +151,7 @@
                 @if($configuration['agency']['member']['name'] == 'Department of Science and Technology - VI')
                 <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">OP-007-F1 (front page) <br/>Rev 4 | February 2, 2026</td>
                 @else
-                <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">OP-007-F1 (front page) <br/>Rev 14 | May 01, 2026</td>
+                <td style="border-left-style: hidden; width: 50%; text-align: right; font-size: 10px;">OP-007-F1 (front page) <br/>Rev 13 | May 01, 2026</td>
                 @endif
             </tr>   
         </table>
@@ -234,7 +234,7 @@
             @foreach($tsr['samples'] as $index=>$sample)
                 <tr style="text-align: center; font-size: 9px; color: #072388;">
                     <td style="text-align: left;">{{$sample['samplecode']}}</td>
-                    <td>{{($sample['sampleother']) ? $sample['sampleother'] : $sample['samplename']}}<br/>
+                    <td>{{$sample['samplename']}}<br/>
                         @if(isset($sample['sampletype']) && $sample['sampletype'] != '-')
                         <span style="color: #5f5f5f; font-size: 8px;"> ({{$sample['sampletype']}})</span>
                         @endif
@@ -248,6 +248,7 @@
                             <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
                             P
                         </span>
+                        {{-- <span style="font-family: DejaVu Sans;">&#8369;</span> --}}
                         {{trim($sample['fee'],'₱ ')}}
                         
                     </td>
@@ -259,31 +260,26 @@
                         </span>
                         {{number_format(trim(str_replace(',','',$sample['fee']),'₱ ')*$sample['count'],2,".",",")}}</td>
                 </tr>
-                @if(isset($sample['additional']) && is_array($sample['additional']))
-                    @foreach($sample['additional'] as $additional)
-                        <tr style="text-align: center; font-size: 9px; color: #072388;">
-                            <td colspan="4" style="text-align: left;">{{ $additional['name'] }}</td>
-                            <td>{{ $additional['quantity'] }}</td>
-                            <td style="text-align: right;">
-                                <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
-                                    <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                    <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                    P
-                                </span>
-                                {{ trim($additional['fee'], '₱ ') }}
-                            </td>
-                            <td style="text-align: right;">
-                                <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
-                                    <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                    <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                    P
-                                </span>
-                                {{number_format(trim(str_replace(',', '', $additional['fee']), '₱ ') * $additional['quantity'],2,".",",")}}
-                            </td>
-                        </tr>
-                    @endforeach
+                @if(isset($sample['additional']))
+                <tr style="text-align: center; font-size: 9px; color: #072388;">
+                    <td colspan="4" style="text-align: left;">{{$sample['additional']['name']}}</td>
+                    <td>{{$sample['additional']['quantity']}}</td>
+                    <td style="text-align: right;">
+                        <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                            <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                            <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                            P
+                        </span>
+                        {{trim($sample['additional']['fee'],'₱ ')}}</td>
+                    <td style="text-align: right;">
+                        <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                            <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                            <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                            P
+                        </span>
+                        {{number_format(trim(str_replace(',','',$sample['additional']['fee']),'₱ ')*$sample['additional']['quantity'],2,".",",")}}</td>
+                </tr>
                 @endif
-
             @endforeach
             @if(isset($tsr['services']) && is_array($tsr['services']))
                 @foreach($tsr['services'] as $service)
@@ -293,18 +289,10 @@
                         </td>
                         <td>{{ $service['quantity'] }}</td>
                         <td style="text-align: right;">
-                            <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
-                                <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                P
-                            </span> {{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])), 2, ".", ",") }}
+                            <span style="font-family: DejaVu Sans;">&#8369;</span>{{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])), 2, ".", ",") }}
                         </td>
                         <td style="text-align: right;">
-                            <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
-                                <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                                P
-                            </span> {{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])) * $service['quantity'], 2, ".", ",") }}
+                            <span style="font-family: DejaVu Sans;">&#8369;</span>{{ number_format(trim(str_replace([',', '₱'], '', $service['fee'])) * $service['quantity'], 2, ".", ",") }}
                         </td>
                     </tr>
                 @endforeach
@@ -323,8 +311,12 @@
                         {{trim($tsr['payment']['subtotal'],'₱ ')}}</td>
                 </tr>
                 <tr>
-                    <td colspan="5"></td>
-                    <td style="font-size: 8px;">DISCOUNT</td>
+                    <td colspan="5"  style="font-weight: regular; text-align: left;">
+                        {{-- @if($tsr['payment']['discounted'] != 'Regular')
+                            <i>{{$tsr['payment']['discounted']}} discount applied</i>
+                        @endif --}}
+                    </td>
+                    <td style="font-size: 8px;">DISCOUNT @if(isset($tsr['payment']['discounted']))  <br/><span style="color: #5f5f5f; font-size: 8px;"> ({{$tsr['payment']['discounted']}})</span> @endif</td>
                     <td style="font-size: 9px; text-align: right;">
                         <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
                             <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
@@ -410,20 +402,42 @@
                 </tbody>
             </table>
         </div>
+         @if($configuration['agency']['member']['name'] == 'Department of Science and Technology - Zamboanga Peninsula')
         <h6 style="font-size: 10px; margin-top: 12px;">3. REMARK(S)</h6>
         <table style="border: 1px solid black; font-size: 9px; margin-top: -22px;">
-                <tbody>
-                    <tr>
-                        <td>
-                             <ul style="margin-left: -30px; list-style: none; color: #072388; ">
-                                @foreach($tsr['descriptions'] as $desc)
-                                    <li>{{$desc['code']}} : <i>{{$desc['remarks'] ?? '-'}}</li>
+            <tbody>
+                <tr>
+                    <td>
+                        @php
+                            $descriptionsWithRemarks = collect($tsr['descriptions'])
+                                ->filter(fn($desc) => !empty($desc['remarks']));
+                        @endphp
+
+                        @if($descriptionsWithRemarks->isNotEmpty())
+                            <ul style="margin-left: -30px; list-style: none; color: #072388;">
+                                @foreach($descriptionsWithRemarks as $desc)
+                                    <li>{{ $desc['code'] }} : {{ $desc['remarks'] }}</li>
                                 @endforeach
                             </ul>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                        @else 
+                            <ul style="list-style: none;"><li>-</li></ul>
+                        @endif
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @else  
+        <h6 style="font-size: 10px; margin-top: 12px;">3. CUSTOMER WALLET</h6>
+        <table style="border: 1px solid black; font-size: 9px; margin-top: -22px;">
+            <tbody>
+                <tr>
+                    <td>
+                        <?php echo trim($wallet,'₱ '); ?>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        @endif
         <h6 style="font-size: 10px; margin-top: 12px;">4. AGREED WITH CUSTOMER INCLUDING THE TERMS AND CONDITIONS AT THE BACK</h6>
         <table style="border: 1px solid black; font-size: 10px; margin-top: -22px; page-break-inside: avoid;">
             <tbody>
