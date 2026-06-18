@@ -316,7 +316,7 @@
                             <i>{{$tsr['payment']['discounted']}} discount applied</i>
                         @endif --}}
                     </td>
-                    <td style="font-size: 8px;">DISCOUNT @if(isset($tsr['payment']['discounted']))  <br/><span style="color: #5f5f5f; font-size: 8px;"> ({{$tsr['payment']['discounted']}})</span> @endif</td>
+                    <td style="font-size: 8px;">DISCOUNT @if(isset($tsr['payment']['discounted']) && $tsr['payment']['discounted'] != 'Regular')  <br/><span style="color: #5f5f5f; font-size: 8px;"> ({{$tsr['payment']['discounted']}})</span> @endif</td>
                     <td style="font-size: 9px; text-align: right;">
                         <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
                             <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
