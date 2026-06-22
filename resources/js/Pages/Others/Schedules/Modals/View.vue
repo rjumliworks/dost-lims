@@ -116,6 +116,20 @@
                         </div>
                     </div>
                 </div>
+                
+                <div class="col-sm-12" v-if="selected.extendedProps.samples">
+                    <div class="p-1 border border-dashed rounded">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-sm me-2">
+                                <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-flask-fill"></i></div>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="text-muted mb-0 fs-12">No. of samples :</p>
+                                <h5 class="mb-0 fs-12">{{selected.extendedProps.samples}}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-sm-12" v-if="selected.extendedProps.description">
                     <div class="p-1 border border-dashed rounded">
                         <div class="d-flex align-items-center">
