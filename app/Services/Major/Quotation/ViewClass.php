@@ -171,11 +171,12 @@ class ViewClass
 
         foreach ($samples as $row) {
             
-            $sampleCode = $row['code'];
+            $sampleCode = $row['id'];
             $sampleName = $row['name'] ?: $row['samplename']['name'];
             $sampleType = $row['sampletype']['name'];
 
             $sampleKey = $sampleCode . '|' . $sampleName;
+
 
 
             foreach ($row['analyses'] as $analysis) {
