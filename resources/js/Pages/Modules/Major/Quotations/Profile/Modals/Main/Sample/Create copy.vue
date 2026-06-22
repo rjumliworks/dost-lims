@@ -111,7 +111,7 @@ export default {
                 sampletype_id: null,
                 category_id: null,
                 laboratory_id: null,
-                quotation_id: null,
+                tsr_id: null,
                 count: 1,
                 include_testservices: null,
                 option: null
@@ -207,8 +207,7 @@ export default {
             this.empty();
             this.editable = false;
             this.action = null;
-            this.form.option = 'sample';
-            this.form.quotation_id = id;
+            this.form.tsr_id = id;
             this.form.laboratory_id = laboratory;
             this.showModal = true;
             this.fetchCategory();
@@ -236,8 +235,8 @@ export default {
             console.log(data);
             // this.empty();
             this.action = 'Copy';
-            this.form.option = 'duplicate';
-            this.form.quotation_id = data.quotation_id;
+            this.form.option = 'copy';
+            this.form.tsr_id = id;
             this.form.id = data.id;
             this.form.name = data.name;
             this.form.description = data.description;
@@ -323,7 +322,7 @@ export default {
             })
             .catch(err => console.log(err));
         },
-        submit(){
+    submit(){
             this.form.category_id = this.category;
             if(this.action == 'Edit'){
                 this.form.put('/quotations/update',{
