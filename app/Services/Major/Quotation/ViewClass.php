@@ -141,9 +141,8 @@ class ViewClass
         $id = $hashids->decode($request->id);
 
         $quotation = Quotation::query()
-        ->with('services.service')
-        ->with('signatory.prepared.profile:user_id,signature','signatory.approved.profile:user_id,signature','signatory.received.profile:user_id,signature')
-        ->with('received:id','received.profile:id,firstname,lastname,middlename,user_id')
+        ->with('service.service')
+        ->with('createdby:id','createdby.profile:id,firstname,lastname,middlename,user_id')
         ->with('laboratory:id,name','status:id,name,color,others')
         ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches','customer.address:address,customer_id,region_code,province_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name')
         ->with('conforme:id,name,contact_no','customer.contact:id,email,contact_no,customer_id')
@@ -156,71 +155,10 @@ class ViewClass
         ->where('quotation_id',$id)
         ->get();
 
-        $samples = QuotationSample::with(
-            'analyses.testservice.method.method',
-            'analyses.testservice.testname',
-            'analyses.addfee.service'
-        )
-        ->whereHas('quotation', function ($query) use ($id) {
-            $query->where('id', $id);
-        })
-        ->get();
-
-        // $groupedData = [];
-        // $displayedSamples = [];
-
-        // foreach ($samples as $row) {
-
-        //     $sampleName = $row['name'] ?: $row['samplename']['name'];
-        //     $sampleType = $row['sampletype']['name'];
-
-        //     foreach ($row['analyses'] as $analysis) {
-
-        //         $testName = $analysis['testservice']['testname']['name'];
-        //         $testMethod = $analysis['testservice']['method']['method']['name'];
-        //         $shortMethod = $analysis['testservice']['method']['method']['short'];
-
-        //         $additionalFees = [];
-
-        //         foreach ($analysis['addfee'] as $addfee) {
-
-        //             $feeName = $addfee['service']['name'] ?? null;
-
-        //             $feeAmount = isset($addfee['fee'])
-        //                 ? floatval(str_replace(['₱', ','], '', $addfee['fee']))
-        //                 : 0;
-
-        //             $feeQuantity = isset($addfee['quantity'])
-        //                 ? (int) $addfee['quantity']
-        //                 : 1;
-
-        //             $feeTotal = isset($addfee['total'])
-        //                 ? floatval(str_replace(['₱', ','], '', $addfee['total']))
-        //                 : ($feeAmount * $feeQuantity);
-
-        //             $additionalFees[] = [
-        //                 'name' => $feeName,
-        //                 'fee' => $feeAmount,
-        //                 'quantity' => $feeQuantity,
-        //                 'total' => $feeTotal,
-        //             ];
-        //         }
-
-        //         $showSample = !isset($displayedSamples[$sampleName]);
-
-        //         $groupedData[] = [
-        //             'samplename' => $showSample ? $sampleName : '',
-        //             'sampletype' => $showSample ? $sampleType : '',
-        //             'testname'   => $testName,
-        //             'method'     => $shortMethod ?: $testMethod,
-        //             'count'      => 1,
-        //             'fee'        => $analysis['fee'],
-        //             'additional' => $additionalFees,
-        //         ];
-
-        //         $displayedSamples[$sampleName] = true;
-        //     }
-        // }
+        $samples = QuotationSample::with('analyses.testservice.method.method','analyses.testservice.testname','analyses.addfee.service')
+        ->whereHas('quotation',function ($query) use ($id) {
+            $query->where('id',$id);
+        })->get();
 
         $groupedData = [];
 
@@ -289,170 +227,56 @@ class ViewClass
         }
 
 
-        // $samples = QuotationSample::with('analyses.testservice.method.method','analyses.testservice.testname','analyses.addfee.service')
-        // ->whereHas('quotation',function ($query) use ($id) {
-        //     $query->where('id',$id);
-        // })->get();
-
-        // $groupedData = [];
-
-        // foreach ($samples as $row) {
-        //     $sampleName = ($row['name']) ? $row['name'] : $row['samplename']['name'];
-        //     $sampleType = $row['sampletype']['name'];
-        //     foreach ($row['analyses'] as $index => $analysis) {
-        //         $testName = $analysis['testservice']['testname']['name'];
-        //         $testMethod = $analysis['testservice']['method']['method']['name'];
-        //         $shortMethod = $analysis['testservice']['method']['method']['short'];
-        //         $key = $sampleName . "_" . $analysis['sampletype_id'] . "_" . $testName . "_" . $testMethod;
-
-        //         // Initialize grouping if not yet set
-        //         if (!isset($groupedData[$key])) {
-        //             $groupedData[$key] = [
-        //                 "samplename" => ($index == 0) ? $sampleName : '-',
-        //                 "sampletype" => ($index == 0) ? $sampleType : '-',
-        //                 "testname" => $testName,
-        //                 "method" => ($shortMethod) ? $shortMethod : $testMethod,
-        //                 "count" => 0,
-        //                 "fee" => $analysis['fee'],
-        //                 'additional' => [] // Store as array of grouped additional fees
-        //             ];
-        //         }
-
-        //         // Increase count
-        //         $groupedData[$key]["count"] += 1;
-
-        //         // Group additional fees by name and sum quantity and total
-              
-                    
-        //             foreach ($analysis['addfee'] as $addfee) {
-        //                 // Extract fee info
-        //                 $feeName = $addfee['service']['name'] ?? null;
-        //                 $feeAmount = isset($addfee['fee']) 
-        //                     ? floatval(str_replace(['₱', ','], '', $addfee['fee'])) 
-        //                     : 0;
-        //                 $feeQuantity = isset($addfee['quantity']) ? (int) $addfee['quantity'] : 1;
-        //                 $feeTotal = isset($addfee['total']) 
-        //                     ? floatval(str_replace(['₱', ','], '', $addfee['total'])) 
-        //                     : $feeAmount * $feeQuantity;
-
-        //                 // Ensure 'additional' array exists
-        //                 if (!isset($groupedData[$key]['additional'])) {
-        //                     $groupedData[$key]['additional'] = [];
-        //                 }
-
-        //                 // Look for existing fee by name
-        //                 $found = false; 
-        //                 foreach ($groupedData[$key]['additional'] as &$existingFee) {
-        //                     if ($existingFee['name'] === $feeName) {
-        //                         $existingFee['quantity'] += $feeQuantity;
-        //                         $existingFee['total'] += $feeTotal;
-        //                         $found = true;
-        //                         break;
-        //                     }
-        //                 }
-
-        //                 // If not found, add as new fee entry
-        //                 if (!$found) {
-        //                     $groupedData[$key]['additional'][] = [
-        //                         'name' => $feeName,
-        //                         'fee' => $feeAmount,
-        //                         'quantity' => $feeQuantity,
-        //                         'total' => $feeTotal,
-        //                     ];
-        //                 }
-        //             }
-                
-        //     }
-        // }
-
-        $samples2 = array_values($groupedData);
-        $services = null;
-
-        if(isset($quotation->services) && count($quotation->services) > 0){
-            $services = $quotation->services->map(function($item){
-                return [
-                    'name' => $item->service->name ?? null,
-                    'description' => $item->service->description ?? null,
-                    'quantity' => $item->quantity ?? 1,
-                    'fee' => $item->fee ?? 0,
-                ];
-            })->toArray();
+        if(isset($quotation->service)){
+            $service = [
+                'name' => $quotation->service->service->name,
+                'description' => $quotation->service->service->description,
+                'quantity' => $quotation->service->quantity,
+                'fee' => $quotation->service->fee
+            ];
+        }else{
+            $service = null;
         }
 
+        $samples2 = array_values($groupedData);
+
         $head = UserRole::with('user:id','user.profile:id,user_id,firstname,middlename,lastname')
-        ->where('laboratory_id',$quotation->laboratory_id)->whereHas('role',function ($query){
+        ->where('agency_id',$quotation->agency_id)->whereHas('role',function ($query){
             $query->where('name','Technical Manager');
-        })->where('is_active',1)->first();
-
-        $url = $_SERVER['HTTP_HOST'].'/quotation/'.$request->id;
-        $result = new Builder(
-            writer: new PngWriter(),
-            data: $url,
-            size: 300,
-            margin: 10,
-        );
-
-        $qrCodeImageString = $result->build()->getString();
-        $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
-
+        })
+        ->where('laboratory_id',$quotation->laboratory_id)
+        ->where('is_active',1)
+        ->first();
         $available = Wallet::where('customer_id', $quotation->customer_id)->value('available') ?? 0;
         $wallet = ($available != 0) ? trim(str_replace(',','',$available),'₱') : 0;
         $array= [
-            'qrCodeImage' => $base64Image,
-            'configuration' => AgencyConfiguration::first(),
-            'quotation' => new ViewResource($quotation),
+            'configuration' => AgencyConfiguration::where('agency_id',$this->agency)->first(),
+            'quotation' => new QuotationResource($quotation),
             'samples' => $samples,
             'group' => $samples2,
-            'services' => $services,
+            'service' => $service,
             'descs' => $descs,
             'wallet' => $wallet,
             'manager' => $head->user->profile->firstname.' '.$head->user->profile->middlename[0].'. '.$head->user->profile->lastname,
-            'user' => $quotation->received->profile->firstname.' '.$quotation->received->profile->middlename[0].'. '.$quotation->received->profile->lastname,
-            'signatory' => $quotation->signatory
-        ];
+            'user' => $quotation->createdby->profile->firstname.' '.$quotation->createdby->profile->middlename[0].'. '.$quotation->createdby->profile->lastname
+        ]; 
         $pdf = \PDF::loadView('reports.quotation',$array)->setPaper('a4', 'portrait');
+       
+
         $pdf->output();
         $dompdf = $pdf->getDomPDF();
         $canvas = $dompdf->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $copies = 1;
-             $totalPagesPerCopy = $pageCount / $copies;
+            $totalPagesPerCopy = $pageCount / $copies;
             $currentPageInCopy = ($pageNumber - 1) % $totalPagesPerCopy + 1;
             $text = "PAGE $currentPageInCopy OF $totalPagesPerCopy";
             $font = $fontMetrics->get_font("Helvetica", "normal");
             $size = 7;
             $width = $fontMetrics->get_text_width($text, $font, $size);
-            $canvas->text(106 - $width, 796, $text, $font, $size);
+            $canvas->text(80 - $width, 796, $text, $font, $size);
         });
-
-        // $signatory = $quotation->signatory;
-
-        // $latestDate = collect([
-        //     $signatory->prepared_date,
-        //     $signatory->approved_date,
-        //     $signatory->received_date,
-        // ])->filter()->max();
-
-        $pdfBinary = $dompdf->output();
-
-        $secret = config('app.key');
-        $hmac = hash_hmac('sha256', $pdfBinary, $secret);
-        $meta = "\n%--- DOC META ---\n";
-        $meta .= "% ValidationHMAC: {$hmac}\n";
-        $meta .= "% GeneratedAt: " . now()->toDateTimeString() . "\n";
-        $meta .= "%--- END META ---\n";
-
-        $pos = strrpos($pdfBinary, '%%EOF');
-        if ($pos !== false) {
-            $pdfBinary = substr_replace($pdfBinary, $meta . '%%EOF', $pos, 5);
-        } else {
-            $pdfBinary .= $meta . "%%EOF\n";
-        }
-
-        return response($pdfBinary)
-            ->header('Content-Type', 'application/pdf')
-             ->header('Content-Disposition', 'inline; filename="' . $quotation->code . '.pdf"');
-        // return $pdf->stream($quotation->code.'.pdf');
+        return $pdf->stream($quotation->code.'.pdf');
     }
 
      private function analysesList($id){
