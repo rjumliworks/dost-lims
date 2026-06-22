@@ -233,7 +233,7 @@ export default {
         },
         copy(id, laboratory, data){
             console.log(data);
-            this.empty();
+            // this.empty();
             this.action = 'Copy';
             this.form.option = 'copy';
             this.form.tsr_id = id;
@@ -339,17 +339,17 @@ export default {
         handleInput(field) {
             this.form.errors[field] = false;
         },
-       empty() {
-    this.category = null;
-    this.sampletype = null;
-    this.samplename = null;
+        empty() {
+            this.category = null;
+            this.sampletype = null;
+            this.samplename = null;
 
-    this.form.reset();
+            this.form.reset();
 
-    this.categories = [];
-    this.types = [];
-    this.names = [];
-},
+            this.categories = [];
+            this.types = [];
+            this.names = [];
+        },
         hide(){
             this.action = null;
             this.editable = false;
