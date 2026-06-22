@@ -249,7 +249,11 @@ export default {
                 preserveScroll: true,
                 preserveState: false,
                 onSuccess: () => {
+                   
                     this.names = [];
+                    if (this.$page.props.flash.data) {
+                        window.open(`/tsrs/${this.$page.props.flash.data}`, '_blank');
+                    }
                     this.$emit('success',this.$page.props.flash.data);
                     this.hide();
                 }

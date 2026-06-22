@@ -101,9 +101,9 @@ export default {
                 preserveScroll: true,
                 onSuccess: (response) => {
                     this.confirm = false;
-                    this.$emit('selected',response.props.flash.data.data);
+                    this.$emit('selected',response.props.flash.data);
                     this.hide();
-                    window.open('/samples?option=qrcode-list&id='+response.props.flash.data.data.qr);
+                    window.open('/samples?option=qrcode-list&id='+response.props.flash.data.reference);
                 },
             });
         },
