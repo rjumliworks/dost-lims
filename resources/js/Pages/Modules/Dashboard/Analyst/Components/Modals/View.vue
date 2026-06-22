@@ -10,7 +10,7 @@
                                 <div><span class="text-muted">Sample code</span> :  <span class="fw-medium">{{selected.code }}</span></div>
                                 <div class="vr" style="width: 1px;"></div>
                                 <div><span class="text-muted">Sample name</span> : 
-                                    <span v-if="selected.samplename" class="fw-medium"> {{ selected.samplename }}</span>
+                                    <span v-if="selected.samplename" class="fw-medium"> {{ (selected.name) ? selected.name : selected.samplename }}</span>
                                     <span v-else class="text-muted">Not Available</span>
                                 </div>
                                 <div class="vr" style="width: 1px;"></div>
