@@ -80,15 +80,34 @@ class ViewClass
 
     public function name($request)
     {
-        $query = SampleName::where('type_id', $request->sampletype_id)->where('is_active', 1);
+        $laboratory = $request->laboratory_id;
+        $query = SampleName::with('type.category')->where('is_active', 1)
+        ->whereHas('type', function ($query) use ($laboratory){
+            $query->whereHas('category', function ($query) use ($laboratory){
+                $query->where('laboratory_id',$laboratory);
+            });
+        });
+        if (!empty($request->sampletype_id)) {
+            $query->where('type_id', $request->sampletype_id);
+        } elseif (!empty($request->keyword)) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
 
-        $data = $query->get()->map(function ($item) {
-            $response = [
+        return $query->get()->map(function ($item) {
+             return [
                 'value' => $item->id,
                 'name'  => $item->name,
+
+                'sampletype' => [
+                    'value' => $item->type?->id,
+                    'name'  => $item->type?->name,
+                ],
+
+                'category' => [
+                    'value' => $item->type?->category?->id,
+                    'name'  => $item->type?->category?->name,
+                ],
             ];
-            return $response;
         });
-        return $data;
     }
 }

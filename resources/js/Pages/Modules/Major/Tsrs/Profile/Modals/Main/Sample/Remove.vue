@@ -15,7 +15,7 @@
             <button @click="hide()" class="btn btn-light btn-md" type="button">
                 <div class="btn-content"> Close</div>
             </button>
-            <a @click="submit()" class="btn btn-danger" href="javascript:void(0);" target="_self">Confirm</a>
+            <button @click="submit()" class="btn btn-danger" :disabled="form.processing">Confirm</button>
         </div>
     </b-modal>
 </template>

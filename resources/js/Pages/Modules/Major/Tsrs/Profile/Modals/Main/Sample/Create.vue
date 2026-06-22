@@ -52,8 +52,10 @@
                 <BCol lg="6" class="mt-n2">
                     <InputLabel for="testname" value="Sample Name" :message="form.errors.samplename_id"/>
                     <Multiselect
+                    @search-change="fetchName" 
                     :options="names" label="name" :searchable="true" 
-                    v-model="form.samplename_id" 
+                    object
+                    v-model="samplename" 
                     placeholder="Select Sample name" ref="multiselectS"/>
                 </BCol>
                 <BCol lg="6" class="mt-n2">
@@ -117,6 +119,7 @@ export default {
             action: null,
             category: null,
             sampletype: null,
+            samplename: null,
             categories: [],
             types: [],
             names: [],
@@ -133,12 +136,51 @@ export default {
         if (newVal) {
             this.form.sampletype_id = newVal.value;
             this.names = newVal.names || [];
+            this.samplename = null;
             this.form.samplename_id = null;
         } else {
+            this.samplename = null;
             this.form.sampletype_id = null;
             this.form.samplename_id = null;
             this.names = [];
         }
+    },
+
+    samplename(newVal) {
+        
+        if (!newVal) {
+            this.form.samplename_id = null;
+            return;
+        }
+
+        this.initializing = true;
+
+        this.form.samplename_id = newVal.value;
+
+        // Set Category
+        if (!this.category) {
+            this.category = newVal.category?.value;
+        }
+
+        // Ensure Sample Type exists in options
+        if (newVal.sampletype) {
+            const exists = this.types.find(
+                x => x.value === newVal.sampletype.value
+            );
+
+            if (!exists) {
+                this.types.push(newVal.sampletype);
+            }
+
+            this.sampletype = newVal.sampletype;
+            this.form.sampletype_id = newVal.sampletype.value;
+        }
+
+        this.form.category_id = newVal.category?.value;
+
+        this.$nextTick(() => {
+            this.initializing = false;
+        });
     },
 
     category(newVal) {
@@ -146,8 +188,11 @@ export default {
         if (this.initializing) return;
 
         this.sampletype = null;
+        this.samplename = null;
+
         this.form.sampletype_id = null;
         this.form.samplename_id = null;
+
         this.names = [];
 
         if (newVal) {
@@ -200,12 +245,35 @@ export default {
             this.setSample(data.category,data.sampletype,data.samplename);
             this.showModal = true;
         },
-        setSample(category, type, name) {
-            this.categories = [{ value: category.id, name: category.name }];
-            this.types = [this.sampletype = { value: type.id, name: type.name }];
-            this.names = [{ value: name.id, name: name.name }];
-            
+       setSample(category, type, name) {
+
+            this.categories = [{
+                value: category.id,
+                name: category.name
+            }];
+
+            this.types = [{
+                value: type.id,
+                name: type.name
+            }];
+
+            this.names = [{
+                value: name.id,
+                name: name.name
+            }];
+
             this.category = category.id;
+
+            this.sampletype = {
+                value: type.id,
+                name: type.name
+            };
+
+            this.samplename = {
+                value: name.id,
+                name: name.name
+            };
+
             this.form.category_id = category.id;
             this.form.sampletype_id = type.id;
             this.form.samplename_id = name.id;
@@ -236,6 +304,22 @@ export default {
             })
             .catch(err => console.log(err));
         },
+        fetchName(code){
+            this.types = [];
+            (!this.form.sampletype_id) ? this.category = null : null;
+            axios.get('/categories',{
+                params: {
+                    option: 'name',
+                    keyword: code,
+                    laboratory_id: this.form.laboratory_id,
+                    sampletype_id: this.form.sampletype_id
+                }
+            })
+            .then(response => {
+                this.names = response.data;
+            })
+            .catch(err => console.log(err));
+        },
         submit(){
             this.form.category_id = this.category;
             if(this.action == 'Edit'){
@@ -253,14 +337,17 @@ export default {
         handleInput(field) {
             this.form.errors[field] = false;
         },
-        empty(){
-            this.category = null;
-            this.sampletype = null;
-            this.form.reset();
-            this.categories = [];
-            this.types = [];
-            this.names = [];
-        },
+       empty() {
+    this.category = null;
+    this.sampletype = null;
+    this.samplename = null;
+
+    this.form.reset();
+
+    this.categories = [];
+    this.types = [];
+    this.names = [];
+},
         hide(){
             this.action = null;
             this.editable = false;
