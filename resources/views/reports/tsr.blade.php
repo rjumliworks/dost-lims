@@ -234,9 +234,24 @@
             @foreach($tsr['samples'] as $index=>$sample)
                 <tr style="text-align: center; font-size: 9px; color: #072388;">
                     <td style="text-align: left;">{{$sample['samplecode']}}</td>
-                     <td>{{($sample['sampleother']) ? $sample['sampleother'] : $sample['samplename']}}<br/>
-                        @if(isset($sample['sampletype']) && $sample['sampletype'] != '-')
-                        <span style="color: #5f5f5f; font-size: 8px;"> ({{$sample['sampletype']}})</span>
+                    <td>
+                        @if($sample['samplecode'])
+                            @if(isset($sample['sampleother']))
+                                {{  $sample['sampleother'] }}
+                            @else 
+                                {{ $sample['samplename'] }}
+                            @endif
+                            {{-- {{$sample['samplename']}}<br/>
+                            @if(isset($sample['sampletype']) && $sample['sampletype'] != '-')
+                            <span style="color: #5f5f5f; font-size: 8px;"> ({{$sample['name']}})</span>
+                            @endif --}}
+                            @if($sample['samplename'] != '-')
+                                @if(isset($sample['sampletype']) && $sample['sampletype'] != '-')
+                                    <br/><span style="color: #5f5f5f; font-size: 8px;"> ({{$sample['sampletype']}})</span>
+                                @endif
+                            @endif
+                        @else 
+                        -
                         @endif
                     </td>
                     <td>{{$sample['testname']}}</td>
