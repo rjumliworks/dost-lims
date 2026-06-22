@@ -232,6 +232,7 @@ export default {
             });
         },
         copy(id, laboratory, data){
+            console.log(data);
             this.empty();
             this.action = 'Copy';
             this.form.option = 'copy';
@@ -262,6 +263,7 @@ export default {
                 name: name.name
             }];
 
+            this.samplename = name.id;
             this.category = category.id;
 
             this.sampletype = {
