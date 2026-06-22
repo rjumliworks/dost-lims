@@ -170,7 +170,8 @@ class ViewClass
         $displayedSamples = [];
 
         foreach ($samples as $row) {
-
+            
+            $sampleCode = $row['code'];
             $sampleName = $row['name'] ?: $row['samplename']['name'];
             $sampleType = $row['sampletype']['name'];
 
@@ -206,7 +207,7 @@ class ViewClass
                     ];
                 }
 
-                $showSample = !isset($displayedSamples[$sampleName]);
+                $showSample = !isset($displayedSamples[$sampleCode]);
 
                 $groupedData[] = [
                     'samplename' => $showSample ? $sampleName : '',
