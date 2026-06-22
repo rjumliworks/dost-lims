@@ -8,6 +8,8 @@
                             <h6><span class="fw-semibold text-primary fs-15">{{ summary.code }}</span></h6>
                             <div class="hstack gap-3  fs-12 flex-wrap">
                                 <!-- {{ summary }} -->
+                                <div>Other Name :  {{ summary.name }} </div>
+                                <div class="vr" style="width: 1px;"></div>
                                 <div>Sample Name :  {{ summary.samplename.name }} </div>
                                 <div class="vr" style="width: 1px;"></div>
                                 <div>Sample Type : 
