@@ -170,7 +170,6 @@ class ViewClass
         $displayedSamples = [];
 
         foreach ($samples as $row) {
-            
             $sampleCode = $row['id'];
             $sampleName = $row['name'] ?: $row['samplename']['name'];
             $sampleType = $row['sampletype']['name'];
@@ -223,7 +222,7 @@ class ViewClass
                     'additional' => $additionalFees,
                 ];
 
-                $displayedSamples[$sampleName] = true;
+                $displayedSamples[$sampleKey] = true;
             }
         }
 
