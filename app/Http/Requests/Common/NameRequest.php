@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Common;
 
+use Hashids\Hashids;
 use App\Rules\NotZeroPeso;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -39,5 +40,23 @@ class NameRequest extends FormRequest
         }else{
             return [];
         }
+    }
+
+    public function withValidator($validator)
+    {
+        if ($this->option === 'fee') {
+            return;
+        }
+
+        $validator->after(function ($validator) {
+            $hashids = new Hashids('krad', 10);
+            $id = $hashids->decode($this->reference)[0] ?? null;
+
+            if (!$id) {
+                $validator->errors()->add('code', 'Invalid code provided.');
+                return;
+            }
+            $this->merge(['id' => $id]);
+        });
     }
 }
