@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 600px;" header-class="p-3 bg-light" title="Confirm Technical Service Request" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 600px;" header-class="p-3 bg-light" title="Confirm Quotation" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
             <form class="customform">
                 <div class="row g-2 mt-0 mb-1">
