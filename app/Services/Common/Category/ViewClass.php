@@ -110,4 +110,21 @@ class ViewClass
             ];
         });
     }
+
+    public function names($request)
+    {
+        $query = SampleName::with('type.category')->where('is_active', 1);
+        if (!empty($request->sampletype_id)) {
+            $query->where('type_id', $request->sampletype_id);
+        } elseif (!empty($request->keyword)) {
+            $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+
+        return $query->get()->map(function ($item) {
+             return [
+                'value' => $item->id,
+                'name'  => $item->name
+            ];
+        });
+    }
 }

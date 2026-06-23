@@ -20,7 +20,7 @@
                         <div style="width: 100%;">
                             <InputLabel for="sampletype" value="Sample Type" :message="form.errors.sampletype_id"/>
                             <Multiselect 
-                            @input="handleInput('type_id')"
+                            @input="handleInput('sampletype_id')"
                             :options="types" label="name" :searchable="true" 
                             :clearOnSearch="true"
                             v-model="form.sampletype_id" 
@@ -93,7 +93,7 @@ export default {
             if(!newVal){
                 this.form.samplenames = [];
             }
-            this.fetchName(newVal);
+            this.fetchName();
         },
     },
     methods: { 
@@ -151,7 +151,7 @@ export default {
             this.types = [];
             axios.get('/categories',{
                 params: {
-                    option: 'name',
+                    option: 'names',
                     sampletype_id: this.form.sampletype_id,
                 }
             })
