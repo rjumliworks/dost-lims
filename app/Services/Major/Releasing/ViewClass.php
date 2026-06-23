@@ -17,7 +17,7 @@ class ViewClass
         $data = IndexResource::collection(
             TsrRelease::with('tsr.customer:id,name_id,name,is_main','tsr.customer.customer_name:id,name,has_branches','tsr.mode')
             ->with('user.profile')
-            ->where('status_id',26)
+            ->where('status_id',27)
             ->whereHas('tsr', function ($query) use ($laboratory,$year,$mode){
                 ($mode) ? $query->where('release_id',$mode) : '';
                 ($laboratory) ? $query->where('laboratory_id',$laboratory) : '';
@@ -33,16 +33,16 @@ class ViewClass
                     });
                 });
             })
-            ->when($request->type, function ($query, $type) {
-                switch($type){
-                    case 'For Released':
-                        $query->where('created_at','>=', Carbon::now()->subDays(30));
-                    break;
-                    case 'Unclaimed Reports':
-                        $query->where('created_at','<=', Carbon::now()->subDays(30));
-                    break;
-                }
-            })
+            // ->when($request->type, function ($query, $type) {
+            //     switch($type){
+            //         case 'For Released':
+            //             $query->where('created_at','>=', Carbon::now()->subDays(30));
+            //         break;
+            //         case 'Unclaimed Reports':
+            //             $query->where('created_at','<=', Carbon::now()->subDays(30));
+            //         break;
+            //     }
+            // })
             ->orderBy('status_id','ASC') 
             ->orderBy('created_at','DESC')
             ->paginate($request->count)

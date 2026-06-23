@@ -31,7 +31,7 @@ class IndexResource extends JsonResource
             'email' => $this->tsr->customer->contact->email,
             'conforme' => $this->tsr->conforme,
             'mode' => $this->tsr->mode,
-            'created_at' => $this->created_at
+            'created_at' => $this->tsr->created_at
         ];
     }
 }

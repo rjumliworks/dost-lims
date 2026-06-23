@@ -79,8 +79,8 @@
                                     <th>Customer</th>
                                     <th style="width: 15%;" class="text-center">Request Date</th>
                                     <th style="width: 13%;" class="text-center">Due Date</th>
-                                    <th style="width: 13%;" class="text-center">Release Date</th>
-                                    <th style="width: 13%;" class="text-center">Release By</th>
+                                    <th style="width: 13%;" class="text-center">Released Date</th>
+                                    <th style="width: 13%;" class="text-center">Released By</th>
                                     <th style="width: 7%;" class="text-center">Status</th>
                                     <th style="width: 4%;"></th>
                                 </tr>
@@ -101,8 +101,8 @@
                                     <!-- <td>
                                         <apexchart v-b-tooltip.hover :title="list.analyses+'%'" class="apex-charts" height="30" dir="ltr" :series="[list.analyses]" :options="{ ...chartOptions }"></apexchart>
                                     </td> -->
-                                    <td class="text-center">{{list.created_at}}</td>
-                                    <td class="text-center">{{list.due_at}}</td>
+                                    <td class="text-center fs-12">{{list.created_at}}</td>
+                                    <td class="text-center fs-12">{{list.due_at}}</td>
                                     <td class="text-center fs-12">{{list.released_at}}</td>
                                     <td class="text-center fs-12">{{list.user}}</td>
                                     <td class="text-center">
@@ -244,7 +244,7 @@ export default {
             this.fetch();
         }, 300),
         fetch(page_url){
-            page_url = page_url || '/tsrs';
+            page_url = page_url || '/releasing';
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,

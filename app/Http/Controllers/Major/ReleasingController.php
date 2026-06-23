@@ -30,7 +30,7 @@ class ReleasingController extends Controller
     
     public function index(Request $request){
         switch($request->option){
-            case 'list':
+            case 'lists':
                 return $this->view->list($request);
             break;
             case 'filter':
