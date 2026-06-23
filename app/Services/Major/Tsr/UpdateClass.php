@@ -40,6 +40,7 @@ class UpdateClass
             $data->created_at = Carbon::parse($request->created_at . ' ' . $originalTime);
             $data->due_at = $request->due_at;
             $data->laboratory_id = $request->laboratory_id;
+            $data->release_id = $request->release_id;
             $data->save();
             if($data){
                 

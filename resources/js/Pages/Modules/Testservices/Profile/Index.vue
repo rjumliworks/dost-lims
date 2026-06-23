@@ -106,7 +106,7 @@ export default {
             this.$refs.fee.edit(data);
         },
         openTag(){
-            this.$refs.sample.show(this.service.data.id,this.service.data.laboratory.id);
+            this.$refs.sample.show(this.service.data.reference,this.service.data.id,this.service.data.laboratory.id);
         }
     }
 }

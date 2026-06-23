@@ -61,6 +61,7 @@ export default {
     data(){
         return {
             form: useForm({
+                reference: null,
                 testservice_id: null,
                 laboratory_id: null,
                 category_id: null,
@@ -97,7 +98,8 @@ export default {
         },
     },
     methods: { 
-        show(id,laboratory){
+        show(reference,id,laboratory){
+            this.form.reference = reference;
             this.form.testservice_id = id;
             this.form.laboratory_id = laboratory;
             this.showModal = true;

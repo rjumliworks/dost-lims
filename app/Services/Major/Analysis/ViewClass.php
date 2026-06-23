@@ -2,6 +2,7 @@
 
 namespace App\Services\Major\Analysis;
 
+use App\Models\SampleName;
 use App\Models\SampleType;
 use App\Models\Testservice;
 use App\Http\Resources\Major\Analysis\TestserviceResource;
@@ -14,25 +15,43 @@ class ViewClass
         
         if($type == 'Tagged to Sample'){
             $sampletypes = $request->sampletypes;
+            $samplenames = $request->samplenames;
             if(count($sampletypes) > 0){
+                $hasSampleNames = Testservice::query()
+    ->whereHas('samples', function ($q) use ($samplenames) {
+        $q->whereIn('sampleable_id', $samplenames)
+          ->where('sampleable_type', SampleName::class);
+    })
+    ->exists();
                 $data = TestserviceResource::collection(
-                    Testservice::query()
-                    ->with('method.method','method.reference','laboratory')
-                    ->whereHas('samples', function ($q) use ($sampletypes) {
-                        $q->whereIn('sampleable_id', $sampletypes)->where('sampleable_type', SampleType::class);
-                    })
-                    ->when($request->ids, function ($query, $ids) {
-                        $query->whereNotIn('id', $ids);
-                    })
-                    ->withWhereHas('testname', function ($query) use ($keyword){
-                        $query->when($keyword, function ($query, $keyword) {
-                            $query->where('name', 'LIKE', "%{$keyword}%")->orWhere('short', 'LIKE', "%{$keyword}%");
-                        });
-                    })
-                    ->where('laboratory_id',$request->laboratory_id)
-                    ->where('is_active',1)
-                    ->get()
-                );
+    Testservice::query()
+        ->with('method.method','method.reference','laboratory')
+        ->whereHas('samples', function ($q) use ($sampletypes, $samplenames, $hasSampleNames) {
+
+            if ($hasSampleNames) {
+                // ONLY sample names
+                $q->whereIn('sampleable_id', $samplenames)
+                  ->where('sampleable_type', SampleName::class);
+            } else {
+                // fallback to sample types
+                $q->whereIn('sampleable_id', $sampletypes)
+                  ->where('sampleable_type', SampleType::class);
+            }
+
+        })
+        ->when($request->ids, function ($query, $ids) {
+            $query->whereNotIn('id', $ids);
+        })
+        ->withWhereHas('testname', function ($query) use ($keyword){
+            $query->when($keyword, function ($query, $keyword) {
+                $query->where('name', 'LIKE', "%{$keyword}%")
+                      ->orWhere('short', 'LIKE', "%{$keyword}%");
+            });
+        })
+        ->where('laboratory_id', $request->laboratory_id)
+        ->where('is_active', 1)
+        ->get()
+);
             }else{
                 $data = [];
             }
