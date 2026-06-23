@@ -80,6 +80,7 @@
                                     <th style="width: 15%;" class="text-center">Request Date</th>
                                     <th style="width: 13%;" class="text-center">Due Date</th>
                                     <th style="width: 13%;" class="text-center">Release Date</th>
+                                    <th style="width: 13%;" class="text-center">Release By</th>
                                     <th style="width: 7%;" class="text-center">Status</th>
                                     <th style="width: 4%;"></th>
                                 </tr>
@@ -103,7 +104,7 @@
                                     <td class="text-center">{{list.created_at}}</td>
                                     <td class="text-center">{{list.due_at}}</td>
                                     <td class="text-center fs-12">{{list.released_at}}</td>
-
+                                    <td class="text-center fs-12">{{list.user}}</td>
                                     <td class="text-center">
                                         <span :class="'badge '+list.status.color">{{list.status.name}}</span>
                                     </td>
