@@ -406,7 +406,7 @@ export default {
                     mode: this.filter.mode,
                     count: 15, //Math.floor((window.innerHeight-500)/58)
                     laboratory: this.filter.laboratory,
-                    option: 'list'
+                    option: 'lists'
                 }
             })
             .then(response => {
