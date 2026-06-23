@@ -107,7 +107,7 @@ class QuotationController extends Controller
         ]);
     }
 
-    public function update(Request $request){
+    public function update(UpdateRequest $request){
         $result = $this->handleTransaction(function () use ($request) {     
             switch($request->option){
                 case 'removeservice':

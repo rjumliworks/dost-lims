@@ -65,7 +65,7 @@
                                         </td>
                                         <td width="3%">{{index+1}}</td>
                                         <td width="20%" style="cursor: pointer;" @click="openSampleView(list)">
-                                            <h5 class="fs-12 mb-0 fw-semibold text-primary">{{list.samplename.name}}</h5>
+                                            <h5 class="fs-12 mb-0 fw-semibold text-primary">{{ list.name ? list.name : list.samplename?.name }}</h5>
                                             <p class="fs-12 text-muted mb-0">{{list.sampletype.name}}</p>
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">

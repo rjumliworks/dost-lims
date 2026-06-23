@@ -29,15 +29,17 @@ class UpdateRequest extends FormRequest
 
      public function withValidator($validator)
     {
-        $validator->after(function ($validator) {
-            $hashids = new Hashids('krad', 10);
-            $id = $hashids->decode($this->reference)[0] ?? null;
+        if($this->option == 'save'){
+            $validator->after(function ($validator) {
+                $hashids = new Hashids('krad', 10);
+                $id = $hashids->decode($this->reference)[0] ?? null;
 
-            if (!$id) {
-                $validator->errors()->add('code', 'Invalid code provided.');
-                return;
-            }
-            $this->merge(['id' => $id]);
-        });
+                if (!$id) {
+                    $validator->errors()->add('code', 'Invalid code provided.');
+                    return;
+                }
+                $this->merge(['id' => $id]);
+            });
+        }
     }
 }
