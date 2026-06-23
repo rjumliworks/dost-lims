@@ -17,7 +17,7 @@ class ViewClass
             $sampletypes = $request->sampletypes;
             
             if(count($sampletypes) > 0){
-                if($request->has('samplenames')){
+                if(isset($request->samplenames)){
                     $samplenames = $request->samplenames;
                     $hasSampleNames = Testservice::query()
                     ->whereHas('samples', function ($q) use ($samplenames) {
