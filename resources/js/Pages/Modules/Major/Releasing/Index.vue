@@ -100,14 +100,9 @@
                                     <!-- <td>
                                         <apexchart v-b-tooltip.hover :title="list.analyses+'%'" class="apex-charts" height="30" dir="ltr" :series="[list.analyses]" :options="{ ...chartOptions }"></apexchart>
                                     </td> -->
-                                    <td class="text-center">{{list.payment.total}}</td>
-                                    <td class="text-center">
-                                        <i v-if="list.payment.is_paid" class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover :title="list.payment.status.name"></i>
-                                        <i v-else-if="list.payment.is_free" class="ri-checkbox-circle-fill text-info fs-18" v-b-tooltip.hover title="Gratis"></i>
-                                        <i v-else-if="list.payment.status.name == 'Contract'" class="ri-information-fill text-warning fs-18" v-b-tooltip.hover title="Contract w/ MOA"></i>
-                                        <i v-else class="ri-close-circle-fill text-danger fs-18" v-b-tooltip.hover :title="list.payment.status.name"></i>
-                                    </td>
-                                    <td class="text-center fs-12">{{list.created_at}}</td>
+                                    <td class="text-center">{{list.created_at}}</td>
+                                    <td class="text-center">{{list.due_at}}</td>
+                                    <td class="text-center fs-12">{{list.released_at}}</td>
 
                                     <td class="text-center">
                                         <span :class="'badge '+list.status.color">{{list.status.name}}</span>
