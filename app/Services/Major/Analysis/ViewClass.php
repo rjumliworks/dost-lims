@@ -26,6 +26,7 @@ class ViewClass
                     })
                     ->exists();
                 }else{
+                    $samplenames = null;
                     $hasSampleNames = false;
                 }
                 $data = TestserviceResource::collection(
