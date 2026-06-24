@@ -17,7 +17,7 @@ class CashierClass
         $data = FinanceOrseries::where('is_active',1)
         // ->where('user_id',\Auth::user()->id)
         ->when($this->agency != 14, function ($query) {
-            $query->where('user_id', \Auth::user()->id);
+            // $query->where('user_id', \Auth::user()->id);
         })
         // ->when(true, function ($query) {
             
