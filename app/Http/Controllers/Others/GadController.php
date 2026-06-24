@@ -8,6 +8,8 @@ use App\Services\Others\GadClass;
 
 class GadController extends Controller
 {
+    protected GadClass $gad;
+    
     public function __construct(GadClass $gad){
         $this->gad = $gad;
     }
