@@ -23,6 +23,7 @@ class GadController extends Controller
     }
 
     public function customers(Request $request){
+        return $this->gad->transactions();
         return inertia('Others/Gad/Customer',[
             'transactions' => $this->gad->transactions(),
             'numbers' => $this->gad->numbers(),
