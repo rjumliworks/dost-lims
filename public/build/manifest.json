@@ -243,7 +243,7 @@
     "src": "public/images/small/3.jpg"
   },
   "resources/js/app.js": {
-    "file": "assets/app-Dv7YSWLj.js",
+    "file": "assets/app-BWiFiI_6.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -262,7 +262,7 @@
       "node_modules/vue3-apexcharts/dist/apexcharts.ssr.esm-fe46cd2d.js"
     ],
     "css": [
-      "assets/app-D_F5tiIy.css"
+      "assets/app-CLPTVvlO.css"
     ],
     "assets": [
       "assets/logo-sm-BMbbSDmV.png",

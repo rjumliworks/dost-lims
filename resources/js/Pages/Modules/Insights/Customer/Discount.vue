@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Discount Insights</span></h5>
+                            <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Customer Financial Summary</span></h5>
                             <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                         </div>
                     </div>

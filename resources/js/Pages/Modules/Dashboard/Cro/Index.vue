@@ -373,7 +373,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="fs-12 text-purple mb-1">TSR Financial Summary</h6>
+                                        <h6 class="fs-12 text-purple mb-1">Customer Financial Summary</h6>
                                         <p class="fs-11 text-muted mb-0">Shows TSR financial details including services, payments, gratis, and discount classifications.</p>
                                     </div>
                                 </div>
@@ -394,7 +394,7 @@
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="fs-12 text-danger mb-1">TSR Financial Discount Report</h6>
+                                        <h6 class="fs-12 text-danger mb-1">Customer Discount Summary</h6>
                                         <p class="fs-11 text-muted mb-0">Shows TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
                                     </div>
                                 </div>
