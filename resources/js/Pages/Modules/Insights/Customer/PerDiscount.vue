@@ -181,7 +181,7 @@ export default {
             this.selectedColumn = (this.selectedColumn == index) ? null : index;
         },
         openExcel(){
-            window.open('/accomplishments?option=excel2&month='+this.month+'&year='+this.year+'&laboratory='+this.laboratory);
+            window.open('/accomplishments?option=perdiscount&month='+this.month+'&year='+this.year+'&laboratory='+this.laboratory);
         },
         formatMoney(value) {
             let val = (value / 1).toFixed(2).replace(',', '.');

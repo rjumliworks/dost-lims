@@ -83,6 +83,8 @@ class ViewClass
                             END LIKE ?
                         ", ["%{$keyword}%"]);
                         });
+                    })->orWhereHas('samples', function ($q) use ($keyword) {
+                        $q->where('code', 'LIKE', "%{$keyword}%");
                     });
             })
             ->with(['samples' => function ($query){

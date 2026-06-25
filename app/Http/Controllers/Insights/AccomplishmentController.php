@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Insights;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\Insights\ExcelClass;
 use App\Services\Insights\AccomplishmentClass;
 
 
@@ -12,8 +13,12 @@ class AccomplishmentController extends Controller
 {
     use HandlesTransaction;
 
-    public function __construct(AccomplishmentClass $accomplishment){
+    protected ExcelClass $excel;
+    protected AccomplishmentClass $accomplishment;
+
+    public function __construct(AccomplishmentClass $accomplishment, ExcelClass $excel){
         $this->accomplishment = $accomplishment;
+        $this->excel = $excel;
     }
 
     public function index(Request $request){
@@ -23,6 +28,15 @@ class AccomplishmentController extends Controller
             break;
             case 'targets':
                 return $this->accomplishment->targets($request);
+            break;
+            case 'location':
+                return $this->excel->location($request);
+            break;
+            case 'discount':
+                return $this->excel->discount($request);
+            break;
+            case 'perdiscount':
+                return $this->excel->perdiscount($request);
             break;
             default: 
                 return inertia('Modules/Insights/Accomplishment/Index');
