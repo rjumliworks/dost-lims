@@ -112,7 +112,7 @@
         
         <div class="col-md-6 mt-n1">
             <div class="row g-3">
-                <b-col lg="4" v-for="(item, index) of counts" :key="index">
+                <b-col lg="4" v-for="(item, index) of counts" :key="index" style="cursor: pointer;" @click="filterStatus(item.status)">
                     <b-card no-body :class="item.color" class="border shadow-none">
                         <b-card-body>
                             <div class="d-flex align-items-center">
@@ -159,7 +159,7 @@
                                     <div class="input-group mb-1" style="margin-top: -3px;">
                                         <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                         <input type="text" v-model="filter.keyword" placeholder="Search Code" class="form-control" style="width: 20%;">
-                                        <Multiselect class="white" style="width: 40%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
+                                        <Multiselect class="white" style="width: 40%;" :options="['Local','Referral']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
                                         <b-button type="button" variant="primary" @click="openCreate">
                                             <i class="ri-add-circle-fill align-bottom me-1"></i> Create
                                         </b-button>
@@ -200,7 +200,7 @@
                                             <th>Customer</th>
                                             <th style="width: 20%;" class="text-center">Mode</th>
                                             <th style="width: 15%;" class="text-center">Due Date</th>
-                                            <th style="width: 10%;" ></th>
+                                            <th style="width: 15%;" ></th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-white">
@@ -216,10 +216,14 @@
                                             <td class="text-center fs-12"> {{ list.due_at }}
                                                 <!-- <span :class="'badge '+list.status.color">{{list.status.name}}</span> -->
                                             </td>
-                                            <td class="text-end">
-                                                <b-button @click="openUpdate(list,index)" variant="soft-danger" v-b-tooltip.hover title="Release" size="sm">
+                                            <td class="text-end" >
+                                                <b-button v-if="list.status.name == 'Pending' || list.status.name == 'Mailed'" @click="openUpdate(list,index)" variant="soft-danger" v-b-tooltip.hover title="Release" size="sm">
                                                     <i class="bx bxs-hand"></i>
                                                 </b-button>
+                                                 <b-button v-if="list.status.name == 'Pending'" class="ms-1" @click="openMail(list,index)" variant="soft-success" v-b-tooltip.hover title="Release" size="sm">
+                                                    <i class="ri-mail-fill"></i>
+                                                </b-button>
+                                                <span v-if="list.status.name == 'Completed'" class="badge bg-success">Released</span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -302,11 +306,13 @@
         </div>
        
     </b-row>
+    <Mail @update="updateData" ref="mail"/>
     <Create @success="fetch()" ref="create"/>
     <Update @update="updateData" ref="update"/>
 </template>
 <script>
 import _ from 'lodash';
+import Mail from './Modals/Mail.vue';
 import Create from './Modals/Create.vue';
 import Update from './Modals/Update.vue';
 import flatPickr from "vue-flatpickr-component";
@@ -314,7 +320,7 @@ import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, flatPickr, Create, Update },
+    components: { PageHeader, Pagination, Multiselect, flatPickr, Create, Update, Mail },
     props: ['dropdowns','years'],
     data(){
         return {
@@ -334,6 +340,7 @@ export default {
                 laboratory: null,
                 date: null,
                 mode: null,
+                status: 26,
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
             },
@@ -404,6 +411,7 @@ export default {
                     keyword: this.filter.keyword,
                     year: this.filter.year,
                     mode: this.filter.mode,
+                    status: this.filter.status,
                     count: 15, //Math.floor((window.innerHeight-500)/58)
                     laboratory: this.filter.laboratory,
                     option: 'lists'
@@ -418,12 +426,20 @@ export default {
             })
             .catch(err => console.log(err));
         },
+        filterStatus(status){
+            this.filter.status = status;
+            this.fetch();
+        },
         openCreate(){
             this.$refs.create.show();
         },
         openUpdate(data,index){
             this.index = index;
             this.$refs.update.show(data);
+        },
+        openMail(data,index){
+            this.index = index;
+            this.$refs.mail.show(data);
         },
         viewMode(index,status){
             this.index = index;

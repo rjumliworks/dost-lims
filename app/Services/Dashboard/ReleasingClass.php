@@ -32,29 +32,32 @@ class ReleasingClass
      public function counts($request){
         $year = $request->year;
         return [
-             [
-                'name' => 'Released TSR\'s',
-                'icon' => 'ri-checkbox-circle-fill',
-                'color' => '',
-                'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
-                    $query->whereYear('created_at',$year);
-                })->where('status_id',26)->count()
-            ],
             [
                 'name' => 'Pending Released TSR\'s',
                 'icon' => 'ri-checkbox-circle-fill',
                 'color' => '',
                 'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
                     $query->whereYear('created_at',$year);
-                })->where('status_id',26)->count()
+                })->where('status_id',26)->count(),
+                'status' => 26
             ],
             [
-                'name' => 'Completed Released TSR\'s',
+                'name' => 'Mailed TSR\'s',
                 'icon' => 'ri-checkbox-circle-fill',
                 'color' => '',
                 'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
                     $query->whereYear('created_at',$year);
-                })->where('status_id',27)->count()
+                })->where('status_id',43)->count(),
+                'status' => 43
+            ],
+            [
+                'name' => 'Released TSR\'s',
+                'icon' => 'ri-checkbox-circle-fill',
+                'color' => '',
+                'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
+                    $query->whereYear('created_at',$year);
+                })->where('status_id',27)->count(),
+                'status' => 27
             ]
         ];
     }

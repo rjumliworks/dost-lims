@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-if="selected" style="--vz-modal-width: 600px;" v-model="showModal" header-class="p-3 bg-light" title="TSR Releasing" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-if="selected" style="--vz-modal-width: 600px;" v-model="showModal" header-class="p-3 bg-light" title="TSR Mailing" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div class="row">
             <div class="col-sm-12">
                 <div class="row align-items-center g-3">
@@ -9,8 +9,8 @@
                             <div class="hstack gap-3 fs-12 flex-wrap mt-n1">
                                 <div><span class="fw-medium">{{selected.customer }}</span></div>
                                 <div class="vr" style="width: 1px;"></div>
-                                <div><span class="text-muted">Contact no.</span> : 
-                                    <span v-if="selected.contact_no" class="fw-medium"> {{ selected.contact_no }}</span>
+                                <div><span class="text-muted">Email Address</span> : 
+                                    <span v-if="selected.contact_no" class="fw-medium"> {{ selected.email }}</span>
                                     <span v-else class="text-muted">Not Available</span>
                                 </div>
                                 <!-- <div class="vr" style="width: 1px;"></div>
@@ -28,8 +28,8 @@
         <form class="customform">
             <BRow class="g-3">
                 <BCol lg="12">
-                    <InputLabel value="Released Date" :message="form.errors.released_at"/>
-                    <TextInput v-model="form.released_at" type="date" class="form-control" placeholder="Please select date" @input="handleInput('released_at')" :light="true"/>
+                    <InputLabel value="Mailed Date" :message="form.errors.released_at"/>
+                    <TextInput v-model="form.mailed_at" type="date" class="form-control" placeholder="Please select date" @input="handleInput('released_at')" :light="true"/>
                 </BCol>
             </BRow>
         </form>
@@ -53,8 +53,8 @@ export default {
             currentUrl: window.location.origin,
             form: useForm({
                 id: null,
-                released_at: null,
-                status_id: 28,
+                mailed_at: null,
+                status_id: 43,
                 option: 'release'
             }),
             selected: null,

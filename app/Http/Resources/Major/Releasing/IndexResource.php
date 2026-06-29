@@ -25,6 +25,7 @@ class IndexResource extends JsonResource
             'due_at' => $this->tsr->due_at,
             'status' => $this->status,
             'released_at' => ($this->released_at) ? $this->released_at : '-',
+            'mailed_at' => ($this->mailed_at) ? $this->mailed_at : '-',
             'user' => ($this->user) ? $this->user->profile->firstname.' '.$this->user->profile->lastname : '-',
             'customer' => $this->tsr->customer->customer_name->name.$name,
             'contact_no' => $this->tsr->customer->contact->contact_no,

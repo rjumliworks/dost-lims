@@ -175,7 +175,7 @@
             <tr>
                 <td style="border-right: none; border-left: none;">
                     <div class="row ms-n2 mb-0">
-                        <template v-if="!selected.release">
+                        <template v-if="!selected.release || selected.release.status_id == 26">
                             <div class="col-md-12">
                                 <div class="d-flex mt-0">
                                     <div class="flex-shrink-0 avatar-xs align-self-center me-3">

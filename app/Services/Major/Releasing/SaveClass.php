@@ -29,11 +29,16 @@ class SaveClass
     }
 
     public function update($request){
-        $data = TsrRelease::where('id',$request->id)->update([
-            'released_at' => $request->released_at,
-            'user_id' => \Auth::user()->id,
-            'status_id' => 27
-        ]);
+       
+
+    
+        $data = array_merge(
+            $request->except(['option']),
+            [
+                'user_id' => \Auth::user()->id,
+            ]
+        );
+        $data = TsrRelease::where('id', $request->id)->update($data);
 
         $data = TsrRelease::with('tsr.customer:id,name_id,name,is_main','tsr.customer.customer_name:id,name,has_branches')
             ->with('user.profile')
