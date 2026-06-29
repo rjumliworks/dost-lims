@@ -274,7 +274,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 fs-13"><span class="text-body">Release Progress by Age</span></h5>
+                                <h5 class="mb-0 fs-13"><span class="text-body">Release Progress by Ages</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">A summary of tasks completed</p>
                             </div>
                         </div>

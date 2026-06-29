@@ -12,10 +12,11 @@ use App\Services\Insights\Customer\BarClass;
 use App\Services\Insights\Customer\DataClass;
 use App\Services\Insights\Customer\LocationClass;
 use App\Services\Insights\Customer\DiscountClass;
+use App\Services\Insights\Customer\RequestingClass;
 
 class CustomerController extends Controller
 {
-    public function __construct(AgencyClass $agency, DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount, TopClass $top){
+    public function __construct(AgencyClass $agency, DropdownClass $dropdown, BarClass $bar, DataClass $data, LocationClass $location, DiscountClass $discount, TopClass $top, RequestingClass $requesting){
         $this->bar = $bar;
         $this->top = $top;
         $this->data = $data;
@@ -23,6 +24,7 @@ class CustomerController extends Controller
         $this->location = $location;
         $this->discount = $discount;
         $this->dropdown = $dropdown;
+        $this->requesting = $requesting;
 
     }
 
@@ -54,6 +56,9 @@ class CustomerController extends Controller
             break;
             case 'discount':
                 return $this->discount->per($request);
+            break;
+             case 'request':
+                return $this->requesting->data($request);
             break;
             default: 
                 return inertia('Modules/Insights/Customer/Index',[
@@ -89,6 +94,13 @@ class CustomerController extends Controller
             'years' => Target::distinct()->pluck('year'),
             'laboratories' => $this->agency->laboratories(),
             'discounts' => $this->agency->discounts(),
+        ]);
+    }
+
+    public function requesting(Request $request){
+        return inertia('Modules/Insights/Customer/Request',[
+            'year' => date('Y'),
+            'years' => Target::distinct()->pluck('year'),
         ]);
     }
 }
