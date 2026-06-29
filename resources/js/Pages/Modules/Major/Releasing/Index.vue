@@ -260,6 +260,7 @@ export default {
                     barangay: this.location.barangay,
                     type: this.filter.type,
                     year: this.filter.year,
+                    status: [26,27,43],
                     count: 10,
                     option: 'lists'
                 }

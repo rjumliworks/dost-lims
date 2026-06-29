@@ -19,7 +19,6 @@ class ViewClass
         $data = IndexResource::collection(
             TsrRelease::with('tsr.customer:id,name_id,name,is_main','tsr.customer.customer_name:id,name,has_branches','tsr.mode')
             ->with('user.profile')
-            ->where('status_id',$status)
             ->whereHas('tsr', function ($query) use ($laboratory,$year,$mode,$type){
                 ($mode) ? $query->where('release_id',$mode) : '';
                 ($laboratory) ? $query->where('laboratory_id',$laboratory) : '';
@@ -39,7 +38,7 @@ class ViewClass
                 });
             })
             ->when($request->status, function ($query,$status){
-                $query->where('status_id',$status);
+                (is_array($status)) ? $query->whereIn('status_id',$status) : $query->where('status_id',$status);
             })
             // ->when($request->type, function ($query, $type) {
             //     switch($type){
