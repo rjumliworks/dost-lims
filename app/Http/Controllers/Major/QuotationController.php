@@ -125,6 +125,9 @@ class QuotationController extends Controller
                 case 'save': 
                     return $this->update->save($request);
                 break;
+                 case 'referral': 
+                    return $this->update->referral($request);
+                break;
             }      
         });   
         return back()->with([
@@ -148,6 +151,7 @@ class QuotationController extends Controller
                 'purposes' => $this->dropdown->dropdowns('Purpose','n/a'),
                 'releases' => $this->dropdown->datas('Release'),
             ],
+            'region' => $this->view->region()
         ]);
     }
 }

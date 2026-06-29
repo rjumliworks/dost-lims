@@ -13,7 +13,7 @@
                 </div>
                 <div class="file-manager-sidebar" style="margin-right: 20px;">
                     <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
-                        <Sidebar :selected="tsr.data" :services="dropdowns.services" :total="totalFee"/>
+                        <Sidebar :agencies="dropdowns.agencies" :selected="tsr.data" :services="dropdowns.services" :total="totalFee" :region="region"/>
                     </simplebar>
                 </div>
 
@@ -39,7 +39,7 @@ export default {
         Message,
         Main
     },
-    props: ['tsr','analyses','dropdowns'],
+    props: ['tsr','analyses','dropdowns','region'],
     computed: {
         totalFee() {
             if (!this.analyses.data || typeof this.analyses.data !== 'object') return 0;

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\UserRole;
 use App\Models\Quotation;
 use App\Models\QuotationSample;
+use App\Models\QuotationReferral;
 use App\Models\TsrSequence;
 
 class UpdateClass
@@ -90,6 +91,20 @@ class UpdateClass
             'data' => $data,
             'message' => 'Sample Updated Successfully', 
             'info' => "The sample details have been updated and saved to the TSR."
+        ];
+    }
+
+    public function referral($request){
+        $data = QuotationReferral::where('id',$request->id)->first();
+        $data->agency_id = $request->agency_id;
+        $data->province_code = $request->province_code;
+        $data->is_psto = ($request->province_code) ? 1 : 0; 
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Referral Updated Successfully', 
+            'info' => "The referral details have been updated and saved to the TSR."
         ];
     }
 

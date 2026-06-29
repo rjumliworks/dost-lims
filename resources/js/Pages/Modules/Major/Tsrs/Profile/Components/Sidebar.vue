@@ -225,7 +225,7 @@
                                     </div>
                                     <div class="flex-grow-1 overflow-hidden">
                                         <p class="margin-custom fs-12 text-muted">Released By :</p>
-                                        <h6 class="text-truncate mb-0" v-if="selected.release.profile"> <span class="fs-12">{{selected.release.profile.fullname}}</span></h6>
+                                        <h6 class="text-truncate mb-0" v-if="selected.release.user.profile"> <span class="fs-12">{{selected.release.user.profile.fullname}}</span></h6>
                                         <h6 class="text-warning mb-0 fs-12" v-else>Not Available</h6>
                                     </div>
                                 </div>
@@ -238,7 +238,7 @@
     </table>
     <Payment ref="payment"/>
     <Service :services="services" :lists="selected.services" ref="service"/>
-    <Referral ref="referral"/>
+    <Referral :agencies="agencies" :region="region" ref="referral"/>
     <Information ref="information"/>
 </template>
 <script>
@@ -248,7 +248,7 @@ import Referral from '../Modals/Sidebar/Referral.vue';
 import Information from '../Modals/Sidebar/Information.vue';
 export default {
     components: { Payment, Service, Referral, Information },
-    props: ['selected','total','services'],
+    props: ['selected','total','services','agencies','region'],
     methods: {
         openPayment(){
             this.$refs.payment.show(this.selected.payment,this.selected.services,this.total);
@@ -257,7 +257,7 @@ export default {
             this.$refs.service.show(this.selected.status,this.selected.id);
         },
         openReferral(){
-            this.$refs.referral.show(this.selected.referral);
+            this.$refs.referral.show(this.selected.referral,this.selected.status);
         },
         openInformation(){
             this.$refs.information.show(this.selected);

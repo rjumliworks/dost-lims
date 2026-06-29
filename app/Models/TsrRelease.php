@@ -13,7 +13,10 @@ class TsrRelease extends Model
         return $this->belongsTo('App\Models\Tsr', 'tsr_id', 'id');
     }
 
-    public function mode(){ return $this->belongsTo('App\Models\ListData', 'release_id', 'id');}
+    public function mode()
+    { 
+        return $this->belongsTo('App\Models\ListData', 'release_id', 'id');
+    }
 
     public function user()
     {

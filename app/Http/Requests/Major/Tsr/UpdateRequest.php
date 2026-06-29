@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Major\Tsr;
 
 use Hashids\Hashids;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -20,6 +21,16 @@ class UpdateRequest extends FormRequest
                     'reason' => 'required'
                 ];
             break;
+            case 'referral':
+                return [
+                    'agency_id' => 'required',
+                     'province_code' => [
+                        Rule::requiredIf(function () {
+                            return $this->agency_id == $this->my_agency;
+                        }),
+                    ],
+                ];
+            break;
             default: 
                 return [];
         }
@@ -27,7 +38,7 @@ class UpdateRequest extends FormRequest
 
     public function withValidator($validator)
     {
-        if ($this->option === 'Update') {
+        if ($this->option === 'Update' || $this->option === 'referral') {
             return;
         }
 

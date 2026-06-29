@@ -7,6 +7,7 @@ use App\Models\Tsr;
 use App\Models\TsrSample;
 use App\Models\TsrReport;
 use App\Models\TsrPayment;
+use App\Models\TsrReferral;
 
 class UpdateClass
 {
@@ -27,6 +28,20 @@ class UpdateClass
             'data' => $data,
             'message' => 'TS Request Cancelled', 
             'info' => "Request has been cancelled. No further actions can be performed, including adding samples, analyses, or editing any information.",
+        ];
+    }
+
+    public function referral($request){
+        $data = TsrReferral::where('id',$request->id)->first();
+        $data->agency_id = $request->agency_id;
+        $data->province_code = $request->province_code;
+        $data->is_psto = ($request->province_code) ? 1 : 0; 
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Referral Updated Successfully', 
+            'info' => "The referral details have been updated and saved to the TSR."
         ];
     }
 

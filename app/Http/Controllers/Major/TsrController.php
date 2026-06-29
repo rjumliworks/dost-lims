@@ -95,7 +95,10 @@ class TsrController extends Controller
                 break;
                 case 'Cancel':
                     return $this->update->cancel($request);
-                break;       
+                break;  
+                case 'referral':
+                    return $this->update->referral($request);
+                break;      
             }      
         });   
         return back()->with([
@@ -119,6 +122,7 @@ class TsrController extends Controller
                 'purposes' => $this->dropdown->dropdowns('Purpose','n/a'),
                 'releases' => $this->dropdown->datas('Release'),
             ],
+            'region' => $this->view->region()
         ]);
     }
 }

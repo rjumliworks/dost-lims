@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Major\Quotation;
 
 use Hashids\Hashids;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
@@ -22,13 +23,33 @@ class UpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        switch($this->option){
+            case 'Cancel':
+                return [
+                    'reason' => 'required'
+                ];
+            break;
+            case 'referral':
+                return [
+                    'agency_id' => 'required',
+                     'province_code' => [
+                        Rule::requiredIf(function () {
+                            return $this->agency_id == $this->my_agency;
+                        }),
+                    ],
+                ];
+            break;
+            default: 
+                return [];
+        }
     }
 
      public function withValidator($validator)
     {
+        if ($this->option === 'Update' || $this->option === 'referral') {
+            return;
+        }
+
         if($this->option == 'save'){
             $validator->after(function ($validator) {
                 $hashids = new Hashids('krad', 10);
