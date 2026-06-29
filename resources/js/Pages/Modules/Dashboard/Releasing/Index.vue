@@ -159,7 +159,7 @@
                                     <div class="input-group mb-1" style="margin-top: -3px;">
                                         <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                         <input type="text" v-model="filter.keyword" placeholder="Search Code" class="form-control" style="width: 20%;">
-                                        <Multiselect class="white" style="width: 40%;" :options="['Local','Referral']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
+                                        <Multiselect class="white" style="width: 25%;" :options="['Local','Referral']" v-model="filter.referral" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" />
                                         <b-button type="button" variant="primary" @click="openCreate">
                                             <i class="ri-add-circle-fill align-bottom me-1"></i> Create
                                         </b-button>
@@ -341,6 +341,7 @@ export default {
                 date: null,
                 mode: null,
                 status: 26,
+                referral: null,
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
             },
@@ -366,6 +367,9 @@ export default {
             this.fetchDaily();
         },
         'monthName'(val) {
+            this.fetch();
+        },
+        'filter.referral'(val) {
             this.fetch();
         },
         'filter.laboratory'(val) {
@@ -412,6 +416,7 @@ export default {
                     year: this.filter.year,
                     mode: this.filter.mode,
                     status: this.filter.status,
+                    referral: this.filter.referral,
                     count: 15, //Math.floor((window.innerHeight-500)/58)
                     laboratory: this.filter.laboratory,
                     option: 'lists'

@@ -15,14 +15,18 @@ class ViewClass
         $year = $request->year;
         $mode = $request->mode;
         $status = $request->status;
+        $type = $request->referral;
         $data = IndexResource::collection(
             TsrRelease::with('tsr.customer:id,name_id,name,is_main','tsr.customer.customer_name:id,name,has_branches','tsr.mode')
             ->with('user.profile')
             ->where('status_id',$status)
-            ->whereHas('tsr', function ($query) use ($laboratory,$year,$mode){
+            ->whereHas('tsr', function ($query) use ($laboratory,$year,$mode,$type){
                 ($mode) ? $query->where('release_id',$mode) : '';
                 ($laboratory) ? $query->where('laboratory_id',$laboratory) : '';
                 $query->whereYear('created_at',$year);
+                $query->when($type, function ($query, $type) {
+                    ($type == 'Referral') ? $query->where('is_referral',1) : $query->where('is_referral', 0);
+                });
             })
             ->when($request->keyword, function ($query) use ($keyword){
                 $query->whereHas('tsr', function ($query) use ($keyword){

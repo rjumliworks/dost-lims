@@ -213,6 +213,7 @@ export default {
             this.fetchCategory();
         },
         edit(id, laboratory, data){
+            console.log(data);
             this.empty();
             this.initializing = true;
             this.action = 'Edit';
