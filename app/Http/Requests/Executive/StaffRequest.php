@@ -14,7 +14,7 @@ class StaffRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'sometimes|required|max:20|unique:users,username,'.$this->id,
+            'username' => 'sometimes|required|max:50|unique:users,username,'.$this->id,
             'email' => 'sometimes|required|email|max:150|unique:users,email,'.$this->id,
             'firstname' => 'sometimes|required|string|max:100',
             'lastname' => 'sometimes|required|string|max:100',
