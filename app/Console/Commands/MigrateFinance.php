@@ -41,7 +41,7 @@ class MigrateFinance extends Command
 
         $series = DB::connection('old_db')
             ->table('finance_orseries')
-            ->where('agency_id', 14)
+            ->where('agency_id', 11)
             ->orderBy('id')->get();
 
         foreach ($series as $ser) {
@@ -50,7 +50,7 @@ class MigrateFinance extends Command
                 'start' => $ser->start,
                 'end' => $ser->end,
                 'next' => $ser->next,
-                'agency_id' => 14,
+                'agency_id' => 11,
                 'is_active' => $ser->is_active,
                 'is_finished' => $ser->is_finished,
                 'user_id' => User::where('old_id', $ser->user_id)->value('id') ?? 1,
@@ -99,7 +99,7 @@ class MigrateFinance extends Command
 
         $finances = DB::connection('old_db')
             ->table('finance_ops')
-            ->where('agency_id', 14)
+            ->where('agency_id', 11)
             ->orderBy('id')->get();
 
         foreach ($finances as $finance) {
@@ -112,7 +112,7 @@ class MigrateFinance extends Command
                 'payorable_id' => ($finance->payorable_type == 'App\Models\Customer') ? Customer::where('old_id', $finance->payorable_id)->value('id') : FinanceName::where('old_id', $finance->payorable_id)->value('id'),
                 'payorable_type' => $finance->payorable_type,
                 'created_by' => User::where('old_id', $finance->created_by)->value('id') ?? 1,
-                'agency_id' => 14, 
+                'agency_id' => 11, 
                 'created_at' => $finance->created_at,
                 'updated_at' => $finance->updated_at
             ]);
@@ -146,7 +146,7 @@ class MigrateFinance extends Command
                     'orseries_id' => $receipt->orseries_id,
                     'deposit_id' => $receipt->deposit_id,
                     'created_by' => User::where('old_id', $receipt->created_by)->value('id') ?? 1,
-                    'agency_id' => 14,
+                    'agency_id' => 11,
                     'created_at' => $receipt->created_at,
                     'updated_at' => $receipt->updated_at
                 ]);

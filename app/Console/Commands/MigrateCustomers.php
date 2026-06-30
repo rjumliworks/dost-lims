@@ -43,7 +43,7 @@ class MigrateCustomers extends Command
             ->table('customer_names as cn')
             ->join('customers as c', 'c.name_id', '=', 'cn.id')
             ->join('tsrs as t', 't.customer_id', '=', 'c.id')
-            ->where('t.agency_id', 14)
+            ->where('t.agency_id', 11)
             ->select(
                 'cn.id',
                 'cn.name',
@@ -86,7 +86,7 @@ class MigrateCustomers extends Command
             $newNameId = DB::table('customer_names')->insertGetId([
                 'name' => $oldName->name,
                 'alias' => $alias,
-                'agency_id' => 14,
+                'agency_id' => 11,
                 'has_branches' => $oldName->has_branches,
                 'industry_id' => $oldName->industry_id,
                 'classification_id' => $oldName->classification_id,
@@ -105,7 +105,7 @@ class MigrateCustomers extends Command
                 $q->select(DB::raw(1))
                     ->from('tsrs')
                     ->whereColumn('tsrs.customer_id', 'customers.id')
-                    ->where('tsrs.agency_id', 14)->whereIn('tsrs.status_id', [2,3,4]);
+                    ->where('tsrs.agency_id', 11)->whereIn('tsrs.status_id', [2,3,4]);
             })
             ->orderBy('id');
 

@@ -56,7 +56,7 @@ class MigrateTsrs extends Command
 
         DB::connection('old_db')
         ->table('tsrs as t')
-        ->where('t.agency_id', 14)
+        ->where('t.agency_id', 11)
         ->where('code','!=', null)
         ->whereIn('t.status_id', [2,3,4])
         ->whereNotExists(function ($query) {
@@ -145,7 +145,7 @@ class MigrateTsrs extends Command
                     $newTsrId = DB::table('tsrs')->insertGetId([
                         'code' => $tsr->code,
                         'old_id' => $tsr->id,
-                        'agency_id' => 14,
+                        'agency_id' => 11,
                         'laboratory_id' => $tsr->laboratory_id,
                         'purpose_id' => $tsr->purpose_id ?? 1,
                         'status_id' => $tsr->status_id,
