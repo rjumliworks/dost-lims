@@ -18,6 +18,7 @@ class DiscountClass
             $month = date('m', strtotime($monthInput));
         }
 
+
         $query = Tsr::with([
             'customer:id,name,name_id,is_new',
             'customer.customer_name:id,name',

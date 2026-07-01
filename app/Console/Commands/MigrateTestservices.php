@@ -32,7 +32,7 @@ class MigrateTestServices extends Command
             ->table('tsr_analyses as ta')
             ->join('tsr_samples as tsmp', 'tsmp.id', '=', 'ta.sample_id')
             ->join('tsrs as t', 't.id', '=', 'tsmp.tsr_id')
-            ->where('t.agency_id', 14)
+            ->where('t.agency_id', 11)
             ->whereIn('t.status_id', [2,3,4])
             ->distinct()
             ->pluck('ta.testservice_id');
@@ -80,7 +80,7 @@ class MigrateTestServices extends Command
                 'is_active' => $oldName->is_active,
                 'type_id' => $oldName->type_id,
                 'laboratory_id' => $oldName->laboratory_id,
-                'agency_id' => 14,
+                'agency_id' => 11,
                 'added_by' => 1,
                 'created_at' => $oldName->created_at,
                 'updated_at' => $oldName->updated_at,
@@ -108,18 +108,31 @@ class MigrateTestServices extends Command
                 continue;
             }
 
-            $newId = DB::table('testservice_methods')->insertGetId([
-                'fee' => $oldMethod->fee,
-                'is_active' => $oldMethod->is_active,
-                'method_id' => $nameMapping[$oldMethod->method_id],
-                'reference_id' => $nameMapping[$oldMethod->reference_id],
-                'laboratory_id' => $oldMethod->laboratory_id,
-                'agency_id' => 14,
-                'added_by' => 1,
-                'created_at' => $oldMethod->created_at,
-                'updated_at' => $oldMethod->updated_at,
-            ]);
-            $methodMapping[$oldMethod->id] = $newId;
+            $existing = DB::table('testservice_methods')
+            ->where('fee', $oldMethod->fee)
+            ->where('method_id', $nameMapping[$oldMethod->method_id])
+            ->where('reference_id', $nameMapping[$oldMethod->reference_id])
+            ->where('agency_id', 11)
+            ->first();
+
+            
+            if ($existing) {
+                $methodMapping[$oldMethod->id] = $existing->id;
+            } else {
+                $newId = DB::table('testservice_methods')->insertGetId([
+                    'fee' => $oldMethod->fee,
+                    'is_active' => $oldMethod->is_active,
+                    'method_id' => $nameMapping[$oldMethod->method_id],
+                    'reference_id' => $nameMapping[$oldMethod->reference_id],
+                    'laboratory_id' => $oldMethod->laboratory_id,
+                    'agency_id' => 11,
+                    'added_by' => 1,
+                    'created_at' => $oldMethod->created_at,
+                    'updated_at' => $oldMethod->updated_at,
+                ]);
+
+                $methodMapping[$oldMethod->id] = $newId;
+            }
         }
         $this->info("Migrated ".count($methodMapping)." testservice_methods.");
 
@@ -139,20 +152,32 @@ class MigrateTestServices extends Command
                 continue;
             }
 
-            DB::table('testservices')->insert([
-                'testname_id' => $nameMapping[$oldService->testname_id] ?? null,
-                'method_id' => $methodMapping[$oldService->method_id],
-                'status_id' => $oldService->status_id ?? 2,
-                'laboratory_id' => $oldService->laboratory_id,
-                'agency_id' => 14,
-                'added_by' => 1,
-                'is_active' => $oldService->is_active ?? 1,
-                'is_fixed' => 1,
-                'old_id' => $oldService->id,
-                'created_at' => $oldService->created_at,
-                'updated_at' => $oldService->updated_at,
-            ]);
-            $serviceCount++;
+           $existing = DB::table('testservices')
+    ->where('is_new', 1)
+    ->where('testname_id', $nameMapping[$oldService->testname_id] ?? null)
+    ->where('method_id', $methodMapping[$oldService->method_id])
+    ->where('agency_id', 11)
+    ->first();
+
+if (!$existing) {
+    DB::table('testservices')->insert([
+        'testname_id' => $nameMapping[$oldService->testname_id] ?? null,
+        'method_id' => $methodMapping[$oldService->method_id],
+        'status_id' => $oldService->status_id ?? 2,
+        'laboratory_id' => $oldService->laboratory_id,
+        'agency_id' => 11,
+        'added_by' => 1,
+        'is_active' => $oldService->is_active ?? 1,
+        'is_fixed' => 1,
+        'old_id' => $oldService->id,
+        'created_at' => $oldService->created_at,
+        'updated_at' => $oldService->updated_at,
+    ]);
+
+    $serviceCount++;
+} else {
+    $this->warn("Skipping duplicate service {$oldService->id}");
+}
         }
         $this->info("Migrated {$serviceCount} testservices.");
 

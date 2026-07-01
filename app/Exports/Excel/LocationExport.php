@@ -8,7 +8,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 
 class LocationExport implements FromView
 {
-   protected $month,$year,$lab;
+   protected $month,$year;
 
     function __construct($month,$year) {
         $this->month = $month;

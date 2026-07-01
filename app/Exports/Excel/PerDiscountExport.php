@@ -17,6 +17,8 @@ class PerDiscountExport implements FromView
         $this->discount = $discount;
     }
 
+
+
     public function view(): View {
         $query = Tsr::with([
             'customer:id,name,sex_id,name_id,is_new',

@@ -33,7 +33,7 @@ class LoginController extends Controller
                 'email' => "Too many attempts. Try again in {$seconds} seconds."
             ]);
         }
-        RateLimiter::hit($key, 300);
+        RateLimiter::hit($key, 10);
 
         if ($customer->otp_expires_at && $customer->otp_expires_at->gt(now()->subSeconds(60))) {
             return back()->withErrors([
