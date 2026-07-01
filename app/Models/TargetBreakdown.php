@@ -27,4 +27,9 @@ class TargetBreakdown extends Model
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
     }
+
+    public function items()
+    {
+        return $this->hasMany('App\Models\TargetItem', 'target_id');
+    }
 }
