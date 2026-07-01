@@ -3,6 +3,8 @@
 namespace App\Services\Insights;
 
 use Carbon\Carbon;
+
+use App\Models\ListLaboratory;
 use App\Exports\Excel\LocationExport;
 use App\Exports\Excel\PerDiscountExport;
 use App\Exports\Excel\CustomerDiscountExport;
@@ -28,6 +30,7 @@ class ExcelClass
     }
     
     public function discount($request){
+      
          if ($request->month) {
             $monthInput = $request->month;
             $month = is_numeric($monthInput)
@@ -42,7 +45,8 @@ class ExcelClass
             : 'All';
         $year = ($request->year) ? $request->year : date('Y');
         $lab = ($request->laboratory != 'null' && $request->laboratory) ? $request->laboratory : null;
-        return Excel::download(new CustomerDiscountExport($month,$year,$lab), 'CFS_'.$monthName.'_'.$year.'.xlsx');
+        $lab_name = ($lab) ? ListLaboratory::where('id',$lab)->first()->name : 'All';
+        return Excel::download(new CustomerDiscountExport($month,$year,$lab), 'CFS_'.$monthName.'_'.$lab_name.'_'.$year.'.xlsx');
     }
 
     public function perdiscount($request){
