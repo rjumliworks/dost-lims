@@ -159,7 +159,7 @@ class DashboardController extends Controller
         switch($option){
             case 'cro':
                 return array_merge(
-                    $this->cro->dashboard($request),
+                    $this->cro->dashboard($request,$this->agency->laboratories()),
                     $this->common->calendar($request)
                 );
             break;

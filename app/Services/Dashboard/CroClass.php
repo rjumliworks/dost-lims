@@ -9,6 +9,7 @@ use App\Models\TsrAnalysis;
 use App\Models\TsrRelease;
 use App\Models\TsrPayment;
 use App\Models\TargetBreakdown;
+use App\Models\ListLaboratory;
 use Carbon\Carbon;
 
 class CroClass
@@ -19,7 +20,7 @@ class CroClass
     //     $this->end = now()->copy()->endOfMonth()->format('Y-m-d');
     // }
     
-    public function dashboard($request){
+    public function dashboard($request,$laboratories){
         return [
             'counts' => $this->counts($request),
             'reminders' => $this->reminders($request),
@@ -29,7 +30,8 @@ class CroClass
             'charts' => $this->charts($request),
             'fee' => $this->fees($request),
             'wallets' => $this->wallets($request),
-            'target' => $this->target($request)
+            'target' => $this->target($request),
+            'laboratories' => $this->laboratories($request,$laboratories),
         ];
     }
 
@@ -839,6 +841,125 @@ public function count($name,$index,$year,$month,$laboratory_id){
                     'data' => $third
                 ]
             ]
+        ];
+    }
+
+    public function laboratories($request,$laboratories){
+        $month = ($request->month) ? \DateTime::createFromFormat('F', $request->month)->format('m') : null;  
+        $year = ($request->year) ? $request->year : null;
+    
+        
+        $lists = []; $requests_total = 0; $samples_total = 0; $analyses_total = 0; $fees_total = 0; $gratis_total = 0; $discount_total = 0; $gross_total = 0;
+        
+        foreach($laboratories as $laboratory){
+            $req = Tsr::where('status_id','!=',5)
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at',$month);
+            })
+            ->when($year, function ($query, $year) {
+                $query->whereYear('created_at',$year);
+            })
+            ->where('laboratory_id',$laboratory['value'])->count();
+
+            $sample  = TsrSample::
+            when($month, function ($query, $month) {
+                $query->whereMonth('created_at',$month);
+            })
+            ->when($year, function ($query, $year) {
+                $query->whereYear('created_at',$year);
+            })
+            ->whereHas('tsr', function ($query) use ($laboratory){
+                $query->where('laboratory_id',$laboratory['value'])->where('status_id','!=',5);
+            })->count();
+
+            $analysis = TsrAnalysis::
+            // when($month, function ($query, $month) {
+            //     $query->whereMonth('created_at',$month);
+            // })
+            // ->when($year, function ($query, $year) {
+            //     $query->whereYear('created_at',$year);
+            // })
+            whereHas('sample', function ($query) use ($laboratory,$year,$month){
+                $query->whereHas('tsr', function ($query) use ($laboratory,$year,$month){
+                    $query->where('laboratory_id',$laboratory['value'])->where('status_id','!=',5)->whereYear('created_at',$year)->whereMonth('created_at',$month);
+                });
+            })->count();
+
+            $gtotal = Tsr::withWhereHas('payment', function ($query) {
+                $query->where('is_free',0);
+            })
+            ->where('status_id','!=',5)
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at',$month);
+            })
+            ->when($year, function ($query, $year) {
+                $query->whereYear('created_at',$year);
+            })
+            ->where('laboratory_id',$laboratory['value'])
+            ->get()
+            ->sum(function ($tsr) {
+                return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
+            });
+
+            $gdiscount = Tsr::withWhereHas('payment', function ($query) {
+                $query->whereNotIn('discount_id',[6,10,11,12]);
+            })
+            ->where('status_id','!=',5)
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at',$month);
+            })
+            ->when($year, function ($query, $year) {
+                $query->whereYear('created_at',$year);
+            })
+            ->where('laboratory_id',$laboratory['value'])
+            ->get()
+            ->sum(function ($tsr) {
+                return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
+            });
+
+            $ggratis = Tsr::withWhereHas('payment', function ($query) {
+                $query->whereIn('discount_id',[6,10,11,12]);
+            })
+            ->where('status_id','!=',5)
+            ->when($month, function ($query, $month) {
+                $query->whereMonth('created_at',$month);
+            })
+            ->when($year, function ($query, $year) {
+                $query->whereYear('created_at',$year);
+            })
+            ->where('laboratory_id',$laboratory['value'])
+            ->get()
+            ->sum(function ($tsr) {
+                return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
+            });
+           
+            $lists[] = [
+                $laboratory['name'],
+                $req,
+                $sample,
+                $analysis,
+                '₱'.number_format($gtotal,2),
+                '₱'.number_format($ggratis,2),
+                '₱'.number_format($gdiscount,2),
+                '₱'.number_format(($gtotal + $ggratis + $gdiscount),2),
+                $laboratory['value'],
+            ];
+
+            $requests_total += $req;
+            $samples_total += $sample;
+            $analyses_total += $analysis;
+            $fees_total += $gtotal;
+            $gratis_total += $ggratis;
+            $discount_total += $gdiscount;
+            // $gross_total += (($total+$contract+$pending+$wallet) + $gratis + $discount);
+            $gross_total += ($gtotal + $ggratis + $gdiscount);
+        }
+        $footer[] = [
+            'Total',$requests_total, $samples_total, $analyses_total, '₱'.number_format($fees_total,2), '₱'.number_format($gratis_total,2), '₱'.number_format($discount_total,2), '₱'.number_format($gross_total,2)
+        ];
+        return [
+            'lists' => $lists,
+            'footer' => $footer
         ];
     }
 }
