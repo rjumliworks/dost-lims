@@ -180,7 +180,7 @@ class AccomplishmentClass
     
     public function targets($request){
         $year = $request->year;
-        $data = Target::with('breakdowns.laboratory','breakdowns.objective.type')->where('year',$year)->first();
+        $data = Target::with('breakdowns.laboratory','breakdowns.objective.type','breakdowns.items.item')->where('year',$year)->first();
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $breakdowns = $data->breakdowns;
         $grandtotal = 0;
@@ -211,6 +211,7 @@ class AccomplishmentClass
                         }
                         $monthly_all[$index]['accomplish'] += $count;
                     }
+                    
                     $grandtotal =$grandtotal + $total;
                     $breakdown[] = [
                         'id' => $item->id,
@@ -222,46 +223,81 @@ class AccomplishmentClass
                     ];
                 }else{
                     $monthly = [];
-                    if($item->objective->name == 'Firms Assisted'){
-                        foreach($months as $index => $month){
-                            $count = $this->count($item->objective->name,null,$year,$month,null);
-                            $total = $total + $count;
-                            $monthly[] = [
+
+                    foreach($months as $index => $month){
+
+                        $count = $this->count($item->objective->name, null, $year, $month, null);
+
+                        $total += $count;
+
+                        $monthly[] = [
+                            'name' => $month,
+                            'is_amount' => $items->first()['is_amount'],
+                            'accomplish' => $count
+                        ];
+
+                        if (!isset($monthly_all[$index])) {
+                            $monthly_all[$index] = [
                                 'name' => $month,
                                 'is_amount' => $items->first()['is_amount'],
-                                'accomplish' => $count
+                                'accomplish' => 0
                             ];
-
-                            if (!isset($monthly_all[$index])) {
-                                $monthly_all[$index] = [
-                                    'name' => $month,
-                                    'is_amount' => $items->first()['is_amount'],
-                                    'accomplish' => 0
-                                ];
-                            }
-                            $monthly_all[$index]['accomplish'] += $count;
                         }
-                    }else{
-                        foreach($months as $index => $month){
-                            $count = $this->count($item->objective->name,null,$year,$month,null);
-                            $total = $total + $count;
-                            $monthly[] = [
-                                'name' => $month,
-                                'is_amount' => $items->first()['is_amount'],
-                                'accomplish' => $count
-                            ];
 
-                            if (!isset($monthly_all[$index])) {
-                                $monthly_all[$index] = [
-                                    'name' => $month,
-                                    'is_amount' => $items->first()['is_amount'],
-                                    'accomplish' => 0
-                                ];
-                            }
-                            $monthly_all[$index]['accomplish'] += $count;
-                        }
+                        $monthly_all[$index]['accomplish'] += $count;
                     }
-                    $grandtotal =$grandtotal + $total;
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Sub Targets
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $subItems = [];
+
+                    foreach ($item->items as $subItem) {
+
+                        $subTotal = 0;
+                        $subMonthly = [];
+
+                        foreach ($months as $index => $month) {
+
+                            $subCount = $this->subCount($item->objective->name,$subItem->item->name, $year, $month);
+
+                            $subTotal += $subCount;
+
+                            $subMonthly[] = [
+                                'name' => $month,
+                                'is_amount' => $items->first()['is_amount'],
+                                'accomplish' => $subCount,
+                            ];
+                        }
+
+                        $subItems[] = [
+                            'id' => $subItem->id,
+                            'name' => $subItem->item->name,
+                            'target' => $subItem->count,
+                            'months' => $subMonthly,
+                            'accomplish' => $subTotal,
+                            'percentage' => $subItem->count == 0
+                                ? '-'
+                                : round(($subTotal / $subItem->count) * 100, 2) . '%',
+                        ];
+                    }
+
+                    $grandtotal += $total;
+
+                    $breakdown = [
+                        'id' => $item->id,
+                        'name' => null,
+                        'target' => $item->count,
+                        'months' => $monthly,
+                        'accomplish' => $total,
+                        'percentage' => ($item->count == 0)
+                            ? '-'
+                            : round(($total / $item->count) * 100, 2) . '%',
+                        'items' => $subItems,
+                    ];
                 }
             }
             $result = [
@@ -275,10 +311,76 @@ class AccomplishmentClass
                 'breakdown' => $breakdown,
                 'monthly' => array_values($monthly_all),
                 'objective_type' => $items->first()->objective->type->name,
+                
             ];
             return $result;
         })->groupBy(fn ($item) => $item['objective_type']);
         return $grouped;
+    }
+
+    public function subCount($name,$subname,$year,$month){
+        $months = [
+            'Jan' => 1,
+            'Feb' => 2,
+            'Mar' => 3,
+            'Apr' => 4,
+            'May' => 5,
+            'Jun' => 6,
+            'Jul' => 7,
+            'Aug' => 8,
+            'Sep' => 9,
+            'Oct' => 10,
+            'Nov' => 11,
+            'Dec' => 12,
+        ];
+
+         switch($name){
+            case 'Number of MSMEs / LGUs / HEIs, communities and other customers assisted':
+               
+                if($subname == 'RSTL (Non-Paying)'){
+                         $m = $months[$month] ?? null;
+                    $count = Tsr::whereHas('payment', function ($query) {
+                        $query->whereIn('discount_id',[5,7]);
+                    })
+                    ->whereHas('customer.customer_name', function ($query){
+                        $query->where('classification_id',8);
+                    })
+                    ->whereMonth('created_at', $m)
+                    ->whereYear('created_at', $year)
+                    ->count();
+                    return $count;
+
+               }else{
+                    return 0;
+               }
+            break;
+            case 'Number of S&T Interventions Provided':
+               if($subname == 'RSTL (Non-Paying)'){
+                    $m = $months[$month] ?? null;
+                 
+                    $count = TsrAnalysis::whereHas('sample', function ($query) use ($m,$year){
+                        $query->where('status_id','!=',13);
+                        $query->whereHas('tsr', function ($query) use ($m,$year){
+                            $query  ->whereHas('payment', function ($query) {
+                                $query->whereIn('discount_id',[5,7]);
+                            })
+                            ->whereHas('customer.customer_name', function ($query){
+                                $query->where('classification_id',8);
+                            })
+                            ->where('status_id','!=',5)
+                            ->whereMonth('created_at',$m)
+                            ->whereYear('created_at',$year);
+                        });
+                    })
+                    ->count();
+
+                    return $count;
+                    
+               }else{
+                    return 0;
+               }
+            break;
+        }
     }
 
     public function count($name,$index,$year,$month,$laboratory_id){
