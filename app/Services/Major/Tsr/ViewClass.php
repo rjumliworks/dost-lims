@@ -66,27 +66,33 @@ class ViewClass
     }
 
     public function lists($request,$statuses){
+      
         $data = ListResource::collection(
             Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
             ->with('laboratory:id,name','status:id,name,color,others')
             ->with('payment:tsr_id,id,total,is_paid,is_free,paid_at,status_id,discount_id,collection_id,payment_id','payment.status:id,name,color,others')
             ->when($request->keyword, function ($query, $keyword) {
-                $query->where(function ($q) use ($keyword) {
-                    $q->where('code', 'LIKE', "%{$keyword}%")
-                    ->orWhereHas('customer', function ($q) use ($keyword) {
-                        $q->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
-                        ->whereRaw("
-                            CASE
-                                WHEN customers.is_main = 1 THEN customer_names.name
-                                ELSE CONCAT(customer_names.name, ' - ', customers.name)
-                            END LIKE ?
-                        ", ["%{$keyword}%"]);
-                        });
-                    })->orWhereHas('samples', function ($q) use ($keyword) {
-                        $q->where('code', 'LIKE', "%{$keyword}%");
-                    });
-            })
+    $query->where(function ($q) use ($keyword) {
+
+        $q->where('code', 'LIKE', "%{$keyword}%")
+
+          ->orWhereHas('customer', function ($q) use ($keyword) {
+              $q->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
+                ->whereRaw("
+                    CASE
+                        WHEN customers.is_main = 1 THEN customer_names.name
+                        ELSE CONCAT(customer_names.name, ' - ', customers.name)
+                    END LIKE ?
+                ", ["%{$keyword}%"]);
+          })
+
+          ->orWhereHas('samples', function ($q) use ($keyword) {
+              $q->where('code', 'LIKE', "%{$keyword}%");
+          });
+
+    });
+})
             ->with(['samples' => function ($query){
                 $query->select('id','tsr_id');
                 $query->withCount([
@@ -170,15 +176,6 @@ class ViewClass
                     break;
                 }
             })
-            // ->when($this->configuration->strict_mode == 1, function ($query) {
-            //     $facility = \Auth::user()->profile->facility;
-
-            //     if($facility->is_psto) { //|| $facility->is_separated
-            //         $query->where('facility_id', $facility->id);
-            //     }elseif($facility->is_separated){
-            //         $query->where('laboratory_id',3);
-            //     }
-            // })
             ->when($request->region, function ($query, $region) {
                 $query->whereHas('customer.address', function ($query) use ($region) {
                     $query->where('region_code', $region);

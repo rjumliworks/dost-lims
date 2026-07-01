@@ -318,27 +318,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-3 mt-2">
-                    <Link :href="`/accomplishments`" >
-                        <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
-                            <div class="card-body bg-success-subtle">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="avatar-sm">
-                                            <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-17">
-                                                <i class="ri-checkbox-circle-fill fs-24"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <h6 class="fs-12 text-success mb-1">Annual Target vs Accomplishment Report</h6>
-                                        <p class="fs-11 text-muted mb-0">Shows yearly target and actual accomplishment data for evaluation and reporting.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </Link>
-                </div>
+               
                 <div class="col-md-3 mt-2">
                     <Link :href="`/insights/location`" >
                         <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
@@ -402,27 +382,28 @@
                         </div>
                     </Link>
                 </div>
-                <!-- <div class="col-md-3 mt-2">
-                    <Link :href="`/insights/request`" target="_blank">
+                 <div class="col-md-3 mt-2">
+                    <Link :href="`/accomplishments`" >
                         <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
-                            <div class="card-body bg-danger-subtle">
+                            <div class="card-body bg-success-subtle">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0">
                                         <div class="avatar-sm">
-                                            <div class="avatar-title bg-danger bg-opacity-10 text-danger rounded-circle fs-17">
-                                                <i class="ri-file-line fs-24"></i>
+                                            <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-17">
+                                                <i class="ri-checkbox-circle-fill fs-24"></i>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="flex-grow-1 ms-3">
-                                        <h6 class="fs-12 text-danger mb-1">Customers Requesting Laboratory</h6>
-                                        <p class="fs-11 text-muted mb-0">Shows TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
+                                        <h6 class="fs-12 text-success mb-1">Annual Target vs Accomplishment Report</h6>
+                                        <p class="fs-11 text-muted mb-0">Shows yearly target and actual accomplishment data for evaluation and reporting.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </Link>
-                </div> -->
+                </div>
+                
 
 
 
@@ -625,6 +606,27 @@
                     </div>  
                 </div>
 
+                <div class="col-md-3 mt-2">
+                    <Link :href="`/insights/request`" target="_blank">
+                        <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                            <div class="card-body bg-danger-subtle">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="avatar-sm">
+                                            <div class="avatar-title bg-danger bg-opacity-10 text-danger rounded-circle fs-17">
+                                                <i class="ri-file-line fs-24"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="fs-12 text-danger mb-1">Customers Requesting Laboratory</h6>
+                                        <p class="fs-11 text-muted mb-0">Shows TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                </div>
 
                 <div class="col-md-12 mt-n2">
                     <div class="card bg-light-subtle shadow-none border">

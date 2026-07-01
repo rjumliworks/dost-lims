@@ -50,18 +50,18 @@
                                     <th class="table-info" style="width: 15%;">At least once a month</th>
                                     <th class="table-info" style="width: 15%;">At least once every three months</th>
                                     <th class="table-info" style="width: 15%;">At least once every six months</th>
-                                    <th class="table-info" style="width: 15%;">At least once ina year</th>
+                                    <th class="table-info" style="width: 15%;">At least once in a year</th>
                                 
                                 </tr>
                             </thead>
                             <tbody class="fs-10">
                                 <tr style="cursor: pointer;" v-for="(item,index) in list" :key="`breakdown-${index}`">
-                                    <td class="text-center">{{index+1}}</td>
-                                    <td class="text-center">{{item.code}}</td>
-                                    <td class="text-center align-middle">1</td>
-                                    <td class="text-center align-middle">2</td>
-                                    <td class="text-center align-middle">3</td>
-                                    <td class="text-center align-middle">4</td>
+                                    <td class="text-center">{{index}}</td>
+                                    <td class="text-center">{{item.laboratory}}</td>
+                                    <td class="text-center align-middle">{{item.monthly}}</td>
+                                    <td class="text-center align-middle">{{item.quarterly}}</td>
+                                    <td class="text-center align-middle">{{item.semiannual}}</td>
+                                    <td class="text-center align-middle">{{item.yearly}}</td>
                                 </tr>
                             </tbody>
                         </table>
