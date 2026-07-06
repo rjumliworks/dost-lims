@@ -116,8 +116,8 @@
                                     </td>
                                     <td class="text-center">{{ list.username }}</td>
                                     <td class="text-center">{{ list.email }}</td>
-                                    <td class="text-center">{{ list.code }}</td>
                                     <td class="text-center">{{ list.mobile }}</td>
+                                    <td class="text-center">{{ (list.code) ? list.code : '-' }}</td>
                                     <td class="text-center">
                                         <span v-if="list.is_active" class="badge bg-success">Active</span>
                                         <span v-else class="badge bg-danger">Inactive</span>
