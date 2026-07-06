@@ -150,6 +150,25 @@
                         ref="multiselect2"
                         />
                 </BCol>
+                <BCol lg="12"><hr class="text-muted mt-0 mb-n3"/></BCol>
+                <BCol lg="8" style="margin-top: 10px; margin-bottom: -15px;" class="fs-12">Will the laboratory be closed during this event?</BCol>
+                <BCol lg="4" style="margin-top: 10px; margin-bottom: -20px;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" id="customRadio11" class="custom-control-input me-2" :value="true" v-model="form.is_closed">
+                                <label class="custom-control-label fw-normal fs-12" for="customRadio11">Yes</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-3">
+                                <input type="radio" id="customRadio22" class="custom-control-input me-2" :value="false" v-model="form.is_closed">
+                                <label class="custom-control-label fw-normal fs-12" for="customRadio22">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </BCol>
+                <BCol lg="12"><hr class="text-muted mt-n1 mb-n3"/></BCol>
             </BRow>
         </form>
         <template v-slot:footer>
@@ -192,7 +211,7 @@ export default {
                 customer: null,
                 conforme: null,
                 users: [],
-                is_closed: 0
+                is_closed: null
             }),
             timeConfig: {
                 enableTime: true,
