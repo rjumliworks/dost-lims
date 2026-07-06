@@ -150,6 +150,7 @@
                         ref="multiselect2"
                         />
                 </BCol>
+                <template v-if="form.event?.type?.trim() === 'Official Business' || form.event?.type?.trim() === 'Official' && form.event?.name !== 'Holiday'">
                 <BCol lg="12"><hr class="text-muted mt-0 mb-n3"/></BCol>
                 <BCol lg="8" style="margin-top: 10px; margin-bottom: -15px;" class="fs-12">Will the laboratory be closed during this event?</BCol>
                 <BCol lg="4" style="margin-top: 10px; margin-bottom: -20px;">
@@ -169,6 +170,7 @@
                     </div>
                 </BCol>
                 <BCol lg="12"><hr class="text-muted mt-n1 mb-n3"/></BCol>
+                </template>
             </BRow>
         </form>
         <template v-slot:footer>
