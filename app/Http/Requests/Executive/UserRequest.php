@@ -16,7 +16,7 @@ class UserRequest extends FormRequest
     {
         if ($this->option === 'credential') {
             return [
-                'code' => 'required|string',
+                'reference' => 'required|string',
                 'email' => 'required|email',
                 'mobile' => 'required|string',
                 'kradworkz' => 'nullable|string',
@@ -31,7 +31,7 @@ class UserRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $hashids = new Hashids('krad', 10);
-            $id = $hashids->decode($this->code)[0] ?? null;
+            $id = $hashids->decode($this->reference)[0] ?? null;
 
             if (!$id) {
                 $validator->errors()->add('code', 'Invalid code provided.');

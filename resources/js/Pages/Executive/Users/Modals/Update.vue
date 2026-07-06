@@ -67,7 +67,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             form: useForm({
-                code: null,
+                reference: null,
                 email: null,
                 mobile: null,
                 password: null,
@@ -90,7 +90,7 @@ export default {
     methods: { 
         show(data){
             this.form.reset();
-            this.form.code = data.code;
+            this.form.reference = data.reference;
             this.form.email = data.email;
             this.form.mobile = data.mobile;
             this.showModal = true;
