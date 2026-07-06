@@ -32,6 +32,7 @@ class SaveClass
         $data = Schedule::create([
             'start' => $start,
             'end' => $end,
+            'is_closed' => ($request->event['value'] == 10) ? 1 : $request->is_closed,
             'is_allday' => $request->is_allday,
             'is_forall' => $request->is_forall,
             'event_id' => $request->event['value']

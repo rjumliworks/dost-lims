@@ -106,7 +106,7 @@
                                                                     <i class="ri-eye-line me-2"></i> View
                                                                 </a>
                                                             </li>
-                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)">
+                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name) || selected.is_onsite == 1">
                                                                 <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                                     <i class="ri-pencil-line me-2"></i>Edit
                                                                 </a>
