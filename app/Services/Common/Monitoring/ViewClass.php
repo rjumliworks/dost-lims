@@ -131,7 +131,7 @@ class ViewClass
                         });
                     break;
                     case 'Completed with no report number':
-                        $query->where('status_id',4)->whereHas('samples', function ($query) {
+                        $query->where('status_id',4)->where('requires_report', 1)->whereHas('samples', function ($query) {
                             $query->doesntHave('report');
                         }, '>', 0);
                     break;
@@ -479,7 +479,7 @@ class ViewClass
             [
                 'name' => 'Pending Report',
                 'count' => Tsr::whereIn('laboratory_id', $laboratories->pluck('value'))
-                ->where('status_id', 4)
+                ->where('status_id', 4)->where('requires_report', 1)
                 ->whereHas('samples',function ($query){
                     $query->whereDoesntHave('report')->whereHas('analyses', function ($query) {
                         $query->where('status_id', 12);

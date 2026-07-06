@@ -29,7 +29,8 @@ class Tsr extends Model
         'is_referral',
         'is_onsite',
         'is_first',
-        'created_at'
+        'created_at',
+        'requires_report'
     ];
 
     public function getReferenceAttribute(): string

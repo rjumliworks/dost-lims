@@ -18,6 +18,7 @@ return new class extends Migration
             $table->datetime('end');
             $table->boolean('is_forall');
             $table->boolean('is_allday');
+            $table->boolean('is_closed')->default(0);
             $table->unsignedTinyInteger('event_id');
             $table->foreign('event_id')->references('id')->on('list_events')->onDelete('cascade');
             $table->unsignedinteger('user_id');

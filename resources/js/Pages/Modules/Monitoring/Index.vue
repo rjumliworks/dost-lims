@@ -11,7 +11,7 @@
                             <div class="d-flex flex-lg-row flex-column">
                                 <div class="flex-grow-1">
                                     <h4 class="fs-14 mb-0">{{monthName}} Summary View</h4>
-                                    <p class="text-muted mb-0">Here's what's happening with the laboratory for month of {{monthName}}.</p>
+                                    <p class="text-muted mb-0">Here's what's happening with the laboratory <span v-if="monthName">for month of {{monthName}}</span></p>
                                 </div>
                                 <div class="mt-3 mt-lg-0">
                                     <form action="javascript:void(0);">
@@ -235,13 +235,15 @@
                                         <div class="input-group mb-1">
                                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                             <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control">
-                                        
+                                            <b-button type="button" variant="primary" @click="refresh">
+                                                <i class="bx bx-refresh search-icon"></i>
+                                            </b-button>
                                         </div>
                                     </b-col>
                                 </b-row>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive table-card" style="height: 260px; overflow: auto;">
+                                <div class="table-responsive table-card" style="height: 263px; overflow: auto;">
                                     <table class="table align-middle table-centered table-bordered table-striped mb-0">
                                         <thead class="table-light thead-fixed">
                                             <tr class="fs-11">
@@ -253,7 +255,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="ribbon-box" v-for="(list,index) in lists" v-bind:key="index">
+                                            <tr class="ribbon-box" v-for="(list,index) in lists" v-bind:key="index" :class="{ 'bg-danger-subtle': isPastDue(list.due_at) }">
                                                 <td>
                                                     <h5 v-if="list.code" class="fs-13 mb-0 fw-semibold text-primary">{{list.code}}</h5>
                                                     <h5 v-else class="fs-13 mb-0 text-muted">Not yet available</h5>
@@ -289,8 +291,78 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-3 mt-n1">
+                   <div class="card shadow-none border mt-n1">
+                        <div class="card-header bg-light-subtle">
+                            <div class="d-flex mb-n3">
+                                <div class="flex-shrink-0 me-3 mt-1">
+                                    <div style="height:2rem;width:2rem;">
+                                        <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                            <i class="ri-alarm-warning-fill text-primary fs-20"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Laboratory Monitoring</span></h5>
+                                    <p class="text-muted text-truncate-two-lines fs-11">Ongoing TSR by laboratory</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="shadow-none" no-body style="height: 380px; overflow: auto;">
+                           <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                                <li class="list-group-item px-0 mb-0" v-for="(list,index) in laboratories" v-bind:key="index">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="flex-grow-1 ms-2">
+                                            <h6 class="mb-0 fs-13">{{list.name}} </h6>
+                                            
+                                            <div class="mt-auto">
+                                                <!-- <div class="d-flex mb-1">
+                                                    <div class="flex-grow-1">
+                                                        <p class="fs-11 mb-0 text-muted">..</p>
+                                                    </div>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="fs-12">
+                                                            <i class="ri-list-check align-bottom me-1 text-muted"></i>
+                                                            {{ list.ongoing }}/{{ list.overall }} <span class="text-muted">({{ list.percentage }}%)</span>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="d-flex mb-1">
+                                                    <div class="flex-grow-1 text-muted fs-12 mt-1">
+                                                         <i class="ri-list-check align-bottom me-1 text-muted"></i>
+                                                            <span class="text-danger">{{ list.ongoing }}</span> ongoing out of <span class="text-success">{{ list.overall }}</span> tsrs requested <span class="text-muted">({{ list.percentage }}%)</span>
+                                                    </div>
+                                                   
+                                                </div>
 
+                                                <div class="progress progress-sm animated-progress">
+                                                    <div
+                                                        class="progress-bar"
+                                                        
+                                                        role="progressbar"
+                                                        :aria-valuenow="list.percentage"
+                                                        aria-valuemin="0"
+                                                        aria-valuemax="100"
+                                                        :style="{ width: list.percentage + '%' }"
+                                                    ></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- <div class="flex-shrink-0 text-end">
+                                            <h6 v-if="monthName" class="mt-0 mb-n2 me-2 fs-12">
+                                                <div class="donut-chart mx-auto" :style="{background: `conic-gradient(#0ab39c ${list.percentage}%, #e9ebec 0)`}">
+                                                    <div class="donut-inner">
+                                                        {{ list.percentage }}%
+                                                    </div>
+                                                </div>
+                                            </h6>
+                                            <h6 v-else class="mt-2 me-2 fs-12">{{list.count}}</h6>
+                                        </div> -->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
 
@@ -330,7 +402,7 @@
                         </div>
                         <div class="shadow-none" no-body>
                             <div class="table-responsive mb-2" style="height: 300px; overflow: auto;">
-                                <table class="table table-nowrap table-striped align-middle">
+                                <table class="table table-striped align-middle">
                                     <thead class="table-light thead-fixed">
                                         <tr class="fs-11">
                                             <th class="text-center" width="10%">#</th>
@@ -359,7 +431,7 @@
 
                 </div>
                 <div class="col-md-3">
-                    <div class="card shadow-none border mt-n1">
+                    <div class="card shadow-none border mt-n4">
                         <div class="card-header bg-light-subtle">
                             <div class="d-flex mb-n3">
                                 <div class="flex-shrink-0 me-3 mt-1">
@@ -387,7 +459,7 @@
                         </div>
                         <div class="shadow-none" no-body>
                             <div class="table-responsive mb-2" style="height: 300px; overflow: auto;">
-                                <table class="table table-nowrap table-striped align-middle">
+                                <table class="table table-striped align-middle">
                                     <thead class="table-light thead-fixed">
                                         <tr class="fs-11">
                                             <th class="text-center" width="10%">#</th>
@@ -466,6 +538,9 @@ export default {
             this.fetch();
             this.fetchCounts();
         },
+        "filter.keyword"(val) {
+            this.checkSearchStr(val);
+        }
     },
     computed: {
         totalIncome() {
@@ -549,9 +624,25 @@ export default {
             this.filter.reminder = type;
             this.fetch();
         },
+        isPastDue(date) {
+            if (!date) return false;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const due = new Date(date);
+            due.setHours(0, 0, 0, 0);
+
+            return due < today;
+        },
         formatMoney(value) {
             let val = (value / 1).toFixed(2).replace(',', '.');
             return '₱' + val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+        refresh(){
+            this.filter.reminder = null;
+            this.fetch();
+            this.fetchCounts();
         }
     }
 }

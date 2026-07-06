@@ -37,6 +37,7 @@ return new class extends Migration
             $table->boolean('is_referral')->default(0);
             $table->boolean('is_onsite')->default(0);
             $table->boolean('is_first')->default(0);
+            $table->boolean('requires_report')->nullable();
             $table->date('due_at')->nullable();
             $table->timestamps();
         });
