@@ -42,6 +42,9 @@ class SaveClass
             'quantity' => $request->quantity,
             'total' => $request->total,
         ]);
+        $data->is_onsite = 1;
+        $data->save();
+
         $total = $this->updateTotal($request->id,$request->total);
         return [
             'data' => $total,
@@ -71,6 +74,9 @@ class SaveClass
             $payment->total = $total;
             $payment->save();
         }
+        $tsr = Tsr::find($request->tsr_id);
+        $tsr->is_onsite = 0;
+        $tsr->save();
 
         return [
             'data' => $total,

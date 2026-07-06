@@ -191,7 +191,8 @@ export default {
                 tsr_id: null,
                 customer: null,
                 conforme: null,
-                users: []
+                users: [],
+                is_closed: 0
             }),
             timeConfig: {
                 enableTime: true,
