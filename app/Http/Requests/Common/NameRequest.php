@@ -44,7 +44,7 @@ class NameRequest extends FormRequest
 
     public function withValidator($validator)
     {
-        if ($this->option === 'fee' || $this->option === 'add') {
+        if ($this->option === 'fee' || $this->option === 'add' || $this->option === 'method' || $this->option === 'create') {
             return;
         }
 

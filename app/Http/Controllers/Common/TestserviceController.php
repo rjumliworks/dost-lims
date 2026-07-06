@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\AgencyClass;
 use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
 use App\Http\Requests\Common\NameRequest;
@@ -21,13 +22,15 @@ class TestserviceController extends Controller
     protected UpdateClass $update;
     protected UploadClass $upload;
     protected DropdownClass $dropdown;
+    protected AgencyClass $agency;
 
-    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update, UploadClass $upload){
+    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, UpdateClass $update, UploadClass $upload, AgencyClass $agency){
         $this->dropdown = $dropdown;
         $this->view = $view;
         $this->save = $save;
         $this->update = $update;
         $this->upload = $upload;
+        $this->agency = $agency;
     }
 
     public function index(Request $request){
@@ -59,7 +62,7 @@ class TestserviceController extends Controller
             default:
             return inertia('Modules/Testservices/Index',[
                 'dropdowns' => [
-                    'laboratories' => $this->dropdown->laboratories(),
+                    'laboratories' => $this->agency->laboratories(),
                     'statuses' => $this->dropdown->statuses('Testservice')
                 ],
                 'counts' => $this->view->counts($this->dropdown->statuses('Testservice'))

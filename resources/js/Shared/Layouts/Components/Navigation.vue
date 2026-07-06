@@ -143,15 +143,15 @@
                             <span class="align-middle"> Help</span>
                         </Link> -->
                         <div class="dropdown-divider"></div>
-                        <Link class="dropdown-item" href="/pages/profile-setting">
-                            <!-- <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">New</BBadge> -->
+                        <!-- <Link class="dropdown-item" href="/pages/profile-setting">
+                            <BBadge variant="success-subtle" class="bg-success-subtle text-success mt-1 float-end">New</BBadge>
                             <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
                             <span class="align-middle"> Settings</span>
-                        </Link>
-                        <Link class="dropdown-item" href="/confirm-password">
+                        </Link> -->
+                        <!-- <Link class="dropdown-item" href="/confirm-password">
                             <i class="mdi mdi-lock text-muted fs-16 align-middle me-1"></i>
                             <span class="align-middle"> Lock screen</span>
-                        </Link>
+                        </Link> -->
 
                         <form method="POST" @submit.prevent="logout" class="dropdown-item">
                             <BButton variant="none" type="submit" class="btn p-0"><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i> Logout</BButton>

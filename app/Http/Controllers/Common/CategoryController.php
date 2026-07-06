@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\AgencyClass;
 use App\Services\DropdownClass;
 use App\Traits\HandlesTransaction;
 use App\Services\Common\Category\ViewClass;
@@ -17,11 +18,13 @@ class CategoryController extends Controller
     protected DropdownClass $dropdown;
     protected ViewClass $view;
     protected SaveClass $save;
+    protected AgencyClass $agency;
 
-    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view){
+    public function __construct(DropdownClass $dropdown, SaveClass $save, ViewClass $view, AgencyClass $agency){
         $this->dropdown = $dropdown;
         $this->view = $view;
         $this->save = $save;
+        $this->agency = $agency;
     }
 
     public function index(Request $request){
@@ -44,7 +47,7 @@ class CategoryController extends Controller
             default:
             return inertia('Modules/Categories/Index',[
                 'dropdowns' => [
-                    'laboratories' => $this->dropdown->laboratories(),
+                    'laboratories' => $this->agency->laboratories(),
                     'categories' => $this->dropdown->categories(),
                 ]
             ]);

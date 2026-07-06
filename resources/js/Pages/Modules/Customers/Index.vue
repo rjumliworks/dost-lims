@@ -88,6 +88,19 @@
                                 </tr>
                             </thead>
                             <tbody class="table-white fs-12">
+                                <tr v-if="lists.length == 0" style="height: calc(100vh - 506px);">
+                                    <td colspan="8" class="text-center">
+                                        <div class="d-flex flex-column align-items-center py-4">
+                                            <div class="avatar-lg mb-3">
+                                                <div class="avatar-title bg-light rounded-circle text-muted">
+                                                    <i class="ri-file-list-3-line fs-24"></i>
+                                                </div>
+                                            </div>
+                                            <h5 class="mb-1">No customers found</h5>
+                                            <p class="text-muted mb-0">Try adjusting your search or filter to find what you're looking for.</p>
+                                        </div>
+                                    </td>
+                                </tr>
                                 <tr v-for="(list,index) in lists" v-bind:key="index" @click="selectRow(index)" :class="{
                                     'bg-info-subtle': index === selectedRow,
                                     'bg-danger-subtle': list.is_active === 0 && index !== selectedRow
@@ -145,11 +158,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="d-flex flex-column justify-content-center align-items-center h-100" v-if="lists.length == 0">
-                        
-                            <i class="ri-user-search-line fs-24 text-muted"></i>
-                            <p class="mt-2 fs-12 text-muted mb-0">No customers have been added to the list.</p>
-                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
