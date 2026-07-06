@@ -72,7 +72,7 @@ class SaveClass
 
      public function credential($request){
         $hashids = new Hashids('krad',10);
-        $id = $hashids->decode($request->code)[0];
+        $id = $hashids->decode($request->reference)[0];
    
         $data = User::with('profile')->find($id);
         $data->email = $request->email;
