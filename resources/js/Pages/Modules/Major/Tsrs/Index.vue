@@ -30,6 +30,7 @@
                                 <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 20%;">
                                 <input v-if="filter.datetype" type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 100px;">
                                 <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />
+                                <Multiselect v-if="filter.laboratory == 3" class="white" style="width: 15%;" :options="['In-house','On-site']" v-model="filter.subtype" label="name" :allow-empty="false" :searchable="true" placeholder="Select Location" />
                                 <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
                                 <Multiselect class="white" style="width: 10%;" :options="['Local','Referral']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" />
                                 <Multiselect class="white" style="width: 10%;" :options="years" v-model="filter.year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
@@ -217,6 +218,7 @@ export default {
                 datetype: null,
                 date: null,
                 type: null,
+                subtype: null,
                 year: new Date().getFullYear()
             },
             location: {
@@ -266,6 +268,9 @@ export default {
         "filter.date"(newVal){
             this.fetch();
         },
+        "filter.subtype"(newVal){
+            this.fetch();
+        },
         "filter.year"(newVal){
             this.fetch();
         },
@@ -311,6 +316,7 @@ export default {
                     barangay: this.location.barangay,
                     type: this.filter.type,
                     year: this.filter.year,
+                    subtype: this.filter.subtype,
                     count: 10,
                     option: 'lists'
                 }
@@ -393,6 +399,7 @@ export default {
                 sortby: 'Requested At',
                 sort: 'desc',
                 datetype: null,
+                subtype: null,
                 date: null
             };
         }

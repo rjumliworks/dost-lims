@@ -95,26 +95,26 @@ class ViewClass
             ->with('laboratory:id,name','status:id,name,color,others')
             ->with('payment:tsr_id,id,total,is_paid,is_free,paid_at,status_id,discount_id,collection_id,payment_id','payment.status:id,name,color,others')
             ->when($request->keyword, function ($query, $keyword) {
-    $query->where(function ($q) use ($keyword) {
+                $query->where(function ($q) use ($keyword) {
 
-        $q->where('code', 'LIKE', "%{$keyword}%")
+                    $q->where('code', 'LIKE', "%{$keyword}%")
 
-          ->orWhereHas('customer', function ($q) use ($keyword) {
-              $q->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
-                ->whereRaw("
-                    CASE
-                        WHEN customers.is_main = 1 THEN customer_names.name
-                        ELSE CONCAT(customer_names.name, ' - ', customers.name)
-                    END LIKE ?
-                ", ["%{$keyword}%"]);
-          })
+                    ->orWhereHas('customer', function ($q) use ($keyword) {
+                        $q->join('customer_names', 'customers.name_id', '=', 'customer_names.id')
+                            ->whereRaw("
+                                CASE
+                                    WHEN customers.is_main = 1 THEN customer_names.name
+                                    ELSE CONCAT(customer_names.name, ' - ', customers.name)
+                                END LIKE ?
+                            ", ["%{$keyword}%"]);
+                    })
 
-          ->orWhereHas('samples', function ($q) use ($keyword) {
-              $q->where('code', 'LIKE', "%{$keyword}%");
-          });
+                    ->orWhereHas('samples', function ($q) use ($keyword) {
+                        $q->where('code', 'LIKE', "%{$keyword}%");
+                    });
 
-    });
-})
+                });
+            })
             ->with(['samples' => function ($query){
                 $query->select('id','tsr_id');
                 $query->withCount([
@@ -141,6 +141,9 @@ class ViewClass
                 } else {
                     $query->where('status_id', $status);
                 }
+            })
+            ->when($request->subtype, function ($query,$subtype) {
+                $query->where('is_onsite', $subtype == 'On-site' ? 1 : 0);
             })
             ->when($request->datetype && $request->date, function ($query) use ($request) {
                 $query->whereDate($request->datetype, $request->date);
