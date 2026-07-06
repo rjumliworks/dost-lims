@@ -11,7 +11,13 @@
                             <div class="d-flex">
                                 <div style="width: 100%;">
                                     <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
-                                    <TextInput v-model="form.due_at" type="date" class="form-control" placeholder="Please enter email" @input="handleInput('due_at')" :light="true"/>
+                                    <!-- <TextInput v-model="form.due_at" type="date" class="form-control" placeholder="Please enter email" @input="handleInput('due_at')" :light="true"/> -->
+                                <flat-pickr
+                                placeholder="Select Date"
+    v-model="form.due_at"
+    :config="config"
+    class="form-control"
+/>
                                 </div>
                                 <div class="flex-shrink-0">
                                     <b-button @click="openCalendar()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1">
@@ -64,12 +70,14 @@
     <Calendar ref="calendar"/>
 </template>
 <script>
+import flatPickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
 import Calendar from './Calendar.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 export default {
-    components: { InputLabel, TextInput, Calendar },
+    components: { InputLabel, TextInput, Calendar, flatPickr },
     data(){
         return {
             currentUrl: window.location.origin,
@@ -81,13 +89,33 @@ export default {
                 industry: null,
                 option: 'Confirm'
             }),
+              config: {
+            dateFormat: "Y-m-d",
+            minDate: new Date().fp_incr(1)
+        },
             facility: null,
             keyword: null,
             confirm: false,
             showModal: false
         }
     },
+    created(){
+        this.fetch();
+    },
     methods: { 
+        fetch(){
+            axios.get('/tsrs',{
+                params : {
+                    option: 'schedules'
+                }
+            })
+            .then(response => {
+                if(response){
+                     this.config.disable = response.data;
+                }
+            })
+            .catch(err => console.log(err));
+        },
         show(reference,industry,facility){
             this.keyword = null;
             this.form.reference = reference;

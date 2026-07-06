@@ -42,6 +42,9 @@ class TsrController extends Controller
             case 'print':
                 return $this->view->print($request);
             break;
+            case 'schedules':
+                return $this->view->schedules($request);
+            break;
             default :
             return inertia('Modules/Major/Tsrs/Index',[
                 'dropdowns' => [

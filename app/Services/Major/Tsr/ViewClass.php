@@ -2,6 +2,8 @@
 
 namespace App\Services\Major\Tsr;
 
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Hashids\Hashids;
 use App\Models\UserRole;
 use App\Models\Tsr;
@@ -17,9 +19,29 @@ use App\Http\Resources\Major\Tsr\ViewResource;
 use App\Http\Resources\Major\Tsr\AnalysisResource;
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
+use App\Models\Schedule;
 
 class ViewClass
 {
+    public function schedules($request){
+         $dates = [];
+
+        $schedules = Schedule::where('is_closed', 1)->get();
+
+        foreach ($schedules as $schedule) {
+
+            $period = CarbonPeriod::create(
+                Carbon::parse($schedule->start),
+                Carbon::parse($schedule->end)
+            );
+
+            foreach ($period as $date) {
+                $dates[] = $date->format('Y-m-d');
+            }
+        }
+        return array_unique($dates);
+    }
+
     public function counts($statuses,$year){
         foreach($statuses as $status){
             if ($status['value'] == '2') {
