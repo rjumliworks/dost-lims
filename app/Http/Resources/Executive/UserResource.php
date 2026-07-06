@@ -15,7 +15,8 @@ class UserResource extends JsonResource
         $code = $hashids->encode($this->id);
 
         return [
-            'code' => $code,
+            'reference' => $code,
+            'code' => $this->code,
             'avatar' => $this->profile?->avatar,
             'name' => $this->profile->name,
             'fullname' => $this->profile->fullname,

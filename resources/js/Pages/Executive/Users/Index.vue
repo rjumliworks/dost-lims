@@ -93,6 +93,7 @@
                                     <th style="width: 10%;" class="text-center">Username</th>
                                     <th style="width: 10%;" class="text-center">Email</th>
                                     <th style="width: 10%;" class="text-center">Mobile</th>
+                                    <th style="width: 10%;" class="text-center">Code</th>
                                     <th style="width: 10%;" class="text-center">Status</th>
                                     <th style="width: 6%;"></th>
                                 </tr>
@@ -115,6 +116,7 @@
                                     </td>
                                     <td class="text-center">{{ list.username }}</td>
                                     <td class="text-center">{{ list.email }}</td>
+                                    <td class="text-center">{{ list.code }}</td>
                                     <td class="text-center">{{ list.mobile }}</td>
                                     <td class="text-center">
                                         <span v-if="list.is_active" class="badge bg-success">Active</span>
@@ -131,7 +133,7 @@
                                                         <i class="ri-more-fill"></i>
                                                     </template>
                                                     <li>
-                                                        <Link :href="`/users/${list.code}`" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <Link :href="`/users/${list.reference}`" class="dropdown-item d-flex align-items-center" role="button">
                                                             <i class="ri-eye-fill me-2"></i> View
                                                         </Link>
                                                     </li>
