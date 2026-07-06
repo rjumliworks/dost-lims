@@ -16,6 +16,7 @@ class Schedule extends Model
         'title',
         'is_forall',
         'is_allday',
+        'is_closed',
         'start',
         'end',
         'event_id',
