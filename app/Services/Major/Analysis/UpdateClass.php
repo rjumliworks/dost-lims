@@ -51,7 +51,7 @@ class UpdateClass
                 });
             })->whereIn('status_id',[10,11])->count();
             if($count === 0){
-                $tsr = Tsr::where('id',$tsr_id)->update(['status_id' => 4]); 
+                $tsr = Tsr::where('id',$tsr_id)->update(['status_id' => 4, 'requires_report' => $request->requires_report]); 
             }
 
             $count = TsrAnalysis::where('sample_id',$sample_id)->whereIn('status_id',[10,11])->count();

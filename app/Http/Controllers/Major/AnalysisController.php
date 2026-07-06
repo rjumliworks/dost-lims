@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Major;
 
+use Illuminate\Validation\Rule;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -31,6 +32,9 @@ class AnalysisController extends Controller
         switch($request->option){
             case 'testservices':
                 return $this->view->testservices($request);
+            break;
+            case 'check':
+                return $this->view->check($request);
             break;
             case 'tagging':
                 return $this->tagging->list($request);
@@ -76,7 +80,13 @@ class AnalysisController extends Controller
             'start_at' => ['required_if:option,start'],
             'end_at' => ['required_if:option,end'],
             'date' => ['required_if:option,group'],
-            'reason' => ['required_if:option,cancel']
+            'reason' => ['required_if:option,cancel'],
+            'requires_report' => [
+                Rule::requiredIf(fn () =>
+            $request->option === 'end' &&
+            (int) $request->total === 0
+        ),
+            ],
         ]);
         $result = $this->handleTransaction(function () use ($request) {
             switch($request->option){

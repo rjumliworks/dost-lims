@@ -2,6 +2,7 @@
 
 namespace App\Services\Major\Analysis;
 
+use App\Models\TsrAnalysis;
 use App\Models\SampleName;
 use App\Models\SampleType;
 use App\Models\Testservice;
@@ -9,6 +10,17 @@ use App\Http\Resources\Major\Analysis\TestserviceResource;
 
 class ViewClass
 {
+    public function check($request){
+        $tsr_id = $request->tsr_id;
+        $count = TsrAnalysis::whereHas('sample',function ($query) use ($tsr_id){
+            $query->whereHas('tsr',function ($query) use ($tsr_id){
+                $query->where('id',$tsr_id);
+            });
+        })->whereIn('status_id',[10,11])->count();
+
+        return $count;
+    }
+
     public function testservices($request){
         $keyword = $request->keyword;
         $type = $request->type;
