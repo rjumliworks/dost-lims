@@ -141,6 +141,7 @@ class UpdateClass
             $query->where('id',$id);
         })->get(); 
 
+       
         $groupedData = [];
         foreach ($samples as $row) {
             $sampleCode = $row['code'];
@@ -183,6 +184,7 @@ class UpdateClass
                 $groupedData[$key]["count"] += 1;
             }
         }
+    
         if(isset($tsr->services) && count($tsr->services)){
            foreach ($tsr->services as $item) {
                 $services[] = [
@@ -197,7 +199,9 @@ class UpdateClass
             $services = null;
         }
 
+     
         $samples = array_values($groupedData);
+        
 
         $descs = TsrSample::query()
         ->where('tsr_id',$id)

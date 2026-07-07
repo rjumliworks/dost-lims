@@ -276,24 +276,26 @@
                         {{number_format(trim(str_replace(',','',$sample['fee']),'₱ ')*$sample['count'],2,".",",")}}</td>
                 </tr>
                 @if(isset($sample['additional']))
-                <tr style="text-align: center; font-size: 9px; color: #072388;">
-                    <td colspan="4" style="text-align: left;">{{$sample['additional']['name']}}</td>
-                    <td>{{$sample['additional']['quantity']}}</td>
-                    <td style="text-align: right;">
-                        <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
-                            <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                            <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                            P
-                        </span>
-                        {{trim($sample['additional']['fee'],'₱ ')}}</td>
-                    <td style="text-align: right;">
-                        <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
-                            <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                            <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
-                            P
-                        </span>
-                        {{number_format(trim(str_replace(',','',$sample['additional']['fee']),'₱ ')*$sample['additional']['quantity'],2,".",",")}}</td>
-                </tr>
+                    @foreach($sample['additional'] as $additional)
+                        <tr style="text-align: center; font-size: 9px; color: #072388;">
+                            <td colspan="4" style="text-align: left;">{{$additional['name']}}</td>
+                            <td>{{$additional['quantity']}}</td>
+                            <td style="text-align: right;">
+                                <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                    <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                    <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                    P
+                                </span>
+                                {{trim($additional['fee'],'₱ ')}}</td>
+                            <td style="text-align: right;">
+                                <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                    <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                    <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                    P
+                                </span>
+                                {{number_format(trim(str_replace(',','',$additional['fee']),'₱ ')*$additional['quantity'],2,".",",")}}</td>
+                        </tr>
+                    @endforeach
                 @endif
             @endforeach
             @if(isset($tsr['services']) && is_array($tsr['services']))
