@@ -15,6 +15,7 @@ class SampleRequest extends FormRequest
     {
         if($this->option == 'edit'){
             return [
+                'category_id' => 'sometimes|required',
                 'sampletype_id' => 'sometimes|required',
                 'samplename_id' => 'sometimes|required',
                 'name' => 'nullable',
@@ -26,6 +27,39 @@ class SampleRequest extends FormRequest
             return [
                 'include_testservices' => 'required',
                  'count' => 'required|integer|min:1',
+            ];
+        }else if($this->option == 'create'){
+            return [
+                'category_id' => 'sometimes|required',
+                'sampletype_id' => 'sometimes|required',
+                'samplename_id' => 'sometimes|required',
+                'name' => 'nullable',
+                'customer_description' => 'sometimes|required',
+                'description' => 'nullable',
+                'tsr_id' => 'sometimes|required',
+            ];
+        }else{
+            return [];
+        }
+    }
+
+    public function messages()
+    {
+        if($this->option == 'create'){
+            return [
+                'category_id.required' => 'Please select a category',
+                'sampletype_id.required' => 'Please select a sample type',
+                'samplename_id.required' => 'Please select a sample name',
+                'customer_description.required' => 'Please enter the customer description',
+                'tsr_id.required' => 'Please select a Technical Service Request (TSR)',
+            ];
+        }else if($this->option == 'edit'){
+            return [
+                'category_id.required' => 'Please select a category',
+                'sampletype_id.required' => 'Please select a sample type',
+                'samplename_id.required' => 'Please select a sample name',
+                'customer_description.required' => 'Please enter the customer description',
+                'tsr_id.required' => 'Please select a Technical Service Request (TSR)',
             ];
         }else{
             return [];

@@ -62,7 +62,7 @@ class SampleController extends Controller
         ]);
     }
 
-    public function update(Request $request){
+    public function update(SampleRequest $request){
         $result = $this->handleTransaction(function () use ($request) {
             return $this->save->update($request);
         });

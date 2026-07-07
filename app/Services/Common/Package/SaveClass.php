@@ -13,7 +13,8 @@ class SaveClass
         if($data){
             foreach($request->lists as $list){
                 $data->testservices()->create([
-                    'testservice_id' => $list['id']
+                    'testservice_id' => $list['id'],
+                    'fee' => $list['fee']
                 ]);
             }
         }

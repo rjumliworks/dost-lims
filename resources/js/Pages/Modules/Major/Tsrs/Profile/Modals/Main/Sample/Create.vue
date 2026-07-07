@@ -33,9 +33,10 @@
                     <hr class="text-muted mt-0 mb-4"/>
                 </BCol>
                 <BCol lg="6" class="mt-n2 mb-3">
-                    <InputLabel for="testname" value="Category"/>
+                    <InputLabel for="testname" value="Category" :message="form.errors.category_id"/>
                     <!--  @search-change="checkCategory"  -->
                     <Multiselect
+                    @input="handleInput('category_id')"
                     :options="categories" label="name" :searchable="true" 
                     v-model="category" 
                     placeholder="Select Category" ref="multiselectC"/>
@@ -52,6 +53,7 @@
                 <BCol lg="6" class="mt-n2">
                     <InputLabel for="testname" value="Sample Name" :message="form.errors.samplename_id"/>
                     <Multiselect
+                    @input="handleInput('samplename_id')"
                     @search-change="fetchName" 
                     :options="names" label="name" :searchable="true" 
                     object
@@ -67,7 +69,7 @@
                 </BCol>
                 <BCol lg="6" class="mt-n1">
                     <InputLabel for="name" value="Description provided by customer"/>
-                    <Textarea id="name" v-model="form.customer_description" class="form-control" rows="5" :class="{ 'is-invalid': form.errors.customer_description }" :light="true"/>
+                    <Textarea id="name" @input="handleInput('customer_description')" v-model="form.customer_description" class="form-control" rows="5" :class="{ 'is-invalid': form.errors.customer_description }" :light="true"/>
                 </BCol>
                 <BCol lg="6" class="mt-n1">
                     <InputLabel for="name" value="Description based on the sample submitted"/>
@@ -114,7 +116,7 @@ export default {
                 tsr_id: null,
                 count: 1,
                 include_testservices: null,
-                option: null
+                option: 'create'
             }),
             action: null,
             category: null,
@@ -171,7 +173,9 @@ export default {
             if (!exists) {
                 this.types.push(newVal.sampletype);
             }
-
+            this.handleInput('samplename_id');
+            this.handleInput('sampletype_id');
+            this.handleInput('category_id');
             this.sampletype = newVal.sampletype;
             this.form.sampletype_id = newVal.sampletype.value;
         }

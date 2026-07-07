@@ -18,7 +18,7 @@ class PackageRequest extends FormRequest
                 'sampletype_id' => 'required',
                 'laboratory_id' => 'required',
                 'lists' => ['required', 'array', 'min:1'],
-                'lists.*' => ['required', 'integer'],
+                // 'lists.*' => ['required', 'integer'],
             ];
     }
 }
