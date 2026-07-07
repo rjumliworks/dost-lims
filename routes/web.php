@@ -67,6 +67,7 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
     Route::get('/inventory/stockout', [App\Http\Controllers\Others\InventoryController::class, 'stockOut']);
     Route::get('/inventory/checkout', [App\Http\Controllers\Others\InventoryController::class, 'checkout']);
     Route::resource('/inventory', App\Http\Controllers\Others\InventoryController::class);
+    Route::post('/wallet', [App\Http\Controllers\Finance\WalletController::class, 'store']);
 });
 
 Route::middleware(['role:Laboratory Analyst,Calibration Officer,Technical Manager,Laboratory Head'])->group(function () {
