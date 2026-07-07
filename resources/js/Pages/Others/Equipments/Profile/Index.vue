@@ -37,15 +37,13 @@
                         </div> -->
                         <div class="card-body bg-white rounded-bottom">
                             <div class="table-responsive table-card">
-                                <simplebar data-simplebar style="max-height: 500px;">
+                                <simplebar data-simplebar style="height: calc(100vh - 355px); overflow: auto;">
                                     <table class="table table-bordered table-nowrap align-middle mb-0">
                                         <thead class="table-primary thead-fixed">
                                             <tr class="fs-11">
                                                 <th colspan="5" class="text-center text-primary">Calibration / Maintance Logs</th>
                                             </tr>
-                                        </thead>
-                                        <thead class="table-light thead-fixed">
-                                            <tr class="fs-11">
+                                             <tr class="table-light fs-11">
                                                 <th style="width: 15%;" class="text-center">Type</th>
                                                 <th style="width: 15%;" class="text-center">Date</th>
                                                 <th style="width: 30%;" class="text-center">User</th>
@@ -53,7 +51,21 @@
                                                 <th style="width: 5%;"></th>
                                             </tr>
                                         </thead>
+                                       
                                         <tbody>
+                                             <tr v-if="equipment.data.logs.length == 0" style="height: calc(100vh - 440px);">
+                                                <td colspan="8" class="text-center">
+                                                    <div class="d-flex flex-column align-items-center py-4">
+                                                        <div class="avatar-md mb-3">
+                                                            <div class="avatar-title bg-light rounded-circle text-muted">
+                                                                <i class="ri-file-list-3-line fs-20"></i>
+                                                            </div>
+                                                        </div>
+                                                        <h5 class="mb-1 fs-14">No logs found</h5>
+                                                        <p class="text-muted mb-0 fs-12">Try adjusting your search or filter to find what you're looking for.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                             <tr class="fs-11" v-for="(list,index) in equipment.data.logs" v-bind:key="index">
                                                 <td class="text-center">
                                                     <span v-if="list.is_calibrated == 1" class="badge bg-success">Calibration</span>
@@ -66,11 +78,6 @@
                                                     <b-button  @click="openEdit(list,index)" variant="soft-warning" v-b-tooltip.hover title="Edit" size="sm">
                                                         <i class="ri-delete-bin-fill align-bottom"></i>
                                                     </b-button>
-                                                </td>
-                                            </tr>
-                                            <tr v-if="equipment.data.logs.length == 0">
-                                                <td colspan="4" class="text-center text-muted fs-10">
-                                                    No records found. There are no logs available for the calibration or maintenance of the equipment.
                                                 </td>
                                             </tr>
                                         </tbody>
