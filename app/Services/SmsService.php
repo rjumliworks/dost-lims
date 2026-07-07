@@ -16,8 +16,9 @@ class SmsService
             'recipient' => $to,
             'message' => $message,
             'title' => 'DOST-IX EULIMS Notification',
-            'via' => 'DOST-IX EULIMS v2'
+            'via' => 'DOST-IX EULIMS v3'
         );
+       
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 
         $result = curl_exec($ch);

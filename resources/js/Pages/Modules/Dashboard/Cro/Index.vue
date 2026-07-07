@@ -451,6 +451,18 @@
                         </div>
                         <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
                             <div class="card-body">
+                                <div v-if="schedules?.list?.length == 0" class="d-flex flex-column justify-content-center align-items-center text-center h-100 mt-n1">
+                                    <div class="mb-3" style="width: 50px; height: 50px;">
+                                        <div class="avatar-title bg-light rounded-circle text-muted">
+                                            <i class="ri-calendar-2-line fs-24"></i>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fs-11 mb-1">No upcoming schedules</h5>
+                                    <p class="fs-10 text-muted mb-0">
+                                        No schedules are planned for this week.
+                                    </p>
+                                </div>
                                 <ul class="list-group list-group-flush border-dashed mt-n2">
                                     <li class="list-group-item ps-0" v-for="(list,index) in schedules.list" v-bind:key="index">
                                         <div class="row align-items-center g-3">
@@ -495,9 +507,6 @@
                                     <h5 class="mb-0 fs-13"><span class="text-body">Personnel Status Monitoring</span></h5>
                                     <p class="text-muted text-truncate-two-lines fs-11"> Monitor personnel availability.</p>
                                 </div>
-                                <div class="flex-shrink-0">
-                                    <!-- <input type="date" v-model="date" placeholder="Search Request" class="form-control"> -->
-                                </div>
                             </div>
                         </div>
                         <div class="card-header p-0 border-0 bg-light-subtle">
@@ -518,32 +527,45 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                            <div class="card-body">
-                                <ul class="list-group list-group-flush border-dashed mt-n2">
-                                    <li class="list-group-item ps-0" v-for="(list,index) in personnels.list" v-bind:key="index">
+                            <div class="card-body h-100">
+                                <div v-if="personnels?.list?.length == 0" class="d-flex flex-column justify-content-center align-items-center text-center h-100 mt-n1">
+                                    <div class="mb-3" style="width: 50px; height: 50px;">
+                                        <div class="avatar-title bg-light rounded-circle text-muted">
+                                            <i class="ri-account-circle-line fs-24"></i>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fs-11 mb-1">No personnels found</h5>
+                                    <p class="fs-10 text-muted mb-0">
+                                        No personnel are currently away from the laboratory.
+                                    </p>
+                                </div>
+
+                                <ul v-else class="list-group list-group-flush border-dashed mt-n2">
+                                    <li
+                                        class="list-group-item ps-0"
+                                        v-for="(list,index) in personnels.list"
+                                        :key="index"
+                                    >
                                         <div class="row align-items-center g-3">
                                             <div class="col-auto">
-                                                <!-- <div class="avatar-sm p-1 py-2 h-auto rounded-3 material-shadow">
-                                                    <div class="text-center" >
-                                                        
-                                                        <h5 class="mb-0 fs-12" :class="list.event.color">{{ list.day }}</h5>
-                                                        <div class="fs-10" :class="list.event.color">{{ list.day_name }}</div>
-                                                    </div>
-                                                </div> -->
-                                                <img :src="list.avatar" alt="" class="rounded-circle avatar-xs material-shadow">
+                                                <img :src="list.avatar" class="rounded-circle avatar-xs material-shadow">
                                             </div>
                                             <div class="col">
-                                                <h5 class="fw-semibold text-primary mt-0 mb-0 fs-12">{{list.name}}</h5>
-                                                <p class="text-truncate fs-11 mb-0">{{list.schedules[0].event.name }} <span class="text-muted">({{ list.schedules[0].event.type }})</span></p>
+                                                <h5 class="fw-semibold text-primary mt-0 mb-0 fs-12">
+                                                    {{ list.name }}
+                                                </h5>
+                                                <p class="text-truncate fs-11 mb-0">
+                                                    {{ list.schedules[0].event.name }}
+                                                    <span class="text-muted">
+                                                        ({{ list.schedules[0].event.type }})
+                                                    </span>
+                                                </p>
                                             </div>
                                         </div>
                                     </li>
                                 </ul>
-                                <div v-if="schedules.list?.length == 0">
-                                    <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
-                                        <i class="ri-alert-line label-icon"></i>No upcoming schedules for this week
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>                                                
@@ -580,7 +602,19 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                            <div class="card-body">
+                            <div class="card-body h-100">
+                                <div v-if="wallets?.length == 0" class="d-flex flex-column justify-content-center align-items-center text-center h-100 mt-n1">
+                                    <div class="mb-3" style="width: 50px; height: 50px;">
+                                        <div class="avatar-title bg-light rounded-circle text-muted">
+                                            <i class="ri-wallet-2-line fs-24"></i>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="fs-11 mb-1">No wallets found</h5>
+                                    <p class="fs-10 text-muted mb-0">
+                                        There are no customer wallets to display.
+                                    </p>
+                                </div>
                                 <ul class="list-group list-group-flush border-dashed mt-n2">
                                     <li class="list-group-item ps-0" v-for="(list,index) in wallets" v-bind:key="index">
                                         <div class="d-flex">
