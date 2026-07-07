@@ -32,7 +32,7 @@
                             </b-col>
                             <b-col md="auto">
                                 <div class="hstack gap-1 flex-wrap">
-                                    <Link href="/inventory"><button type="button" class="btn py-0 fs-16 text-body">
+                                    <Link href="/equipments"><button type="button" class="btn py-0 fs-16 text-body">
                                         <i class="ri-share-line"></i>
                                     </button></Link>
                                 </div>
