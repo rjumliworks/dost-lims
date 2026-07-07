@@ -35,8 +35,22 @@ export default {
     },
     methods: { 
         show(form){
+            console.log(this.form);
             this.form = form;
             this.showModal = true;
+            this.check();
+        },
+         check(id){
+            axios.get('/analyses',{
+                params : {
+                    tsr_id: this.form.tsr_id,
+                    option: 'check'
+                }
+            })
+            .then(response => {
+                this.selected = response.data;
+            })
+            .catch(err => console.log(err));
         },
         submit(){
             this.form.put('/analyses/update',{

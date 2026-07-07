@@ -255,6 +255,7 @@ export default {
                 status_id: status,
                 start_at: null,
                 end_at: null,
+                requires_report: false,
                 option: type
             });
             this.$refs.save.show(this.form);
