@@ -8,9 +8,39 @@
                 <InputLabel v-if="form.option == 'start' && form.errors" value="Start Date" :message="form.errors.start_at"/>
                 <InputLabel v-if="form.option == 'end' && form.errors" value="End Date" :message="form.errors.end_at"/>
                 <input v-if="form.option == 'start'" type="date" class="form-control mb-2" v-model="form.start_at">
-                <input v-if="form.option == 'end'" type="date" class="form-control mb-2" v-model="form.end_at">
+                <input @input="handleInput('end_at')" v-if="form.option == 'end'" type="date" class="form-control mb-2" v-model="form.end_at">
                 <!-- <input ref="input" class="form-control" v-model="keyword" placeholder="Please type CONFIRM to continue." style="min-height: 38.4px !important; text-align: center;"> -->
-              
+              <div class="row g-2" v-if="selected == 1 && form.option == 'end'">
+                    <BCol lg="12">
+                        <hr class="text-muted mb-1"/>
+                    </BCol>
+                    <BCol lg="8" style="margin-top: 15px; margin-bottom: -12px;" class="fs-12" :class="(form.errors.requires_report) ? 'text-danger' : ''">Does this TSR require a test report?</BCol>
+                    <BCol lg="4" style="margin-top: 15px; margin-bottom: -12px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio mb-0">
+                                    <input type="radio" id="c1" @input="handleInput('requires_report')" class="custom-control-input me-2" :value="true" v-model="form.requires_report">
+                                    <label class="custom-control-label fw-normal fs-12" for="c1">Yes</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="custom-control custom-radio mb-0">
+                                    <input type="radio" id="c2" @input="handleInput('requires_report')" class="custom-control-input me-2" :value="false" v-model="form.requires_report">
+                                    <label class="custom-control-label fw-normal fs-12" for="c2">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </BCol>
+                    <BCol lg="12">
+                        <hr class="text-muted mb-n1"/>
+                    </BCol>
+                    <BCol lg="12">
+                       <div class="mt-2 fs-12 alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow" role="alert">
+                            <i class="ri-alert-line label-icon"></i>
+                            <strong>Note:</strong> If you select <strong>No</strong>, this TSR will not require a test report and will be excluded from the <strong>TSRs Without Reports</strong> count on the Monitoring page.
+                        </div>
+                    </BCol>
+                </div>
                 <div class="hstack gap-2 justify-content-center mt-4">
                     <button @click="hide" class="btn btn-light btn-md" type="button">
                         <div class="btn-content"> Close</div>
@@ -30,12 +60,12 @@ export default {
             currentUrl: window.location.origin,
             form: {},
             keyword: null,
-            showModal: false
+            showModal: false,
+            selected: null
         }
     },
     methods: { 
         show(form){
-            console.log(this.form);
             this.form = form;
             this.showModal = true;
             this.check();
@@ -60,6 +90,9 @@ export default {
                     this.hide();
                 },
             });
+        },
+        handleInput(field) {
+            this.form.errors[field] = false;
         },
         hide(){
             this.showModal = false;

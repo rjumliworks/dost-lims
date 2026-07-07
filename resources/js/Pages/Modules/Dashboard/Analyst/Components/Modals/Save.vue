@@ -59,7 +59,8 @@ export default {
             form: {},
             keyword: null,
             count: null,
-            showModal: false
+            showModal: false,
+            selected: null
         }
     },
     methods: { 
