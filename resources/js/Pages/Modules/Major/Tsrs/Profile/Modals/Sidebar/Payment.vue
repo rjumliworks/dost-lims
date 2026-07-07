@@ -121,7 +121,7 @@
                                         <td class="text-center fs-12">1</td>
                                         <td class="text-start">
                                             <span class="fw-medium fs-12">Laboratory Test Services</span>
-                                            <p class="text-muted fs-11 mb-0" style="margin-top: -3px;">Includes various laboratory analyses conducted as requested by the client</p>
+                                            <p class="text-muted fs-11 mb-0" style="margin-top: -3px;">Includes various laboratory analyses conducted as requested by the client.</p>
                                         </td>
                                         <td class="text-end">{{formatMoney(total)}}</td>
                                     </tr>
@@ -129,21 +129,25 @@
                                         <td class="text-center fs-12">2</td>
                                         <td class="text-start">
                                             <span class="fw-medium fs-12">{{list.service.name}}</span>
-                                            <p class="text-muted fs-11 mb-0" style="margin-top: -3px;">{{list.service.description}}</p>
+                                            <p class="text-muted fs-11 mb-0" style="margin-top: -3px;">{{list.service.description}}.</p>
                                         </td>
                                         <td class="text-end">{{list.total}}</td>
                                     </tr>
-                                    <tr class="bg-light-subtle">
+                                    <tr class="summary-row bg-light-subtle">
                                         <td></td>
                                         <td class="fs-12 fw-semibold text-end">Sub Total</td>
                                         <td class="text-end">{{selected.subtotal}}</td>
                                     </tr>
-                                    <tr class="bg-light-subtle">
+                                    <tr class="summary-row bg-light-subtle">
                                         <td></td>
                                         <td class="fs-12 fw-semibold text-end">Discount <small v-if="selected.discounted.name != 'Regular'" class="text-muted">({{selected.discounted.name}})</small></td>
                                         <td class="text-end">{{selected.discount}}</td>
                                     </tr>
-                                    
+                                    <tr class="summary-row bg-light-subtle" v-if="selected.deduction">
+                                        <td></td>
+                                        <td class="fs-12 fw-semibold text-end">E-Wallet</td>
+                                        <td class="text-end">{{selected.deduction.amount}}</td>
+                                    </tr>
                                     <tr class="border-top border-top-dashed bg-primary fs-13">
                                         <th></th>
                                         <th class="fs-12 fw-semibold text-white text-end">Total Amount</th>
@@ -204,3 +208,10 @@ export default {
     }
 }
 </script>
+<style scoped>
+.summary-row td,
+.summary-row th {
+    padding-top: .60rem;
+    padding-bottom: .60rem;
+}
+</style>

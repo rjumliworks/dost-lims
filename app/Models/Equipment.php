@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Hashids\Hashids;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
@@ -30,7 +32,6 @@ class Equipment extends Model
     {
         return (new Hashids('krad', 10))->encode($this->id);
     }
-
 
     public function agency()
     {
@@ -82,6 +83,28 @@ class Equipment extends Model
         }
         return false;
     }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('agency', function (Builder $builder) {
+            $agencyId = Auth::user()->profile?->agency_id;
+            if (! $agencyId) {
+                abort(403, 'User has no agency assigned.');
+            }
+
+            $builder->where('agency_id', $agencyId);
+        });
+
+        static::creating(function ($model) {
+            if (Auth::check()) {
+                $user = Auth::user();
+                if (empty($model->agency_id)) {
+                    $model->agency_id = $user->profile?->agency_id;
+                }
+            }
+        });
+    }
+
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()

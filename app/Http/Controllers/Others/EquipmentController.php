@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Others;
 
+use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Http\Requests\Others\EquipmentRequest;
 use App\Services\Others\Equipments\SaveClass;
 use App\Services\Others\Equipments\ViewClass;
 
 class EquipmentController extends Controller
 {
+    use HandlesTransaction;
+
     protected ViewClass $view;
     protected SaveClass $save;
     protected DropdownClass $dropdown;
@@ -43,6 +47,23 @@ class EquipmentController extends Controller
         }
     }
 
+    public function store(EquipmentRequest $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            if($request->option == 'perform'){
+                return $this->save->perform($request);
+            }else{
+                return $this->save->save($request);
+            }
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
     public function show($id){
         $item = $this->view->view($id);
         return inertia('Others/Equipments/Profile/Index',[
@@ -52,6 +73,20 @@ class EquipmentController extends Controller
                 'suppliers' => $this->dropdown->suppliers(),
                 'units' => $this->dropdown->dropdowns('Inventory','Unit'),
             ],
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $result = $this->handleTransaction(function () use ($id){
+            return $this->save->delete($id);
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
         ]);
     }
 }
