@@ -104,16 +104,20 @@ class UpdateClass
     }
 
      private function updateTotal($id){
-        $data = TsrPayment::with('discounted')->where('tsr_id',$id)->first();
+        $data = TsrPayment::with('discounted','deduction')->where('tsr_id',$id)->first();
         $subtotal = (float) trim(str_replace(',','',$data->subtotal),'₱ ');
+        $deduction = 0;
+        if($data->deduction){
+            $deduction = (float) trim(str_replace(',','',$data->deduction->amount),'₱ ');
+        }
         if($data->discount_id === 1){
             $discount = 0;
             $subtotal = $subtotal;
-            $total = $subtotal;
+            $total = $subtotal - $deduction;
         }else{
             $subtotal = $subtotal; 
             $discount = (float) (($data->discounted->value/100) * $subtotal);
-            $total =  ((float) $subtotal - (float) $discount);
+            $total =  (((float) $subtotal - (float) $discount) - $deduction);
         }
         $data->subtotal = $subtotal;
         $data->discount = $discount;

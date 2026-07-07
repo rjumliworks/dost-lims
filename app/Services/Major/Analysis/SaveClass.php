@@ -69,6 +69,7 @@ class SaveClass
                 $discount = (float) (($payment->discounted->value/100) * $subtotal);
                 $total =  ((float) $subtotal - (float) $discount);
             }
+
             $payment->subtotal = $subtotal;
             $payment->discount = $discount;
             $payment->total = $total;
@@ -179,14 +180,16 @@ class SaveClass
         $data = TsrPayment::with('discounted')->where('tsr_id',$id)->first();
         $fee = (float) trim(str_replace(',','',$fee),'₱ ');
         $subtotal = (float) trim(str_replace(',','',$data->subtotal),'₱ ');
+        $total = (float) trim(str_replace(',','',$data->total),'₱ ');
         if($data->discount_id === 1){
             $discount = 0;
             $subtotal = $subtotal + $fee;
-            $total = $subtotal;
+            $total = $total + $fee;
         }else{
             $subtotal = $subtotal + $fee;
+            $total = $total + $fee;
             $discount = (float) (($data->discounted->value/100) * $subtotal);
-            $total =  ((float) $subtotal - (float) $discount);
+            $total =  ((float) $total - (float) $discount);
         }
         $data->subtotal = $subtotal;
         $data->discount = $discount;
