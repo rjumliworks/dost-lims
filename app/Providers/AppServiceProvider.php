@@ -32,17 +32,43 @@ class AppServiceProvider extends ServiceProvider
         );
 
         if (App::environment('production')) {
-            Artisan::command('migrate:fresh', function () {
-                $this->error('-');
+
+         foreach ([
+            'migrate:fresh',
+            'db:wipe',
+            'db:seed',
+            'migrate:refresh',
+            'migrate:reset',
+            'migrate:rollback',
+            'migrate:customers',
+            'migrate:tsrs',
+            'migrate:finance'
+        ] as $command) {
+
+            Artisan::command($command, function () use ($command) {
+                $this->error("The [$command] command is disabled in production.");
             });
 
-            Artisan::command('db:wipe', function () {
-                $this->error('-');
-            });
+        }
+            // Artisan::command('migrate:fresh', function () {
+            //     $this->error('-');
+            // });
 
-            Artisan::command('migrate:fresh --seed', function () {
-                $this->error('-');
-            });
+            // Artisan::command('db:wipe', function () {
+            //     $this->error('-');
+            // });
+
+            // Artisan::command('migrate:fresh --seed', function () {
+            //     $this->error('-');
+            // });
+
+            // Artisan::command('migrate:customers', function () {
+            //     $this->error('-');
+            // });
+
+            // Artisan::command('migrate:tsrs', function () {
+            //     $this->error('-');
+            // });
         }
     }
 }
