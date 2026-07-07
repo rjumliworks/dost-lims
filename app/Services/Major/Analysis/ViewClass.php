@@ -2,10 +2,12 @@
 
 namespace App\Services\Major\Analysis;
 
+use App\Models\Package;
 use App\Models\TsrAnalysis;
 use App\Models\SampleName;
 use App\Models\SampleType;
 use App\Models\Testservice;
+use App\Http\Resources\Common\Package\IndexResource;
 use App\Http\Resources\Major\Analysis\TestserviceResource;
 
 class ViewClass
@@ -25,7 +27,14 @@ class ViewClass
         $keyword = $request->keyword;
         $type = $request->type;
         
-        if($type == 'Tagged to Sample'){
+        if($type == 'Packages'){
+            $data = Package::with('testservices.testservice.method.method','testservices.testservice.method.reference','testservices.testservice.testname')
+            ->where('laboratory_id', $request->laboratory_id)
+            ->where('is_active', 1)
+            ->get();
+
+            return IndexResource::collection($data);
+        }else if($type == 'Tagged to Sample'){
             $sampletypes = $request->sampletypes;
             
             if(count($sampletypes) > 0){

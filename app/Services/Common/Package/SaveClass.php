@@ -14,7 +14,7 @@ class SaveClass
             foreach($request->lists as $list){
                 $data->testservices()->create([
                     'testservice_id' => $list['id'],
-                    'fee' => $list['fee']
+                    'fee' => trim(str_replace(',','',$list['fee']),'₱ ')
                 ]);
             }
         }

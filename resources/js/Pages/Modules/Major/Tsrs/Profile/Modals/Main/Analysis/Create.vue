@@ -65,7 +65,7 @@
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                             <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 40%;">
-                            <Multiselect class="white" @search-change="checkSearchSample" :can-clear="false" :can-deselect="false" style="width: 45%;" :options="['Tagged to Sample','Not Tagged to Sample']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
+                            <Multiselect class="white" @search-change="checkSearchSample" :can-clear="false" :can-deselect="false" style="width: 45%;" :options="['Tagged to Sample','Not Tagged to Sample','Packages']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
                             <b-button type="button" variant="primary">
                                 <i class="ri-search-eye-line align-bottom me-1"></i> 
                             </b-button>
@@ -75,7 +75,21 @@
             </div>
             <div class="col-md-12 mt-3">
                 <simplebar data-simplebar style="max-height: 200px">
-                    <div>
+                    <div v-if="filter.type == 'Packages'">
+                        <table class="table table-centered table-bordered table-nowrap mb-0">
+                            <tbody>
+                                <tr class="align-middle" v-for="(list,index) in packages" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
+                                    <td style="width: 7%;" class="text-center"> 
+                                        <input class="form-check-input me-1" type="checkbox" :checked="isItemChecked(list.id)" @change="toggleChecked(list,$event)">
+                                    </td>
+                                    <td style="width: 25%;" class="text-center fs-11">{{list.name}}</td>
+                                    <td style="width: 25%;" class="text-center fs-11">{{list.testservices.length}} test services</td>
+                                    <td style="width: 25%;" class="text-center fs-11">{{ formatMoney(totalFees(list.testservices)) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div v-else>
                         <table class="table table-centered table-bordered table-nowrap mb-0">
                             <tbody>
                                 <tr class="align-middle" v-for="(list,index) in sortedTestservices" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
@@ -126,6 +140,7 @@ export default {
             checkedItems: [],
             sampletypes: [],
             samplenames: [],
+            packages: [],
             type: null,
             showModal: false
         }
@@ -158,8 +173,44 @@ export default {
         },
     },
     methods: { 
+        totalFees(testservices) {
+            return testservices.reduce((total, item) => {
+                return total + Number(String(item.fee).replace(/,/g, '').replace('₱', ''));
+            }, 0);
+        },
         toggleChecked(item, event) {
             const isChecked = event.target.checked;
+
+            if (this.filter.type === 'Packages') {
+                if (isChecked) {
+                    item.testservices.forEach(service => {
+                        if (!this.checkedItems.some(i => i.id === service.id)) {
+                            this.checkedItems.push(service);
+
+                            const index = this.testservices.findIndex(t => t.id === service.id);
+                            if (index !== -1) {
+                                this.testservices.splice(index, 1);
+                            }
+                        }
+                    });
+                } else {
+                    item.testservices.forEach(service => {
+                        const index = this.checkedItems.findIndex(i => i.id === service.id);
+
+                        if (index !== -1) {
+                            const removed = this.checkedItems[index];
+                            this.checkedItems.splice(index, 1);
+
+                            if (!this.testservices.some(t => t.id === removed.id)) {
+                                this.testservices.push(removed);
+                            }
+                        }
+                    });
+                }
+
+                return;
+            }
+
             const itemId = item.id;
 
             if (isChecked) {
@@ -184,7 +235,13 @@ export default {
             }
         },
         isItemChecked(item) {
-            return this.checkedItems.some(checkedItem => checkedItem.id === item);
+             if (this.filter.type === 'Packages') {
+                return item.testservices.every(service =>
+                    this.checkedItems.some(i => i.id === service.id)
+                );
+            }
+
+            return this.checkedItems.some(i => i.id === item);
         },
         openDeleteTest(data) {
             const index = this.checkedItems.findIndex(item => item.id === data.id);
@@ -225,7 +282,11 @@ export default {
                 }
             })
             .then(response => {
-                this.testservices = response.data.data;
+                if(this.filter.type == 'Packages'){
+                    this.packages = response.data.data;
+                }else{
+                    this.testservices = response.data.data;
+                }
             })
             .catch(err => console.log(err));
         },
@@ -238,6 +299,10 @@ export default {
                     this.hide();
                 },
             });
+        },
+         formatMoney(value) {
+            let val = (value/1).toFixed(2).replace(',', '.')
+            return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         hide(){
             this.checkedItems = [];

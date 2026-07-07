@@ -16,6 +16,7 @@ class IndexResource extends JsonResource
         return [
             'code' => $code,
             'id' => $this->id,
+            'fee' => $this->fee,
             'name' => $this->name,
             'laboratory' => $this->laboratory,
             'testservices' => ListResource::collection($this->testservices),

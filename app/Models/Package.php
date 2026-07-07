@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends Model
 {
     protected $fillable = [
-        'name','laboratory_id','is_active'
+        'fee','name','sampletype_id','laboratory_id','is_active'
     ];
 
     protected static function booted()

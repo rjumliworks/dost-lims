@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PackageTestservice extends Model
 {
     protected $fillable = [
-        'testservice_id','package_id'
+        'fee','testservice_id','package_id'
     ];
 
     public function package()
