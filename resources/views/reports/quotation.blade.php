@@ -191,7 +191,7 @@
                         <th style="vertical-align: middle;" width="20%">Sample</th>
                         <th style="vertical-align: middle;" width="25%">Test/Calibration Requested</th>
                         <th style="vertical-align: middle;" width="25%">Test/Calibration Method</th>
-                        <th style="vertical-align: middle;" width="10%">No. of Samples</th>
+                        <th style="vertical-align: middle;" width="10%">No. of Sample/s</th>
                         <th style="vertical-align: middle;" width="10%">Unit Cost</th>
                         <th style="vertical-align: middle;" width="10%">Total</th>
                     </tr>
@@ -199,7 +199,11 @@
                 <tbody>
                 @foreach($group as $index=>$sample)
                     <tr style="text-align: center; font-size: 9px; color: #072388;">
-                        <td style="text-align: left;">{{$sample['samplename']}}</td>
+                        <td>{{$sample['samplename']}}
+                              @if(isset($sample['sampletype']) && $sample['sampletype'] != '-')
+                                    <br/><span style="color: #5f5f5f; font-size: 8px;"> ({{$sample['sampletype']}})</span>
+                                @endif
+                        </td>
                         <td>{{$sample['testname']}}</td>
                          <td>{{(isset($sample['methodShort'])) ? $sample['methodShort'] : $sample['method']}}</td>
                         <td>{{$sample['count']}}</td>
