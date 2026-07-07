@@ -22,7 +22,7 @@ class IndexResource extends JsonResource
             'acquired_at' => ($this->info->acquired_at) ? $this->info->acquired_at : '-',
             'calibration_due' => ($this->calibration_due) ? $this->calibration_due : '-',
             'maintenance_due' => ($this->maintenance_due) ? $this->maintenance_due : '-',
-            'logs' => LogsResource::collection($this->logs),
+            'logs' => LogsResource::collection($this->logs->sortByDesc('date')->values()),
             'last_calibration' => ($this->last_calibration) ? $this->last_calibration : '-',
             'last_maintenance' => ($this->last_maintenance) ? $this->last_maintenance : '-',
             'calibration_program' => $this->calibration_program,
