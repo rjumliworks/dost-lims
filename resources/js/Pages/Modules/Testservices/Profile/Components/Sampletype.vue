@@ -5,6 +5,7 @@
                 <tr class="fs-10">
                     <th style="width: 4%;"></th>
                     <th>Name</th>
+                    <th class="text-center" style="width: 30%;">Type</th>
                     <th class="text-end" style="width: 5%;"></th>
                 </tr>
             </thead>
@@ -17,6 +18,7 @@
                         <h5 class="fs-12 mb-0">{{list.sampleable.name}}</h5>
                         <!-- <p class="text-muted mb-0">{{list.code}}</p> -->
                     </td>
+                    <td class="text-center">{{ (list.sampleable_type == 'App\\Models\\SampleType') ? 'Sample Type' : 'Sample Name'  }}</td>
                     <td class="text-end">
                         <b-button @click="openDelete(list)" class="mt-n1 mb-n1" variant="soft-danger" v-b-tooltip.hover title="Delete " size="sm">
                             <i class="ri-delete-bin-fill align-bottom"></i>

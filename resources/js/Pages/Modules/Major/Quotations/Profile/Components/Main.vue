@@ -258,6 +258,7 @@ export default {
                         id: item.id,
                         category: item.category,
                         sampletype: item.sampletype,
+                        samplename: item.samplename
                     }));
             }
         }
