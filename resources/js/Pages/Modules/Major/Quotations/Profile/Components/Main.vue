@@ -30,7 +30,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                  <input type="text" placeholder="Search Sample" class="form-control" style="width: 40%;">
-                                <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="addAddons()" class="input-group-text fs-12" v-b-tooltip.hover title="Add Service" style="cursor: pointer;"> 
+                                <span v-if="selected.status.name == 'Pending' && selected.laboratory.name == 'Metrology Laboratory'" @click="addAddons()" class="input-group-text fs-12" v-b-tooltip.hover title="Add Service" style="cursor: pointer;"> 
                                     <i class="ri-add-circle-fill text-primary search-icon me-1"></i>Add-ons
                                 </span>
                                 <span v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="addService()" class="input-group-text fs-12" v-b-tooltip.hover title="Add Analysis" style="cursor: pointer;"> 
