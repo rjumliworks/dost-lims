@@ -127,6 +127,7 @@ export default {
             selected: {},
             checkedItems: [],
             sampletypes: [],
+            samplenames: [],
             type: null,
             showModal: false
         }
@@ -202,6 +203,7 @@ export default {
             this.form.samples = data.map(item => item.id);
             this.selected = data.map(item => item.sampletype.id);
             this.sampletypes = data.map(item => item.sampletype.id);
+            this.samplenames = data.map(item => item.samplename.id);
             this.form.laboratory_id = laboratory;
             this.fetchTest();
             this.showModal = true;
@@ -218,6 +220,7 @@ export default {
                     option: 'testservices',
                     laboratory_id: this.form.laboratory_id,
                     sampletypes: this.sampletypes,
+                    samplenames: this.samplenames,
                     ids: this.checkedItems.map(item => item.id),
                     keyword: this.filter.keyword,
                     type: this.filter.type,
