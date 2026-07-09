@@ -11,7 +11,7 @@ class OpOrExport implements FromView
     protected $month,$year,$laboratory;
 
     function __construct($month,$year,$laboratory) {
-        $this->month = $month;
+        $this->month = 6;
         $this->year = $year;
         $this->laboratory = $laboratory;
     }
