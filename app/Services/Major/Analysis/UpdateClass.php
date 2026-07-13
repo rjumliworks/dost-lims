@@ -214,7 +214,7 @@ class UpdateClass
                             'wallet_id' => $wallet->id
                         ]);
                         \DB::commit();  
-                        Artisan::call('tsr:report', [
+                        Artisan::call('report', [
                             'id' => $request->tsr_id,
                         ]);
                     }else{
@@ -236,6 +236,9 @@ class UpdateClass
                             'wallet_id' => $wallet->id
                         ]);
                         \DB::commit();  
+                        Artisan::call('report', [
+                            'id' => $request->tsr_id,
+                        ]);
                     }else{
                         $data = 'error';
                         \DB::rollback();

@@ -48,7 +48,7 @@ class ViewClass
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
             ->with('payment:tsr_id,id,total,subtotal,discount,or_number,is_paid,paid_at,status_id','payment.status:id,name,color,others')
             ->whereHas('payment',function ($query){
-                $query->where('is_paid', 0)->where('payment_id',null)->where('collection_id',null)->whereIn('status_id',[6,18]);
+                $query->where('is_paid', 0)->where('payment_id',null)->where('collection_id',null)->whereIn('status_id',[6,18,45]);
             })
             ->whereIn('status_id',[2,3,4])
             ->whereIn('customer_id',$request->customer_id)

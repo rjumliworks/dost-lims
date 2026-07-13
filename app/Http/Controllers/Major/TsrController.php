@@ -101,7 +101,10 @@ class TsrController extends Controller
                 break;  
                 case 'referral':
                     return $this->update->referral($request);
-                break;      
+                break;   
+                case 'Paid':
+                    return $this->update->paid($request);
+                break;
             }      
         });   
         return back()->with([

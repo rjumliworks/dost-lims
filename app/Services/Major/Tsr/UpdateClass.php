@@ -11,6 +11,21 @@ use App\Models\TsrReferral;
 
 class UpdateClass
 {
+    public function paid($request){
+        $tsr_id = $request->id;
+        $data = Tsr::find($tsr_id);
+        $data->status_id = $request->status_id;
+        if($data->save()){
+           TsrPayment::where('tsr_id',$tsr_id)->update(['status_id' => 45]);
+        }
+
+        return [
+            'data' => $data,
+            'message' => 'Payment Status Updated',
+            'info' => 'The TSR has been successfully marked as paid. Its status is now Ongoing, and analysts can begin processing and tagging the analyses.',
+        ];
+    }
+
     public function cancel($request){
         $tsr_id = $request->id;
         $data = Tsr::find($tsr_id);

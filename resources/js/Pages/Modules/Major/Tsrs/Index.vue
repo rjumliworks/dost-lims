@@ -133,6 +133,7 @@
                                         <i v-if="list.payment.is_paid" class="ri-checkbox-circle-fill text-success fs-18" v-b-tooltip.hover :title="list.payment.status.name"></i>
                                         <i v-else-if="list.payment.is_free" class="ri-checkbox-circle-fill text-info fs-18" v-b-tooltip.hover title="Gratis"></i>
                                         <i v-else-if="list.payment.status.name == 'Contract'" class="ri-information-fill text-warning fs-18" v-b-tooltip.hover title="Contract w/ MOA"></i>
+                                        <i v-else-if="list.payment.status.name == 'Online'" class="ri-information-fill text-warning fs-18" v-b-tooltip.hover title="Online Payment"></i>
                                         <i v-else class="ri-close-circle-fill text-danger fs-18" v-b-tooltip.hover :title="list.payment.status.name"></i>
                                     </td>
                                     <td class="text-center fs-12">{{list.created_at}}</td>
@@ -144,6 +145,9 @@
                                         <span :class="'badge '+list.status.color">{{list.status.name}}</span>
                                     </td>
                                     <td class="text-end">
+                                        <b-button @click="openPaid(list.customer,list.code,list.reference,index)" v-if="list.status.name == 'For Payment'" variant="danger" class="me-1" v-b-tooltip.hover title="Mark as Paid" size="sm">
+                                            <i class="ri-hand-coin-fill align-bottom"></i>
+                                        </b-button>
                                         <a :href="`/tsrs/${list.reference}`" target="_blank">
                                             <b-button :variant="(filter.status) ? 'soft-info' : 'info'"  class="me-1" v-b-tooltip.hover title="View" size="sm">
                                                 <i class="ri-eye-fill align-bottom"></i>
@@ -199,10 +203,12 @@
     <Filter @submit="handleSubmit" :regions="dropdowns.regions" :region="region" ref="filter"/>
     <Edit @update="updateData" :dropdowns="dropdowns" ref="edit"/>
     <Cancel @update="updateData" ref="cancel"/>
+    <Paid ref="paid"/>
     <Create :dropdowns="dropdowns" :facility="facility" @success="moveTo" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
+import Paid from './Modals/Paid.vue';
 import Edit from './Modals/Edit.vue';
 import Cancel from './Modals/Cancel.vue';
 import Create from './Modals/Create.vue';
@@ -211,7 +217,7 @@ import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create, Cancel, Edit, Filter },
+    components: { PageHeader, Pagination, Multiselect, Create, Cancel, Edit, Filter, Paid },
     props: ['dropdowns','region','facility','years'],
     data(){
         return {
@@ -377,6 +383,10 @@ export default {
         openEdit(data,index){
             this.index = index;
             this.$refs.edit.show(data);
+        },
+        openPaid(customer,code,reference,index){
+            this.index = index;
+            this.$refs.paid.show(customer,code,reference);
         },
         openPrint(id){
             window.open('/tsrs?option=print&id='+id);

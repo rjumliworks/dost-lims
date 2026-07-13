@@ -9,7 +9,7 @@ use Illuminate\Console\Command;
 
 class GenerateTsrReport extends Command
 {
-    protected $signature = 'app:generate-tsr-report';
+    protected $signature = 'report {id}';
     protected $description = 'Command description';
 
     public function handle()
