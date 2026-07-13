@@ -213,7 +213,7 @@ export default {
                 customer: null,
                 conforme: null,
                 users: [],
-                is_closed: null
+                is_closed: false
             }),
             timeConfig: {
                 enableTime: true,
