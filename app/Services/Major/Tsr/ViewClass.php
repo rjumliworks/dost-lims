@@ -50,7 +50,7 @@ class ViewClass
                           ->orWhere(function ($query) {
                               $query->whereIn('status_id', [3, 4])
                                     ->whereHas('payment', function ($query) {
-                                        $query->where('status_id', 18);
+                                        $query->whereIn('status_id', [18,45]);
                                     });
                           });
                 })
@@ -134,7 +134,7 @@ class ViewClass
                               ->orWhere(function ($query) {
                                   $query->whereIn('status_id', [3,4]) 
                                         ->whereHas('payment', function ($query) {
-                                            $query->where('status_id', 18);
+                                            $query->whereIn('status_id', [18,45]);
                                         });
                               });
                     });
