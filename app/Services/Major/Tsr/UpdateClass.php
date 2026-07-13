@@ -117,7 +117,7 @@ class UpdateClass
         }else{
             $subtotal = $subtotal; 
             $discount = (float) (($data->discounted->value/100) * $subtotal);
-            $total =  (((float) $subtotal - (float) $discount) - $deduction);
+            $total =  ((float) $subtotal - (($data->discounted->value == 100) ? 0 : (float) $discount));
         }
         $data->subtotal = $subtotal;
         $data->discount = $discount;
