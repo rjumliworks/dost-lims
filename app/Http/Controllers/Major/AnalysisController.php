@@ -102,9 +102,9 @@ class AnalysisController extends Controller
                 case 'group':
                     return $this->update->group($request);
                 break;
-                // case 'cancel':
-                //     return $this->update->cancel($request);
-                // break;
+                case 'cancel':
+                    return $this->update->cancel($request);
+                break;
                 // case 'delete':
                 //     return $this->save->removeService($request);
                 // break;

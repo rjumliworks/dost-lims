@@ -164,22 +164,25 @@
                 </table>
             </simplebar>
         </div>
+     
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Close</b-button>
             <b-button v-if="status == 'Ongoing' && selected.status.name == 'Pending' && selected.is_refunded == 0" @click="openCancel(selected,'refund')" variant="success" block>Refund</b-button>
             <b-button v-if="status == 'Ongoing' && selected.status.name == 'Pending' && selected.is_refunded == 0" @click="openCancel(selected,'cancel')" variant="danger" block>Cancel</b-button>
         </template>
     </b-modal>
+     <Cancel @success="hide()" ref="cancel"/>
     <AdditionalView @success="updateAdditional" ref="additionalview"/>
 </template>
 <script>
 import simplebar from "simplebar-vue";
+import Cancel from './Cancel.vue';
 import AdditionalView from "./AdditionalRemove.vue";
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
     props: ['status','customer','id'],
-    components : { InputLabel, TextInput, simplebar, AdditionalView }, 
+    components : { InputLabel, TextInput, simplebar, AdditionalView, Cancel }, 
     data(){
         return {
             currentUrl: window.location.origin,

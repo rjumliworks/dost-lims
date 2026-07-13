@@ -207,7 +207,7 @@
     <AddAnalysis @success="mark = false" ref="analysis"/>
     <RemoveAnalysis ref="removeanalysis"/>
     <AdditionalAnalysis ref="additionalanalysis"/>
-    <ViewAnalysis ref="viewanalysis"/>
+    <ViewAnalysis :status="selected.status.name" :customer="selected.customer.id" :id="selected.id" ref="viewanalysis"/>
     <Service :selected="selected.services" :services="services" ref="service"/>
 </template>
 <script>

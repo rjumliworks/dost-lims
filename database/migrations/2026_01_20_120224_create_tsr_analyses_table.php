@@ -15,6 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->decimal('fee',12,2);
+            $table->boolean('is_refunded')->default(0);
             $table->unsignedTinyInteger('status_id');
             $table->foreign('status_id')->references('id')->on('list_statuses')->onDelete('cascade');
             $table->unsignedInteger('testservice_id');

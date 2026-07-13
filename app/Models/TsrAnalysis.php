@@ -11,7 +11,7 @@ class TsrAnalysis extends Model
     use LogsActivity;
 
     protected $fillable = [
-        'status_id','sample_id','testservice_id','fee','assigned_to','started_by','ended_by','start_at','end_at'
+        'is_refunded','status_id','sample_id','testservice_id','fee','assigned_to','started_by','ended_by','start_at','end_at'
     ];
 
     public function status(){ return $this->belongsTo('App\Models\ListStatus', 'status_id', 'id'); }

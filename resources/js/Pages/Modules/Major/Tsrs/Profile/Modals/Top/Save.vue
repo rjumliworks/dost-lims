@@ -111,7 +111,7 @@ export default {
             })
             .then(response => {
                 if(response){
-                     this.config.disable = response.data;
+                    this.config.disable = Object.values(response.data);
                 }
             })
             .catch(err => console.log(err));
