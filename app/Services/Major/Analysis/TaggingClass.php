@@ -20,7 +20,10 @@ class TaggingClass
             'analyses.testservice.method.method',
             'report'
             )
-        ->where('id',$request->id)->first();
+            ->withWhereHas('analyses', function ($q) {
+                $q->whereNotIn('status_id', [13, 44]);
+            })
+            ->where('id',$request->id)->first();
         if (!$data) {
             return null;
         }
@@ -166,7 +169,7 @@ class TaggingClass
             return $this->baseQuery($request)
                 ->withWhereHas('analyses', fn($q) => $q->where('status_id', $statusId))
                 ->withCount([
-                    'analyses as analyses_count' => fn($q) => $q->where('status_id','!=',13),
+                    'analyses as analyses_count' => fn($q) => $q->whereNotIn('status_id',[13,44]),
                     'analyses as pending_analyses_count' => fn($q) => $q->where('status_id',10),
                     'analyses as ongoing_analyses_count' => fn($q) => $q->where('status_id',11),
                     'analyses as completed_analyses_count' => fn($q) => $q->where('status_id',12),
@@ -235,7 +238,7 @@ class TaggingClass
             $query->where('status_id', 12);
         })
         ->withCount([
-            'analyses as analyses_count' => fn($q) => $q->where('status_id','!=',13),
+            'analyses as analyses_count' => fn($q) => $q->whereNotIn('status_id',[13,44]),
             'analyses as pending_analyses_count' => fn($q) => $q->where('status_id',10),
             'analyses as ongoing_analyses_count' => fn($q) => $q->where('status_id',11),
             'analyses as completed_analyses_count' => fn($q) => $q->where('status_id',12),

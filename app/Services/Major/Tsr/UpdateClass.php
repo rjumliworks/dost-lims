@@ -67,7 +67,7 @@ class UpdateClass
                             'paid_at' => now(),
                             'is_free' => 1
                         ]);
-                        $data->status_id = 3; //update to ongoing since it is gratis
+                        ($data->status_id == 2) ? $data->status_id = 3 : ''; //update to ongoing since it is gratis
                         $data->save();
                     }else{
                         $data->payment->update([
