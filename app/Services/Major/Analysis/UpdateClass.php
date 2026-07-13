@@ -2,6 +2,7 @@
 
 namespace App\Services\Major\Analysis;
 
+use Illuminate\Support\Facades\Artisan;
 use App\Models\Wallet;
 use App\Models\Tsr;
 use App\Models\TsrSample;
@@ -186,7 +187,7 @@ class UpdateClass
         if($request->type_id == 85){
             $data->status_id = $request->status_id;
         }else{
-            $data->fee = 0.00;
+            // $data->fee = 0.00;
             $data->is_refunded = 1;
             $data->status_id = 44;
         }
@@ -213,6 +214,9 @@ class UpdateClass
                             'wallet_id' => $wallet->id
                         ]);
                         \DB::commit();  
+                        Artisan::call('tsr:report', [
+                            'id' => $request->tsr_id,
+                        ]);
                     }else{
                         $data = 'error';
                         \DB::rollback();
