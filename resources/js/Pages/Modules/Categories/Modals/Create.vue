@@ -36,8 +36,9 @@
                             v-model="form.type_id" 
                             placeholder="Select Sample type" ref="multiselectT"/>
                         </div>
+                       
                         <div class="flex-shrink-0">
-                            <b-button @click="addType()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1" :disabled="(form.laboratory_id && types.length === 0) ? false : true"><i class="ri-add-circle-fill"></i></b-button>
+                            <b-button @click="addType()" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1" :disabled="(form.laboratory_id) ? false : true"><i class="ri-add-circle-fill"></i></b-button>
                         </div>
                     </div>
                 </BCol>

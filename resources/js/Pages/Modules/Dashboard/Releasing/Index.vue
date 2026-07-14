@@ -22,11 +22,11 @@
                                                         <option :value="null">All Laboratories</option>
                                                         <option :value="list.value" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
                                                     </select>
-                                                    <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
+                                                    <!-- <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Months</option>
                                                         <option :value="list" v-for="list in months" v-bind:key="list">{{list}}</option>
-                                                    </select>
-                                                    <select style="width: 100px;" v-model="filter.year" class="form-select" aria-label="Default select example">
+                                                    </select> -->
+                                                    <select style="width: 150px;" v-model="filter.year" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Years</option>
                                                         <option :value="list" v-for="list in years" v-bind:key="list">{{list}}</option>
                                                     </select>
@@ -79,7 +79,7 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">TSR Release Summary</span></h5>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">TSR Released Summary</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
         
         <div class="col-md-6 mt-n1">
             <div class="row g-3">
-                <b-col lg="4" v-for="(item, index) of counts" :key="index" style="cursor: pointer;" @click="filterStatus(item.status)">
+                <b-col lg="4" v-for="(item, index) of counts" :key="index" style="cursor: pointer;" @click="filterStatus(item.status,item.type)">
                     <b-card no-body :class="item.color" class="border shadow-none">
                         <b-card-body>
                             <div class="d-flex align-items-center">
@@ -148,7 +148,7 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Pending TSRs for Release</span></h5>
+                                    <h5 class="mb-0 mt-0 fs-13"><span class="text-body">{{title}}</span></h5>
                                     <p class="text-muted text-truncate-two-lines fs-11">Completed and approved TSRs currently awaiting release to customers.</p>
                                 </div>
                             </div>
@@ -350,6 +350,7 @@ export default {
             releasing_age: [],
             releasing_summary: [],
             icons: ['ri-walk-fill','ri-mail-fill','ri-indeterminate-circle-line',' ri-mail-send-fill'],
+            title: 'Pending TSRs for Release',
         }
     },
     watch: {
@@ -368,6 +369,7 @@ export default {
         },
         'monthName'(val) {
             this.fetch();
+            this.fetchDaily();
         },
         'filter.referral'(val) {
             this.fetch();
@@ -431,7 +433,8 @@ export default {
             })
             .catch(err => console.log(err));
         },
-        filterStatus(status){
+        filterStatus(status,type){
+            this.title = type;
             this.filter.status = status;
             this.fetch();
         },

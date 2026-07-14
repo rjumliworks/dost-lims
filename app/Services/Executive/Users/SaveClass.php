@@ -80,6 +80,7 @@ class SaveClass
             $data->password = bcrypt($request->password);
             $data->must_change = 1;
             $data->code = random_int(100000000, 999999999);
+            // dd($data->code);
         }
         if($data->save() && $data->profile){
             $data->profile->mobile = $request->mobile;

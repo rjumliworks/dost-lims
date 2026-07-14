@@ -36,6 +36,7 @@ class ReleasingClass
                 'name' => 'Pending Released TSR\'s',
                 'icon' => 'ri-checkbox-circle-fill',
                 'color' => '',
+                'type' => 'Pending TSRs for Release',
                 'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
                     $query->whereYear('created_at',$year);
                 })->where('status_id',26)->count(),
@@ -45,6 +46,7 @@ class ReleasingClass
                 'name' => 'Mailed TSR\'s',
                 'icon' => 'ri-checkbox-circle-fill',
                 'color' => '',
+                'type' => 'Mailed TSRs for Release',
                 'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
                     $query->whereYear('created_at',$year);
                 })->where('status_id',43)->count(),
@@ -54,6 +56,7 @@ class ReleasingClass
                 'name' => 'Released TSR\'s',
                 'icon' => 'ri-checkbox-circle-fill',
                 'color' => '',
+                'type' => 'Released TSRs',
                 'total' => TsrRelease::whereHas('tsr', function ($query) use ($year){
                     $query->whereYear('created_at',$year);
                 })->where('status_id',27)->count(),
@@ -66,25 +69,32 @@ class ReleasingClass
         $year = $request->year;
         return [
             [
-                'name' => 'Unreleased TSRs',
-                'description' => 'TSRs awaiting final release to customers',
-                'count' => TsrRelease::where('status_id',26)->count(),
-                'icon' => 'ri-checkbox-circle-fill fs-20',
-                'color' => 'text-warning'
+                'name' => 'Pick-up & Email',
+                'description' => 'Released by pickup and email',
+                'count' => TsrRelease::whereNotNull('released_at')->whereNotNull('mailed_at')->whereYear('created_at',$year)->where('status_id',27)->count(),
+                'icon' => 'ri-exchange-fill fs-20',
+                'color' => 'text-primary'
             ],
             [
-                'name' => 'Released TSRs',
-                'description' => 'TSRs successfully released to customers',
-                'count' => TsrRelease::where('status_id',27)->count(),
-                'icon' => 'ri-checkbox-circle-fill fs-20',
+                'name' => 'Pick-up',
+                'description' => 'Released through customer pickup',
+                'count' => TsrRelease::whereNotNull('released_at')->where('status_id',27)->whereYear('created_at',$year)->count(),
+                'icon' => 'ri-hand-coin-fill fs-20',
                 'color' => 'text-success'
             ],
             [
-                'name' => 'Completed TSRs',
-                'description' => 'The total completed TSRs in the system',
-                'count' => Tsr::whereNotIn('status_id',[4])->count(),
-                'icon' => 'ri-information-fill fs-20',
+                'name' => 'Email',
+                'description' => 'Released through email',
+                'count' => TsrRelease::whereNotNull('mailed_at')->whereYear('created_at',$year)->count(),
+                'icon' => 'ri-mail-fill fs-20',
                 'color' => 'text-info'
+            ],
+            [
+                'name' => 'Internal',
+                'description' => 'Internal agency use only',
+                'count' => Tsr::where('release_id',15)->whereYear('created_at',$year)->count(),
+                'icon' => 'ri-information-fill fs-20',
+                'color' => 'text-warning'
             ]
         ];
     }
