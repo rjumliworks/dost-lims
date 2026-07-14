@@ -1,3 +1,5 @@
+
+
 <?php
 
 namespace App\Services\Major\Tsr;
@@ -154,97 +156,58 @@ class UpdateClass
         ->first();
 
         $samples = TsrSample::with(
-            'samplename',
-            'sampletype',
-            'analyses.status',
-            'analyses.testservice.method.method',
-            'analyses.testservice.testname',
-            'analyses.addfee.service'
-        )
-        ->where('tsr_id', $id)
-        ->get();
+            'samplename','sampletype',
+            'analyses.testservice.method.method','analyses.testservice.testname','analyses.addfee.service'
+        )->whereHas('tsr',function ($query) use ($id) {
+            $query->where('id',$id);
+        })->get(); 
+
        
         $groupedData = [];
-        $groupedRefunded = [];
-
         foreach ($samples as $row) {
-
-            $sampleCode  = $row->code;
-            $sampleOther = $row->name;
-            $sampleName  = $row->samplename->name;
-            $sampleType  = $row->sampletype->name;
-
-            // Counters for each sample
-            $activeIndex = 0;
-            $refundedIndex = 0;
-
-            foreach ($row->analyses as $analysis) {
-
-                $fees = null;
-
-                if ($analysis->addfee->count()) {
-                    foreach ($analysis->addfee as $item) {
-                        $fees[] = [
-                            'name' => $item->service->name,
-                            'fee' => $item->service->fee,
-                            'quantity' => $item->quantity,
-                            'total' => $analysis->total,
-                        ];
+            $sampleCode = $row['code'];
+            $sampleOther = $row['name'];
+            $sampleName = $row['samplename']['name'];
+            $sampleType = $row['sampletype']['name'];
+           
+            foreach($row['analyses'] as $index=>$analysis){
+                $testName = $analysis['testservice']['testname']['name'];
+                $testMethod = $analysis['testservice']['method']['method']['name'];
+                $testMethodShort = $analysis['testservice']['method']['method']['short'];
+                $key = $sampleCode . "_" . $testName . "_" . $testMethod;
+                
+                if (!isset($groupedData[$key])) {
+                    if(isset($analysis['addfee']) && count($analysis['addfee'])){
+                        foreach ($analysis['addfee'] as $item) {
+                            $fees[] = [
+                                'name' => $item['service']['name'],
+                                'fee' => $item['service']['fee'],
+                                'quantity' => $item['quantity'],
+                                'total' => $analysis['total']
+                            ];
+                        }
+                    }else{
+                        $fees = null;
                     }
+                    
+                    $groupedData[$key] = [
+                        "samplecode" => ($index == 0) ? $sampleCode : '',
+                        "samplename" => ($index == 0) ? $sampleName : '-',
+                        "sampletype" => ($index == 0) ? $sampleType : '-',
+                        "sampleother" => $sampleOther,
+                        "testname" => $testName,
+                        "method" => $testMethod,
+                        "methodShort" => $testMethodShort,
+                        "count" => 0,
+                        "fee" => $analysis['fee'],
+                        'additional' => $fees
+                    ];
                 }
-
-                $testName        = $analysis->testservice->testname->name;
-                $testMethod      = $analysis->testservice->method->method->name;
-                $testMethodShort = $analysis->testservice->method->method->short;
-
-                $key = $sampleCode.'_'.$testName.'_'.$testMethod;
-
-                if ($analysis->status->name === 'Refunded') {
-
-                    if (!isset($groupedRefunded[$key])) {
-
-                        $groupedRefunded[$key] = [
-                            'samplecode' => $refundedIndex == 0 ? $sampleCode : '',
-                            'samplename' => $refundedIndex == 0 ? $sampleName : '-',
-                            'sampletype' => $refundedIndex == 0 ? $sampleType : '-',
-                            'sampleother' => $sampleOther,
-                            'testname' => $testName,
-                            'method' => $testMethod,
-                            'methodShort' => $testMethodShort,
-                            'count' => 0,
-                            'fee' => $analysis->fee,
-                            'additional' => $fees,
-                        ];
-                    }
-
-                    $groupedRefunded[$key]['count']++;
-                    $refundedIndex++;
-
-                } else {
-
-                    if (!isset($groupedData[$key])) {
-
-                        $groupedData[$key] = [
-                            'samplecode' => $activeIndex == 0 ? $sampleCode : '',
-                            'samplename' => $activeIndex == 0 ? $sampleName : '-',
-                            'sampletype' => $activeIndex == 0 ? $sampleType : '-',
-                            'sampleother' => $sampleOther,
-                            'testname' => $testName,
-                            'method' => $testMethod,
-                            'methodShort' => $testMethodShort,
-                            'count' => 0,
-                            'fee' => $analysis->fee,
-                            'additional' => $fees,
-                        ];
-                    }
-
-                    $groupedData[$key]['count']++;
-                    $activeIndex++;
-                }
+                $groupedData[$key]["count"] += 1;
             }
         }
-
-         if(isset($tsr->services) && count($tsr->services)){
+    
+        if(isset($tsr->services) && count($tsr->services)){
            foreach ($tsr->services as $item) {
                 $services[] = [
                     'name' => $item->service->name ?? null,
@@ -258,10 +221,9 @@ class UpdateClass
             $services = null;
         }
 
-
+     
         $samples = array_values($groupedData);
-        $refunded = array_values($groupedRefunded);
-       
+        
 
         $descs = TsrSample::query()
         ->where('tsr_id',$id)
@@ -301,11 +263,8 @@ class UpdateClass
                 'discounted' => $tsr->payment->discounted->name,
             ],
             'samples' => $samples,
-            'refunded' => $refunded,
             'descriptions' => $descs    
         ];
-
-        
     
         if(TsrReport::where('tsr_id',$id)->count() > 0){
             $data = TsrReport::where('tsr_id',$id)->first();
@@ -333,3 +292,4 @@ class UpdateClass
         return $passkey;
     }
 }
+

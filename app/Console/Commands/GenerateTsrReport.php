@@ -71,6 +71,7 @@ class GenerateTsrReport extends Command
         $samples = TsrSample::with(
             'samplename',
             'sampletype',
+            'analyses.status',
             'analyses.testservice.method.method',
             'analyses.testservice.testname',
             'analyses.addfee.service'
@@ -79,6 +80,7 @@ class GenerateTsrReport extends Command
             ->get();
 
         $groupedData = [];
+        $groupedRefunded = [];
 
         foreach ($samples as $row) {
 
@@ -87,7 +89,23 @@ class GenerateTsrReport extends Command
             $sampleName = $row->samplename->name;
             $sampleType = $row->sampletype->name;
 
+            $activeIndex = 0;
+            $refundedIndex = 0;
+
             foreach ($row->analyses as $index => $analysis) {
+                
+                $fees = null;
+
+                if ($analysis->addfee->count()) {
+                    foreach ($analysis->addfee as $item) {
+                        $fees[] = [
+                            'name' => $item->service->name,
+                            'fee' => $item->service->fee,
+                            'quantity' => $item->quantity,
+                            'total' => $analysis->total,
+                        ];
+                    }
+                }
 
                 $testName = $analysis->testservice->testname->name;
                 $testMethod = $analysis->testservice->method->method->name;
@@ -95,36 +113,48 @@ class GenerateTsrReport extends Command
 
                 $key = "{$sampleCode}_{$testName}_{$testMethod}";
 
-                if (!isset($groupedData[$key])) {
+                if ($analysis->status->name === 'Refunded') {
 
-                    $fees = null;
+                    if (!isset($groupedRefunded[$key])) {
 
-                    if ($analysis->addfee->count()) {
-                        foreach ($analysis->addfee as $item) {
-                            $fees[] = [
-                                'name' => $item->service->name,
-                                'fee' => $item->service->fee,
-                                'quantity' => $item->quantity,
-                                'total' => $analysis->total,
-                            ];
-                        }
+                        $groupedRefunded[$key] = [
+                            'samplecode' => $refundedIndex == 0 ? $sampleCode : '',
+                            'samplename' => $refundedIndex == 0 ? $sampleName : '-',
+                            'sampletype' => $refundedIndex == 0 ? $sampleType : '-',
+                            'sampleother' => $sampleOther,
+                            'testname' => $testName,
+                            'method' => $testMethod,
+                            'methodShort' => $testMethodShort,
+                            'count' => 0,
+                            'fee' => $analysis->fee,
+                            'additional' => $fees,
+                        ];
                     }
 
-                    $groupedData[$key] = [
-                        'samplecode' => $index == 0 ? $sampleCode : '',
-                        'samplename' => $index == 0 ? $sampleName : '-',
-                        'sampletype' => $index == 0 ? $sampleType : '-',
-                        'sampleother' => $sampleOther,
-                        'testname' => $testName,
-                        'method' => $testMethod,
-                        'methodShort' => $testMethodShort,
-                        'count' => 0,
-                        'fee' => $analysis->fee,
-                        'additional' => $fees,
-                    ];
-                }
+                    $groupedRefunded[$key]['count']++;
+                    $refundedIndex++;
 
-                $groupedData[$key]['count']++;
+                } else {
+
+                    if (!isset($groupedData[$key])) {
+
+                        $groupedData[$key] = [
+                            'samplecode' => $activeIndex == 0 ? $sampleCode : '',
+                            'samplename' => $activeIndex == 0 ? $sampleName : '-',
+                            'sampletype' => $activeIndex == 0 ? $sampleType : '-',
+                            'sampleother' => $sampleOther,
+                            'testname' => $testName,
+                            'method' => $testMethod,
+                            'methodShort' => $testMethodShort,
+                            'count' => 0,
+                            'fee' => $analysis->fee,
+                            'additional' => $fees,
+                        ];
+                    }
+
+                    $groupedData[$key]['count']++;
+                    $activeIndex++;
+                }
             }
         }
 
@@ -141,6 +171,9 @@ class GenerateTsrReport extends Command
                 ];
             }
         }
+
+        $samples = array_values($groupedData);
+        $refunded = array_values($groupedRefunded);
 
         $descs = TsrSample::where('tsr_id', $id)->get();
 
@@ -186,7 +219,8 @@ class GenerateTsrReport extends Command
                 'total' => $tsr->payment->total,
                 'discounted' => optional($tsr->payment->discounted)->name,
             ],
-            'samples' => array_values($groupedData),
+            'samples' => $samples,
+            'refunded' => $refunded,
             'descriptions' => $descs,
         ];
 

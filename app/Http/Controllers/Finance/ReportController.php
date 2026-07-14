@@ -7,9 +7,38 @@ use App\Exports\Finance\OpOrExport;
 use App\Exports\Finance\ReconciliationExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\Common\Reports\ViewClass;
 
 class ReportController extends Controller
 {
+    public ViewClass $view;
+
+    public function __construct(ViewClass $view){
+        $this->view = $view;
+    }
+
+    public function index(Request $request){
+        switch($request->option){
+            case 'lists':
+                return [
+                    'laboratories' => $this->view->accomplishments($request)
+                ];
+            break;
+            case 'excel':
+                return $this->view->excel($request);
+            break;
+            default:
+            return inertia('Modules/Reports/Index',[
+                'types' => $this->view->types(),
+                'info' => [
+                    'month' => \DateTime::createFromFormat('!m', date('m'))->format('F'),
+                    'year' => date('Y')
+                ]
+            ]);
+        }
+    }
+
+
     public function excel(Request $request)
     {
         $month_name = $request->month ?: date('F');

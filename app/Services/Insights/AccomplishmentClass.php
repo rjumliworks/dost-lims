@@ -57,13 +57,14 @@ class AccomplishmentClass
     }
 
     public function accomplish($request){      
+       
         $agencyId = \Auth::user()->profile?->agency_id;
 
         $type = $request->type;            
         $year = $request->year;                    
         $date = $request->date ? Carbon::parse($request->date) : Carbon::now();
         $month = $request->month  ? Carbon::parse($request->month)->month : Carbon::now()->month;
-     
+    
 
         $agency = AgencyFacilityLaboratory::whereHas('facility', function ($query) use ($agencyId){
             $query->where('agency_id',$agencyId);

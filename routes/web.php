@@ -115,6 +115,7 @@ Route::prefix('accomplishments')->group(function () {
 });
 
 Route::prefix('reports')->group(function () {
+    Route::get('/', [App\Http\Controllers\Finance\ReportController::class, 'index']);
     Route::get('/excel', [App\Http\Controllers\Finance\ReportController::class, 'excel']);
 });
 

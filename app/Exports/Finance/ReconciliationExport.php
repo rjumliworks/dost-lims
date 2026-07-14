@@ -11,7 +11,7 @@ class ReconciliationExport implements FromView
     protected $month,$year,$laboratory;
 
     function __construct($month,$year,$laboratory) {
-        $this->month = 6;
+        $this->month = $month;
         $this->year = $year;
         $this->laboratory = $laboratory;
     }

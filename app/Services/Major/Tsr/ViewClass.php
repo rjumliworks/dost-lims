@@ -315,7 +315,7 @@ class ViewClass
 
         $wallet = Wallet::where('customer_id',$tsrinfo->customer_id)->value('available');
         $payment = TsrPayment::select('id','total','payment_id')->with('type:id,name')->where('tsr_id',$tsrinfo->id)->first();
-        $transaction = WalletTransaction::where('transacable_id',$tsrinfo->id)->where('transacable_type','App\Models\Tsr')->first();
+        $transaction = WalletTransaction::where('transacable_id',$tsrinfo->id)->where('is_credit',0)->where('transacable_type','App\Models\Tsr')->first();
         $array = [
             'qrCodeImage' => $base64Image,
             'configuration' => AgencyConfiguration::with('agency.member')->where('agency_id',\Auth::user()->profile->agency_id)->first(),

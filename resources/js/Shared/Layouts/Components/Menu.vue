@@ -183,6 +183,13 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Order of Payments</span>
                     </Link>
                 </li>
+                 <li class="nav-item">
+                    <Link href="/reports" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Reports') }">
+                    <i class="ri-file-text-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Reports</span>
+                    </Link>
+                </li>
             </tempalte>
             <template v-if="$page.props.show">
                 <template v-if="['Releasing Officer'].some(role => $page.props.roles.includes(role))">

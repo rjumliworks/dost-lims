@@ -298,6 +298,55 @@
                     @endforeach
                 @endif
             @endforeach
+            @if(isset($tsr['refunded']))
+                @foreach($tsr['refunded'] as $index=>$sample)
+                    <tr style="text-align: center; font-size: 9px; color: #8c8c8c;">
+                        <td style="text-align: left;" colspan="2">Refunded to E-Wallet</td>
+                        <td>{{$sample['testname']}}</td>
+                        <td>{{(isset($sample['methodShort'])) ? $sample['methodShort'] : $sample['method']}}</td>
+                        <td>{{$sample['count']}}</td>
+                        <td style="text-align: right;">
+                            <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                P
+                            </span>
+                            {{-- <span style="font-family: DejaVu Sans;">&#8369;</span> --}}
+                            {{trim($sample['fee'],'₱ ')}}
+                            
+                        </td>
+                        <td style="text-align: right;">
+                            <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                P
+                            </span>
+                            {{number_format(trim(str_replace(',','',$sample['fee']),'₱ ')*$sample['count'],2,".",",")}}</td>
+                    </tr>
+                    @if(isset($sample['additional']))
+                        @foreach($sample['additional'] as $additional)
+                            <tr style="text-align: center; font-size: 9px; color: #072388;">
+                                <td colspan="4" style="text-align: left;">{{$additional['name']}}</td>
+                                <td>{{$additional['quantity']}}</td>
+                                <td style="text-align: right;">
+                                    <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                        <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                        <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                        P
+                                    </span>
+                                    {{trim($additional['fee'],'₱ ')}}</td>
+                                <td style="text-align: right;">
+                                    <span style="position: relative; display: inline-block; margin-bottom: -2px; margin-right: -2px;">
+                                        <span style="position: absolute; top: 4.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                        <span style="position: absolute; top: 3.5px; left: 1.78; width: .68em; border-top: .65px solid #072388"></span>
+                                        P
+                                    </span>
+                                    {{number_format(trim(str_replace(',','',$additional['fee']),'₱ ')*$additional['quantity'],2,".",",")}}</td>
+                            </tr>
+                        @endforeach
+                    @endif
+                @endforeach
+            @endif
             @if(isset($tsr['services']) && is_array($tsr['services']))
                 @foreach($tsr['services'] as $service)
                     <tr style="text-align: center; font-size: 9px; color: #072388;">
