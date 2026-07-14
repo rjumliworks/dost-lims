@@ -42,7 +42,7 @@
         </div>
 
         <b-col lg="6"  class="mt-n2">
-            <b-card no-body class="border shadow-none bg-warning-subtle" style="cursor: pointer;" @click="openExcel('reconciliation')">
+            <b-card no-body class="border shadow-none bg-light-subtle" style="cursor: pointer;" @click="openExcel('reconciliation')">
                 <b-card-body>
                     <div class="d-flex mb-n3">
                         <div class="flex-shrink-0 me-3">
@@ -64,7 +64,7 @@
             </b-card>
         </b-col>
         <b-col lg="6" class="mt-n2">
-            <b-card no-body class="border shadow-none bg-info-subtle" style="cursor: pointer;"  @click="openExcel('opandor')">
+            <b-card no-body class="border shadow-none bg-light-subtle" style="cursor: pointer;"  @click="openExcel('opandor')">
                 <b-card-body>
                     <div class="d-flex mb-n3">
                         <div class="flex-shrink-0 me-3">
@@ -85,6 +85,92 @@
                 </b-card-body>
             </b-card>
         </b-col>
+
+        <div class="col-md-3 mt-2">
+            <Link :href="`/insights/location`" >
+                <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                    <div class="card-body bg-warning-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-warning bg-opacity-10 text-warning rounded-circle fs-17">
+                                        <i class="ri-group-2-fill fs-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-12 text-warning mb-1">Customer Classification Summary</h6>
+                                <p class="fs-11 text-muted mb-0">Shows customer breakdown and classification for monitoring and reporting purposes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        </div>
+        <div class="col-md-3 mt-2">
+            <Link :href="`/insights/discounts`" target="_blank">
+                <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                    <div class="card-body bg-secondary-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-purple bg-opacity-10 text-purple rounded-circle fs-17">
+                                        <i class="ri-hand-coin-fill fs-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-12 text-purple mb-1">Customer Financial Summary</h6>
+                                <p class="fs-11 text-muted mb-0">Shows TSR financial details including services, payments, gratis, and discount classifications.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        </div>
+        <div class="col-md-3 mt-2">
+            <Link :href="`/insights/discount`" target="_blank">
+                <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                    <div class="card-body bg-danger-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-danger bg-opacity-10 text-danger rounded-circle fs-17">
+                                        <i class="ri-gift-line fs-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-12 text-danger mb-1">Customer Discount Summary</h6>
+                                <p class="fs-11 text-muted mb-0">Shows TSR transactions with applied discounts and gross amount for monitoring and reporting.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        </div>
+            <div class="col-md-3 mt-2">
+            <Link :href="`/accomplishments`" target="_blank">
+                <div class="card overflow-hidden shadow-none mt-n3" style="cursor: pointer;">
+                    <div class="card-body bg-success-subtle">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="avatar-sm">
+                                    <div class="avatar-title bg-success bg-opacity-10 text-success rounded-circle fs-17">
+                                        <i class="ri-checkbox-circle-fill fs-24"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="fs-12 text-success mb-1">Annual Target vs Accomplishment Report</h6>
+                                <p class="fs-11 text-muted mb-0">Shows yearly target and actual accomplishment data for evaluation and reporting.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+        </div>
+        
 
         <div class="col-md-12 mt-n2">
             <div class="card bg-light-subtle shadow-none border">
@@ -155,6 +241,7 @@
                 </div>
             </div>
         </div>
+        
 
     </b-row>
    
