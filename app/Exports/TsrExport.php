@@ -21,7 +21,7 @@ class TsrExport implements FromView
         // ->where('status_id','!=',5)
         
         ->with('customer:id,name,name_id','customer.customer_name:id,name','customer.address:address,customer_id,region_code,province_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name')
-        ->with('samples:tsr_id,id,code,name','samples.analyses:id,sample_id,testservice_id,analyst_id','samples.analyses.testservice:id,testname_id','samples.analyses.testservice.testname:id,name','samples.analyses.analyst.profile')
+        ->with('samples:tsr_id,id,code,name','samples.analyses:id,sample_id,testservice_id,started_by','samples.analyses.testservice:id,testname_id','samples.analyses.testservice.testname:id,name','samples.analyses.started.profile')
         ->withWhereHas('payment', function ($query) {
             $query->select('tsr_id','or_number','total','subtotal','discount','paid_at','is_free');
         })

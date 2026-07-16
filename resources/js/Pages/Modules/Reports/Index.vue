@@ -13,11 +13,16 @@
                                     <h4 class="fs-14 mb-0">{{monthName}} Summary View</h4>
                                     <p class="text-muted mb-0">Here's what's happening with the laboratory for month of {{monthName}}.</p>
                                 </div>
+                              
                                 <div class="mt-3 mt-lg-0">
                                     <form action="javascript:void(0);">
                                         <div class="row g-3 mb-0 align-items-center">
                                             <div class="col-sm-auto">
                                                 <div class="input-group">
+                                                    <select style="width: 160px;" v-model="filter.laboratory" class="form-select" aria-label="Default select example">
+                                                        <option :value="null">All Laboratories</option>
+                                                        <option :value="list.value" v-for="list in types" v-bind:key="list">{{list.name}}</option>
+                                                    </select>
                                                     <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Months</option>
                                                         <option :value="list" v-for="list in months" v-bind:key="list">{{list}}</option>
@@ -284,7 +289,6 @@
                 </div>
             </div>
         </div>
-        
 
     </b-row>
    
@@ -297,7 +301,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect },
-    props:['years'],
+    props:['years','types'],
     data(){
         return {
             monthName: new Date().toLocaleString('default', { month: 'long' }),
@@ -322,6 +326,9 @@ export default {
             if (this.filter.type === 'Monthly') {
                 this.fetch();
             }
+        },
+        'filter.laboratory'(val){
+            this.fetch();
         },
         'filter.type'(val) {
             this.fetch();
@@ -360,8 +367,8 @@ export default {
             if (this.filter.year) {
                 params.append('year', this.filter.year);
             }
-            if (this.laboratory) {
-                params.append('laboratory', this.laboratory);
+            if (this.filter.laboratory) {
+                params.append('laboratory', this.filter.laboratory);
             }
             window.open('/reports/excel?' + params.toString());
         },
