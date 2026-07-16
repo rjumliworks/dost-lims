@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Finance;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\Finance\OpOrExport;
+use App\Exports\RstlExport;
+use App\Exports\TsrExport;
 use App\Exports\Finance\ReconciliationExport;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -53,10 +55,22 @@ class ReportController extends Controller
                     'reconciliation-'.strtolower($month_name).'-'.$year.'.xlsx'
                 );
             break;
-             case 'opandor':
+            case 'opandor':
                 return Excel::download(
                     new OpOrExport($month,$year,$laboratory), 
                     'opandor-'.strtolower($month_name).'-'.$year.'.xlsx'
+                );
+            break;
+            case 'rstldata':
+                return Excel::download(
+                    new RstlExport($month,$year,$laboratory), 
+                    'rstl-'.strtolower($month_name).'-'.$year.'.xlsx'
+                );
+            break;
+            case 'tsrs':
+                return Excel::download(
+                    new TsrExport($month,$year,$laboratory), 
+                    'tsr-'.strtolower($month_name).'-'.$year.'.xlsx'
                 );
             break;
         }
