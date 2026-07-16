@@ -57,6 +57,7 @@ export default {
                 category_id: null,
                 laboratory_id: null,
                 unit_id: null,
+                onhand: null,
                 option: 'item'
             }),
             provinces: [],
@@ -68,6 +69,17 @@ export default {
     },
     methods: { 
         show(){
+            this.showModal = true;
+        },
+        update(data){
+            this.form.id = data.id;
+            this.form.name = data.name;
+            this.form.category_id = data.category_id;
+            this.form.laboratory_id = data.laboratory_id;
+            this.form.unit_id = data.unit_id;
+            this.form.reorder = data.reorder;
+            this.form.onhand = data.onhand;
+            this.editable = true;
             this.showModal = true;
         },
         edit(data){
@@ -82,6 +94,7 @@ export default {
                 this.form.put('/inventory/update',{
                     preserveScroll: true,
                     onSuccess: (response) => {
+                        this.$emit('update',response.props.flash.data.data);
                         this.form.reset();
                         this.hide();
                     }

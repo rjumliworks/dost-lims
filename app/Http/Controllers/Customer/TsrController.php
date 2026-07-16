@@ -26,6 +26,10 @@ class TsrController extends Controller
         }
     }
 
+    
+
+
+
     private function list($request){
         $data = Tsr::with('payment.status','onlinepayment','status','samples.report.signatory','samples.samplename','samples.analyses')
         // ->withCount([

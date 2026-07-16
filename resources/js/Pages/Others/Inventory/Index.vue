@@ -181,15 +181,10 @@
                                                         <i class="ri-eye-fill me-2"></i> View
                                                     </Link>
                                                 </li>
-                                                <li>
-                                                    <a @click="openDetail(list,index)" class="dropdown-item d-flex align-items-center" role="button">
-                                                        <i class="ri-information-line me-2"></i> Details
-                                                    </a>
-                                                </li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li>
-                                                    <a :href="`/files?id=${list.id}&option=download`" target="_blank" class="dropdown-item d-flex align-items-center" role="button">
-                                                        <i class="ri-download-2-line me-2"></i> Download
+                                                    <a @click="openUpdate(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                        <i class="ri-pencil-line me-2"></i> Update
                                                     </a>
                                                 </li>
                                             </BDropdown>
@@ -257,7 +252,7 @@
             </div>
         </div>
     </b-row>
-    <Create @message="fetch()" :dropdowns="dropdowns" ref="create"/>
+    <Create @message="fetch()" @update="updateList" :dropdowns="dropdowns" ref="create"/>
 </template>
 <script>
 import _ from 'lodash';
@@ -350,6 +345,13 @@ export default {
             this.status = status;
             this.filter.status = status.name;
             this.fetchList();
+        },
+        openUpdate(data,index){
+            this.$refs.create.update(data);
+            this.index = index;
+        },
+        updateList(data){
+            this.lists[this.index] = data;
         },
         refresh(){
             this.status = null;

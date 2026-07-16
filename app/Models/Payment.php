@@ -8,19 +8,18 @@ class Payment extends Model
 {
     protected $fillable = [
         'method',
+        'uuid',
+        'refno',
+        'txnid',
         'subtotal',
         'fee',
         'total',
         'amount',
         'status',
         'payload',
-        'qr_id',
-        'reference',
-        'payment_intent_id',
         'paid_at',
         'expires_at',
-        'tsr_id',
-        'reference_number'
+        'tsr_id'
     ];
 
      public function tsr()

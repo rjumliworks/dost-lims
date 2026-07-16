@@ -20,6 +20,69 @@ class SaveClass
         ];
     }
 
+     public function itemUpdate($request){
+        $item = InventoryItem::find($request->id);
+        $item->update($request->except(['option', 'onhand']));
+
+        $data = new ItemResource(
+            InventoryItem::query()
+            ->with('category','unittype','stocks.withdrawals','stocks.supp')
+            ->when($request->keyword, function ($query, $keyword) {
+                $query->where('name', 'LIKE', "%{$keyword}%");
+            })
+            ->when($request->category, function ($query, $category) {
+                $query->where('category_id', $category);
+            })
+            ->when($request->laboratory, function ($query, $laboratory) {
+                $query->whereHas('stocks', function ($q) use ($laboratory) {
+                    $q->where('laboratory_id', $laboratory);
+                });
+            })
+            ->when($request->status, function ($query, $filter) {
+                if($filter == 'Out of Stock'){
+                    $query->withSum('stocks', 'quantity')->havingRaw('COALESCE(stocks_sum_quantity, 0) = 0');
+                }
+                elseif($filter == 'For Reorder'){
+                    $query->whereHas('stocks') // ✅ MUST have stock records
+            ->whereRaw('(
+                SELECT COALESCE(SUM(quantity * unit), 0)
+                FROM inventory_stocks
+                WHERE inventory_stocks.item_id = inventory_items.id
+            ) <= inventory_items.reorder');
+                }
+                elseif($filter == 'Expired Items'){
+                    $query->whereHas('stocks', function ($q) {
+                        $q->where('expired_at', '<=', now());
+                    });
+                }
+            })
+            ->withCount([
+                'stocks as onhand' => function (Builder $query) {
+                    $query->select(\DB::raw('SUM(onhand)'));
+                }, 
+                'stocks as stock' => function (Builder $query) {
+                    $query->select(\DB::raw('SUM(
+                    CASE
+                        WHEN inventory_stocks.unit_id = inventory_items.unit_id THEN inventory_stocks.unit * inventory_stocks.onhand
+                        WHEN inventory_stocks.unit_id = 123 AND inventory_items.unit_id = 124 THEN inventory_stocks.unit * inventory_stocks.onhand * 1000
+                        WHEN inventory_stocks.unit_id = 124 AND inventory_items.unit_id = 123 THEN inventory_stocks.unit * inventory_stocks.onhand * 0.001
+                        WHEN inventory_stocks.unit_id = 125 AND inventory_items.unit_id = 126 THEN inventory_stocks.unit * inventory_stocks.onhand * 0.001
+                        WHEN inventory_stocks.unit_id = 126 AND inventory_items.unit_id = 125 THEN inventory_stocks.unit * inventory_stocks.onhand * 1000
+                        ELSE inventory_stocks.unit * inventory_stocks.onhand
+                    END)'))
+                        ->where('onhand', '!=', 0);
+                }
+            ])
+            ->where('id',$request->id)
+            ->first()
+        );
+        return [
+            'data' => $data,
+            'message' => 'Item creation was successful!', 
+            'info' => "You've successfully created the new item."
+        ];
+    }
+
     public function stock($request){
         $data = InventoryStock::create(array_merge($request->all(),[
             'code' => date('Ymdhis'),

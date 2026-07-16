@@ -100,7 +100,6 @@ import View from './Modals/View.vue';
 import Payment from './Modals/Payment.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
-import { uniqueId } from 'lodash';
 export default {
     components: { PageHeader, Pagination, View, Payment },
     data(){
@@ -157,7 +156,7 @@ export default {
         openPrint(reference){
             window.open('/tsrs?option=print&id='+reference);
         },
-        payEgov1(list,index){
+        payEgov(list,index){
             // this.form.post('/egovpay/pay',{
             //     preserveScroll: true,
             //     onSuccess: (response) => {
@@ -180,34 +179,6 @@ export default {
                 .catch((error) => {
                     console.error(error);
                 });
-                 this.index = index;
-        },
-        payEgov(list,index){
-            const total = Number(
-                list.payment.total.toString()
-                    .replace(/₱/g, '')
-                    .replace(/,/g, '')
-            );
-            const subtotal = Number(
-                list.payment.subtotal.toString()
-                    .replace(/₱/g, '')
-                    .replace(/,/g, '')
-            );
-         
-            axios.post('/egovpay/pay', {
-                    tsr_id: list.id,
-                    total: total,
-                    txn_id: list.code
-                })
-                .then((response) => {
-                    // console.log(response.data);
-                    this.$refs.payment.show(response.data.uuid);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-
-                
                  this.index = index;
         },
         pay(list,index){

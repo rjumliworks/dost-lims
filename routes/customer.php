@@ -17,6 +17,14 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
         Route::get('/dashboard', [App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/fetch', [App\Http\Controllers\Customer\DashboardController::class, 'fetch']);
 
+        Route::prefix('egovpay')->name('egovpay.')->group(function () {
+            Route::post('/pay', [App\Http\Controllers\Customer\EgovPayController::class, 'pay'])->name('pay');
+            Route::post('/callback', [App\Http\Controllers\Customer\EgovPayController::class, 'callback'])->name('callback');
+            Route::get('/qr/{id}', [App\Http\Controllers\Customer\EgovPayController::class, 'qr']);
+            Route::get('/success', [App\Http\Controllers\Customer\EgovPayController::class, 'success'])->name('success');
+            Route::get('/failed', [App\Http\Controllers\Customer\EgovPayController::class, 'failed'])->name('failed');
+        });
+
         Route::resource('tsrs', App\Http\Controllers\Customer\TsrController::class);
         Route::resource('downloads', App\Http\Controllers\Customer\TsrController::class);
         Route::resource('quotation', App\Http\Controllers\Customer\QuotationController::class);

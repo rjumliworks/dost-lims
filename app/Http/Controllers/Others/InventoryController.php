@@ -94,7 +94,14 @@ class InventoryController extends Controller
 
     public function update(Request $request){
         $result = $this->handleTransaction(function () use ($request) {
-            return $this->save->stockUpdate($request);
+            switch($request->option){
+                case 'item':
+                    return $this->save->itemUpdate($request);
+                break;
+                default:
+                return $this->save->stockUpdate($request);
+            }
+            
         });
         
         return back()->with([

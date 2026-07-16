@@ -157,31 +157,6 @@ export default {
         openPrint(reference){
             window.open('/tsrs?option=print&id='+reference);
         },
-        payEgov1(list,index){
-            // this.form.post('/egovpay/pay',{
-            //     preserveScroll: true,
-            //     onSuccess: (response) => {
-            //         window.location.href = page.props.url;
-            //     },
-            // });
-
-            const rawAmount = list.payment.total;
-            const cleanAmount = Number(
-                rawAmount.toString()
-                    .replace(/₱/g, '')
-                    .replace(/,/g, '')
-            );
-            axios.post('/egovpay/pay', {
-                    amount: cleanAmount,
-                })
-                .then((response) => {
-                    window.location.href = response.data.url;
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-                 this.index = index;
-        },
         payEgov(list,index){
             const total = Number(
                 list.payment.total.toString()

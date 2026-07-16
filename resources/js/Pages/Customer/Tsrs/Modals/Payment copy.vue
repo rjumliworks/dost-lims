@@ -55,34 +55,57 @@ export default {
         }
     },
     methods: { 
-        async show(uuid) {
-         
+        async show(data) {
+           
             this.showModal = true;
             this.loading = true
             this.qrUrl = null
 
-            try {
-                const response = await axios.get(
-                    `/egovpay/qr/${uuid}`
-                )
-
-                // this.paymentStatus = response.data.status;
-                this.qrUrl = response.data.qr;
-                // this.expiresAt = response.data.expires_at;
-                this.startCountdown();
-                if(response.data.status == 'succeeded'){
-                    alert('Payment Successful');
+            if(data.online){
+                try {
+                    const response = await axios.get(
+                        `/payments/${data.online.payment_intent_id}/qr`
+                    )
+                    this.paymentStatus = response.data.status;
+                    this.qrUrl = response.data.qr;
+                    this.expiresAt = response.data.expires_at;
+                    this.startCountdown();
+                    if(response.data.status == 'succeeded'){
+                        alert('Payment Successful');
+                       
+                        // this.$emit('completed',response.data.tsr);
+                    }else{
+                        this.startPolling();
+                    }
                     
-                    // this.$emit('completed',response.data.tsr);
-                }else{
-                    // this.startPolling();
+                    // this.qrUrl = res.next_action?.code?.image_url ?? null;
+                    // this.expiresAt = res.next_action?.code?.expires_at;
+                   
+                }catch(error) {
+                    console.error(error)
                 }
-                
-                // this.qrUrl = res.next_action?.code?.image_url ?? null;
-                // this.expiresAt = res.next_action?.code?.expires_at;
-                
-            }catch(error) {
-                // console.error(error)
+
+            }else{
+                try {
+                    const response = await axios.post('/payments/qrph',{
+                            amount: data.amount,
+                            code: data.code,
+                        }
+                    )
+                    const res = response.data;
+                    this.paymentIntentId = res.payment_intent_id;
+                    this.qrUrl = res.next_action?.code?.image_url ?? null;
+                    this.expiresAt = res.next_action?.code?.expires_at;
+                    this.startCountdown();
+                    this.startPolling();
+
+                }catch (error) {
+                    console.error(error)
+                    alert('Unable to create payment.')
+                    this.closeModal()
+                } finally {
+                    this.loading = false
+                }
             }
         },
         startPolling() {
