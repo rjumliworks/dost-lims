@@ -79,6 +79,7 @@ export default {
             })
             .then(response => {
                 this.selected = response.data;
+                this.form.total = response.data;
             })
             .catch(err => console.log(err));
         },
