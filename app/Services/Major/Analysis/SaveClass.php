@@ -190,7 +190,8 @@ class SaveClass
             $subtotal = $subtotal + $fee;
             $total = $total + $fee;
             $discount = (float) (($data->discounted->value/100) * $subtotal);
-            $total =  ((float) $subtotal - (($data->discounted->value == 100) ? 0 : (float) $discount));
+            // $total =  ((float) $subtotal - (($data->discounted->value == 100) ? 0 : (float) $discount));
+            $total = $subtotal - $discount;
         }
     
         $data->subtotal = $subtotal;
