@@ -76,6 +76,21 @@ class EquipmentController extends Controller
         ]);
     }
 
+    public function update(EquipmentRequest $request){
+        $result = $this->handleTransaction(function () use ($request) {
+           
+                return $this->save->update($request);
+            
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
     public function destroy($id)
     {
         $result = $this->handleTransaction(function () use ($id){
