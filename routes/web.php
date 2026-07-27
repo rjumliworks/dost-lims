@@ -101,6 +101,7 @@ Route::prefix('insights')->group(function () {
     Route::get('/customer/request', [App\Http\Controllers\Insights\CustomerController::class, 'requesting']);
     Route::get('/payments', [App\Http\Controllers\Insights\PaymentController::class, 'index']);
     Route::get('/laboratories', [App\Http\Controllers\Insights\LaboratoryController::class, 'index']);
+    Route::get('/performance', [App\Http\Controllers\Insights\PerformanceController::class, 'index']);
 
     Route::get('/location', [App\Http\Controllers\Insights\CustomerController::class, 'location']);
     Route::get('/discounts', [App\Http\Controllers\Insights\CustomerController::class, 'discounts']);

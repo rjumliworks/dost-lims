@@ -61,6 +61,12 @@
                         <div class="p-2">
                             <BRow class="g-0">
                                 <BCol>
+                                    <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/performance')">
+                                        <img src="@assets/images/apps/customer.png" alt="customer" />
+                                        <span>Performance</span>
+                                    </BLink>
+                                </BCol>
+                                <BCol>
                                     <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/customers')">
                                         <img src="@assets/images/apps/customer.png" alt="customer" />
                                         <span>Customers</span>
@@ -72,15 +78,16 @@
                                         <span>Laboratories</span>
                                     </BLink>
                                 </BCol>
-                                <BCol>
+                               
+                            </BRow>
+
+                            <BRow class="g-0">
+                                 <BCol>
                                     <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/payments')">
                                         <img src="@assets/images/apps/payment.png" alt="payment" />
                                         <span>Payments</span>
                                     </BLink>
                                 </BCol>
-                            </BRow>
-
-                            <BRow class="g-0">
                                  <BCol>
                                     <BLink class="dropdown-icon-item" @click="openInNewTab('/insights/laboratories')">
                                         <img src="@assets/images/apps/laboratory.png" alt="laboratoryt" />
