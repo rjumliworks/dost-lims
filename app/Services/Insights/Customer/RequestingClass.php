@@ -134,6 +134,17 @@ class RequestingClass
          // Customers that don't match any category are intentionally excluded.
       }
 
-      return array_values($result);
+      $result = array_values($result);
+
+      if ($request->subtype == 'print') {
+         $pdf = \PDF::loadView('reports.customers-requesting', [
+               'year'         => $year,
+               'laboratories' => $result,
+         ])->setPaper('a4', 'landscape');
+
+         return $pdf->stream('customers-requesting-' . $year . '.pdf');
+      }
+
+      return $result;
    }
 }

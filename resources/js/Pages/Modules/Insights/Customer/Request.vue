@@ -13,6 +13,9 @@
                             <b-button type="button" variant="light" @click="openExcel()">
                             Download Excel
                         </b-button>
+                        <b-button type="button" variant="danger" @click="openPrint()">
+                            <i class="ri-file-pdf-2-fill align-bottom"></i> Download PDF
+                        </b-button>
                         <b-button type="button" variant="primary" @click="openCreate">
                             <i class="ri-search-eye-fill align-bottom"></i>
                         </b-button>
@@ -55,14 +58,34 @@
                                 </tr>
                             </thead>
                             <tbody class="fs-10">
-                                <tr style="cursor: pointer;" v-for="(item,index) in list" :key="`breakdown-${index}`">
-                                    <td class="text-center">{{index}}</td>
-                                    <td class="text-center">{{item.laboratory}}</td>
-                                    <td class="text-center align-middle">{{item.monthly}}</td>
-                                    <td class="text-center align-middle">{{item.quarterly}}</td>
-                                    <td class="text-center align-middle">{{item.semiannual}}</td>
-                                    <td class="text-center align-middle">{{item.yearly}}</td>
-                                </tr>
+                                <template v-for="(item,index) in list" :key="`breakdown-${index}`">
+                                    <tr style="cursor: pointer;" @click="toggleRow(index)">
+                                        <td class="text-center">
+                                            <i :class="expandedRows[index] ? 'ri-arrow-down-s-line' : 'ri-arrow-right-s-line'"></i>
+                                            {{index+1}}
+                                        </td>
+                                        <td class="text-center">{{item.laboratory}}</td>
+                                        <td class="text-center align-middle">{{item.monthly}}</td>
+                                        <td class="text-center align-middle">{{item.quarterly}}</td>
+                                        <td class="text-center align-middle">{{item.semiannual}}</td>
+                                        <td class="text-center align-middle">{{item.yearly}}</td>
+                                    </tr>
+                                    <tr v-if="expandedRows[index]">
+                                        <td colspan="6" class="bg-light-subtle">
+                                            <div class="row g-2 p-2">
+                                                <div class="col-md-3" v-for="cat in ['monthly','quarterly','semiannual','yearly']" :key="cat">
+                                                    <strong class="text-capitalize">{{cat}}</strong>
+                                                    <ul class="mb-0 ps-3">
+                                                        <li v-for="(customer,ci) in item.customers[cat]" :key="ci">
+                                                            {{customer.customer}} <span class="text-muted">({{customer.months}})</span>
+                                                        </li>
+                                                        <li v-if="!item.customers[cat].length" class="text-muted">None</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
                             </tbody>
                         </table>
                     </div>
@@ -130,6 +153,9 @@ export default {
         },
         openExcel(){
             window.open('/accomplishments?option=discount&month='+this.month+'&year='+this.year+'&laboratory='+this.laboratory);
+        },
+        openPrint(){
+            window.open('/insights/customers?option=request&subtype=print&year='+this.year+'&laboratory='+this.laboratory);
         },
         formatMoney(value) {
             let val = (value / 1).toFixed(2).replace(',', '.');
