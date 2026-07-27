@@ -62,7 +62,7 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
 
     Route::resource('/schedules', App\Http\Controllers\Others\ScheduleController::class);
     Route::resource('/equipments', App\Http\Controllers\Others\EquipmentController::class);
-    Route::resource('/signing', App\Http\Controllers\Others\SigningController::class);
+    Route::resource('/digitalsigning', App\Http\Controllers\Others\SigningController::class);
 
     Route::get('/inventory/stockin', [App\Http\Controllers\Others\InventoryController::class, 'stockIn']);
     Route::get('/inventory/stockout', [App\Http\Controllers\Others\InventoryController::class, 'stockOut']);

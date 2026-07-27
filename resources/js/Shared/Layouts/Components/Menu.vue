@@ -268,9 +268,9 @@
                         <span data-key="t-menu">Other Modules</span>
                     </li>
                     <li class="nav-item">
-                        <Link href="/signing" class="nav-link menu-link"
+                        <Link href="/digitalsigning" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Signing') }">
-                        <i class="ri-archive-fill"></i>
+                        <i class="ri-mark-pen-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Digital Signing</span>
                         </Link>
                     </li> 
