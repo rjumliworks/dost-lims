@@ -253,7 +253,7 @@ export default {
                 color: ext.event.color,
                 others: ext.event.others
             };
-            this.form.title = ext.full_title;
+            this.form.title = event.title;
             this.form.venue = ext.venue;
             this.form.information = ext.description;
             this.form.samples = ext.samples;
