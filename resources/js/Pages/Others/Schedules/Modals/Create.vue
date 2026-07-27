@@ -234,9 +234,59 @@ export default {
             editable: false
         }
     },
-    methods: { 
-        show(){
+    methods: {
+        show(data){
+            if(data){
+                this.editData(data);
+            }
             this.showModal = true;
+        },
+        editData(event){
+            const ext = event.extendedProps;
+            this.editable = true;
+            this.form.id = event.id;
+            this.form.event = {
+                value: ext.event.id,
+                name: ext.event.name,
+                type: ext.event.type,
+                fields: ext.event.fields,
+                color: ext.event.color,
+                others: ext.event.others
+            };
+            this.form.title = ext.full_title;
+            this.form.venue = ext.venue;
+            this.form.information = ext.description;
+            this.form.samples = ext.samples;
+            this.form.is_allday = !!ext.is_allday;
+            this.form.is_forall = !!ext.is_forall;
+            this.form.is_closed = !!ext.is_closed;
+
+            if(this.form.is_allday){
+                this.form.start = ext.s_date+':00';
+                this.form.end = ext.e_date+':00';
+            }else{
+                const start = ext.s_date.substring(0,10)+' 00:00:00';
+                const end = ext.e_date.substring(0,10)+' 00:00:00';
+                this.form.date = (start === end) ? start : start+' to '+end;
+            }
+
+            if(ext.customer){
+                this.form.customer = {
+                    value: ext.customer.id,
+                    name: ext.customer.customer_name ? ext.customer.customer_name.name : ext.customer.name,
+                    conformes: (ext.customer.conformes || []).map(c => ({ value: c.id, name: c.name, contact_no: c.contact_no }))
+                };
+            }
+            if(ext.conforme){
+                this.form.conforme = { value: ext.conforme.id, name: ext.conforme.name };
+            }
+            if(ext.tsr){
+                this.form.tsr_id = ext.tsr.id;
+                this.tsrs = [{ value: ext.tsr.id, name: ext.tsr.code }];
+            }
+            if(ext.users && ext.users.length){
+                this.form.users = ext.users.map(u => ({ value: u.user_id, name: u.name }));
+            }
         },
         toggleDateFormat() {
             this.config = {
@@ -245,14 +295,20 @@ export default {
             };
         },
         submit(){
-            this.form.post('/schedules',{
+            const options = {
                 preserveScroll: true,
-                onSuccess: (response) => {
+                onSuccess: () => {
                     this.form.reset();
                     this.$emit('message',true);
                     this.hide();
                 },
-            });
+            };
+
+            if(this.form.id){
+                this.form.put(`/schedules/${this.form.id}`, options);
+            }else{
+                this.form.post('/schedules', options);
+            }
         },
         checkSearchCustomer: _.debounce(function(string) {
             this.fetchCustomer(string);
@@ -308,6 +364,9 @@ export default {
             this.form.clearErrors();
             this.editable = false;
             this.showModal = false;
+            this.tsrs = [];
+            this.customers = [];
+            this.employees = [];
         }
     }
 }

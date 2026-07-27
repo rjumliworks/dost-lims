@@ -14,7 +14,7 @@ class ViewClass
     public function events($request){
         $data = Schedule::with('user','event')
         ->with('users.user:id','users.user.profile')
-        ->with('information.customer.customer_name','information.customer.address','information.conforme')->get();
+        ->with('information.customer.customer_name','information.customer.address','information.customer.conformes','information.conforme')->get();
         return EventResource::collection($data);
     }
 

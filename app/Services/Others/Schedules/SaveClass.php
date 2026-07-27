@@ -7,7 +7,7 @@ use App\Models\ScheduleUser;
 use App\Models\ScheduleCustomer;
 class SaveClass
 {
-   public function save($request){
+    private function resolveDates($request){
         if (strpos($request->date, ' to ') !== false) {
             list($start, $end) = explode(' to ', $request->date);
             $startTime = "08:00:00";
@@ -28,7 +28,13 @@ class SaveClass
                 $end = $request->end;
             }
         }
-        
+
+        return [$start, $end];
+    }
+
+   public function save($request){
+        [$start, $end] = $this->resolveDates($request);
+
         $data = Schedule::create([
             'start' => $start,
             'end' => $end,
@@ -67,9 +73,56 @@ class SaveClass
         }
 
         return [
-            'data' => $data,
-            'message' => 'Schedule creation was successful!', 
+            'data' => $data->toArray(),
+            'message' => 'Schedule creation was successful!',
             'info' => "You've successfully created the new event."
+        ];
+    }
+
+    public function update($schedule, $request){
+        [$start, $end] = $this->resolveDates($request);
+
+        $schedule->update([
+            'start' => $start,
+            'end' => $end,
+            'is_closed' => ($request->event['value'] == 10) ? 1 : $request->is_closed,
+            'is_allday' => $request->is_allday,
+            'is_forall' => $request->is_forall,
+            'event_id' => $request->event['value']
+        ]);
+
+        $schedule->information()->update([
+            'title' => $request->title,
+            'venue' => $request->venue,
+            'information' => $request->information,
+            'samples' => $request->samples,
+            'tsr_id' => $request->tsr_id,
+            'quotation_id' => $request->quotation_id,
+            'customer_id' => $request->customer ? $request->customer['value'] : null,
+            'conforme_id' => $request->conforme ? $request->conforme['value'] : null,
+        ]);
+
+        $schedule->users()->delete();
+        if(!$request->is_forall){
+            if(count($request->users)){
+                foreach($request->users as $user){
+                    ScheduleUser::create([
+                        'schedule_id' => $schedule->id,
+                        'user_id' => $user['value']
+                    ]);
+                }
+            }else{
+                ScheduleUser::create([
+                    'schedule_id' => $schedule->id,
+                    'user_id' => \Auth::user()->id
+                ]);
+            }
+        }
+
+        return [
+            'data' => $schedule->toArray(),
+            'message' => 'Schedule update was successful!',
+            'info' => "You've successfully updated the event."
         ];
     }
 

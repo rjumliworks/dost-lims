@@ -62,6 +62,8 @@ class EventResource extends JsonResource
             'description' => $this->information->information,
             'samples' => $this->information->samples,
             'is_allday' => $this->is_allday,
+            'is_forall' => $this->is_forall,
+            'is_closed' => $this->is_closed,
             'users' => UserResource::collection($this->users),
             'conforme' => $this->information->conforme,
             'customer' => $this->information->customer,
