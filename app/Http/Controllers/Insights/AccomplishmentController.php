@@ -38,6 +38,9 @@ class AccomplishmentController extends Controller
             case 'perdiscount':
                 return $this->excel->perdiscount($request);
             break;
+             case 'peza':
+                return $this->accomplishment->peza($request);
+            break;
             default: 
                 return inertia('Modules/Insights/Accomplishment/Index');
         }

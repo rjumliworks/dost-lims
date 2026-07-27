@@ -12,6 +12,8 @@ use App\Models\TsrAnalysis;
 use App\Models\TsrSampleReport;
 use App\Models\Target;
 use App\Models\TargetBreakdown;
+use App\Exports\PezaExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AccomplishmentClass
 {
@@ -658,6 +660,15 @@ class AccomplishmentClass
             $count = 0;
         }
         return $count;
+    }
+
+     public function peza($request){
+        $region = ($request->region) ? $request->region : null;
+        $province = ($request->province) ? $request->province : null;
+        $municipality = ($request->municipality) ? $request->municipality : null;
+        $barangay = ($request->barangay) ? $request->barangay : null;
+
+        return Excel::download(new PezaExport($region,$province,$municipality,$barangay), 'peza.xlsx');
     }
 
 }

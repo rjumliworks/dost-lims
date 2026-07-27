@@ -82,7 +82,7 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Test Reports</span>
                     </Link>
                 </li> -->
-                 <li class="nav-item">
+                 <!-- <li class="nav-item">
                     <Link href="/samples" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Major/Samples') }">
                     <i class="ri-todo-fill"></i>
@@ -95,7 +95,7 @@
                     <i class="ri-file-paper-2-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Test Reports</span>
                     </Link>
-                </li>
+                </li> -->
             </template>
             <template v-if="['Laboratory Analyst', 'Technical Manager', 'Calibration Officer'].some(role => $page.props.roles.includes(role))">
                 <!-- <li class="menu-title">
@@ -267,6 +267,13 @@
                         <i class="ri-more-fill" aria-expanded="false"></i>
                         <span data-key="t-menu">Other Modules</span>
                     </li>
+                    <li class="nav-item">
+                        <Link href="/signing" class="nav-link menu-link"
+                        :class="{'active': $page.component.startsWith('Others/Signing') }">
+                        <i class="ri-archive-fill"></i>
+                        <span class="fw-semibold fs-14" data-key="t-dashboards">Digital Signing</span>
+                        </Link>
+                    </li> 
                     <li class="nav-item">
                         <Link href="/schedules" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Schedules') }">

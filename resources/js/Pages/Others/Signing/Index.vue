@@ -1,0 +1,534 @@
+<template lang="">
+
+    <Head title="View Report" />
+    <div class="auth-page-wrapper d-flex min-vh-100">
+        <div class="auth-page-content">
+           <b-col lg="12">
+                <b-card no-body>
+                    <div class="bg-info-subtle">
+                        <b-card-body class="pb-0 px-4">
+                            <b-row class="mb-3">
+                                <b-col md>
+                                    <b-row class="align-items-center g-3">
+                                        <b-col md>
+                                            <div>
+                                                <h4 class="fw-semibold text-primary">{{(selected.code) ? selected.code : ''}}</h4>
+                                                 <div class="hstack gap-3  fs-12 flex-wrap">
+                                                    <div v-if="selected.lists.length == 0">Sample Code : 
+                                                        <span v-if="selected.sample_code" class="fw-medium"> {{ selected.sample_code}}</span>
+                                                        <span v-else class="text-muted">Not Available</span>
+                                                    </div>
+                                                    <div v-if="selected.lists.length == 0" class="vr" style="width: 1px;"></div>
+                                                    <div>TSR Code : 
+                                                        <span v-if="selected.tsr_code" class="fw-medium">{{selected.tsr_code}}</span>
+                                                        <span v-else class="text-muted">Not Available</span>
+                                                    </div>
+                                                    <div class="vr" style="width: 1px;"></div>
+                                                    <div>Analyst. : 
+                                                        <span v-if="selected.user" class="fw-medium">{{selected.user}}</span>
+                                                        <span v-else class="text-muted">Not Available</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </b-col>
+                                    </b-row>
+                                </b-col>
+                                <b-col md="auto">
+                                    <div class="hstack gap-4 flex-wrap mt-2">
+                                        <div v-if="showSave">  
+                                            <b-button variant="primary" @click="savePdfWithSignature" block><i class="ri-save-fill me-1"></i> Save</b-button>
+                                        </div>
+                                    </div>
+                                </b-col>
+                            </b-row>
+                            
+                        </b-card-body>
+                    </div>
+                </b-card>
+            </b-col>
+            <div class="chat-wrapper d-lg-flex gap-1 mx-n4 mt-n4 p-1">
+                <div class="file-manager-sidebar" style="margin-left: 20px;">
+                    <simplebar data-simplebar style="overflow-x: hidden;" class="h-100" ref="scrollbar">
+                        <div class="row g-2 p-3">
+                            <div class="col-sm-12 mb-2">
+                                <p class="text-muted fs-12 mb-1">List of Sample Codes :</p>
+                                <span class="badge bg-primary ms-1" v-for="list in selected.lists" :key="list.id"> {{ list.sample.code }}</span>
+                                <hr class="text-muted mb-0"/>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="p-1 border border-dashed rounded">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted mb-0 fs-12">Report Created :</p>
+                                            <h5 class="mb-0 fs-12">{{selected.created_at}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="p-1 border border-dashed rounded mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-calendar-fill"></i></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted mb-0 fs-12">Released Date :</p>
+                                            <h5 class="mb-0 fs-12">Noy yet release</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <hr class="text-muted mt-n2"/>
+                                <div class="card bg-light-subtle shadow-none border">
+                                    <div class="card-header bg-light-subtle">
+                                        <div class="d-flex mb-n3">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div style="height:2rem;width:2rem;">
+                                                    <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                                        <i class="ri-quill-pen-fill text-primary fs-16"></i>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-0 mt-n1 fs-12"><span class="text-body">List of Signatories</span></h5>
+                                                <p class="text-muted text-truncate-two-lines fs-11">This is the list of individuals authorized to sign.</p>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                            
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card bg-white border-bottom shadow-none" no-body>
+                                        <div class="table-responsive mb-2">
+                                            <table class="table table-nowrap table-striped align-middle mb-">
+                                                <thead class="table-light thead-fixed">
+                                                    <tr class="fs-11">
+                                                        <th class="text-center" width="7%">#</th>
+                                                        <th>Name</th>
+                                                        <th class="text-center" width="30%">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody >
+                                                    <tr :style="testreport.data.signatory.analyzed_date === null ? 'cursor: pointer;' : ''"
+                                                        @click="testreport.data.signatory.analyzed_date === null ? setSignatory('analyzed') : ''">
+                                                        <td class="text-center">1</td>
+                                                        <td>
+                                                            <h5 class="fs-12 mb-0" v-if="testreport.data.signatory.analyzed">{{testreport.data.signatory.analyzed.profile.fullname}}</h5>
+                                                            <h5 class="fs-12 mb-0" v-else>-</h5>
+                                                            <p class="fs-11 text-muted mb-0">Analyzed By</p>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span v-if="testreport.data.signatory.analyzed_date" class="badge bg-success">Completed</span>
+                                                            <span v-else class="badge bg-warning">Pending</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr :style="testreport.data.signatory.certified_date === null ? 'cursor: pointer;' : ''"
+                                                        @click="testreport.data.signatory.certified_date === null && setSignatory('certified')">
+                                                        <td class="text-center">2</td>
+                                                        <td>
+                                                            <h5 class="fs-12 mb-0" v-if="testreport.data.signatory.certified">{{testreport.data.signatory.certified.profile.fullname}}</h5>
+                                                            <h5 class="fs-12 mb-0" v-else>-</h5>
+                                                            <p class="fs-11 text-muted mb-0">Certified By</p>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span v-if="testreport.data.signatory.certified_date" class="badge bg-success">Completed</span>
+                                                            <span v-else class="badge bg-warning">Pending</span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr :style="testreport.data.signatory.approved_date === null ? 'cursor: pointer;' : ''"
+                                                        @click="testreport.data.signatory.approved_date === null && setSignatory('approved')">
+                                                        <td class="text-center">3</td>
+                                                        <td>
+                                                            <h5 class="fs-12 mb-0">{{selected.signatory.approved.profile.fullname}}</h5>
+                                                            <p class="fs-11 text-muted mb-0">Approved By</p>
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span v-if="testreport.data.signatory.approved_date" class="badge bg-success">Completed</span>
+                                                            <span v-else class="badge bg-warning">Pending</span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12" v-if="selected.attachment">
+                                <hr class="text-muted mt-n2"/>
+                                <div class="border rounded border-dashed p-1 mb-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm me-2">
+                                            <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-file-text-fill"></i></div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <p class="text-muted mb-0 fs-12">Download PDF :</p>
+                                            <h5 class="mb-0 fs-12">{{selected.code+'.pdf'}}</h5>
+                                        </div>
+                                        <div class="flex-shrink-0 ms-2">
+                                            <div class="d-flex gap-1">
+                                                <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-download-2-line"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </simplebar>
+                </div>
+                <div class="file-manager-content w-100 p-4 pb-0" ref="box" style="margin-right: 20px;">
+                    <div class="row">
+                        <div class="col-md-12">  
+                            <b-row class="mb-0">
+                                <b-col md>
+                                    <div class="hstack gap-1 flex-wrap">
+                                        <div v-if="!showSignature  && signRole" @click="placeSignature">  
+                                            <b-button variant="warning" block><i class="ri-ball-pen-fill me-1"></i>Sign</b-button>
+                                        </div>
+                                        <div>  
+                                            <b-button @click="renderPdf()" variant="light" block><i class="ri-refresh-fill"></i></b-button>
+                                        </div>
+                                    </div>
+                                </b-col>
+                                <b-col md="auto">
+                                    <nav aria-label="Page navigation example">
+                                        <ul class="pagination">
+                                            <li class="page-item" :class="{ disabled: currentPage === 1 }" @click="goToPage(currentPage - 1)">
+                                                <a class="page-link" href="#">Previous</a>
+                                            </li>
+                                            <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }" @click="goToPage(page)">
+                                                <a class="page-link" href="#">{{ page }}</a>
+                                            </li>
+                                            <li class="page-item" :class="{ disabled: currentPage === totalPages }" @click="goToPage(currentPage + 1)">
+                                                <a class="page-link" href="#">Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </b-col>
+                            </b-row>
+                        </div>
+                        <div class="col-md-12 position-relative" style="height: calc(100vh - 290px); overflow: auto;">
+                            <div ref="pdfContainer" class="position-relative w-100">
+                            <img
+                                v-show="showSignature"
+                                ref="signature"
+                                :src="signature"
+                                id="signature"
+                                style="position: absolute; width: auto; height: 120px; cursor: move;"
+                            />
+                            <canvas
+                                ref="pdfCanvas"
+                                id="pdfcanvas"
+                                class="border border-dashed rounded"
+                                style="width: 100%; height: auto;"
+                            ></canvas>
+
+                            <div v-if="isRendering" class="loading-overlay-inside">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-md-12 mt-3" v-if="this.$page.props.user.data.id == selected.user_id">
+                            <file-pond name="pdf" ref="pond" allow-multiple="false" max-files="1" accepted-file-types="application/pdf"
+                            label-idle='Drag & Drop your PDF or <span class="filepond--label-action">Browse</span>' 
+                            :allow-process="false" @addfile="handleAddFile"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </template>
+<script>
+import interact from 'interactjs';
+import * as pdfjsLib from "pdfjs-dist";
+import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
+import vueFilePond from 'vue-filepond';
+import 'filepond/dist/filepond.min.css';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+const FilePond = vueFilePond(FilePondPluginFileValidateType);
+import simplebar from "simplebar-vue";
+import { PDFDocument } from 'pdf-lib';
+import PageHeader from '@/Shared/Components/PageHeader.vue';
+    export default {
+        layout: null,
+        props: ['testreport','analysts','signature'],
+        components: { PageHeader, simplebar, FilePond },
+        data(){
+            return {
+                selected: this.testreport.data,
+                parameters: [{ name: null, result: null }],
+                scale: 4.0,
+                signaturePos: { x: 0, y: 0 },
+                pdfUrl: null,
+                pdfDoc: null,
+                currentPage: 1,
+                totalPages: 0,
+                showSignature: false,
+                isRendering: false,
+                showSave: false,
+                currentDateTime: new Date().toLocaleString(),
+            }
+        },
+        mounted() {
+              pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+    this.renderPdf();
+        },
+        computed: {
+            signRole() {
+                const userId = this.$page.props.user.data.id;
+                const s = this.selected.signatory;
+
+                if (s.analyzed?.id === userId && !s.analyzed_date) {
+                    return 'analyzed';
+                }
+                if (
+                    s.certified?.id === userId &&
+                    !s.certified_date &&
+                    s.analyzed_date
+                ) {
+                    return 'certified';
+                }
+                if (
+                    s.approved?.id === userId &&
+                    !s.approved_date &&
+                    s.certified_date
+                ) {
+                    return 'approved';
+                }
+                return null;
+            }
+        },
+        watch: {
+            showSignature(val) {
+                if (val && this.$refs.signature) {
+                    this.$nextTick(() => {
+                        const sig = this.$refs.signature;
+                        interact(sig).unset();
+                        interact(sig).draggable({
+                            modifiers: [
+                                interact.modifiers.restrictRect({
+                                    restriction: 'parent'
+                                })
+                            ],
+                            listeners: {
+                                move: event => {
+                                    const target = event.target;
+                                    const x = (parseFloat(target.dataset.x) || 0) + event.dx;
+                                    const y = (parseFloat(target.dataset.y) || 0) + event.dy;
+
+                                    target.style.left = `${x}px`;
+                                    target.style.top = `${y}px`;
+
+                                    target.dataset.x = x;
+                                    target.dataset.y = y;
+
+                                    this.signaturePos = { x, y };
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        },
+        methods: { 
+            renderPdf(pageNum = 1) {
+                if (!this.selected.attachment) return;
+
+                this.currentPage = pageNum;
+                this.showSignature = false;
+                this.isRendering = true;
+
+                // PDF URL with cache busting
+                this.pdfUrl = `/storage/uploads/testreports/${this.selected.attachment.name}?v=${Date.now()}`;
+
+                const canvasEl = this.$refs.pdfCanvas;
+                const fileUrl = this.pdfUrl;
+
+                const loadingTask = pdfjsLib.getDocument({ url: fileUrl });
+
+                loadingTask.promise.then(pdf => {
+                    this.totalPages = pdf.numPages;
+
+                    if (pageNum < 1) pageNum = 1;
+                    if (pageNum > pdf.numPages) pageNum = pdf.numPages;
+
+                    pdf.getPage(pageNum).then(page => {
+                        // Get the viewport with your scale
+                        const viewport = page.getViewport({ scale: this.scale });
+
+                        // Set the canvas drawing resolution
+                        canvasEl.width = viewport.width;
+                        canvasEl.height = viewport.height;
+
+                        const context = canvasEl.getContext('2d');
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+
+                        page.render(renderContext).promise.then(() => {
+                            this.isRendering = false;
+                        });
+                    });
+                });
+            },
+            async savePdfWithSignature() {
+                const signature = this.$refs.signature;
+                const canvas = this.$refs.pdfCanvas;
+                if (!signature || !canvas) return;
+
+                // Fetch PDF bytes
+                const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
+
+                // Load PDF with pdf-lib
+                const pdfDoc = await PDFDocument.load(pdfBytes);
+
+                // Get the page you want to sign (example: first page)
+                const page = pdfDoc.getPage(this.currentPage - 1); // zero-indexed
+
+                // Get actual page size in points
+                const pdfPageWidth = page.getWidth();
+                const pdfPageHeight = page.getHeight();
+                
+
+                console.log('PDF size:', pdfPageWidth, pdfPageHeight);
+
+                // Continue your signature positioning logic
+                const SIGNATURE_BOX_WIDTH = 230;
+                const SIGNATURE_BOX_HEIGHT = 55;
+
+                const canvasRect = canvas.getBoundingClientRect();
+                const sigRect = signature.getBoundingClientRect();
+
+                const x = (sigRect.left - canvasRect.left) * (canvas.width / canvasRect.width);
+                const y = (sigRect.top - canvasRect.top) * (canvas.height / canvasRect.height);
+
+                const pdfX = x * (pdfPageWidth / canvas.width);
+                const pdfY = pdfPageHeight - (y * (pdfPageHeight / canvas.height) + SIGNATURE_BOX_HEIGHT);
+
+                const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const sigBlob = await fetch(signature.src).then(res => res.blob());
+                const timestamp = new Date().toLocaleString();
+                const pages = [1,2,3,4];
+
+                const formData = new FormData();
+                formData.append('pdf', pdfBlob, 'signed-report.pdf');
+                formData.append('signature_image', sigBlob, 'signature.png');
+                formData.append('id', this.selected.reference);
+                formData.append('timestamp', timestamp);
+                formData.append('option', 'report');
+                formData.append('role', this.signRole);
+                pages.forEach(p => {
+                    formData.append('page_numbers[]', p);
+                });
+                formData.append('box_x0', pdfX);
+                formData.append('box_y0', pdfY);
+                formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
+                formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
+
+                this.$inertia.post('/testreports', formData, {
+                    preserveScroll: true,
+                    forceFormData: true,
+                    onSuccess: () => this.renderPdf(this.currentPage),
+                    onError: () => (this.errors = this.$page.props.errors),
+                });
+
+                this.showSave = false;
+            },
+            handleAddFile(error, fileItem) {
+                if (error) return console.error('FilePond error:', error);
+
+                const file = fileItem.file;
+                const formData = new FormData();
+                formData.append('pdf', file);
+                formData.append('id', this.selected.reference);
+                formData.append('option', (this.selected.attachment) ? 'reupload' : 'report');
+
+                this.$inertia.post('/testreports', formData, {
+                    preserveScroll: true,
+                    forceFormData: true,
+                    onSuccess: (page) => {
+                        // Update selected.attachment with new data from backend
+                   
+                        if (page.props.flash) {
+                            this.selected.attachment = page.props.flash.data;
+                        }
+
+                        // Cache busting
+                        this.pdfUrl = `/storage/uploads/testreports/${this.selected.attachment.name}?v=${Date.now()}`;
+
+                        // Render updated PDF
+                        setTimeout(() => {
+                            this.renderPdf(this.currentPage);
+                        }, 300);
+                    },
+                    onError: () => this.errors = this.$page.props.errors
+                });
+            },
+            placeSignature() {
+                this.showSignature = true;
+                this.$nextTick(() => {
+                    const canvas = this.$refs.pdfCanvas;
+                    const sig = this.$refs.signature;
+                    if (!canvas || !sig) return;
+
+                    const sigWidth = 100;
+                    const sigHeight = sig.offsetHeight;
+
+                    const centerX = (canvas.offsetWidth - sigWidth) / 2;
+                    const centerY = (canvas.offsetHeight - sigHeight) / 2;
+
+                    sig.style.left = `${centerX}px`;
+                    sig.style.top = `${centerY}px`;
+                    sig.dataset.x = centerX;
+                    sig.dataset.y = centerY;
+
+                    this.signaturePos = { x: centerX, y: centerY };
+                });
+                this.showSave = true;
+            },
+            setSignatory(type){
+                this.$refs.signatory.show(type,this.selected.signatory.id);
+            },
+           goToPage(page) {
+                if (page < 1 || page > this.totalPages) return;
+
+                this.showSignature = false;
+                this.showSave = false;
+                this.currentPage = page;
+
+                this.renderPdf(page);
+            },
+            printQr(){
+                window.open('/testreports?option=qrcode&id='+this.selected.qr);
+            },
+            openPdf() {
+                window.open(this.pdfUrl, '_blank');
+            }
+        }
+    }
+</script>
+<style scoped>
+    .auth-page-wrapper .auth-page-content {
+        padding-bottom: 0px;
+        width: 100%;
+        overflow: hidden;
+        background-color: #f3f3f9;
+    }
+
+    .file-manager-sidebar {
+        min-width: 24%;
+        max-width: 24%;
+        height: calc(100vh - 92px);
+    }
+
+
+ 
+
+</style>

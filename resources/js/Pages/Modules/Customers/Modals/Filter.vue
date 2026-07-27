@@ -26,7 +26,7 @@
         </form>
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Cancel</b-button>
-            <!-- <b-button @click="submitExcel('ok')" variant="success" block>Excel</b-button> -->
+            <b-button @click="submitExcel('ok')" variant="success" block>Excel</b-button>
             <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Filter</b-button>
             <!-- || !isFormValid -->
         </template>
@@ -110,7 +110,7 @@ export default {
                 params.append('barangay', this.form.barangay?.value);
             }
 
-            const url = `/reports?${params.toString()}`;
+            const url = `/accomplishments?${params.toString()}`;
             window.open(url);
         },
         submit(){
