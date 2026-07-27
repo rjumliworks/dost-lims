@@ -69,10 +69,7 @@ class PezaExport implements FromView
                     $query->where('barangay_code', $this->barangay);
                 }
             })
-            // ->whereHas('tsrs', function ($query) {
-            //     $query->whereYear('created_at', 2025)
-            //         ->whereBetween(\DB::raw('MONTH(created_at)'), [1, 6]);
-            // })
+            ->whereYear('tsrs.created_at', now()->year)
             ->where('industry_id','!=',22) //GOVERNMENT
             ->groupBy(
                 'customers.id',
