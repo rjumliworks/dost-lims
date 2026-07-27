@@ -290,7 +290,7 @@
                             </span> {{number_format(trim(str_replace(',','',$quotation['discount']),'₱ '),2,".",",")}}
                         </td>
                     </tr>
-                    @php
+                    {{-- @php
                         $walletAmount = (float) preg_replace('/[^0-9.]/', '', $wallet);
                         $quotationTotal = (float) preg_replace('/[^0-9.]/', '', $quotation['total']);
 
@@ -329,7 +329,7 @@
                             <span style="font-family: DejaVu Sans;">&#8369;</span>{{ number_format($newWalletBalance, 2, ".", ",") }}
                         </td>
                     </tr>
-                    @else
+                    @else --}}
                     <tr>
                         <td colspan="4"></td>
                         <td style="font-size: 8px;">TOTAL</td>
@@ -341,7 +341,7 @@
                             </span> {{number_format(trim(str_replace(',','',$quotation['total']),'₱ '),2,".",",")}}
                         </td>
                     </tr>
-                    @endif
+                    {{-- @endif --}}
                 </tfoot>
             </table>
             <h6 style="font-size: 10px; margin-top: 12px;">2. DESCRIPTION OF THE SAMPLE(S) / REMARK(S)</h6>
