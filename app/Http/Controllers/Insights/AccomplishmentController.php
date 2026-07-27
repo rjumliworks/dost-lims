@@ -38,6 +38,9 @@ class AccomplishmentController extends Controller
             case 'perdiscount':
                 return $this->excel->perdiscount($request);
             break;
+            case 'request':
+                return $this->excel->requesting($request);
+            break;
              case 'peza':
                 return $this->accomplishment->peza($request);
             break;

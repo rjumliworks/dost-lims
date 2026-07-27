@@ -152,7 +152,7 @@ export default {
             this.selectedColumn = (this.selectedColumn == index) ? null : index;
         },
         openExcel(){
-            window.open('/accomplishments?option=discount&month='+this.month+'&year='+this.year+'&laboratory='+this.laboratory);
+            window.open('/accomplishments?option=request&year='+this.year+'&laboratory='+this.laboratory);
         },
         openPrint(){
             window.open('/insights/customers?option=request&subtype=print&year='+this.year+'&laboratory='+this.laboratory);

@@ -8,10 +8,18 @@ use App\Models\ListLaboratory;
 use App\Exports\Excel\LocationExport;
 use App\Exports\Excel\PerDiscountExport;
 use App\Exports\Excel\CustomerDiscountExport;
+use App\Exports\Excel\CustomerRequestingExport;
+use App\Services\Insights\Customer\RequestingClass;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ExcelClass
 {
+    protected $requesting;
+
+    public function __construct(RequestingClass $requesting){
+        $this->requesting = $requesting;
+    }
+
     public function location($request){
         if ($request->month) {
             $monthInput = $request->month;
@@ -66,5 +74,11 @@ class ExcelClass
         $year = ($request->year) ? $request->year : date('Y');
         $lab = ($request->laboratory != 'null' && $request->laboratory) ? $request->laboratory : null;
         return Excel::download(new PerDiscountExport($month,$year,$lab,$discount), 'CDS_'.$monthName.'_'.$year.'.xlsx');
+    }
+
+    public function requesting($request){
+        $year = ($request->year) ? $request->year : date('Y');
+        $laboratories = $this->requesting->data($request);
+        return Excel::download(new CustomerRequestingExport($year,$laboratories), 'CR_'.$year.'.xlsx');
     }
 }
