@@ -98,7 +98,7 @@ class ViewClass
             'file',
             file_get_contents($pdf->getRealPath()),
             $pdf->getClientOriginalName()
-        )->post('http://127.0.0.1:8000/normalize', [
+        )->post('http://127.0.0.1:8000/normalize-no-qr', [
             'verification_url' => url('/'),
         ]);
 
