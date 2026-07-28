@@ -12,6 +12,7 @@ use App\Models\TsrAnalysis;
 use App\Models\TsrSampleReport;
 use App\Models\Target;
 use App\Models\TargetBreakdown;
+use App\Models\ListDiscount;
 use App\Exports\PezaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -181,6 +182,40 @@ class AccomplishmentClass
         ];
     }
     
+    public function assistanceBreakdown($request){
+        $year = $request->year;
+        $month = $request->month;
+
+        $query = Tsr::withWhereHas('payment')
+            ->where('status_id', '!=', 5)
+            ->whereYear('created_at', $year);
+
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+
+        $breakdown = $query->get()
+            ->groupBy(fn ($tsr) => $tsr->payment->discount_id ?? 0)
+            ->map(function ($group, $discountId) {
+                $amount = $group->sum(function ($tsr) {
+                    return (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
+                });
+
+                return [
+                    'discount_id' => $discountId,
+                    'name' => optional(ListDiscount::find($discountId))->name ?? 'Unspecified',
+                    'amount' => $amount,
+                ];
+            })
+            ->sortByDesc('amount')
+            ->values();
+
+        return [
+            'breakdown' => $breakdown,
+            'total' => $breakdown->sum('amount'),
+        ];
+    }
+
     public function targets($request){
         $year = $request->year;
         $data = Target::with('breakdowns.laboratory','breakdowns.objective.type','breakdowns.items.item')->where('year',$year)->first();

@@ -54,7 +54,7 @@
                                             <td>{{ objective.name }}</td>
                                             <td class="text-center" @click="setOverallTarget(objective)">{{ (objective.is_amount) ? formatMoney(objective.target) : formatNumber(objective.target) }}</td>
                                             <template v-if="type == 'Months'" v-for="(m, xIndex) in objective.monthly" :key="xIndex">
-                                                <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex}">{{formatMoney(m.accomplish)}}</td>
+                                                <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex, 'cursor-pointer': isAssistanceRendered(objective)}" @click.stop="openDiscountBreakdown(objective, xIndex)">{{formatMoney(m.accomplish)}}</td>
                                                 <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex}">{{m.accomplish}}</td>
                                             </template>
                                             <template v-if="type == 'Quarters'">
@@ -64,7 +64,7 @@
                                                     <span v-else>{{ q.accomplish }}</span>
                                                 </td>
                                             </template>
-                                            <td v-if="objective.is_amount" class="text-center">{{ formatMoney(objective.accomplish) }}</td>
+                                            <td v-if="objective.is_amount" class="text-center" :class="{'cursor-pointer': isAssistanceRendered(objective)}" @click.stop="openDiscountBreakdown(objective, null)">{{ formatMoney(objective.accomplish) }}</td>
                                             <td v-else class="text-center">{{ formatNumber(objective.accomplish) }}</td>
                                             <td class="text-center">{{ objective.percentage }}</td>
                                             <!-- {{objective.breakdown[0].items}} -->
@@ -133,13 +133,15 @@
         </div>
     </div>
     <Target ref="target"/>
+    <DiscountBreakdown ref="discountBreakdown"/>
 </template>
 <script>
 import Target from './Modals/Target.vue';
+import DiscountBreakdown from './Modals/DiscountBreakdown.vue';
 import Multiselect from "@vueform/multiselect";
 export default {
     layout: null,
-    components: { Multiselect, Target },
+    components: { Multiselect, Target, DiscountBreakdown },
     props: ['years'],
 data(){
         return {
@@ -242,6 +244,19 @@ data(){
         setTarget(objective,breakdown){
             this.$refs.target.show(objective,breakdown);
         },
+        isAssistanceRendered(objective){
+            return objective.name === 'Values of Assistance Rendered';
+        },
+        openDiscountBreakdown(objective, monthIndex){
+            if (!this.isAssistanceRendered(objective)) return;
+
+            if (monthIndex === null) {
+                this.$refs.discountBreakdown.show(this.year, null, `${this.year} (Full Year)`, objective.accomplish);
+            } else {
+                const monthLabel = this.months[monthIndex];
+                this.$refs.discountBreakdown.show(this.year, monthIndex + 1, `${monthLabel} ${this.year}`, objective.monthly[monthIndex].accomplish);
+            }
+        },
         setOverallTarget(objective){
             this.$refs.target.show('Overall',objective);
         },
@@ -297,5 +312,9 @@ data(){
 .table-responsive table {
   position: relative;
   z-index: 1;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 </style>

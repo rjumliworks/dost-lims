@@ -193,6 +193,7 @@ import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 const FilePond = vueFilePond(FilePondPluginFileValidateType);
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import { PDFDocument } from 'pdf-lib';
+
     export default {
         props: ['signature'],
         components: { PageHeader, FilePond },
@@ -339,7 +340,9 @@ import { PDFDocument } from 'pdf-lib';
                     const sig = this.$refs.signature;
                     if (!canvas || !sig) return;
 
-                    const sigWidth = 100;
+                    // Natural aspect ratio (no forced width/height) so the preview
+                    // isn't stretched into a shape the backend won't reproduce.
+                    const sigWidth = sig.offsetWidth;
                     const sigHeight = sig.offsetHeight;
 
                     const centerX = (canvas.offsetWidth - sigWidth) / 2;
@@ -361,9 +364,6 @@ import { PDFDocument } from 'pdf-lib';
                 this.errors = null;
                 this.signing = true;
 
-                const SIGNATURE_BOX_WIDTH = 230;
-                const SIGNATURE_BOX_HEIGHT = 55;
-
                 const pdfBytes = await this.pdfFile.arrayBuffer();
                 const pdfDoc = await PDFDocument.load(pdfBytes);
                 const page = pdfDoc.getPage(this.currentPage - 1);
@@ -374,11 +374,21 @@ import { PDFDocument } from 'pdf-lib';
                 const canvasRect = canvas.getBoundingClientRect();
                 const sigRect = signature.getBoundingClientRect();
 
-                const x = (sigRect.left - canvasRect.left) * (canvas.width / canvasRect.width);
-                const y = (sigRect.top - canvasRect.top) * (canvas.height / canvasRect.height);
+                // Map the preview's on-screen rectangle straight into PDF point
+                // space, 1:1 — no hardcoded box size. Whatever rectangle is drawn
+                // on screen is exactly what gets sent to the backend as the
+                // signature image's box. Any extra room needed for the
+                // "DIGITALLY SIGNED BY" text is added server-side, to the right
+                // of this box, so it never affects where the image itself lands.
+                const ptPerPxX = pdfPageWidth / canvasRect.width;
+                const ptPerPxY = pdfPageHeight / canvasRect.height;
 
-                const pdfX = x * (pdfPageWidth / canvas.width);
-                const pdfY = pdfPageHeight - (y * (pdfPageHeight / canvas.height) + SIGNATURE_BOX_HEIGHT);
+                const boxWidth = sigRect.width * ptPerPxX;
+                const boxHeight = sigRect.height * ptPerPxY;
+
+                const pdfX = (sigRect.left - canvasRect.left) * ptPerPxX;
+                const pdfTopY = pdfPageHeight - (sigRect.top - canvasRect.top) * ptPerPxY;
+                const pdfY = pdfTopY - boxHeight;
 
                 const formData = new FormData();
                 formData.append('option', 'sign');
@@ -387,8 +397,8 @@ import { PDFDocument } from 'pdf-lib';
                 formData.append('page_number', this.currentPage);
                 formData.append('box_x0', pdfX);
                 formData.append('box_y0', pdfY);
-                formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
-                formData.append('box_y1', pdfY + SIGNATURE_BOX_HEIGHT);
+                formData.append('box_x1', pdfX + boxWidth);
+                formData.append('box_y1', pdfY + boxHeight);
 
                 this.$inertia.post('/digitalsigning', formData, {
                     preserveScroll: true,
