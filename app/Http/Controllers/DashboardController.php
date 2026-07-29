@@ -10,6 +10,7 @@ use App\Services\Dashboard\CashierClass;
 use App\Services\Dashboard\AccountantClass;
 use App\Services\Dashboard\CommonClass;
 use App\Services\Dashboard\LabHeadClass;
+use App\Services\Dashboard\LabAideClass;
 use App\Services\Dashboard\ReleasingClass;
 use App\Services\Dashboard\TechnicalManagerClass;
 use App\Services\AgencyClass;
@@ -19,6 +20,7 @@ class DashboardController extends Controller
     protected CommonClass $common;
     protected CroClass $cro;
     protected LabHeadClass $labhead;
+    protected LabAideClass $labaide;
     protected AnalystClass $analyst;
     protected CashierClass $cashier;
     protected DropdownClass $dropdown;
@@ -30,6 +32,7 @@ class DashboardController extends Controller
     public function __construct(
         CommonClass $common,
         LabHeadClass $labhead,
+        LabAideClass $labaide,
         CroClass $cro,
         AnalystClass $analyst,
         CashierClass $cashier,
@@ -41,6 +44,7 @@ class DashboardController extends Controller
     ){
         $this->common = $common;
         $this->labhead = $labhead;
+        $this->labaide = $labaide;
         $this->cro = $cro;
         $this->analyst = $analyst;
         $this->cashier = $cashier;
@@ -136,6 +140,14 @@ class DashboardController extends Controller
                             ]
                         ]);
                     break;
+                     case 'Laboratory Aide':
+                        return inertia('Modules/Dashboard/LabAide/Index',[
+                            'years' => $this->labaide->years(),
+                            'dropdowns' => [
+                                'laboratories' => $this->labaide->laboratories(),
+                            ]
+                        ]);
+                    break;
                     default:
                     return inertia('Modules/Dashboard/Index',[
                         // 'dropdowns' => [
@@ -162,6 +174,9 @@ class DashboardController extends Controller
                     $this->cro->dashboard($request,$this->agency->laboratories()),
                     $this->common->calendar($request)
                 );
+            break;
+            case 'labaide':
+                return $this->labaide->dashboard($request);
             break;
             case 'labhead':
                 return array_merge(

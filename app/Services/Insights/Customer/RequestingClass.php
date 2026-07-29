@@ -12,7 +12,8 @@ class RequestingClass
 
       $customers = Tsr::with([
                'laboratory:id,name',
-               'customer'
+               'customer',
+               'customer.contact'
          ])
          ->where('status_id', '!=', 5)
          ->whereYear('created_at', $year)
@@ -65,6 +66,8 @@ class RequestingClass
          $customer = [
                'customer_id' => $first->customer_id,
                'customer'    => $first->customer->fullname, // change if needed
+               'email'       => $first->customer->contact->email ?? null,
+               'mobile'      => $first->customer->contact->contact_no ?? null,
                'months'      => $months->implode(', ')
          ];
 

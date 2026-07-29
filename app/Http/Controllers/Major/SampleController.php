@@ -35,6 +35,9 @@ class SampleController extends Controller
             case 'qrcode-list':
                 return $this->view->qrcode_list($request);
             break;
+            case 'disposals':
+                return $this->disposal->lists($request);
+            break;
             default :
                 return inertia('Modules/Major/Samples/Index',[
                     'counts' => $this->view->counts(),
@@ -48,6 +51,9 @@ class SampleController extends Controller
             switch($request->option){
                 case 'delete':
                     return $this->save->delete($request);
+                break;
+                case 'disposal':
+                    return $this->disposal->save($request);
                 break;
                 default:
                     return $this->save->save($request);

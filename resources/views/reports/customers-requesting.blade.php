@@ -88,12 +88,14 @@
                 <table style="margin-top: 4px;">
                     <thead>
                         <tr class="category-row">
-                            <th colspan="3">{{ $label }} ({{ $lab[$key] }})</th>
+                            <th colspan="5">{{ $label }} ({{ $lab[$key] }})</th>
                         </tr>
                         <tr>
                             <th width="6%" style="text-align:center;">#</th>
-                            <th width="64%" style="text-align:left;">Customer Name</th>
-                            <th width="30%" style="text-align:left;">Months</th>
+                            <th width="34%" style="text-align:left;">Customer Name</th>
+                            <th width="20%" style="text-align:left;">Email</th>
+                            <th width="15%" style="text-align:left;">Mobile</th>
+                            <th width="25%" style="text-align:left;">Months</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -101,11 +103,13 @@
                             <tr>
                                 <td style="text-align:center;">{{ $index + 1 }}</td>
                                 <td>{{ $customer['customer'] }}</td>
+                                <td>{{ $customer['email'] ?? '-' }}</td>
+                                <td>{{ $customer['mobile'] ?? '-' }}</td>
                                 <td>{{ $customer['months'] }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" style="text-align:center; color:#666;">None</td>
+                                <td colspan="5" style="text-align:center; color:#666;">None</td>
                             </tr>
                         @endforelse
                     </tbody>
