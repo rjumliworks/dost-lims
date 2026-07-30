@@ -73,15 +73,34 @@ class ProfileController extends Controller
                     ['user_id' => $user->id],
                     [
                         'file' => $path, // save the S3 path
-                        'password' => 'rstlD057rubber',
                     ]
                 );
 
                    return [
                         'data' => [],
-                        'message' => 'Profile picture updated successfully.', 
-                        'info' => "The user's profile image has been changed to the new photo."
+                        'message' => 'Certificate uploaded successfully.',
+                        'info' => "The user's PNPKI certificate has been updated."
                     ];
+            });
+        }else if($request->option == 'certificate_password'){
+            $request->validate([
+                'password' => 'required|string|min:4'
+            ]);
+
+            $result = $this->handleTransaction(function () use ($request) {
+
+                $user = User::find(\Auth::user()->id);
+
+                UserCertificate::updateOrCreate(
+                    ['user_id' => $user->id],
+                    ['password' => $request->password]
+                );
+
+                return [
+                    'data' => [],
+                    'message' => 'Certificate password saved successfully.',
+                    'info' => 'The PNPKI certificate password has been updated.'
+                ];
             });
         }else if($request->option == 'signature'){
             $request->validate([

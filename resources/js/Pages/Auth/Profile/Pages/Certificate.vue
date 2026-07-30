@@ -22,74 +22,105 @@
 
     <div class="card-body bg-white rounded-bottom" style="height: calc(100vh - 291px); overflow: auto;">
         <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mb-0 p-3">
-            <div class="border bg-white rounded border-dashed p-1 mb-3">
-                <div class="d-flex align-items-center">
-                    <div class="avatar-sm me-2">
-                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-file-text-fill"></i></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="border bg-white rounded border-dashed p-2 mb-3 h-100">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0" style="height:2.5rem;width:2.5rem;">
+                                    <div class="avatar-title h-100 w-100 rounded fs-20" :class="certificate?.has_p12 ? 'bg-success-subtle text-success' : 'bg-light text-muted'">
+                                        <i :class="certificate?.has_p12 ? 'ri-checkbox-circle-fill' : 'ri-upload-2-line'"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <p class="text-muted mb-0 fs-12">Philippine National Public Key Infrastructure (PNPKI) :</p>
+                                    <h5 class="mb-0 fs-12">{{ certificate?.has_p12 ? 'Certificate uploaded' : 'No certificate uploaded yet' }}</h5>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <input type="file" ref="p12Input" accept=".p12,application/x-pkcs12" class="d-none" @change="onP12Selected" />
+                                <button type="button" class="btn btn-sm btn-outline-primary" :disabled="p12Uploading" @click="$refs.p12Input.click()">
+                                    <i class="ri-upload-2-line align-bottom me-1"></i> {{ certificate?.has_p12 ? 'Replace' : 'Upload' }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="rounded border d-flex align-items-center justify-content-center overflow-hidden bg-light-subtle" style="height:8rem;width:100%;">
+                            <i style="font-size: 50px;" :class="certificate?.has_p12 ? ' ri-shield-keyhole-fill  text-muted' : 'ri-shield-keyhole-line text-muted'"></i>
+                        </div>
                     </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-0 fs-12">Philippine National Public Key Infrastructure (PNPKI) :</p>
-                        <h5 class="mb-0 fs-12">sda</h5>
-                    </div>
-                    <div class="flex-shrink-0 ms-2">
-                        <div class="d-flex gap-1">
-                            <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-download-2-line"></i></button>
+                </div>
+                <div class="col-md-6">
+                    <div class="border bg-white rounded border-dashed p-2 mb-3 h-100">
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="flex-shrink-0" style="height:2.5rem;width:2.5rem;">
+                                    <div class="avatar-title h-100 w-100 rounded fs-20" :class="certificate?.has_signature ? 'bg-success-subtle text-success' : 'bg-light text-muted'">
+                                        <i :class="certificate?.has_signature ? 'ri-checkbox-circle-fill' : 'ri-upload-2-line'"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <p class="text-muted mb-0 fs-12">E-Signature :</p>
+                                    <h5 class="mb-0 fs-12">{{ certificate?.has_signature ? 'Signature uploaded' : 'No signature uploaded yet' }}</h5>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 ms-2">
+                                <input type="file" ref="signatureInput" accept="image/png" class="d-none" @change="onSignatureSelected" />
+                                <button type="button" class="btn btn-sm btn-outline-primary" :disabled="signatureUploading" @click="$refs.signatureInput.click()">
+                                    <i class="ri-upload-2-line align-bottom me-1"></i> {{ certificate?.has_signature ? 'Replace' : 'Upload' }}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="rounded border d-flex align-items-center justify-content-center overflow-hidden bg-light-subtle" style="height:8rem;width:100%;">
+                            <img v-if="certificate?.signature_url" :src="certificate.signature_url" alt="Signature" style="max-height:100%;max-width:100%;object-fit:contain;" />
+                            <i v-else class="ri-quill-pen-line text-muted fs-24"></i>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="border bg-white rounded border-dashed p-1 mb-3">
+            <div class="border bg-white rounded border-dashed p-2 mb-3">
                 <div class="d-flex align-items-center">
-                    <div class="avatar-sm me-2">
-                        <div class="avatar-title rounded bg-transparent text-primary fs-20"><i class="ri-lock-2-fill"></i></div>
-                    </div>
-                    <div class="flex-grow-1">
-                        <p class="text-muted mb-0 fs-12">Password :</p>
-                        <h5 class="mb-0 fs-12">sda</h5>
-                    </div>
-                    <div class="flex-shrink-0 ms-2">
-                        <div class="d-flex gap-1">
-                            <button type="button" @click="openPdf" class="btn btn-icon text-muted btn-sm fs-18"><i class="ri-eye-line"></i></button>
+                    <div class="flex-shrink-0" style="height:2.5rem;width:2.5rem;">
+                        <div class="avatar-title h-100 w-100 rounded fs-20" :class="certificate?.has_password ? 'bg-success-subtle text-success' : 'bg-light text-muted'">
+                            <i class="ri-lock-2-fill"></i>
                         </div>
+                    </div>
+                    <div class="flex-grow-1 ms-2">
+                        <div class="input-group">
+                            <input
+                                :type="showPassword ? 'text' : 'password'"
+                                v-model="passwordForm.password"
+                                class="form-control"
+                                :class="{ 'is-invalid': passwordForm.errors.password }"
+                                :placeholder="certificate?.has_password ? 'Enter new password to change' : 'Enter p12 password'"
+                                autocomplete="off"
+                            />
+                            <button type="button" class="btn btn-outline-secondary" @click="showPassword = !showPassword">
+                                <i :class="showPassword ? 'ri-eye-off-line' : 'ri-eye-line'"></i>
+                            </button>
+                            <button type="button" class="btn btn-primary" :disabled="!passwordForm.password || passwordForm.processing" @click="savePassword">
+                                <i class="ri-save-3-line"></i>
+                            </button>
+                        </div>
+                        <InputError :message="passwordForm.errors.password" />
                     </div>
                 </div>
             </div>
-            <file-pond
-            name="p12file"
-            ref="pond"
-            allow-multiple="false"
-            max-files="1"
-            accepted-file-types="application/x-pkcs12"
-            label-idle='Drag & Drop your P12 file or <span class="filepond--label-action">Browse</span>'
-            :allow-process="false"
-            @addfile="handleAddFile"
-            />
-            <file-pond
-            name="signatureFile"
-            ref="pond"
-            allow-multiple="false"
-            max-files="1"
-            accepted-file-types="image/png"
-            label-idle='Drag & Drop your signature PNG or <span class="filepond--label-action">Browse</span>'
-            :allow-process="false"
-            @addfile="handleSignatureFile"
-        />
         </div>
     </div>
 </div>
 </template>
 <script>
-import vueFilePond from 'vue-filepond';
-import 'filepond/dist/filepond.min.css';
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
-const FilePond = vueFilePond(FilePondPluginFileValidateType);
 import { useForm } from '@inertiajs/vue3';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
+import InputError from '@/Shared/Components/Forms/InputError.vue';
 export default {
-    components: { InputLabel, TextInput, FilePond },
+    components: { InputLabel, TextInput, InputError },
     data(){
         return {
+            showPassword: false,
+            p12Uploading: false,
+            signatureUploading: false,
             form: useForm({
                 id: this.$page.props.user.data.id,
                 username: this.$page.props.user.data.username,
@@ -101,51 +132,61 @@ export default {
                 sex: this.$page.props.user.data.sex,
                 mobile: this.$page.props.user.data.mobile,
             }),
+            passwordForm: useForm({
+                option: 'certificate_password',
+                password: '',
+            }),
+        }
+    },
+    computed: {
+        certificate(){
+            return this.$page.props.user.data.certificate;
         }
     },
     methods: {
-        handleSignatureFile(error, fileItem) {
-            if (error) return console.error('FilePond error:', error);
-
-            const file = fileItem.file;
-            const formData = new FormData();
-            formData.append('signature', file);
-            formData.append('option', 'signature');
-
-            this.$inertia.post('/profile', formData, {
+        savePassword(){
+            this.passwordForm.post('/profile', {
                 preserveScroll: true,
-                forceFormData: true,
-                onSuccess: (page) => {
-                    console.log(page);
+                onSuccess: () => {
+                    this.passwordForm.reset('password');
+                    this.showPassword = false;
                 },
-                onError: () => this.errors = this.$page.props.errors
             });
         },
-        handleAddFile(error, fileItem) {
-            if (error) return console.error('FilePond error:', error);
+        onP12Selected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            const file = fileItem.file;
             const formData = new FormData();
             formData.append('p12', file);
             formData.append('option', 'certificate');
 
+            this.p12Uploading = true;
             this.$inertia.post('/profile', formData, {
                 preserveScroll: true,
                 forceFormData: true,
-                onSuccess: (page) => {
-                    // Update selected.attachment with new data from backend
-                
-                    if (page.props.flash) {
-                        this.selected.attachment = page.props.flash.data;
-                    }
+                onFinish: () => {
+                    this.p12Uploading = false;
+                    event.target.value = '';
+                },
+                onError: () => this.errors = this.$page.props.errors
+            });
+        },
+        onSignatureSelected(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                    // Cache busting
-                    this.pdfUrl = `/storage/uploads/testreports/${this.selected.attachment.name}?v=${Date.now()}`;
+            const formData = new FormData();
+            formData.append('signature', file);
+            formData.append('option', 'signature');
 
-                    // Render updated PDF
-                    setTimeout(() => {
-                        this.renderPdf(this.currentPage);
-                    }, 300);
+            this.signatureUploading = true;
+            this.$inertia.post('/profile', formData, {
+                preserveScroll: true,
+                forceFormData: true,
+                onFinish: () => {
+                    this.signatureUploading = false;
+                    event.target.value = '';
                 },
                 onError: () => this.errors = this.$page.props.errors
             });

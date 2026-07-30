@@ -154,6 +154,7 @@ class ViewClass
         $tempSignaturePath = $tempDir . '/' . basename($user->certificate->signature);
         file_put_contents($tempSignaturePath, $signatureBytes);
 
+
         $response = Http::attach(
             'file',
             file_get_contents($pdf->getRealPath()),

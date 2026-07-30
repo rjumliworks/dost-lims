@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
@@ -30,6 +31,19 @@ class UserResource extends JsonResource
             'two_factor_confirmed' => ($this->two_factor_confirmed_at) ? true : false,
             'password_changed_at' => $this->password_changed_at,
             'password_confirmed_at' => session('auth'),
+            'certificate' => $this->certificate ? [
+                'has_p12' => (bool) $this->certificate->file,
+                'has_signature' => (bool) $this->certificate->signature,
+                'has_password' => (bool) $this->certificate->password,
+                'signature_url' => $this->certificate->signature
+                    ? Storage::disk('s3')->temporaryUrl(
+                        $this->certificate->signature,
+                        now()->addMinutes(30)
+                    )
+                    : null,
+                'expires_at' => $this->certificate->expires_at,
+                'updated_at' => $this->certificate->updated_at,
+            ] : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

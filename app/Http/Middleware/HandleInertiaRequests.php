@@ -25,7 +25,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'user' => \Auth::guard('web')->check()
                 ? new UserResource(
-                    User::with('profile')
+                    User::with('profile', 'certificate')
                         ->find(\Auth::guard('web')->id())
                 )
                 : null,
