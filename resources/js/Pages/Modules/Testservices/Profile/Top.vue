@@ -35,14 +35,14 @@
                                         </div>
                                     </Link>
                                     <div class="vr" v-if="['Technical Manager'].some(role => $page.props.roles.includes(role))" style="width: 1px;"></div>
-                                    <div v-if="service.data.status.name === 'Pending'">  
-                                        <b-button @click="submit(32)" variant="primary" block><i class="ri-save-fill me-1"></i> Approved</b-button>
+                                    <div v-if="service.data.status.name === 'Pending'">
+                                        <b-button @click="submit(32,'approve')" variant="primary" block><i class="ri-checkbox-circle-fill me-1"></i> Approve</b-button>
                                     </div>
-                                    <div v-else-if="service.data.status.name === 'Approved'">  
-                                        <b-button @click="submit(33)" variant="danger" block><i class="ri-save-fill me-1"></i> Suspend</b-button>
+                                    <div v-else-if="service.data.status.name === 'Approved'">
+                                        <b-button @click="submit(33,'suspend')" variant="danger" block><i class="ri-forbid-2-fill me-1"></i> Suspend</b-button>
                                     </div>
-                                    <div v-else-if="service.data.status.name === 'Suspended'">  
-                                        <b-button @click="submit(32)" variant="success" block><i class="ri-save-fill me-1"></i> Reactive</b-button>
+                                    <div v-else-if="service.data.status.name === 'Suspended'">
+                                        <b-button @click="submit(32,'reactivate')" variant="success" block><i class="ri-restart-fill me-1"></i> Reactivate</b-button>
                                     </div>
                                 </div>
                             </b-col>
@@ -61,8 +61,8 @@ export default {
     components: { Submit },
     props: ['service'],
     methods: {
-        submit(id){
-            this.$refs.submit.show(id,this.service.data.reference);
+        submit(id,type){
+            this.$refs.submit.show(type,id,this.service.data.reference,this.service.data.testname.name);
         }
     }
 }

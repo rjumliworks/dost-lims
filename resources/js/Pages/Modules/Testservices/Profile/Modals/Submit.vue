@@ -1,29 +1,35 @@
 <template>
-    <b-modal v-model="showModal" hide-footer hide-header title="Cancel Request" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" hide-footer hide-header class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div class="text-center">
-            <div class="mt-4">
-                <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light" 
-                    style="width: 50px; height: 50px;">
-                    <i class="ri-delete-bin-2-fill text-danger fs-24"></i>
+            <div class="mt-2">
+                <span class="d-inline-flex align-items-center justify-content-center rounded-circle"
+                    :class="type === 'suspend' ? 'bg-danger-subtle' : 'bg-success-subtle'"
+                    style="width: 55px; height: 55px;">
+                    <i v-if="type === 'approve'" class="ri-checkbox-circle-fill text-success fs-24"></i>
+                    <i v-else-if="type === 'suspend'" class="ri-forbid-2-fill text-danger fs-24"></i>
+                    <i v-else class="ri-restart-fill text-success fs-24"></i>
                 </span>
-                <h4 class="mb-2 mt-2 text-danger fw-semibold fs-14">Cancel Technical Service Request</h4>
-                <p class="text-muted mb-0 mt-4 fs-12">Please confirm if you wish to cancel this TSR request.</p>
-                <p class="text-muted mb-4 fs-12">Once cancelled, the Technical Service Request cannot be recovered.</p>
+                <h4 class="mb-2 mt-3 fw-semibold fs-14" :class="type === 'suspend' ? 'text-danger' : 'text-success'">
+                    <span v-if="type === 'approve'">Approve Test Service</span>
+                    <span v-else-if="type === 'suspend'">Suspend Test Service</span>
+                    <span v-else>Reactivate Test Service</span>
+                </h4>
+                <p class="text-muted mb-4 mt-2 fs-12 px-2">
+                    <span v-if="type === 'approve'">You are about to approve <span class="fw-semibold text-body">{{ name }}</span>. Once approved, it will be available for use in TSR creation.</span>
+                    <span v-else-if="type === 'suspend'">You are about to suspend <span class="fw-semibold text-body">{{ name }}</span>. It will no longer be available for use in TSR creation until reactivated.</span>
+                    <span v-else>You are about to reactivate <span class="fw-semibold text-body">{{ name }}</span>. It will be available again for use in TSR creation.</span>
+                </p>
             </div>
         </div>
-        <BRow class="justify-content-center mt-n2">
-            <BCol lg="11">
-                <label class="form-label fs-12 mb-n2 text-muted">
-                    Reason for cancellation <span class="text-danger">*</span>
-                </label>
-                <textarea id="attribute"  :class="{ 'is-invalid': form.errors.reason }" v-model="form.reason" maxlength="250" rows="2" type="text" class="form-control mb-4" style="background-color: #f5f6f7;"/>
-            </BCol>
-        </BRow>
         <div class="hstack gap-2 justify-content-center mb-3">
-            <button @click="hide()" class="btn btn-light btn-md" type="button">
-                <div class="btn-content"> Close</div>
+            <button @click="hide()" class="btn btn-light btn-md" type="button" :disabled="form.processing">
+                <div class="btn-content">Close</div>
             </button>
-            <a @click="submit()" class="btn btn-danger" href="javascript:void(0);" target="_self">Confirm</a>
+            <b-button @click="submit()" :variant="variant" :disabled="form.processing" block>
+                <span v-if="type === 'approve'">Yes, Approve</span>
+                <span v-else-if="type === 'suspend'">Yes, Suspend</span>
+                <span v-else>Yes, Reactivate</span>
+            </b-button>
         </div>
     </b-modal>
 </template>
@@ -37,13 +43,24 @@ export default {
                status_id: null,
                option: 'status'
             }),
+            type: 'approve',
+            name: null,
             showModal: false
         }
     },
-    methods: { 
-        show(id,reference){
+    computed: {
+        variant(){
+            if(this.type === 'suspend') return 'danger';
+            if(this.type === 'reactivate') return 'success';
+            return 'primary';
+        }
+    },
+    methods: {
+        show(type,id,reference,name){
+            this.type = type;
             this.form.status_id = id;
             this.form.reference = reference;
+            this.name = name;
             this.showModal = true;
         },
         submit(){
