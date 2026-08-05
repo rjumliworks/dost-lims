@@ -57,6 +57,7 @@ class AgencyClass
                 'label' => $item->name.' ('.$item->description.')',
                 'name' => $item->name,
                 'description' => $item->description,
+                'is_onsite' => $item->is_onsite,
                 'fee' => $item->fee
             ];
         });

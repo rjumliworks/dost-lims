@@ -32,6 +32,7 @@ class ViewResource extends JsonResource
             'addfee' => $this->addfee,
             'is_shelf' => $this->is_shelf,
             'is_onsite' => $this->is_onsite,
+            'is_referral' => $this->is_referral,
             'services' => $this->services,
             'referral' => $this->referral,
             'report' => $this->report,

@@ -42,7 +42,7 @@ class SaveClass
             'quantity' => $request->quantity,
             'total' => $request->total,
         ]);
-        $data->is_onsite = 1;
+        $data->is_onsite = ($request->service['is_onsite']) ? 1 : 0;
         $data->save();
 
         $total = $this->updateTotal($request->id,$request->total);
@@ -76,7 +76,7 @@ class SaveClass
             $payment->save();
         }
         $tsr = Tsr::find($request->tsr_id);
-        $tsr->is_onsite = 0;
+        $tsr->is_onsite = ($tsr->is_onsite) ? 0 : $tsr->is_onsite;
         $tsr->save();
 
         return [

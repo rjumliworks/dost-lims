@@ -96,6 +96,47 @@
                     <InputLabel for="due" value="Report Due" :message="form.errors.due_at"/>
                     <TextInput v-model="form.due_at" type="date" class="form-control" @input="handleInput('due_at')" :light="true"/>
                 </BCol>
+                <BCol lg="12" class="mt-0 mb-n2">
+                    <hr class="text-muted"/>
+                </BCol>
+                <BCol lg="8" class="fs-12 mt-1">Is TSR classified as a referral?</BCol>
+                <BCol lg="4" class="mt-1">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-0">
+                                <input type="radio" id="er1" class="custom-control-input me-2" :value="true" v-model="form.is_referral">
+                                <label class="custom-control-label fw-normal fs-12" for="er1">Yes</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="custom-control custom-radio mb-0">
+                                <input type="radio" id="er2" class="custom-control-input me-2" :value="false" v-model="form.is_referral">
+                                <label class="custom-control-label fw-normal fs-12" for="er2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </BCol>
+                <BCol lg="12" class="mt-n1">
+                    <hr class="text-muted"/>
+                </BCol>
+                <BCol :lg="(form.agency_id == form.my_agency) ? 6 : 12" class="mt-n2 mb-1" v-if="form.is_referral">
+                    <InputLabel for="region" value="Agency" :message="form.errors.agency_id"/>
+                    <Multiselect
+                    @input="handleInput('agency_id')"
+                    :options="dropdowns.agencies"
+                    v-model="form.agency_id"
+                    :searchable="true" label="name"
+                    placeholder="Select Agency"/>
+                </BCol>
+                <BCol lg="6" class="mt-n2 mb-1" v-if="form.is_referral && form.my_agency == form.agency_id">
+                    <InputLabel for="province" value="Province" :message="form.errors.province_code"/>
+                    <Multiselect
+                    @input="handleInput('province_code')"
+                    :options="provinces"
+                    v-model="form.province_code"
+                    :searchable="true" label="name"
+                    placeholder="Select Province"/>
+                </BCol>
             </div>
             </form>
         <template v-slot:footer>
@@ -112,12 +153,13 @@ import Multiselect from "@vueform/multiselect";
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
-    props: ['dropdowns'],
+    props: ['dropdowns','region'],
     components: { InputLabel, TextInput, Multiselect, Add },
     data(){
         return {
             currentUrl: window.location.origin,
             selected: null,
+            provinces: [],
             form: useForm({
                 id: null,
                 release_id: null,
@@ -128,13 +170,32 @@ export default {
                 created_at: null,
                 customer: null,
                 laboratory_id: null,
+                is_referral: null,
+                agency_id: null,
+                province_code: null,
+                my_agency: this.$page.props.user.data.agency,
                 option: 'Update'
             }),
             customers: [],
             showModal: false
         }
     },
-    methods: { 
+    watch: {
+        "form.is_referral"(newVal){
+            if(!newVal){
+                this.form.agency_id = null;
+                this.form.province_code = null;
+            }
+        },
+        "form.agency_id"(newVal){
+            if(newVal == this.form.my_agency){
+                this.fetchProvince(this.region);
+            }else{
+                this.form.province_code = null;
+            }
+        }
+    },
+    methods: {
         show(data){
             this.selected = data;
             this.form.id = data.id;
@@ -155,7 +216,32 @@ export default {
             this.form.release_id = (data.mode) ? data.mode.id : null;
             this.form.discount_id = data.payment.discount_id;
             this.form.laboratory_id = this.selected.laboratory.id;
+            this.form.is_referral = data.is_referral;
+            if(data.referral){
+                this.form.agency_id = data.referral.agency.id;
+                if(this.form.agency_id == this.form.my_agency){
+                    this.fetchProvince(this.region);
+                    this.form.province_code = (data.referral.province) ? data.referral.province.code : null;
+                }else{
+                    this.form.province_code = null;
+                }
+            }else{
+                this.form.agency_id = null;
+                this.form.province_code = null;
+            }
             this.showModal = true;
+        },
+        fetchProvince(code){
+            axios.get('/search',{
+                params: {
+                    option: 'provinces',
+                    code: code
+                }
+            })
+            .then(response => {
+                this.provinces = response.data;
+            })
+            .catch(err => console.log(err));
         },
         formatToDateInput(str) {
             const parts = new Date(str).toLocaleDateString('en-CA'); 

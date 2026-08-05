@@ -1,7 +1,8 @@
 <template>
     <BRow>
         <div class="col-md-12">
-            <div class="card bg-light-subtle shadow-none border">
+            <div class="card bg-light-subtle shadow-none border ribbon-box">
+                <div v-if="selected.is_onsite" class="ribbon-two ribbon-two-danger"><span style="font-size: 8px;">IS ON-SITE</span></div>
                 <div class="card-header bg-light-subtle">
                     <div class="d-flex mb-n3">
                         <div class="flex-shrink-0 me-3">

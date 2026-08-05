@@ -17,6 +17,8 @@ class TestserviceAddon extends Model
         'fee',
         'description',
         'is_additional',
+        'is_child',
+        'is_onsite',
         'is_active',
         'agency_id',
         'added_by'

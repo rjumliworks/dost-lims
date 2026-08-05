@@ -63,7 +63,7 @@
     <Wallet ref="wallet"/>
     <Cancel ref="cancel"/>
     <Update :dropdowns="dropdowns" ref="update"/>
-    <Edit :dropdowns="dropdowns" ref="edit"/>
+    <Edit :dropdowns="dropdowns" :region="region" ref="edit"/>
 </template>
 <script>
 import Copy from '../Modals/Top/Copy.vue';
@@ -74,7 +74,7 @@ import Wallet from '../Modals/Top/Wallet.vue';
 import Update from '../Modals/Top/Update.vue';
 export default {
     components: { Save, Wallet, Edit, Cancel, Update, Copy },
-    props:['selected','analyses','dropdowns'],
+    props:['selected','analyses','dropdowns','region'],
     computed: {
         allSamplesHaveAnalyses() {
         if (!this.selected.samples || !this.selected.samples.length) return false;

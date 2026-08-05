@@ -48,6 +48,7 @@ class SaveClass
             'release_id' => $request->release_id,
             'laboratory_id' => $request->laboratory_id,
             'is_referral' => $request->is_referral,
+            'is_onsite' => $request->is_onsite,
             'status_id' => 1
         ]);
         if($request->is_referral){
@@ -282,6 +283,8 @@ class SaveClass
             'quantity' => $request->quantity,
             'total' => $request->total,
         ]);
+        $data->is_onsite = ($request->service['is_onsite']) ? 1 : 0;
+        $data->save();
         $total = $this->updateTotal($request->id,$request->total);
         return [
             'data' => $total,
@@ -309,6 +312,7 @@ class SaveClass
             $payment->subtotal = $subtotal;
             $payment->discount = $discount;
             $payment->total = $total;
+            $payment->is_onsite = ($data->service->is_onsite) ? 0 : $payment->is_onsite;
             $payment->save();
         }
 

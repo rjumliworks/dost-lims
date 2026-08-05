@@ -71,7 +71,25 @@ class UpdateClass
             $data->due_at = $request->due_at;
             $data->laboratory_id = $request->laboratory_id;
             $data->release_id = $request->release_id;
+            if($request->has('is_referral')){
+                $data->is_referral = $request->is_referral;
+            }
             $data->save();
+
+            if($request->has('is_referral')){
+                if($request->is_referral){
+                    $isPsto = $request->agency_id == $request->my_agency && $request->province_code;
+                    $referralData = [
+                        'is_psto' => $isPsto,
+                        'province_code' => $isPsto ? $request->province_code : null,
+                        'agency_id' => $request->agency_id,
+                    ];
+                    $data->referral ? $data->referral->update($referralData) : $data->createReferral($referralData);
+                }elseif($data->referral){
+                    $data->referral->delete();
+                }
+            }
+
             if($data){
                 
                 if($data->payment->discount_id != $request->discount_id){

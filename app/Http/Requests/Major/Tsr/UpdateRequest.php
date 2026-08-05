@@ -31,7 +31,21 @@ class UpdateRequest extends FormRequest
                     ],
                 ];
             break;
-            default: 
+            case 'Update':
+                return [
+                    'agency_id' => [
+                        Rule::requiredIf(function () {
+                            return $this->is_referral == true;
+                        }),
+                    ],
+                    'province_code' => [
+                        Rule::requiredIf(function () {
+                            return $this->is_referral == true && $this->agency_id == $this->my_agency;
+                        }),
+                    ],
+                ];
+            break;
+            default:
                 return [];
         }
     }
