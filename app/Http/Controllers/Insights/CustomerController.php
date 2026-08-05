@@ -48,6 +48,9 @@ class CustomerController extends Controller
             case 'top':
                 return $this->top->fetch($request);
             break;
+            case 'province':
+                return $this->data->province($request);
+            break;
             case 'location':
                 return $this->location->data($request);
             break;
@@ -67,7 +70,8 @@ class CustomerController extends Controller
                     'dropdowns' => [
                         'classes' => $this->dropdown->dropdowns('Class','n/a'),
                         'sexs' => $this->dropdown->dropdowns('Sex','n/a'),
-                        'individuals' => $this->dropdown->dropdowns('Individual','n/a')
+                        'individuals' => $this->dropdown->dropdowns('Individual','n/a'),
+                        'laboratories' => $this->agency->laboratories()
                     ]
                 ]);
         }

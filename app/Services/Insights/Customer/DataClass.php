@@ -336,6 +336,57 @@ class DataClass
         return DefaultResource::collection($combinedData);
     }
 
+    public function province($request){
+        if($request->code){
+            return $this->provinceCustomers($request);
+        }
+        return $this->customer_province($request);
+    }
+
+    public function provinceCustomers($request){
+        $sort = ($request->sort) ? $request->sort : 'desc';
+        $year = $request->year;
+        $laboratory = $request->laboratory;
+        $classification = $request->classification;
+        $code = $request->code;
+        $count = $request->count ?: 10;
+
+        $query = Customer::query()
+            ->select('customers.id','customers.name','customers.is_main','customers.name_id','customers.agency_id')
+            ->with(['customer_name:id,name,has_branches,classification_id', 'customer_name.classification:id,name'])
+            ->whereHas('address', function ($q) use ($code, $year) {
+                ($code == '097332000') ? $q->where('municipality_code', $code) : $q->where('province_code', $code);
+                ($year) ? $q->whereYear('created_at', $year) : '';
+            })
+            ->when($classification, function ($q) use ($classification) {
+                $q->whereHas('customer_name', function ($sub) use ($classification) {
+                    $sub->where('classification_id', $classification);
+                });
+            })
+            ->when($laboratory, function ($q) use ($laboratory) {
+                $q->whereHas('tsrs', function ($sub) use ($laboratory) {
+                    $sub->where('laboratory_id', $laboratory);
+                });
+            });
+
+        $query->withCount(['tsrs' => function ($q) use ($year, $laboratory) {
+            $q->whereIn('status_id', [3,4]);
+            ($laboratory) ? $q->where('laboratory_id', $laboratory) : '';
+            ($year) ? $q->whereYear('created_at', $year) : '';
+        }]);
+
+        $query->orderBy('tsrs_count', $sort);
+
+        $data = $query->paginate($count);
+
+        $province = LocationMunicipality::where('code', $code)->value('name')
+            ?? LocationProvince::where('code', $code)->value('name');
+
+        return DefaultResource::collection($data)->additional([
+            'province' => $province,
+        ]);
+    }
+
     public function high_request($request){
         $sort = ($request->sort) ? $request->sort : 'desc';
         $year = $request->year;

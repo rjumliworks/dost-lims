@@ -49,15 +49,15 @@
             </div>
         </div>
     </div>
-    <TopCustomer :dropdowns="dropdowns" :current_year="current_year" :years="years" ref="topcustomer"/>
+    <ProvinceModal :dropdowns="dropdowns" :current_year="current_year" :years="years" ref="provincemodal"/>
 </template>
 <script>
 import _ from 'lodash';
 import simplebar from "simplebar-vue";
-import TopCustomer from '../Modals/TopCustomer.vue';
+import ProvinceModal from '../Modals/Province.vue';
 export default {
     props: ['total','lists','dropdowns','current_year','years'],
-    components: { simplebar, TopCustomer },
+    components: { simplebar, ProvinceModal },
     data(){
         return {
             sort: null,
@@ -67,12 +67,12 @@ export default {
         percentage(data){
             if(data != 0){
                 return (_.divide(data, this.lists.total_tsrs)*100).toFixed(2)+'%';
-            }else{ 
+            }else{
                 return '0%';
             }
         },
         openView(){
-            this.$refs.topcustomer.show('Customer Distribution by Province');
+            this.$refs.provincemodal.show('Customer Distribution by Province');
         }
     }
 }
