@@ -55,7 +55,7 @@
                             <div class="fs-12 text-muted">
                                 Requested by <span class="fw-semibold text-body">{{ amendment.requested_by?.profile?.fullname }}</span> on {{ amendment.created_at }}
                             </div>
-                            <span class="badge fs-10" :class="amendment.status?.color+' '+amendment.status?.others">{{ amendment.status?.name }}</span>
+                            <span class="badge fs-10" :class="amendment.status?.color+' text-white'">{{ amendment.status?.name }}</span>
                         </div>
                         <div class="row g-2">
                             <div class="col-md-6">
@@ -112,7 +112,7 @@
                             <div class="fs-12 text-muted">
                                 Requested by <span class="fw-semibold text-body">{{ amendment.requested_by?.profile?.fullname }}</span> on {{ amendment.created_at }}
                             </div>
-                            <span class="badge fs-10" :class="amendment.status?.color+' '+amendment.status?.others">{{ amendment.status?.name }}</span>
+                            <span class="badge fs-10" :class="amendment.status?.color+' text-white'">{{ amendment.status?.name }}</span>
                         </div>
                         <div class="row g-2">
                             <div class="col-md-6">

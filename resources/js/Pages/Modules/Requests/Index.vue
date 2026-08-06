@@ -85,7 +85,7 @@
                                     </td>
                                     <td class="fs-12">{{list.laboratory?.name}}</td>
                                     <td class="text-center">
-                                        <BBadge class="bg-primary-subtle text-primary">{{ itemCount(list) }} item(s)</BBadge>
+                                        <BBadge class="bg-primary-subtle text-primary">{{ itemCount(list) }} sample(s)</BBadge>
                                     </td>
                                     <td class="text-center fs-12">{{ list.latest_request_at ?? '-' }}</td>
                                     <td class="text-end">
@@ -166,9 +166,7 @@ export default {
             this.fetch();
         },
         itemCount(list){
-            const sampleCount = (list.samples || []).reduce((total,sample) => total + (sample.amendments?.length || 0), 0);
-            const dueDateCount = (list.due_date_amendments || []).length;
-            return sampleCount + dueDateCount;
+            return (list.samples || []).reduce((total,sample) => total + (sample.amendments?.length || 0), 0);
         },
         openView(list){
             this.$refs.view.show(list);
