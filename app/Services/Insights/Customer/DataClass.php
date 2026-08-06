@@ -151,9 +151,14 @@ class DataClass
             ->join('customer_names', 'customers.name_id', '=', 'customer_names.id') // ✅ required
             ->join('list_industries as industry', 'customer_names.industry_id', '=', 'industry.id')
             ->leftJoin('list_industries as type', 'industry.industry_id', '=', 'type.id')
+            ->leftJoin('tsr_payments', function ($join) {
+                $join->on('tsr_payments.tsr_id', '=', 'tsrs.id')
+                    ->where('tsr_payments.status_id', 7);
+            })
             ->select(
                 \DB::raw("COALESCE(type.name, industry.name) as name"),
-                \DB::raw('COUNT(DISTINCT tsrs.customer_id) as count')
+                \DB::raw('COUNT(DISTINCT tsrs.customer_id) as count'),
+                \DB::raw('COALESCE(SUM(tsr_payments.total),0) as gross_sales')
             )
             ->where('customer_names.classification_id', 8) // ✅ FIXED
             ->where('tsrs.status_id','!=',5)

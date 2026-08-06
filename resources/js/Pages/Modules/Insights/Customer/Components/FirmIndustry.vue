@@ -35,33 +35,75 @@
                                 <th style="cursor: pointer; width: 4%;">#</th>
                                 <th scope="col">Name</th>
                                 <th class="text-center" style="width: 10%;">Total</th>
+                                <th class="text-end" style="width: 16%;">Gross Sales</th>
+                                <th class="text-center" style="width: 10%;">%</th>
                             </tr>
                         </thead>
                         <tbody class="bg-light-subtle fs-12">
-                            <tr v-for="(list,index) in lists" v-bind:key="index">
+                            <tr v-for="(list,index) in listsWithPercentage" v-bind:key="index">
                                 <td>{{index + 1}}</td>
                                 <td class="text-truncate name-cell">{{list.name }}</td>
                                 <td class="text-center">{{list.count}} </td>
+                                <td class="text-end">{{formatMoney(list.gross_sales)}}</td>
+                                <td class="text-center">{{list.percentage}}%</td>
                             </tr>
                         </tbody>
                     </table>
                 </simplebar>
             </div>
+            <div class="d-flex justify-content-end fs-12 fw-bold mt-1 pe-1" v-if="listsWithPercentage.length">
+                <span>Total: {{totalPercentage}}%</span>
+            </div>
         </div>
     </div>
-    <TopCustomer :dropdowns="dropdowns" :current_year="current_year" :years="years" ref="topcustomer"/>
+    <FirmIndustryModal :dropdowns="dropdowns" :current_year="current_year" :years="years" ref="firmindustry"/>
 </template>
 <script>
 import _ from 'lodash';
 import simplebar from "simplebar-vue";
-import TopCustomer from '../Modals/TopCustomer.vue';
+import FirmIndustryModal from '../Modals/FirmIndustry.vue';
 export default {
     props: ['total','lists','dropdowns','current_year','years'],
-    components: { simplebar, TopCustomer },
+    components: { simplebar, FirmIndustryModal },
     data(){
         return {
             sort: null,
         }
+    },
+    computed: {
+        listsWithPercentage(){
+            const lists = this.lists || [];
+            const grandTotal = lists.reduce((sum, list) => sum + Number(list.gross_sales || 0), 0);
+
+            if (!grandTotal) {
+                return lists.map(list => ({ ...list, percentage: '0.0' }));
+            }
+
+            // Largest remainder method so displayed percentages always sum to exactly 100.
+            const shares = lists.map(list => {
+                const exact = (Number(list.gross_sales || 0) / grandTotal) * 1000;
+                return { floor: Math.floor(exact), remainder: exact - Math.floor(exact) };
+            });
+
+            let allocated = shares.reduce((sum, s) => sum + s.floor, 0);
+            let remaining = 1000 - allocated;
+
+            const order = shares
+                .map((s, index) => ({ index, remainder: s.remainder }))
+                .sort((a, b) => b.remainder - a.remainder);
+
+            for (let i = 0; i < remaining; i++) {
+                shares[order[i].index].floor += 1;
+            }
+
+            return lists.map((list, index) => ({
+                ...list,
+                percentage: (shares[index].floor / 10).toFixed(1),
+            }));
+        },
+        totalPercentage(){
+            return this.listsWithPercentage.reduce((sum, list) => sum + Number(list.percentage || 0), 0).toFixed(1);
+        },
     },
     methods: {
         formatMoney(value) {
@@ -69,7 +111,7 @@ export default {
             return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         openView(){
-            this.$refs.topcustomer.show('Top High-Spending Customers');
+            this.$refs.firmindustry.show('Firms by Industry');
         }
     }
 }

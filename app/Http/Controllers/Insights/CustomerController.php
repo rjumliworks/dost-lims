@@ -51,6 +51,9 @@ class CustomerController extends Controller
             case 'province':
                 return $this->data->province($request);
             break;
+            case 'firms_industry':
+                return $this->data->firms_industry($request);
+            break;
             case 'location':
                 return $this->location->data($request);
             break;

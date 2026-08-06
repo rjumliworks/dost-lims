@@ -35,6 +35,7 @@
                                 <th style="cursor: pointer; width: 4%;">#</th>
                                 <th scope="col">Name</th>
                                 <th class="text-center" style="width: 10%;">#</th>
+                                <th class="text-center" style="width: 12%;">% Share</th>
                             </tr>
                         </thead>
                         <tbody class="bg-light-subtle fs-12">
@@ -42,6 +43,7 @@
                                 <td>{{index + 1}}</td>
                                 <td class="text-truncate name-cell">{{list.name }}</td>
                                 <td class="text-center">{{list.address_count}} </td>
+                                <td class="text-center">{{percentage(list.total_amount)}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -63,12 +65,17 @@ export default {
             sort: null,
         }
     },
+    computed: {
+        totalAmount(){
+            return _.sumBy(this.lists, list => Number(list.total_amount) || 0);
+        }
+    },
     methods: {
         percentage(data){
-            if(data != 0){
-                return (_.divide(data, this.lists.total_tsrs)*100).toFixed(2)+'%';
+            if(data && this.totalAmount){
+                return (_.divide(data, this.totalAmount)*100).toFixed(2)+'%';
             }else{
-                return '0%';
+                return '0.00%';
             }
         },
         openView(){
