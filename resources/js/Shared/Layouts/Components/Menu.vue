@@ -36,7 +36,7 @@
                     </span>
                     </Link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))">
                     <Link href="/requests" class="nav-link menu-link"
                     :class="{ 'active': $page.url === '/requests' }">
                     <i class="ri-file-edit-fill"></i>
