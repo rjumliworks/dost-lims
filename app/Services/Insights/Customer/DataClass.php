@@ -4,6 +4,9 @@ namespace App\Services\Insights\Customer;
 
 use App\Models\Tsr;
 use App\Models\Customer;
+use App\Models\TsrPayment;
+use App\Models\ListDropdown;
+use App\Models\ListLaboratory;
 use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
 use App\Http\Resources\DefaultResource;
@@ -321,13 +324,30 @@ class DataClass
             $query->whereYear('created_at',$year);
             // $query->where('municipality_code', '097332000'); // Only count addresses with this municipality_code
         }])
-        ->where('code', '097332000') 
-        ->orderBy('address_count', 'DESC') 
+        ->addSelect(['total_amount' => TsrPayment::selectRaw('COALESCE(SUM(tsr_payments.total),0)')
+            ->join('tsrs', 'tsrs.id', '=', 'tsr_payments.tsr_id')
+            ->join('customers', 'customers.id', '=', 'tsrs.customer_id')
+            ->join('customer_addresses', 'customer_addresses.customer_id', '=', 'customers.id')
+            ->whereColumn('customer_addresses.municipality_code', 'location_municipalities.code')
+            ->where('tsr_payments.status_id', 7)
+            ->when($year, fn($q) => $q->whereYear('customer_addresses.created_at', $year))
+        ])
+        ->where('code', '097332000')
+        ->orderBy('address_count', 'DESC')
         ->get();
 
         $provincesData = LocationProvince::withCount(['address' => function ($query) use ($year) {
             $query->where('municipality_code', '!=', '097332000')->whereYear('created_at',$year);
         }])
+        ->addSelect(['total_amount' => TsrPayment::selectRaw('COALESCE(SUM(tsr_payments.total),0)')
+            ->join('tsrs', 'tsrs.id', '=', 'tsr_payments.tsr_id')
+            ->join('customers', 'customers.id', '=', 'tsrs.customer_id')
+            ->join('customer_addresses', 'customer_addresses.customer_id', '=', 'customers.id')
+            ->where('customer_addresses.municipality_code', '!=', '097332000')
+            ->whereColumn('customer_addresses.province_code', 'location_provinces.code')
+            ->where('tsr_payments.status_id', 7)
+            ->when($year, fn($q) => $q->whereYear('customer_addresses.created_at', $year))
+        ])
         ->whereIn('code', $provinces) // Filter by provinces
         ->orderBy('address_count', 'DESC') // Order by the number of addresses
         ->get();
@@ -350,6 +370,7 @@ class DataClass
         $classification = $request->classification;
         $code = $request->code;
         $count = $request->count ?: 10;
+        $subtype = $request->subtype;
 
         $query = Customer::query()
             ->select('customers.id','customers.name','customers.is_main','customers.name_id','customers.agency_id')
@@ -375,15 +396,72 @@ class DataClass
             ($year) ? $q->whereYear('created_at', $year) : '';
         }]);
 
-        $query->orderBy('tsrs_count', $sort);
+        $query->addSelect(['total_amount' => TsrPayment::selectRaw('COALESCE(SUM(tsr_payments.total),0)')
+            ->join('tsrs', 'tsrs.id', '=', 'tsr_payments.tsr_id')
+            ->whereColumn('tsrs.customer_id', 'customers.id')
+            ->where('tsr_payments.status_id', 7)
+            ->when($laboratory, fn($q) => $q->where('tsrs.laboratory_id', $laboratory))
+            ->when($year, fn($q) => $q->whereYear('tsr_payments.paid_at', $year))
+        ]);
 
-        $data = $query->paginate($count);
+        $query->orderBy('tsrs_count', $sort);
 
         $province = LocationMunicipality::where('code', $code)->value('name')
             ?? LocationProvince::where('code', $code)->value('name');
 
+        if($subtype == 'print'){
+            $data = $query->take($count)->get();
+
+            $pdf = \PDF::loadView('tops.province', [
+                'lists' => $data,
+                'province' => $province,
+                'year' => $year,
+                'laboratory' => ListLaboratory::where('id', $laboratory)->value('name'),
+                'classification' => ListDropdown::where('id', $classification)->value('name')
+            ])->setPaper('a4', 'portrait');
+            return $pdf->stream('province-'.$province.'-'.($year ?: 'all').'.pdf');
+        }
+
+        $data = $query->paginate($count);
+
+        $totalRequests = Tsr::whereIn('status_id', [3,4])
+            ->when($laboratory, fn($q) => $q->where('laboratory_id', $laboratory))
+            ->when($year, fn($q) => $q->whereYear('created_at', $year))
+            ->whereHas('customer', function ($q) use ($code, $year, $classification) {
+                $q->whereHas('address', function ($sub) use ($code, $year) {
+                    ($code == '097332000') ? $sub->where('municipality_code', $code) : $sub->where('province_code', $code);
+                    ($year) ? $sub->whereYear('created_at', $year) : '';
+                });
+                $q->when($classification, function ($sub) use ($classification) {
+                    $sub->whereHas('customer_name', function ($s) use ($classification) {
+                        $s->where('classification_id', $classification);
+                    });
+                });
+            })
+            ->count();
+
+        $totalAmount = TsrPayment::where('tsr_payments.status_id', 7)
+            ->when($year, fn($q) => $q->whereYear('tsr_payments.paid_at', $year))
+            ->whereHas('tsr', function ($q) use ($laboratory, $code, $year, $classification) {
+                ($laboratory) ? $q->where('laboratory_id', $laboratory) : '';
+                $q->whereHas('customer', function ($sub) use ($code, $year, $classification) {
+                    $sub->whereHas('address', function ($a) use ($code, $year) {
+                        ($code == '097332000') ? $a->where('municipality_code', $code) : $a->where('province_code', $code);
+                        ($year) ? $a->whereYear('created_at', $year) : '';
+                    });
+                    $sub->when($classification, function ($c) use ($classification) {
+                        $c->whereHas('customer_name', function ($cc) use ($classification) {
+                            $cc->where('classification_id', $classification);
+                        });
+                    });
+                });
+            })
+            ->sum('total');
+
         return DefaultResource::collection($data)->additional([
             'province' => $province,
+            'total_requests' => $totalRequests,
+            'total_amount' => $totalAmount,
         ]);
     }
 

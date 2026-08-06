@@ -54,6 +54,7 @@
                                             <th class="text-center" style="width: 5%;">#</th>
                                             <th scope="col">Province</th>
                                             <th class="text-center" style="width: 10%;">Customers</th>
+                                            <th class="text-center" style="width: 14%;">Total Amount</th>
                                             <th class="text-center" style="width: 8%;">Action</th>
                                         </tr>
                                     </thead>
@@ -62,6 +63,7 @@
                                             <td class="text-center">{{ index + 1 }}.</td>
                                             <td>{{ list.name }}</td>
                                             <td class="text-center">{{ list.address_count }}</td>
+                                            <td class="text-center">{{ formatMoney(list.total_amount) }}</td>
                                             <td class="text-center">
                                                 <button @click="viewProvince(list)" class="btn btn-sm btn-soft-success" type="button" v-b-tooltip.hover title="View Customers">
                                                     <i class="ri-eye-fill align-bottom"></i>
@@ -76,6 +78,23 @@
 
                     <template v-else>
                         <div class="card bg-white border-bottom shadow-none">
+                            <div class="d-flex flex-wrap gap-3 fs-12 ms-1 me-1" style="margin-top: 12px;">
+                                <span class="badge bg-primary-subtle text-primary fs-12">
+                                    <i class="ri-group-fill align-bottom me-1"></i>{{ meta.total ?? 0 }} Customer(s)
+                                </span>
+                                <span class="badge bg-success-subtle text-success fs-12">
+                                    <i class="ri-file-list-3-fill align-bottom me-1"></i>{{ totalRequests }} Total Request(s)
+                                </span>
+                                <span class="badge bg-dark-subtle text-dark fs-12">
+                                    <i class="ri-wallet-3-fill align-bottom me-1"></i>{{ formatMoney(totalAmount) }} Total Amount
+                                </span>
+                                <span class="badge bg-info-subtle text-info fs-12">
+                                    <i class="ri-calendar-event-fill align-bottom me-1"></i>Year: {{ year ?? 'All' }}
+                                </span>
+                                <span class="badge bg-warning-subtle text-warning fs-12">
+                                    <i class="ri-flask-fill align-bottom me-1"></i>Laboratory: {{ laboratoryName }}
+                                </span>
+                            </div>
                             <b-row class="mb-2 ms-1 me-1" style="margin-top: 12px;">
                                 <b-col lg>
                                     <div class="input-group mb-1 d-flex flex-nowrap">
@@ -110,6 +129,9 @@
                                             :can-clear="false" :can-deselect="false"
                                             v-model="filter.count"
                                         />
+                                        <b-button @click="openPrint()" type="button" variant="primary">
+                                            <i class="ri ri-printer-fill search-icon"></i>
+                                        </b-button>
                                     </div>
                                 </b-col>
                             </b-row>
@@ -126,6 +148,7 @@
                                             <th scope="col">Customer</th>
                                             <th scope="col">Classification</th>
                                             <th class="text-center" style="width: 10%;">Requests</th>
+                                            <th class="text-center" style="width: 14%;">Total Amount</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -134,6 +157,7 @@
                                             <td>{{ list.fullname }}</td>
                                             <td>{{ list.customer_name?.classification?.name }}</td>
                                             <td class="text-center">{{ list.tsrs_count }}</td>
+                                            <td class="text-center">{{ formatMoney(list.total_amount) }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -163,6 +187,8 @@ export default {
             lists: [],
             meta: {},
             links: {},
+            totalRequests: 0,
+            totalAmount: 0,
             sort: 'desc',
             year: this.current_year,
             filter: {
@@ -171,6 +197,12 @@ export default {
                 count: 10
             },
             showModal: false
+        }
+    },
+    computed: {
+        laboratoryName(){
+            const found = (this.dropdowns.laboratories || []).find(item => item.value == this.filter.laboratory);
+            return found ? found.name : 'All';
         }
     },
     watch: {
@@ -231,6 +263,8 @@ export default {
                 this.lists = response.data.data;
                 this.meta = response.data.meta;
                 this.links = response.data.links;
+                this.totalRequests = response.data.total_requests;
+                this.totalAmount = response.data.total_amount;
             })
             .catch(err => console.log(err));
         },
@@ -238,10 +272,25 @@ export default {
             this.sort = data;
             this.fetchCustomers();
         },
+        openPrint(){
+            window.open(
+                '/insights/customers?option=province&subtype=print'
+                + '&code=' + (this.selectedProvince?.code ?? '')
+                + '&laboratory=' + (this.filter.laboratory ?? '')
+                + '&classification=' + (this.filter.classification ?? '')
+                + '&year=' + (this.year ?? '')
+                + '&count=' + (this.filter.count ?? '')
+                + '&sort=' + (this.sort ?? '')
+            );
+        },
         backToList(){
             this.view = 'list';
             this.selectedProvince = null;
             this.fetchProvinces();
+        },
+        formatMoney(value) {
+            let val = (value/1).toFixed(2).replace(',', '.')
+            return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         hide(){
             this.showModal = false;
