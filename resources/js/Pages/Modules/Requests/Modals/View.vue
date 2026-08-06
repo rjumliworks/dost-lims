@@ -36,7 +36,7 @@
                         <div class="flex-grow-1">
                             <p class="text-muted mb-0 fs-12">Laboratory :</p>
                             <h5 class="mb-0 fs-12">{{ selected.laboratory?.name }}</h5>
-                            <span class="badge fs-10 mt-1" :class="selected.status?.color+' '+selected.status?.others">{{ selected.status?.name }}</span>
+                            <!-- <span class="badge fs-10 mt-1" :class="selected.status?.color+' '+selected.status?.others">{{ selected.status?.name }}</span> -->
                         </div>
                     </div>
                 </div>
