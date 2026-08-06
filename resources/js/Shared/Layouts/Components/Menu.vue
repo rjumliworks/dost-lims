@@ -36,6 +36,15 @@
                     </span>
                     </Link>
                 </li>
+                <li class="nav-item">
+                    <Link href="/requests" class="nav-link menu-link"
+                    :class="{ 'active': $page.url === '/requests' }">
+                    <i class="ri-file-edit-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Update Requests
+                        
+                    </span>
+                    </Link>
+                </li>
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Laboratory Modules</span>

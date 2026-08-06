@@ -39,6 +39,8 @@ class Tsr extends Model
     }
 
     public function samples(){ return $this->hasMany('App\Models\TsrSample', 'tsr_id');}
+    public function amendments(){ return $this->hasManyThrough('App\Models\TsrSampleAmendment', 'App\Models\TsrSample', 'tsr_id', 'sample_id');}
+    public function dueDateAmendments(){ return $this->hasMany('App\Models\TsrAmendment', 'tsr_id');}
     public function payment(){ return $this->hasOne('App\Models\TsrPayment', 'tsr_id');}
     public function onlinepayment(){ return $this->hasOne('App\Models\Payment', 'tsr_id');}
     public function release(){ return $this->hasOne('App\Models\TsrRelease', 'tsr_id');}

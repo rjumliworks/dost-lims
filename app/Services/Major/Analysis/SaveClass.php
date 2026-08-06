@@ -42,7 +42,9 @@ class SaveClass
             'quantity' => $request->quantity,
             'total' => $request->total,
         ]);
-        $data->is_onsite = ($request->service['is_onsite']) ? 1 : 0;
+        if($request->service['is_onsite']){
+            $data->is_onsite = 1;
+        }
         $data->save();
 
         $total = $this->updateTotal($request->id,$request->total);
@@ -76,7 +78,9 @@ class SaveClass
             $payment->save();
         }
         $tsr = Tsr::find($request->tsr_id);
-        $tsr->is_onsite = ($tsr->is_onsite) ? 0 : $tsr->is_onsite;
+        $tsr->is_onsite = $tsr->services()->whereHas('service', function ($query) {
+            $query->where('is_onsite', 1);
+        })->exists() ? 1 : 0;
         $tsr->save();
 
         return [
@@ -115,17 +119,15 @@ class SaveClass
         $data= TsrService::where('id', $request->id)->where('is_additional', 1)->firstOrFail();
         $fee = (float) trim(str_replace(',','',$data->total),'₱ ');
         if($data->delete()){
-            $service = TsrService::where('typeable_type','App\Models\TsrAnalysis')->where('typeable_id',$request->id)->first();
-            $total_service = ($service) ? (float) trim(str_replace(',','',$service->total),'₱ ') : 0;
             $payment = TsrPayment::with('discounted')->where('tsr_id',$request->tsr_id)->first();
             $subtotal = (float) trim(str_replace(',','',$payment->subtotal),'₱ ');
             $total = (float) trim(str_replace(',','',$payment->total),'₱ ');
             if($payment->discount_id === 1){
                 $discount = 0;
-                $subtotal = $subtotal - $fee - $total_service;
-                $total = $total - $fee - $total_service;
+                $subtotal = $subtotal - $fee;
+                $total = $total - $fee;
             }else{
-                $subtotal = $subtotal - $fee - $total_service;
+                $subtotal = $subtotal - $fee;
                 $discount = (float) (($payment->discounted->value/100) * $subtotal);
                 $total =  ((float) $subtotal - (float) $discount);
             }
@@ -148,10 +150,11 @@ class SaveClass
         $data = TsrAnalysis::find($id);
         $fee = (float) trim(str_replace(',','',$data->fee),'₱ ');
         if($data->delete()){
-           $total_service = TsrService::where('typeable_type', 'App\Models\TsrAnalysis')
+           $addons = TsrService::where('typeable_type', 'App\Models\TsrAnalysis')
             ->where('typeable_id', $id)
-            ->get()
-            ->sum(fn ($service) => (float) str_replace(['₱', ',', ' '], '', $service->total));
+            ->get();
+           $total_service = $addons->sum(fn ($service) => (float) str_replace(['₱', ',', ' '], '', $service->total));
+           $addons->each->delete();
             $payment = TsrPayment::with('discounted')->where('tsr_id',$tsr_id)->first();
             $subtotal = (float) trim(str_replace(',','',$payment->subtotal),'₱ ');
             $total = (float) trim(str_replace(',','',$payment->total),'₱ ');

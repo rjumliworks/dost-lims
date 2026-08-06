@@ -29,6 +29,7 @@ class ViewResource extends JsonResource
             'payment' => $this->payment,
             'purpose' => $this->purpose,
             'due_at' => $this->due_at,
+            'pending_due_date_amendment' => $this->dueDateAmendments->first(),
             'addfee' => $this->addfee,
             'is_shelf' => $this->is_shelf,
             'is_onsite' => $this->is_onsite,

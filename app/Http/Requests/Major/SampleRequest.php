@@ -38,6 +38,13 @@ class SampleRequest extends FormRequest
                 'description' => 'nullable',
                 'tsr_id' => 'sometimes|required',
             ];
+        }else if($this->option == 'amendment'){
+            return [
+                'id' => 'required|exists:tsr_samples,id',
+                'description' => 'required',
+                'customer_description' => 'required',
+                'remarks' => 'required',
+            ];
         }else{
             return [];
         }
@@ -60,6 +67,12 @@ class SampleRequest extends FormRequest
                 'samplename_id.required' => 'Please select a sample name',
                 'customer_description.required' => 'Please enter the customer description',
                 'tsr_id.required' => 'Please select a Technical Service Request (TSR)',
+            ];
+        }else if($this->option == 'amendment'){
+            return [
+                'description.required' => 'Please enter the proposed description',
+                'customer_description.required' => 'Please enter the proposed customer description',
+                'remarks.required' => 'Please state the reason for this update request',
             ];
         }else{
             return [];

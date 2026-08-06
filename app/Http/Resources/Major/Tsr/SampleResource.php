@@ -20,6 +20,7 @@ class SampleResource extends JsonResource
             'customer_description' => $this->customer_description,
             'remarks' => $this->remarks,
             'description' => $this->description,
+            'pending_amendment' => $this->amendments->first(),
             'is_completed' => $this->is_completed,
             'completed_at' => $this->completed_at,
             'is_disposed' => $this->is_disposed,

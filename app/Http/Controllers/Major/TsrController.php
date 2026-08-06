@@ -105,7 +105,10 @@ class TsrController extends Controller
                 case 'Paid':
                     return $this->update->paid($request);
                 break;
-            }      
+                case 'RequestDueDate':
+                    return $this->update->requestDueDateAmendment($request);
+                break;
+            }
         });   
         return back()->with([
             'data' => $result['data'],

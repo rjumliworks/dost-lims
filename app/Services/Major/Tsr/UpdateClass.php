@@ -4,10 +4,10 @@ namespace App\Services\Major\Tsr;
 
 use Carbon\Carbon;
 use App\Models\Tsr;
-use App\Models\TsrSample;
-use App\Models\TsrReport;
 use App\Models\TsrPayment;
 use App\Models\TsrReferral;
+use App\Models\TsrAmendment;
+use App\Models\ListStatus;
 
 class UpdateClass
 {
@@ -110,7 +110,7 @@ class UpdateClass
                     $this->updateTotal($request->id);
                 }
              
-                $this->report($request->id);
+                \Artisan::call('report', ['id' => $request->id]);
             }
 
             $final =  Tsr::query()
@@ -136,6 +136,55 @@ class UpdateClass
 
     }
 
+    public function requestDueDateAmendment($request){
+        $tsr = Tsr::findOrFail($request->id);
+
+        $pending = TsrAmendment::where('tsr_id', $tsr->id)
+            ->whereHas('status', function ($query) {
+                $query->where('type', 'Amendment')->where('name', 'Pending');
+            })
+            ->first();
+
+        if ($pending) {
+            if ($pending->requested_by != \Auth::user()->id) {
+                return [
+                    'data' => [],
+                    'message' => 'Update Request Not Submitted',
+                    'info' => 'This TSR already has a pending due date update request awaiting review by the Technical Manager.',
+                    'status' => false,
+                ];
+            }
+
+            $pending->update([
+                'proposed_due_at' => $request->proposed_due_at,
+                'remarks' => $request->remarks,
+            ]);
+
+            return [
+                'data' => $pending->toArray(),
+                'message' => 'Update Request Revised',
+                'info' => "Your pending due date update request has been revised and is still awaiting approval from the Technical Manager."
+            ];
+        }
+
+        $status = ListStatus::where('type','Amendment')->where('name','Pending')->first();
+
+        $amendment = TsrAmendment::create([
+            'tsr_id' => $tsr->id,
+            'previous_due_at' => $tsr->getRawOriginal('due_at'),
+            'proposed_due_at' => $request->proposed_due_at,
+            'remarks' => $request->remarks,
+            'requested_by' => \Auth::user()->id,
+            'status_id' => $status->id,
+        ]);
+
+        return [
+            'data' => $amendment->toArray(),
+            'message' => 'Update Request Submitted',
+            'info' => "Your requested due date update is now pending approval from the Technical Manager."
+        ];
+    }
+
      private function updateTotal($id){
         $data = TsrPayment::with('discounted','deduction')->where('tsr_id',$id)->first();
         $subtotal = (float) trim(str_replace(',','',$data->subtotal),'₱ ');
@@ -159,195 +208,4 @@ class UpdateClass
         return $data;
     }
 
-    public function report($id){
-       
-        $tsr = Tsr::where('id',$id)
-        ->with('services.service')
-        ->with('received:id','received.profile:id,firstname,middlename,lastname,user_id')
-        ->with('agency','laboratory:id,name','status:id,name,color,others')
-        ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches','customer.wallet')
-        ->with('customer.address:address,customer_id,region_code,province_code,district_code,municipality_code,barangay_code','customer.address.region:code,name,region','customer.address.province:code,name','customer.address.municipality:code,name','customer.address.barangay:code,name','customer.address.district:code,name')
-        ->with('conforme:id,name,contact_no','customer.contact:id,email,contact_no,customer_id')
-        ->with('payment:tsr_id,id,total,subtotal,discount,or_number,is_paid,is_free,paid_at,status_id,discount_id,collection_id,payment_id','payment.status:id,name,color,others','payment.collection:id,name','payment.type:id,name','payment.discounted:id,name,value')
-        ->first();
-
-        $samples = TsrSample::with(
-            'samplename',
-            'sampletype',
-            'analyses.status',
-            'analyses.testservice.method.method',
-            'analyses.testservice.testname',
-            'analyses.addfee.service'
-        )
-        ->where('tsr_id', $id)
-        ->get();
-       
-        $groupedData = [];
-        $groupedRefunded = [];
-
-        foreach ($samples as $row) {
-
-            $sampleCode  = $row->code;
-            $sampleOther = $row->name;
-            $sampleName  = $row->samplename->name;
-            $sampleType  = $row->sampletype->name;
-
-            // Counters for each sample
-            $activeIndex = 0;
-            $refundedIndex = 0;
-
-            foreach ($row->analyses as $analysis) {
-
-                $fees = null;
-
-                if ($analysis->addfee->count()) {
-                    foreach ($analysis->addfee as $item) {
-                        $fees[] = [
-                            'name' => $item->service->name,
-                            'fee' => $item->service->fee,
-                            'quantity' => $item->quantity,
-                            'total' => $analysis->total,
-                        ];
-                    }
-                }
-
-                $testName        = $analysis->testservice->testname->name;
-                $testMethod      = $analysis->testservice->method->method->name;
-                $testMethodShort = $analysis->testservice->method->method->short;
-
-                $key = $sampleCode.'_'.$testName.'_'.$testMethod;
-
-                if ($analysis->status->name === 'Refunded') {
-
-                    if (!isset($groupedRefunded[$key])) {
-
-                        $groupedRefunded[$key] = [
-                            'samplecode' => $refundedIndex == 0 ? $sampleCode : '',
-                            'samplename' => $refundedIndex == 0 ? $sampleName : '-',
-                            'sampletype' => $refundedIndex == 0 ? $sampleType : '-',
-                            'sampleother' => $sampleOther,
-                            'testname' => $testName,
-                            'method' => $testMethod,
-                            'methodShort' => $testMethodShort,
-                            'count' => 0,
-                            'fee' => $analysis->fee,
-                            'additional' => $fees,
-                        ];
-                    }
-
-                    $groupedRefunded[$key]['count']++;
-                    $refundedIndex++;
-
-                } else {
-
-                    if (!isset($groupedData[$key])) {
-
-                        $groupedData[$key] = [
-                            'samplecode' => $activeIndex == 0 ? $sampleCode : '',
-                            'samplename' => $activeIndex == 0 ? $sampleName : '-',
-                            'sampletype' => $activeIndex == 0 ? $sampleType : '-',
-                            'sampleother' => $sampleOther,
-                            'testname' => $testName,
-                            'method' => $testMethod,
-                            'methodShort' => $testMethodShort,
-                            'count' => 0,
-                            'fee' => $analysis->fee,
-                            'additional' => $fees,
-                        ];
-                    }
-
-                    $groupedData[$key]['count']++;
-                    $activeIndex++;
-                }
-            }
-        }
-
-         if(isset($tsr->services) && count($tsr->services)){
-           foreach ($tsr->services as $item) {
-                $services[] = [
-                    'name' => $item->service->name ?? null,
-                    'description' => $item->service->description ?? null,
-                    'quantity' => $item->quantity,
-                    'fee' => $item->fee,
-                    'total' => $item->total
-                ];
-            }
-        }else{
-            $services = null;
-        }
-
-
-        $samples = array_values($groupedData);
-        $refunded = array_values($groupedRefunded);
-       
-
-        $descs = TsrSample::query()
-        ->where('tsr_id',$id)
-        ->get();
-        $d = ($tsr->customer->address->address != NULL || $tsr->customer->address->address != '') ? $tsr->customer->address->address.', ' : '';
-        if($tsr->customer->address->municipality->name == 'Zamboanga City' || $tsr->customer->address->municipality->name == 'Isabela City'){
-            $a = $tsr->customer->address->municipality->name;
-        }else if($tsr->customer->address->municipality->name == 'Iloilo City'){
-            $a = $tsr->customer->address->district->name.', '.$tsr->customer->address->municipality->name;
-        }else if($tsr->customer->address->province->name == 'Sulu'){
-            $a = $tsr->customer->address->municipality->name.', '.$tsr->customer->address->province->name;
-        }else{
-            $a = $tsr->customer->address->municipality->name.', '.$tsr->customer->address->province->name;
-        }
-        $information = [
-            'code' => $tsr->code,
-            'services' => $services,
-            'date' => $tsr->created_at,
-            'laboratory_id' => $tsr->laboratory_id,
-            'due_at' => $tsr->due_at,
-            'receiver' => $tsr->received->profile->firstname.' '.$tsr->received->profile->middlename[0].'. '.$tsr->received->profile->lastname,
-            'customer' => [
-                'name' => ($tsr->customer->is_main) ? $tsr->customer->customer_name->name :  $tsr->customer->customer_name->name.' - '.$tsr->customer->name,
-                'address1' => $d.$tsr->customer->address->barangay->name.', '.$a,
-                'address2' => $tsr->customer->address->barangay->name.', '.$a,
-                'contact_no' => $tsr->customer->contact->contact_no,
-                'email' => $tsr->customer->contact->email,
-                'conforme' => [
-                    'name' => $tsr->conforme->name,
-                    'contact_no' => $tsr->conforme->contact_no
-                ]
-            ],
-            'payment' => [
-                'subtotal' => $tsr->payment->subtotal,
-                'discount' => $tsr->payment->discount,
-                'total' => $tsr->payment->total,
-                'discounted' => $tsr->payment->discounted->name,
-            ],
-            'samples' => $samples,
-            'refunded' => $refunded,
-            'descriptions' => $descs    
-        ];
-
-        
-    
-        if(TsrReport::where('tsr_id',$id)->count() > 0){
-            $data = TsrReport::where('tsr_id',$id)->first();
-            $data->information = json_encode($information);
-            if(empty($data->secret_key)) {
-                $data->secret_key = $this->generatePasskey();
-            }
-            $data->save();
-        }else{
-            $data = TsrReport::create([
-                'information' => json_encode($information,true),
-                'secret_key' => $this->generatePasskey(),
-                'tsr_id' => $id
-            ]);
-        }
-        return true;
-    }
-
-    private function generatePasskey($length = 8) {
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $passkey = '';
-        for ($i = 0; $i < $length; $i++) {
-            $passkey .= $characters[random_int(0, strlen($characters) - 1)];
-        }
-        return $passkey;
-    }
 }

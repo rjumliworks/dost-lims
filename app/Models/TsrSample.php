@@ -67,6 +67,11 @@ class TsrSample extends Model
     {
         return $this->hasMany('App\Models\TsrAnalysis', 'sample_id');
     }
+
+    public function amendments()
+    {
+        return $this->hasMany('App\Models\TsrSampleAmendment', 'sample_id');
+    }
     
     public function getUpdatedAtAttribute($value)
     {

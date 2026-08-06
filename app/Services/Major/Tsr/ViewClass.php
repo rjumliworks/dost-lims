@@ -253,6 +253,16 @@ class ViewClass
                 'samples.analyses.testservice.method.reference',
                 'samples.analyses.testservice.fees'
             )
+            ->with(['samples.amendments' => function ($query) {
+                $query->whereHas('status', function ($query) {
+                    $query->where('type', 'Amendment')->where('name', 'Pending');
+                });
+            }])
+            ->with(['dueDateAmendments' => function ($query) {
+                $query->whereHas('status', function ($query) {
+                    $query->where('type', 'Amendment')->where('name', 'Pending');
+                });
+            }])
             ->with('services.service')
             ->with('release.user:id','release.user.profile','release.mode')
             ->with('mode')

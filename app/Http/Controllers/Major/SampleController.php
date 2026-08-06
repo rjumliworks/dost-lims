@@ -55,6 +55,9 @@ class SampleController extends Controller
                 case 'disposal':
                     return $this->disposal->save($request);
                 break;
+                case 'amendment':
+                    return $this->save->requestAmendment($request);
+                break;
                 default:
                     return $this->save->save($request);
             }

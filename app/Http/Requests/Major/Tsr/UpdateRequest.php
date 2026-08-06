@@ -45,6 +45,12 @@ class UpdateRequest extends FormRequest
                     ],
                 ];
             break;
+            case 'RequestDueDate':
+                return [
+                    'proposed_due_at' => 'required|date',
+                    'remarks' => 'required',
+                ];
+            break;
             default:
                 return [];
         }

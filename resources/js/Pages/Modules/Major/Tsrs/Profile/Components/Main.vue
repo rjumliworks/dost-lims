@@ -89,6 +89,9 @@
                                         </td>
                                         <td width="63%" class="fs-12" style=" white-space: normal;overflow: hidden; text-overflow: ellipsis; max-width: 150px;">
                                             <i>{{list.customer_description}}</i>, {{list.description}}
+                                            <span v-if="list.pending_amendment" class="badge bg-warning-subtle text-warning ms-1" v-b-tooltip.hover title="An update to this description is awaiting Technical Manager approval">
+                                                <i class="ri-time-line align-bottom"></i> Update Pending
+                                            </span>
                                         </td>
                                         <td v-if="selected.status.name != 'Pending' && selected.status.name != 'For Payment'" width="4%" class="text-center">
                                             <span class="fs-12" v-if="list.analyses.filter(item => item.status.name == 'Completed').length != list.analyses.length">{{list.analyses.filter(item => item.status.name == "Completed").length}} / {{list.analyses.length}}</span>
@@ -110,6 +113,11 @@
                                                             <li v-if="['Pending', 'For Payment'].includes(selected.status.name) || selected.is_onsite == 1">
                                                                 <a @click="openSampleEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                                                     <i class="ri-pencil-line me-2"></i>Edit
+                                                                </a>
+                                                            </li>
+                                                            <li v-if="canRequestUpdate(list)">
+                                                                <a @click="openSampleRequestUpdate(list)" class="dropdown-item d-flex align-items-center" role="button">
+                                                                    <i class="ri-edit-2-line me-2"></i>{{ isOwnPending(list) ? 'Edit Request' : 'Request Update' }}
                                                                 </a>
                                                             </li>
                                                             <li v-if="['Pending', 'For Payment'].includes(selected.status.name)">
@@ -203,6 +211,7 @@
     </BRow>
     <ViewSample ref="view"/>
     <CreateSample ref="sample"/>
+    <RequestUpdateSample ref="requestupdate"/>
     <RemoveSample ref="remove"/>
     <AddAnalysis @success="mark = false" ref="analysis"/>
     <RemoveAnalysis ref="removeanalysis"/>
@@ -214,6 +223,7 @@
 import Service from '../Modals/Main/Service.vue';
 import ViewSample from '../Modals/Main/Sample/View.vue';
 import CreateSample from '../Modals/Main/Sample/Create.vue';
+import RequestUpdateSample from '../Modals/Main/Sample/RequestUpdate.vue';
 import RemoveSample from '../Modals/Main/Sample/Remove.vue';
 import AddAnalysis from '../Modals/Main/Analysis/Create.vue';
 import ViewAnalysis from '../Modals/Main/Analysis/View.vue';
@@ -221,10 +231,10 @@ import RemoveAnalysis from '../Modals/Main/Analysis/Remove.vue';
 import AdditionalAnalysis from '../Modals/Main/Analysis/Additional.vue';
 export default {
     props:['selected','services','analyses'],
-    components: { 
-        CreateSample, RemoveSample, ViewSample, 
+    components: {
+        CreateSample, RemoveSample, ViewSample, RequestUpdateSample,
         AddAnalysis, RemoveAnalysis, AdditionalAnalysis, ViewAnalysis,
-        Service 
+        Service
     },
     data(){
         return {
@@ -322,6 +332,16 @@ export default {
         },
         openSampleEdit(sample){
             this.$refs.sample.edit(this.selected.id,this.selected.laboratory.id,sample);
+        },
+        isOwnPending(sample){
+            return !!sample.pending_amendment && sample.pending_amendment.requested_by === this.$page.props.user.data.id;
+        },
+        canRequestUpdate(sample){
+            if(!['Ongoing', 'Completed'].includes(this.selected.status.name)) return false;
+            return !sample.pending_amendment || this.isOwnPending(sample);
+        },
+        openSampleRequestUpdate(sample){
+            this.$refs.requestupdate.show(sample,this.selected.status.name,this.isOwnPending(sample) ? sample.pending_amendment : null);
         },
         openSampleView(sample){
             this.$refs.view.show(sample);

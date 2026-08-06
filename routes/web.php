@@ -47,6 +47,7 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
 
     Route::resource('/monitoring', App\Http\Controllers\Common\MonitoringController::class);
     Route::resource('/signing', App\Http\Controllers\Common\SigningController::class);
+    Route::resource('/requests', App\Http\Controllers\Common\RequestController::class);
 
     Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
     Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);

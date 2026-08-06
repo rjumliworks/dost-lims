@@ -38,8 +38,11 @@
                                 <div class="text-muted" v-if="selected.status.name === 'Pending' || selected.status.name === 'For Payment'" @click="openEdit(selected,index)" style="cursor: pointer;">  
                                     <i class="ri-edit-box-fill fs-16"></i> Update
                                 </div>
-                                <div class="text-muted" v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openCancel(selected.reference)" style="cursor: pointer;">  
+                                <div class="text-muted" v-if="selected.status.name == 'Pending' || selected.status.name == 'For Payment'" @click="openCancel(selected.reference)" style="cursor: pointer;">
                                     <i class="ri-delete-bin-fill fs-16"></i> Cancel
+                                </div>
+                                <div class="text-muted" v-if="canRequestDueDate" @click="openRequestDueDate(selected)" style="cursor: pointer;">
+                                    <i class="ri-calendar-2-line fs-16"></i> {{ isOwnPendingDueDate ? 'Edit Due Date Request' : 'Request Due Date Update' }}
                                 </div>
                                 <div class="text-muted" v-if="selected.status.name === 'For Payment' && selected.customer.wallet != null && selected.customer.wallet.available != '₱0.00'" @click="openWallet(selected.id,selected.customer,selected.payment)" style="cursor: pointer;">  
                                     <i class="ri-wallet-3-fill fs-16"></i> Use Wallet
@@ -64,6 +67,7 @@
     <Cancel ref="cancel"/>
     <Update :dropdowns="dropdowns" ref="update"/>
     <Edit :dropdowns="dropdowns" :region="region" ref="edit"/>
+    <RequestDueDate ref="requestduedate"/>
 </template>
 <script>
 import Copy from '../Modals/Top/Copy.vue';
@@ -72,14 +76,22 @@ import Save from '../Modals/Top/Save.vue';
 import Cancel from '../Modals/Top/Cancel.vue';
 import Wallet from '../Modals/Top/Wallet.vue';
 import Update from '../Modals/Top/Update.vue';
+import RequestDueDate from '../Modals/Top/RequestDueDate.vue';
 export default {
-    components: { Save, Wallet, Edit, Cancel, Update, Copy },
+    components: { Save, Wallet, Edit, Cancel, Update, Copy, RequestDueDate },
     props:['selected','analyses','dropdowns','region'],
     computed: {
         allSamplesHaveAnalyses() {
         if (!this.selected.samples || !this.selected.samples.length) return false;
-        
+
         return this.selected.samples.every(sample => sample.analyses && sample.analyses.length > 0);
+        },
+        isOwnPendingDueDate() {
+            return !!this.selected.pending_due_date_amendment && this.selected.pending_due_date_amendment.requested_by === this.$page.props.user.data.id;
+        },
+        canRequestDueDate() {
+            if(!['Ongoing', 'Completed'].includes(this.selected.status.name)) return false;
+            return !this.selected.pending_due_date_amendment || this.isOwnPendingDueDate;
         }
     },
     methods: {
@@ -100,6 +112,9 @@ export default {
         },
         openUpdate(selected){
             this.$refs.update.show(selected);
+        },
+        openRequestDueDate(selected){
+            this.$refs.requestduedate.show(selected, this.isOwnPendingDueDate ? selected.pending_due_date_amendment : null);
         },
         makeCopy(data){
             this.$refs.copy.show(data);
