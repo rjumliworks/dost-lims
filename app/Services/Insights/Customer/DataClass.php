@@ -317,16 +317,24 @@ class DataClass
         //         $q->where('laboratory_id', $laboratory); // Filter by laboratory_type
         //     });
         // })
-        ->whereHas('address', function ($q) use ($year) {
-            // $q->where('municipality_code','!=','097332000');
-            $q->whereYear('created_at',$year);
+        ->whereHas('address')
+        ->when($year, function ($q) use ($year) {
+            // Customer addresses are a single record, not versioned per year, so
+            // membership for a given year must come from the customer's transactions.
+            $q->whereHas('tsrs', function ($sub) use ($year) {
+                $sub->whereYear('created_at', $year);
+            });
         })
         ->get()
-        ->pluck('address.province_code') 
+        ->pluck('address.province_code')
         ->unique();
 
         $municipalitiesData = LocationMunicipality::withCount(['address' => function ($query) use ($year) {
-            $query->whereYear('created_at',$year);
+            $query->when($year, function ($q) use ($year) {
+                $q->whereHas('customer.tsrs', function ($sub) use ($year) {
+                    $sub->whereYear('created_at', $year);
+                });
+            });
             // $query->where('municipality_code', '097332000'); // Only count addresses with this municipality_code
         }])
         ->addSelect(['total_amount' => TsrPayment::selectRaw('COALESCE(SUM(tsr_payments.total),0)')
@@ -335,14 +343,19 @@ class DataClass
             ->join('customer_addresses', 'customer_addresses.customer_id', '=', 'customers.id')
             ->whereColumn('customer_addresses.municipality_code', 'location_municipalities.code')
             ->where('tsr_payments.status_id', 7)
-            ->when($year, fn($q) => $q->whereYear('customer_addresses.created_at', $year))
+            ->when($year, fn($q) => $q->whereYear('tsr_payments.paid_at', $year))
         ])
         ->where('code', '097332000')
         ->orderBy('address_count', 'DESC')
         ->get();
 
         $provincesData = LocationProvince::withCount(['address' => function ($query) use ($year) {
-            $query->where('municipality_code', '!=', '097332000')->whereYear('created_at',$year);
+            $query->where('municipality_code', '!=', '097332000')
+                ->when($year, function ($q) use ($year) {
+                    $q->whereHas('customer.tsrs', function ($sub) use ($year) {
+                        $sub->whereYear('created_at', $year);
+                    });
+                });
         }])
         ->addSelect(['total_amount' => TsrPayment::selectRaw('COALESCE(SUM(tsr_payments.total),0)')
             ->join('tsrs', 'tsrs.id', '=', 'tsr_payments.tsr_id')
@@ -351,7 +364,7 @@ class DataClass
             ->where('customer_addresses.municipality_code', '!=', '097332000')
             ->whereColumn('customer_addresses.province_code', 'location_provinces.code')
             ->where('tsr_payments.status_id', 7)
-            ->when($year, fn($q) => $q->whereYear('customer_addresses.created_at', $year))
+            ->when($year, fn($q) => $q->whereYear('tsr_payments.paid_at', $year))
         ])
         ->whereIn('code', $provinces) // Filter by provinces
         ->orderBy('address_count', 'DESC') // Order by the number of addresses
@@ -380,9 +393,15 @@ class DataClass
         $query = Customer::query()
             ->select('customers.id','customers.name','customers.is_main','customers.name_id','customers.agency_id')
             ->with(['customer_name:id,name,has_branches,classification_id', 'customer_name.classification:id,name'])
-            ->whereHas('address', function ($q) use ($code, $year) {
+            ->whereHas('address', function ($q) use ($code) {
                 ($code == '097332000') ? $q->where('municipality_code', $code) : $q->where('province_code', $code);
-                ($year) ? $q->whereYear('created_at', $year) : '';
+            })
+            ->when($year, function ($q) use ($year) {
+                // Customer addresses are a single record, not versioned per year, so
+                // membership for a given year must come from the customer's transactions.
+                $q->whereHas('tsrs', function ($sub) use ($year) {
+                    $sub->whereYear('created_at', $year);
+                });
             })
             ->when($classification, function ($q) use ($classification) {
                 $q->whereHas('customer_name', function ($sub) use ($classification) {
@@ -432,10 +451,9 @@ class DataClass
         $totalRequests = Tsr::whereIn('status_id', [3,4])
             ->when($laboratory, fn($q) => $q->where('laboratory_id', $laboratory))
             ->when($year, fn($q) => $q->whereYear('created_at', $year))
-            ->whereHas('customer', function ($q) use ($code, $year, $classification) {
-                $q->whereHas('address', function ($sub) use ($code, $year) {
+            ->whereHas('customer', function ($q) use ($code, $classification) {
+                $q->whereHas('address', function ($sub) use ($code) {
                     ($code == '097332000') ? $sub->where('municipality_code', $code) : $sub->where('province_code', $code);
-                    ($year) ? $sub->whereYear('created_at', $year) : '';
                 });
                 $q->when($classification, function ($sub) use ($classification) {
                     $sub->whereHas('customer_name', function ($s) use ($classification) {
@@ -447,12 +465,11 @@ class DataClass
 
         $totalAmount = TsrPayment::where('tsr_payments.status_id', 7)
             ->when($year, fn($q) => $q->whereYear('tsr_payments.paid_at', $year))
-            ->whereHas('tsr', function ($q) use ($laboratory, $code, $year, $classification) {
+            ->whereHas('tsr', function ($q) use ($laboratory, $code, $classification) {
                 ($laboratory) ? $q->where('laboratory_id', $laboratory) : '';
-                $q->whereHas('customer', function ($sub) use ($code, $year, $classification) {
-                    $sub->whereHas('address', function ($a) use ($code, $year) {
+                $q->whereHas('customer', function ($sub) use ($code, $classification) {
+                    $sub->whereHas('address', function ($a) use ($code) {
                         ($code == '097332000') ? $a->where('municipality_code', $code) : $a->where('province_code', $code);
-                        ($year) ? $a->whereYear('created_at', $year) : '';
                     });
                     $sub->when($classification, function ($c) use ($classification) {
                         $c->whereHas('customer_name', function ($cc) use ($classification) {
