@@ -49,20 +49,32 @@ class TsrSequence extends Model
             switch($typeId){
                 case 9:
                     $seqStr = str_pad($next, 4, '0', STR_PAD_LEFT);
+                    if($facilityId == 2){
+                        $agencyCode = 'ZDN';
+                    }
                     return "{$agencyCode}-{$monthYear}-{$labCode}-{$seqStr}";
                 break;
                 case 10:
                     $year = date('Y');
+                    if($facilityId == 2){
+                        $agencyCode = 'ZDN';
+                    }
                     $seqStr = str_pad($next, 5, '0', STR_PAD_LEFT);
                     return "{$labCode}-{$seqStr}-{$year}{$agencyCode}";
                 break;
                 case 11:
                     $monthDateYear = date('m').date('d'). $year;
                     $seqStr = str_pad($next, 4, '0', STR_PAD_LEFT);
+                    if($facilityId == 2){
+                        $agencyCode = 'ZDN';
+                    }
                     return "{$agencyCode}-{$monthDateYear}-{$labCode}-{$seqStr}";
                 break;
                 case 12:
                     $seqStr = str_pad($next, 4, '0', STR_PAD_LEFT);
+                    if($facilityId == 2){
+                        $agencyCode = 'ZDN';
+                    }
                     return "{$agencyCode}-QUO-{$monthYear}-{$labCode}-{$seqStr}";
                 break;
             }
