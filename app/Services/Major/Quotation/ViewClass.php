@@ -315,8 +315,13 @@ class ViewClass
                 ];
             })->toArray();
         }
-
+        $facility = \Auth::user()->profile->facility_id;
         $head = UserRole::with('user:id','user.profile:id,user_id,firstname,middlename,lastname')
+        ->whereHas('user',function ($query) use ($facility){
+            $query->whereHas('profile',function ($query) use ($facility){
+                $query->where('facility_id',$facility);
+            });
+        })
         ->where('laboratory_id',$quotation->laboratory_id)->whereHas('role',function ($query){
             $query->where('name','Technical Manager');
         })->where('is_active',1)->first();
