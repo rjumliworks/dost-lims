@@ -71,6 +71,14 @@
                                             </td>
                                         </tr>
                                     </tbody>
+                                    <tfoot>
+                                        <tr class="fw-semibold">
+                                            <td class="text-center" colspan="2">Total</td>
+                                            <td class="text-center">{{ totalProvinceCustomers }}</td>
+                                            <td class="text-center">{{ formatMoney(totalProvinceAmount) }}</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -203,6 +211,12 @@ export default {
         laboratoryName(){
             const found = (this.dropdowns.laboratories || []).find(item => item.value == this.filter.laboratory);
             return found ? found.name : 'All';
+        },
+        totalProvinceCustomers(){
+            return this.provinces.reduce((sum, list) => sum + (Number(list.address_count) || 0), 0);
+        },
+        totalProvinceAmount(){
+            return this.provinces.reduce((sum, list) => sum + (Number(list.total_amount) || 0), 0);
         }
     },
     watch: {

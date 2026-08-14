@@ -12,6 +12,7 @@ use App\Models\TsrSequence;
 class UpdateClass
 {
     public function save($request){
+        $facility = \Auth::user()->profile->facility_id;
         $data = Quotation::where('id',$request->id)->first();
         $data->status_id = $request->status_id;
         $data->due_at = $request->due_at;
@@ -21,7 +22,13 @@ class UpdateClass
             $data->signatory()->create([
                 'prepared_by' => \Auth::user()->id,
                 'prepared_date' => now(),
-                'approved_by' => UserRole::where('laboratory_id',$data->laboratory_id)->whereHas('role',function ($query){
+                'approved_by' => UserRole::where('laboratory_id',$data->laboratory_id)
+                ->whereHas('user',function ($query) use ($facility){
+                    $query->whereHas('profile',function ($query) use ($facility){
+                        $query->where('facility_id',$facility);
+                    });
+                })
+                ->whereHas('role',function ($query){
                     $query->where('name','Technical Manager');
                 })->where('is_active',1)->value('user_id')
             ]);
