@@ -307,7 +307,13 @@ class ViewClass
 
         $signatory = AgencyFacilitySignatory::with('cashier.profile')->where('facility_id',$tsrinfo->facility_id)->first();
 
+        $facility = \Auth::user()->profile->facility_id;
         $head = UserRole::with('user:id','user.profile:id,user_id,firstname,middlename,lastname')
+        ->whereHas('user',function ($query) use ($facility){
+            $query->whereHas('profile',function ($query) use ($facility){
+                $query->where('facility_id',$facility);
+            });
+        })
        ->where('laboratory_id',$tsrinfo->laboratory->id)->whereHas('role',function ($query){
             $query->where('name','Technical Manager');
         })->where('is_active',1)->first();
@@ -327,6 +333,7 @@ class ViewClass
         $payment = TsrPayment::select('id','total','payment_id')->with('type:id,name')->where('tsr_id',$tsrinfo->id)->first();
         $transaction = WalletTransaction::where('transacable_id',$tsrinfo->id)->where('is_credit',0)->where('transacable_type','App\Models\Tsr')->first();
         $array = [
+            'facility' => \Auth::user()->profile->facility_id,
             'qrCodeImage' => $base64Image,
             'configuration' => AgencyConfiguration::with('agency.member')->where('agency_id',\Auth::user()->profile->agency_id)->first(),
             'tsr' => json_decode($tsr),
