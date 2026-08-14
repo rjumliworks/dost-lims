@@ -101,12 +101,17 @@ class Tsr extends Model
                 return;
             }
 
-            $agencyId = Auth::user()->profile?->agency_id;
+            $profile = Auth::user()->profile;
+            $agencyId = $profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
             }
 
             $builder->where('tsrs.agency_id', $agencyId);
+
+            if ($profile->facility && ! $profile->facility->is_regional) {
+                $builder->where('tsrs.facility_id', $profile->facility_id);
+            }
         });
 
         static::creating(function ($model) {
