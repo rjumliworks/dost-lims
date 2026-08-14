@@ -340,6 +340,7 @@ class ViewClass
         $available = Wallet::where('customer_id', $quotation->customer_id)->value('available') ?? 0;
         $wallet = ($available != 0) ? trim(str_replace(',','',$available),'₱') : 0;
         $array= [
+            'facility' => \Auth::user()->profile->facility,
             'qrCodeImage' => $base64Image,
             'configuration' => AgencyConfiguration::first(),
             'quotation' => new ViewResource($quotation),
