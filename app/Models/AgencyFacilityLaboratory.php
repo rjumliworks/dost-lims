@@ -33,7 +33,8 @@ class AgencyFacilityLaboratory extends Model
                 if ($user->hasRole('Administrator')) {
                     return;
                 }
-                $agencyId = $user->profile?->agency_id;
+                $profile = $user->profile;
+                $agencyId = $profile?->agency_id;
                 if (! $agencyId) {
                     abort(403, 'User has no agency assigned.');
                 }
@@ -41,6 +42,10 @@ class AgencyFacilityLaboratory extends Model
                 $builder->whereHas('facility', function ($query) use ($agencyId) {
                     $query->where('agency_id', $agencyId);
                 });
+
+                if ($profile->facility && ! $profile->facility->is_regional) {
+                    $builder->where('facility_id', $profile->facility_id);
+                }
             }
         });
     }
