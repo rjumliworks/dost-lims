@@ -146,15 +146,15 @@
         <div class="content">
             <div style="font-family:Arial;">
                 <img src="{{ public_path('images/logo-sm.png') }}" alt="tag" style="position: absolute; top: -4; left: 60; width: 50px; height: 50px;">
-                @if($facility == 3){
+                @if($facility == 3)
                     <center style="font-size: 10px; margin-bottom: 0px; text-transform: uppercase;">DEPARTMENT OF SCIENCE AND TECHNOLOGY - ZAMBOANGA DEL NORTE</center>
                     <center style="font-size: 11px; margin-bottom: 0px; font-weight: bold;">RSTL SATELLITE LABORATORY</center>
                     <center style="font-size: 11px; width: 400px; margin: 0 auto; text-align: center;">Upper Turno, Dipolog City, Zamboanga del Norte | 09209433763 | psto-zdn@ro9.dost.gov.ph</center>
-                }else{
+                @else 
                     <center style="font-size: 10px; margin-bottom: 0px; text-transform: uppercase;">{{$configuration['agency']['member']['name']}}</center>
                     <center style="font-size: 11px; margin-bottom: 0px; font-weight: bold;">REGIONAL STANDARDS AND TESTING LABORATORIES</center>
                     <center style="font-size: 11px; width: 400px; margin: 0 auto; text-align: center;">{{$form['address']}} | {{$form['contact']}} | {{$form['email']}}</center>
-                }
+                @endif
                
                 <br/>
                 
