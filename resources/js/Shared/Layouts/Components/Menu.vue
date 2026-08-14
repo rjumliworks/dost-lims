@@ -9,7 +9,7 @@
                 <span class="fw-semibold fs-14" data-key="t-dashboards">Dashboard</span>
                 </Link>
             </li>
-             <template v-if="$page.props.roles.includes('Technical Manager') && ( $page.props.roles.includes('Laboratory Analyst') || $page.props.roles.includes('Calibration Officer') )">
+             <template v-if="$page.props.roles.includes(['Technical Manager','Customer Relation Officer']) &&  $page.props.roles.includes(['Laboratory Analyst','Calibration Officer']) ">
                 <li class="nav-item">
                     <Link href="/analyst" class="nav-link menu-link"
                         :class="{ 'active': $page.url === '/analyst'}">
