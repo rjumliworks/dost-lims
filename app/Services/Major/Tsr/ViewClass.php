@@ -42,7 +42,7 @@ class ViewClass
         return array_unique($dates);
     }
 
-    public function counts($statuses,$year){
+    public function counts($statuses,$year,$facilityScope = null){
         foreach($statuses as $status){
             if ($status['value'] == '2') {
                 $counts[] = Tsr::where(function ($query) {
@@ -53,6 +53,9 @@ class ViewClass
                                         $query->whereIn('status_id', [18,45]);
                                     });
                           });
+                })
+                ->when($facilityScope, function ($query, $facility) {
+                    (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
                 })
                 // ->when($this->province, function ($query) {
                 //     $query->where('received_by', \Auth::user()->id);
@@ -69,6 +72,9 @@ class ViewClass
                 ->count();
             } else {
                 $counts[] = Tsr::where('status_id',$status['value'])
+                ->when($facilityScope, function ($query, $facility) {
+                    (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+                })
                 // ->when($this->province, function ($query){
                 //     $query->where('received_by', \Auth::user()->id);
                 // })
@@ -88,7 +94,14 @@ class ViewClass
     }
 
     public function lists($request,$statuses){
-      
+
+        $isLaboratoryHead = \Auth::user()->roles()
+            ->where('name', 'Laboratory Head')
+            ->where('user_roles.is_active', 1)
+            ->exists();
+
+        $facilityScope = $isLaboratoryHead ? $request->facility : \Auth::user()->profile?->facility_id;
+
         $data = ListResource::collection(
             Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
@@ -150,7 +163,10 @@ class ViewClass
             })
             ->when($request->laboratory , function ($query, $labtype ) {
                 (is_array($labtype)) ?  $query->whereIn('laboratory_id',$labtype ) : $query->where('laboratory_id',$labtype );
-            }) 
+            })
+            ->when($facilityScope, function ($query, $facility) {
+                (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+            })
             ->when($request->sort, function ($query, $sort) use ($request) {
                 if ($request->sortby == 'Code') {
                     $query->orderBy('code', $sort)
@@ -229,7 +245,7 @@ class ViewClass
             })
             ->paginate($request->count)
         )->additional([
-            'summary' => $this->counts($statuses,$request->year)
+            'summary' => $this->counts($statuses,$request->year,$facilityScope)
         ]);
         return $data;
     }

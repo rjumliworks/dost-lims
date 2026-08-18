@@ -27,13 +27,14 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 20%;">
+                                <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 10%;">
                                 <input v-if="filter.datetype" type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 100px;">
                                 <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />
                                 <Multiselect v-if="filter.laboratory == 3" class="white" style="width: 15%;" :options="['In-house','On-site']" v-model="filter.subtype" label="name" :allow-empty="false" :searchable="true" placeholder="Select Location" />
-                                <Multiselect class="white" style="width: 15%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
-                                <Multiselect class="white" style="width: 10%;" :options="['Local','Referral']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" />
-                                <Multiselect class="white" style="width: 10%;" :options="years" v-model="filter.year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
+                                <Multiselect class="white" style="width: 15%;" :options="laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
+                                <Multiselect v-if="isLaboratoryHead && dropdowns.facilities && dropdowns.facilities.length > 1" class="white" style="width: 15%;" :options="dropdowns.facilities" v-model="filter.facility" label="name" :allow-empty="false" :searchable="true" placeholder="Select Facility" />
+                                
+                                <Multiselect class="white" style="width: 7%;" :options="years" v-model="filter.year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
                                 <span @click="filterAddress()" class="input-group-text" v-b-tooltip.hover title="Filter by Address" style="cursor: pointer;"> 
                                     <i class="bx bxs-map search-icon" :class="{'bx-tada text-danger': hasAddressFilter}"></i>
                                 </span>
@@ -60,6 +61,16 @@
                                     <BLink @click="viewStatus(index,list.value)" class="nav-link py-3" :class="(this.index == index) ? list.others+' active' : ''" data-bs-toggle="tab" role="tab" aria-selected="false">
                                         <i :class="icons[index]" class="me-1 align-bottom"></i>
                                         {{ list.name }} <BBadge v-if="counts[index] > 0" :class="list.color" class="align-middle ms-1">{{counts[index]}}</BBadge>
+                                    </BLink>
+                                </li>
+                                <li class="nav-item ms-auto">
+                                    <BLink @click="viewType('Local')" class="nav-link py-3" :class="filter.type === 'Local' ? 'active' : ''" role="button" aria-selected="false">
+                                        <i class="ri-map-pin-line me-1 align-bottom"></i> Local
+                                    </BLink>
+                                </li>
+                                <li class="nav-item">
+                                    <BLink @click="viewType('Referral')" class="nav-link py-3" :class="filter.type === 'Referral' ? 'active' : ''" role="button" aria-selected="false">
+                                        <i class="ri-share-forward-line me-1 align-bottom"></i> Referral
                                     </BLink>
                                 </li>
                             </ul>
@@ -223,6 +234,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             lists: [],
+            laboratories: this.dropdowns.laboratories,
             meta: {},
             links: {},
             counts: [],
@@ -231,6 +243,7 @@ export default {
                 keyword: null,
                 status: null,
                 laboratory: null,
+                facility: null,
                 sortby: 'Requested At',
                 sort: 'desc',
                 datetype: null,
@@ -300,11 +313,19 @@ export default {
         "filter.laboratory"(newVal){
             this.fetch();
         },
+        "filter.facility"(newVal){
+            this.filter.laboratory = null;
+            this.fetchLaboratories(newVal);
+            this.fetch();
+        },
         "filter.type"(newVal){
             this.fetch();
         }
     },
     computed: {
+        isLaboratoryHead() {
+            return this.$page.props.roles.includes('Laboratory Head');
+        },
         hasAddressFilter() {
             return ['province', 'municipality', 'barangay']
             .some(key => this.location[key] && this.location[key] !== '');
@@ -317,6 +338,22 @@ export default {
         checkSearchStr: _.debounce(function(string) {
             this.fetch();
         }, 300),
+        fetchLaboratories(facility){
+            if(!facility){
+                this.laboratories = this.dropdowns.laboratories;
+                return;
+            }
+            axios.get('/search',{
+                params: {
+                    option: 'laboratories',
+                    facility: facility
+                }
+            })
+            .then(response => {
+                this.laboratories = response.data;
+            })
+            .catch(err => console.log(err));
+        },
         fetch(page_url){
             page_url = page_url || '/tsrs';
             axios.get(page_url,{
@@ -328,6 +365,7 @@ export default {
                     date: this.filter.date,
                     datetype: this.filter.datetype,
                     laboratory: this.filter.laboratory,
+                    facility: this.filter.facility,
                     region: this.location.region,
                     province: this.location.province,
                     municipality: this.location.municipality,
@@ -353,6 +391,9 @@ export default {
             this.index = index;
             this.filter.status = status;
             this.fetch();
+        },
+        viewType(type){
+            this.filter.type = (this.filter.type === type) ? null : type;
         },
         selectRow(index) {
             this.selectedRow = index;
@@ -418,6 +459,7 @@ export default {
                 keyword: null,
                 status: null,
                 laboratory: null,
+                facility: null,
                 sortby: 'Requested At',
                 sort: 'desc',
                 datetype: null,

@@ -122,6 +122,111 @@
                         </BButton>
                     </div>
 
+                    <BDropdown variant="ghost-dark" dropstart class="ms-1 dropdown"
+            :offset="{ alignmentAxis: 57, crossAxis: 0, mainAxis: -42 }"
+            toggle-class="btn-icon btn-topbar rounded-circle arrow-none" id="page-header-notifications-dropdown"
+            menu-class="dropdown-menu-lg notification-menu-wide dropdown-menu-end p-0" auto-close="outside">
+            <template #button-content>
+              <i class='bx bx-bell fs-22'></i>
+              <span v-if="totalNotifications > 0" class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"><span
+                  class="notification-badge">{{ totalNotifications }}</span><span class="visually-hidden">unread
+                  messages
+                </span>
+              </span>
+            </template>
+            <div class="dropdown-head bg-primary bg-pattern rounded-top dropdown-menu-lg notification-menu-wide">
+              <div class="p-3">
+                <BRow class="align-items-center">
+                  <BCol>
+                    <h6 class="m-0 fs-16 fw-semibold text-white">
+                      Notifications
+                    </h6>
+                  </BCol>
+                  <BCol cols="auto" class="dropdown-tabs">
+                    <BBadge variant="light-subtle" class="bg-light-subtle text-body fs-13"> {{ totalNotifications }} New</BBadge>
+                  </BCol>
+                </BRow>
+              </div>
+            </div>
+            <BTabs nav-class="dropdown-tabs nav-tab-custom bg-primary px-2 pt-2">
+              <BTab v-if="['Customer Relation Officer', 'Technical Manager'].some(role => $page.props.roles.includes(role))" :title="'Requests' + (notifications.requests?.count ? ' (' + notifications.requests.count + ')' : '')" class="tab-pane fade py-2 ps-2" id="requests-tab" role="tabpanel"
+                aria-labelledby="requests-tab">
+                <simplebar data-simplebar style="max-height: 300px" class="pe-2">
+                  <template v-if="notifications.requests?.items?.length">
+                    <div v-for="(item, idx) in notifications.requests.items" :key="idx" class="text-reset notification-item d-block dropdown-item position-relative">
+                      <div class="d-flex">
+                        <img :src="item.avatar" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic" />
+                        <div class="flex-grow-1">
+                          <Link :href="`/requests?open=${item.reference}`" class="stretched-link">
+                            <h6 class="mt-0 mb-1 fs-13 fw-semibold">{{ item.name }}</h6>
+                          </Link>
+                          <div class="fs-12 text-muted">
+                            <p class="mb-1">{{ item.content }}</p>
+                          </div>
+                          <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                            <span><i class="mdi mdi-clock-outline"></i> {{ item.time }}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <div v-else class="text-center pt-4 pb-3">
+                    <div class="avatar-md mx-auto mb-3">
+                      <div class="avatar-title bg-info-subtle rounded-circle text-info">
+                        <i class="ri-file-edit-fill fs-24"></i>
+                      </div>
+                    </div>
+                    <h6 class="fs-15 fw-semibold lh-base mb-0">No pending update requests</h6>
+                  </div>
+                  <div class="my-3 text-center">
+                    <Link href="/requests" class="btn btn-sm btn-soft-info">
+                      View Requests
+                      <i class="ri-arrow-right-line align-middle"></i>
+                    </Link>
+                  </div>
+                </simplebar>
+              </BTab>
+
+              <BTab v-if="['Customer Relation Officer', 'Technical Manager', 'Laboratory Analyst', 'Calibration Officer','Laboratory Head'].some(role => $page.props.roles.includes(role))" :title="'For Signatures' + (notifications.signing?.count ? ' (' + notifications.signing.count + ')' : '')" class="tab-pane fade py-2 ps-2" id="signing-tab" role="tabpanel"
+                aria-labelledby="signing-tab">
+                <simplebar data-simplebar style="max-height: 300px" class="pe-2">
+                  <template v-if="notifications.signing?.items?.length">
+                    <div v-for="(item, idx) in notifications.signing.items" :key="idx" class="border text-reset notification-item d-block dropdown-item position-relative">
+                      <div class="d-flex">
+                        <img :src="item.avatar" class="me-3 rounded-circle avatar-xs flex-shrink-0" alt="user-pic" />
+                        <div class="flex-grow-1">
+                          <Link :href="`/signing?open=${item.reference}`" class="stretched-link">
+                            <h6 class="mt-0 mb-1 fs-13 fw-semibold">{{ item.name }}</h6>
+                          </Link>
+                          <div class="fs-12 text-muted">
+                            <p class="mb-1">Report for <b>{{ item.sample_code }}</b> is awaiting your signature.</p>
+                          </div>
+                          <p class="mb-0 fs-11 fw-medium text-uppercase text-muted">
+                            <span><i class="mdi mdi-clock-outline"></i> {{ item.time }}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <div v-else class="text-center pt-4 pb-3">
+                    <div class="avatar-md mx-auto mb-3">
+                      <div class="avatar-title bg-warning-subtle rounded-circle text-warning">
+                        <i class="ri-quill-pen-fill fs-24"></i>
+                      </div>
+                    </div>
+                    <h6 class="fs-15 fw-semibold lh-base mb-0">No reports awaiting your signature</h6>
+                  </div>
+                  <div class="my-3 text-center">
+                    <Link href="/signing" class="btn btn-sm btn-soft-warning">
+                      View Signing
+                      <i class="ri-arrow-right-line align-middle"></i>
+                    </Link>
+                  </div>
+                </simplebar>
+              </BTab>
+            </BTabs>
+          </BDropdown>
+
                     <BDropdown variant="link" class="ms-sm-3 header-item topbar-user" toggle-class="rounded-circle material-shadow-none" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -14, crossAxis: 0, mainAxis: 0 }">
                         <template #button-content>
                             <span class="d-flex align-items-center">
@@ -186,6 +291,14 @@ export default {
         value: null,
         myVar: 1,
         };
+    },
+    computed: {
+        notifications() {
+            return this.$page.props.notifications || { requests: { count: 0, items: [] }, signing: { count: 0, items: [] } };
+        },
+        totalNotifications() {
+            return (this.notifications.requests?.count || 0) + (this.notifications.signing?.count || 0);
+        }
     },
     mounted() {
         document.addEventListener("scroll", function () {

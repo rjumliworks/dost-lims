@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Services\AgencyClass;
 
 class SearchController extends Controller
 {
     protected $dropdown;
+    protected $agency;
 
     public function __construct(
-            DropdownClass $dropdown
+            DropdownClass $dropdown,
+            AgencyClass $agency
         ){
         $this->dropdown = $dropdown;
+        $this->agency = $agency;
     }
 
     public function search(Request $request){
@@ -38,6 +42,9 @@ class SearchController extends Controller
             break;
             case 'tsrs':
                 return $this->dropdown->tsrs($request);
+            break;
+            case 'laboratories':
+                return $this->agency->laboratories($request->facility);
             break;
         }
     }

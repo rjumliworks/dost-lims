@@ -156,6 +156,7 @@ export default {
                     this.meta = response.data.meta;
                     this.links = response.data.links;
                     this.counts = response.data.summary;
+                    this.openFromQuery();
                 }
             })
             .catch(err => console.log(err));
@@ -170,6 +171,20 @@ export default {
         },
         openView(list){
             this.$refs.view.show(list);
+        },
+        openFromQuery(){
+            const params = new URLSearchParams(window.location.search);
+            const reference = params.get('open');
+            if(!reference) return;
+
+            const match = this.lists.find(list => list.reference === reference);
+            if(match){
+                this.openView(match);
+            }
+
+            params.delete('open');
+            const query = params.toString();
+            history.replaceState({}, '', window.location.pathname + (query ? '?' + query : ''));
         },
         refresh(){
             this.filter.keyword = null;

@@ -382,7 +382,7 @@ export default {
     },
     mounted() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
-        this.renderPdf();
+        this.openFromQuery();
     },
     watch: {
         showSignature(val) {
@@ -432,6 +432,20 @@ export default {
         },
     },
     methods: {
+        openFromQuery(){
+            const params = new URLSearchParams(window.location.search);
+            const reference = params.get('open');
+            if(!reference) return;
+
+            const index = this.reports.findIndex(report => report.reference === reference);
+            if(index !== -1){
+                this.renderPdf(this.reports[index], index);
+            }
+
+            params.delete('open');
+            const query = params.toString();
+            history.replaceState({}, '', window.location.pathname + (query ? '?' + query : ''));
+        },
         async renderPdf(selected, index, pageNum = 1) {
             if (!selected) return;
 

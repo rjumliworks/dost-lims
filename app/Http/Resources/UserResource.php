@@ -22,6 +22,11 @@ class UserResource extends JsonResource
             'middlename' => $this->profile->middlename,
             'sex' => $this->profile->sex,
             'agency' => $this->profile?->agency_id,
+            'facility' => $this->profile?->facility ? [
+                'id' => $this->profile->facility->id,
+                'name' => $this->profile->facility->name,
+                'is_regional' => (bool) $this->profile->facility->is_regional,
+            ] : null,
             'suffix' => $this->profile->suffix,
             'mobile' => $this->profile->mobile,
             'profile_id' => $this->profile->id,
