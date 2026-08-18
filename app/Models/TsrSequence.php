@@ -50,7 +50,7 @@ class TsrSequence extends Model
                 case 9:
                     $seqStr = str_pad($next, 4, '0', STR_PAD_LEFT);
                     if($facilityId == 2){
-                        $agencyCode = 'ZDN';
+                        $agencyCode = "{$agencyCode}-ZDN";
                     }
                     return "{$agencyCode}-{$monthYear}-{$labCode}-{$seqStr}";
                 break;
@@ -66,7 +66,7 @@ class TsrSequence extends Model
                     $monthDateYear = date('m').date('d'). $year;
                     $seqStr = str_pad($next, 4, '0', STR_PAD_LEFT);
                     if($facilityId == 2){
-                        $agencyCode = 'ZDN';
+                        $agencyCode = "ZDN";
                     }
                     return "{$agencyCode}-{$monthDateYear}-{$labCode}-{$seqStr}";
                 break;
