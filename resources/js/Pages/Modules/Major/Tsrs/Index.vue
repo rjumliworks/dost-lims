@@ -64,13 +64,13 @@
                                     </BLink>
                                 </li>
                                 <li class="nav-item ms-auto">
-                                    <BLink @click="viewType('Local')" class="nav-link py-3" :class="filter.type === 'Local' ? 'active' : ''" role="button" aria-selected="false">
-                                        <i class="ri-map-pin-line me-1 align-bottom"></i> Local
+                                    <BLink href="javascript:void(0)" @click="viewType('Local')" class="nav-link py-3" :class="filter.type === 'Local' ? 'active' : ''" role="button" aria-selected="false">
+                                        <i class="ri-map-pin-line me-1 align-bottom"></i> Local <BBadge v-if="typeCounts.Local > 0" class="bg-primary-subtle text-primary align-middle ms-1">{{ typeCounts.Local }}</BBadge>
                                     </BLink>
                                 </li>
                                 <li class="nav-item">
-                                    <BLink @click="viewType('Referral')" class="nav-link py-3" :class="filter.type === 'Referral' ? 'active' : ''" role="button" aria-selected="false">
-                                        <i class="ri-share-forward-line me-1 align-bottom"></i> Referral
+                                    <BLink href="javascript:void(0)" @click="viewType('Referral')" class="nav-link py-3" :class="filter.type === 'Referral' ? 'active' : ''" role="button" aria-selected="false">
+                                        <i class="ri-share-forward-line me-1 align-bottom"></i> Referral <BBadge v-if="typeCounts.Referral > 0" class="bg-primary-subtle text-primary align-middle ms-1">{{ typeCounts.Referral }}</BBadge>
                                     </BLink>
                                 </li>
                             </ul>
@@ -238,6 +238,7 @@ export default {
             meta: {},
             links: {},
             counts: [],
+            typeCounts: {},
             index: null,
             filter: {
                 keyword: null,
@@ -381,8 +382,9 @@ export default {
                 if(response){
                     this.lists = response.data.data;
                     this.meta = response.data.meta;
-                    this.links = response.data.links;   
-                    this.counts = response.data.summary;       
+                    this.links = response.data.links;
+                    this.counts = response.data.summary;
+                    this.typeCounts = response.data.typeCounts;
                 }
             })
             .catch(err => console.log(err));

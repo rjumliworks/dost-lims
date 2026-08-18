@@ -93,6 +93,17 @@ class ViewClass
         return $counts;
     }
 
+    public function typeCounts($year,$facilityScope = null){
+        $base = Tsr::when($facilityScope, function ($query, $facility) {
+            (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+        })->whereYear('created_at',$year);
+
+        return [
+            'Local' => (clone $base)->where('is_referral', 0)->count(),
+            'Referral' => (clone $base)->where('is_referral', 1)->count(),
+        ];
+    }
+
     public function lists($request,$statuses){
 
         $isLaboratoryHead = \Auth::user()->roles()
@@ -245,7 +256,8 @@ class ViewClass
             })
             ->paginate($request->count)
         )->additional([
-            'summary' => $this->counts($statuses,$request->year,$facilityScope)
+            'summary' => $this->counts($statuses,$request->year,$facilityScope),
+            'typeCounts' => $this->typeCounts($request->year,$facilityScope)
         ]);
         return $data;
     }
