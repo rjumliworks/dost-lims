@@ -102,6 +102,7 @@ class TopClass
             'customers.agency_id'
         )
         ->orderBy('total',$sort);
+        \App\Services\Common\FacilityScope::apply($query);
         ($year) ? $query->whereYear('tsr_payments.paid_at', $year) : '';
         ($month) ? $query->whereMonth('tsr_payments.paid_at', $month) : '';
         $query->when(isset($startMonth) && isset($endMonth), function ($query) use ($startMonth, $endMonth) {

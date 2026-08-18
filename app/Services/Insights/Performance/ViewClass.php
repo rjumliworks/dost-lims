@@ -334,15 +334,18 @@ class ViewClass
             }
         }
 
-        $data = \DB::table('tsr_analyses')
+        $query = \DB::table('tsr_analyses')
         ->join('testservices', 'testservices.id', '=', 'tsr_analyses.testservice_id')
         ->join('testservice_names', 'testservice_names.id', '=', 'testservices.testname_id')
         ->join('tsr_samples', 'tsr_samples.id', '=', 'tsr_analyses.sample_id')
         ->join('tsrs', 'tsrs.id', '=', 'tsr_samples.tsr_id')
         ->join('customers', 'customers.id', '=', 'tsrs.customer_id')
         ->select('testservice_names.name as name', \DB::raw('COUNT(*) as count'))
-        ->where('tsr_analyses.status_id', '!=', 13)
-        ->where('tsrs.agency_id',14)
+        ->where('tsr_analyses.status_id', '!=', 13);
+
+        \App\Services\Common\FacilityScope::apply($query);
+
+        $data = $query
         ->when($month, fn($q) => $q->whereMonth('tsr_analyses.created_at', $month))
         ->when($request->year, fn($q) => $q->whereYear('tsr_analyses.created_at', $request->year))
         ->when(isset($startMonth) && isset($endMonth), fn($q) => 

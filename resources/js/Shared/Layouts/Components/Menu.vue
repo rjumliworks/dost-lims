@@ -52,13 +52,6 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">TS Requests</span>
                     </Link>
                 </li>
-                 <li class="nav-item">
-                    <Link href="/reports" class="nav-link menu-link"
-                    :class="{'active': $page.component.startsWith('Modules/Reports') }">
-                    <i class="ri-file-text-fill"></i>
-                    <span class="fw-semibold fs-14" data-key="t-dashboards">Reports</span>
-                    </Link>
-                </li>
                 <!-- <li class="nav-item">
                     <Link href="/samples" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Major/Samples') }">
@@ -87,8 +80,7 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Test Reports</span>
                     </Link>
                 </li> -->
-            </template>
-            <template v-if="['Laboratory Analyst', 'Technical Manager', 'Calibration Officer'].some(role => $page.props.roles.includes(role))">
+                 <template v-if="['Laboratory Analyst', 'Technical Manager', 'Calibration Officer'].some(role => $page.props.roles.includes(role))">
                 <!-- <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Analysts Modules</span>
@@ -100,6 +92,25 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Sample Register</span>
                     </Link>
                 </li>
+            </template>
+                <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Reports Module</span>
+                </li>
+                <li class="nav-item">
+                    <Link href="/reports" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Modules/Reports') }">
+                    <i class="ri-file-text-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Reports</span>
+                    </Link>
+                </li>
+            </template>
+            <template v-if="['Laboratory Analyst', 'Technical Manager', 'Calibration Officer'].some(role => $page.props.roles.includes(role))">
+                <!-- <li class="menu-title">
+                    <i class="ri-more-fill" aria-expanded="false"></i>
+                    <span data-key="t-menu">Analysts Modules</span>
+                </li> -->
+
                 <li class="nav-item">
                     <Link href="/testreports" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Major/Testreports') }">

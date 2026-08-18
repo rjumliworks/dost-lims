@@ -162,6 +162,7 @@ class DataClass
             )
             ->where('customer_names.classification_id', 8) // ✅ FIXED
             ->where('tsrs.status_id','!=',5)
+            ->tap(fn($query) => \App\Services\Common\FacilityScope::apply($query))
             ->when($laboratory, fn($q) => $q->where('tsrs.laboratory_id', $laboratory))
             ->when($year, fn($q) => $q->whereYear('tsrs.created_at', $year))
             ->when($month, fn($q) => $q->whereMonth('tsrs.created_at', $month))
@@ -293,6 +294,7 @@ class DataClass
             )
             ->where('cn.classification_id', 8) // ✅ FIXED
             ->where('tsrs.status_id','!=',5) // ✅ FIXED (avoid ambiguity)
+            ->tap(fn($query) => \App\Services\Common\FacilityScope::apply($query))
             ->when($laboratory, fn($q) => $q->where('tsrs.laboratory_id', $laboratory))
             ->when($year, fn($q) => $q->whereYear('tsrs.created_at', $year))
             ->when($month, fn($q) => $q->whereMonth('tsrs.created_at', $month))
@@ -613,6 +615,7 @@ class DataClass
             'customers.agency_id'
         )
         ->orderBy('total',$sort);
+        \App\Services\Common\FacilityScope::apply($query);
         ($laboratory) ? $query->where('tsrs.laboratory_id', $laboratory) : '';
         ($year) ? $query->whereYear('tsr_payments.paid_at', $year) : '';
         ($month) ? $query->whereMonth('tsr_payments.paid_at', $month) : '';

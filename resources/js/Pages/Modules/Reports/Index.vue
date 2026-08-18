@@ -32,9 +32,14 @@
                                                         <option :value="list" v-for="list in years" v-bind:key="list">{{list}}</option>
                                                     </select>
                                                     <div class="input-group-text bg-primary border-primary text-white">
-                                                        <i class="ri-calendar-2-line"></i> 
+                                                        <i class="ri-calendar-2-line"></i>
                                                     </div>
                                                 </div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <b-button type="button" variant="success" @click="openExecutiveSummary" v-b-tooltip.hover title="Generate a single PDF with the accomplishment breakdown, top customers, and request type mix for the selected month">
+                                                    <i class="ri-file-chart-2-fill align-bottom me-1"></i> Generate Executive Summary
+                                                </b-button>
                                             </div>
                                         </div>
                                     </form>
@@ -371,6 +376,18 @@ export default {
                 params.append('laboratory', this.filter.laboratory);
             }
             window.open('/reports/excel?' + params.toString());
+        },
+        openExecutiveSummary() {
+            const params = new URLSearchParams();
+
+            params.append('option', 'print');
+            if (this.monthName) {
+                params.append('month', this.monthName);
+            }
+            if (this.filter.year) {
+                params.append('year', this.filter.year);
+            }
+            window.open('/reports?' + params.toString());
         },
     }
 }
