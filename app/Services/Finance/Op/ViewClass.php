@@ -60,14 +60,8 @@ class ViewClass
             ->when(! $user->hasRole('Administrator'), function ($query) use ($profile, $facility) {
                 $query->where('agency_id', $profile?->agency_id);
 
-                if ($facility) {
-                    if ($facility->is_regional) {
-                        $query->whereHas('facility', function ($q) use ($facility) {
-                            $q->where('province_code', $facility->province_code);
-                        });
-                    } else {
-                        $query->where('facility_id', $facility->id);
-                    }
+                if ($facility && ! $facility->is_regional) {
+                    $query->where('facility_id', $facility->id);
                 }
             })
             ->orderBy('created_at','DESC')
