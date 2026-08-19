@@ -167,7 +167,7 @@
             </div>
         </div>
     </BRow>
-    <Create :year="filter.year" :laboratory="this.laboratories[0].value" @update="fetch()" ref="create"/>
+    <Create :year="filter.year" :laboratory="filter.laboratory" @update="fetch()" ref="create"/>
     <View ref="view"/>
 </template>
 <script>

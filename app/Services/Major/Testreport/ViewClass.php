@@ -94,7 +94,6 @@ class ViewClass
     public function samples($request)
     {
         $item = TsrSample::with('tsr')
-            ->whereYear('created_at', 2026)
             ->where('is_completed', 1)
             ->doesntHave('report')
             ->whereHas('analyses', function ($query) {
@@ -171,7 +170,12 @@ class ViewClass
                 $query->whereYear('created_at',$year)->where('laboratory_id',$laboratory);
             })
             ->when($code, function ($query) use ($code){
-                $query->where('code', 'LIKE', "%{$code}%");
+                $query->where(function ($q) use ($code) {
+                    $q->where('code', 'LIKE', "%{$code}%")
+                        ->orWhereHas('tsr', function ($q) use ($code) {
+                            $q->where('code', 'LIKE', "%{$code}%");
+                        });
+                });
             })
             ->whereYear('created_at','!=',2024)
             ->where('is_completed', 1)
