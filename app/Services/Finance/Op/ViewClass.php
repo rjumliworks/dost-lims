@@ -5,7 +5,6 @@ namespace App\Services\Finance\Op;
 use App\Models\Tsr;
 use App\Models\Customer;
 use App\Models\FinanceOp;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\Finance\OpResource;
 use App\Http\Resources\Finance\Tsr\ListResource;
 
@@ -44,12 +43,8 @@ class ViewClass
     }
 
     public function tsrs($request){
-        $user = Auth::user();
-        $profile = $user->profile;
-        $facility = $profile?->facility;
-
         $data = ListResource::collection(
-            Tsr::withoutGlobalScope('agency')
+            Tsr::query()
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
             ->with('payment:tsr_id,id,total,subtotal,discount,or_number,is_paid,paid_at,status_id','payment.status:id,name,color,others')
             ->whereHas('payment',function ($query){
@@ -57,13 +52,6 @@ class ViewClass
             })
             ->whereIn('status_id',[2,3,4])
             ->whereIn('customer_id',$request->customer_id)
-            ->when(! $user->hasRole('Administrator'), function ($query) use ($profile, $facility) {
-                $query->where('agency_id', $profile?->agency_id);
-
-                if ($facility && ! $facility->is_regional) {
-                    $query->where('facility_id', $facility->id);
-                }
-            })
             ->orderBy('created_at','DESC')
             ->get()
         );

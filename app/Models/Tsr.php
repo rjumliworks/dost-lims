@@ -113,7 +113,9 @@ class Tsr extends Model
 
             $builder->where('tsrs.agency_id', $agencyId);
 
-            if ($profile->facility_id && ! Auth::user()->hasRole('Laboratory Head')) {
+            $isRegional = $profile->facility && $profile->facility->is_regional;
+
+            if ($profile->facility_id && ! Auth::user()->hasRole('Laboratory Head') && ! $isRegional) {
                 $builder->where('tsrs.facility_id', $profile->facility_id);
             }
         });
