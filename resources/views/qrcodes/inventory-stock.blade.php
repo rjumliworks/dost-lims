@@ -37,6 +37,6 @@
     <body>
         <img class="image" src="<?php echo $barcodeImage; ?>" alt="Barcode"/>
         <div class="name">{{ $name }}</div>
-        <div class="code">{{ $code }}@if($number) / {{ $number }}@endif</div>
+        <div class="code">{{ $code }}@if($number) / S.N {{ $number }}@endif</div>
     </body>
 </html>
