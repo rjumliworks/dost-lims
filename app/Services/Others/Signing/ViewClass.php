@@ -132,7 +132,7 @@ class ViewClass
 
         $user = User::with('certificate')->where('id', auth()->id())->first();
 
-        if (!$user->certificate) {
+        if (!$user->certificate || !$user->certificate->file || !$user->certificate->password) {
             return [
                 'data' => [],
                 'message' => 'Failed to sign the PDF',

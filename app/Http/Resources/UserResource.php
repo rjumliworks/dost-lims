@@ -40,6 +40,7 @@ class UserResource extends JsonResource
                 'has_p12' => (bool) $this->certificate->file,
                 'has_signature' => (bool) $this->certificate->signature,
                 'has_password' => (bool) $this->certificate->password,
+                'is_checked' => (bool) $this->certificate->is_checked,
                 'signature_url' => $this->certificate->signature
                     ? Storage::disk('s3')->temporaryUrl(
                         $this->certificate->signature,

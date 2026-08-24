@@ -10,9 +10,14 @@ class UserCertificate extends Model
     protected $fillable = [
         'file',
         'password',
+        'is_checked',
         'expires_at',
         'signature',
         'user_id'
+    ];
+
+    protected $casts = [
+        'is_checked' => 'boolean',
     ];
 
 

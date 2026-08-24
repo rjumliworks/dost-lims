@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::post('photo', [ProfileController::class, 'store']);
     Route::get('/profile', [ProfileController::class, 'index']);
     Route::post('/profile', [ProfileController::class, 'store']);
+    Route::post('profile/certificate/verify-password', [ProfileController::class, 'verifyCertificatePassword']);
     Route::get('two-factor-challenge', [TwoFactorAuthenticationController::class, 'index'])->name('twofactor');
     Route::post('two-factor-challenge', [TwoFactorAuthenticationController::class, 'store']);
     Route::post('two-factor/enable', [TwoFactorAuthenticationController::class, 'enable']);

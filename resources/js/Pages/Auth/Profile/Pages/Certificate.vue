@@ -80,7 +80,7 @@
             <div class="border bg-white rounded border-dashed p-2 mb-3">
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0" style="height:2.5rem;width:2.5rem;">
-                        <div class="avatar-title h-100 w-100 rounded fs-20" :class="certificate?.has_password ? 'bg-success-subtle text-success' : 'bg-light text-muted'">
+                        <div class="avatar-title h-100 w-100 rounded fs-20" :class="certificate?.is_checked ? 'bg-success-subtle text-success' : 'bg-light text-muted'">
                             <i class="ri-lock-2-fill"></i>
                         </div>
                     </div>
@@ -90,10 +90,16 @@
                                 :type="showPassword ? 'text' : 'password'"
                                 v-model="passwordForm.password"
                                 class="form-control"
-                                :class="{ 'is-invalid': passwordForm.errors.password }"
+                                :class="{ 'is-invalid': passwordForm.errors.password || passwordVerify.valid === false }"
                                 :placeholder="certificate?.has_password ? 'Enter new password to change' : 'Enter p12 password'"
                                 autocomplete="off"
+                                :disabled="!certificate?.has_p12"
                             />
+                            <span v-if="certificate?.has_p12" class="input-group-text bg-white" style="width:2.25rem;justify-content:center;">
+                                <span v-if="passwordVerify.checking" class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+                                <i v-else-if="passwordVerify.valid === true" class="ri-checkbox-circle-fill text-success"></i>
+                                <i v-else-if="passwordVerify.valid === false" class="ri-close-circle-fill text-danger"></i>
+                            </span>
                             <button type="button" class="btn btn-outline-secondary" @click="showPassword = !showPassword">
                                 <i :class="showPassword ? 'ri-eye-off-line' : 'ri-eye-line'"></i>
                             </button>
@@ -102,6 +108,15 @@
                             </button>
                         </div>
                         <InputError :message="passwordForm.errors.password" />
+                        <div v-if="!certificate?.has_p12" class="text-muted fs-12 mt-1">
+                            Upload a PNPKI certificate (.p12) first before setting the password.
+                        </div>
+                        <div v-else-if="passwordVerify.valid === true" class="text-success fs-12 mt-1">
+                            <i class="ri-checkbox-circle-line align-bottom me-1"></i> Password matches the uploaded PNPKI certificate.
+                        </div>
+                        <div v-else-if="passwordVerify.valid === false" class="text-danger fs-12 mt-1">
+                            <i class="ri-error-warning-line align-bottom me-1"></i> Password does not match the uploaded PNPKI certificate.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -136,6 +151,12 @@ export default {
                 option: 'certificate_password',
                 password: '',
             }),
+            passwordVerify: {
+                checking: false,
+                valid: null,
+            },
+            passwordVerifyTimer: null,
+            passwordVerifyToken: 0,
         }
     },
     computed: {
@@ -143,13 +164,57 @@ export default {
             return this.$page.props.user.data.certificate;
         }
     },
+    watch: {
+        'passwordForm.password'(value){
+            clearTimeout(this.passwordVerifyTimer);
+
+            if (!this.certificate?.has_p12 || !value || value.length < 4) {
+                this.passwordVerify.checking = false;
+                this.passwordVerify.valid = null;
+                return;
+            }
+
+            this.passwordVerify.checking = true;
+            this.passwordVerifyTimer = setTimeout(() => this.verifyTypedPassword(value), 500);
+        },
+    },
+    mounted(){
+        this.checkStoredPassword();
+    },
     methods: {
+        checkStoredPassword(){
+            if (!this.certificate?.has_p12 || !this.certificate?.has_password) return;
+
+            axios.get('/profile', { params: { option: 'certificate-password-check' } })
+                .then(({ data }) => {
+                    if (this.passwordForm.password) return; // live typing check takes precedence
+                    this.passwordVerify.valid = data.checked ? !!data.valid : null;
+                })
+                .catch(() => {});
+        },
+        verifyTypedPassword(password){
+            const token = ++this.passwordVerifyToken;
+
+            axios.post('/profile/certificate/verify-password', { password })
+                .then(({ data }) => {
+                    if (token !== this.passwordVerifyToken) return; // stale response
+                    this.passwordVerify.checking = false;
+                    this.passwordVerify.valid = data.checked ? !!data.valid : null;
+                })
+                .catch(() => {
+                    if (token !== this.passwordVerifyToken) return;
+                    this.passwordVerify.checking = false;
+                    this.passwordVerify.valid = null;
+                });
+        },
         savePassword(){
             this.passwordForm.post('/profile', {
                 preserveScroll: true,
                 onSuccess: () => {
                     this.passwordForm.reset('password');
                     this.showPassword = false;
+                    this.passwordVerify.valid = null;
+                    this.checkStoredPassword();
                 },
             });
         },
