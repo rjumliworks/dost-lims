@@ -130,7 +130,7 @@ class ViewClass
                 ];
             }
 
-            $user = User::with('certificate')->where('id', auth()->id())->first();
+            $user = User::with('certificate', 'profile')->where('id', auth()->id())->first();
             $p12Content = Storage::disk('s3')->get($user->certificate->file);
 
             $tempDir = storage_path('app/temp');
@@ -163,6 +163,7 @@ class ViewClass
                 'box_y0' => $request->box_y0,
                 'box_x1' => $request->box_x1,
                 'box_y1' => $request->box_y1,
+                'signer_name' => $user->profile?->fullname,
             ]);
 
             if (!$response->successful()) {

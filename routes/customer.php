@@ -17,6 +17,9 @@ Route::domain('customer.' . config('app.app_host'))->as('customer.')->group(func
         Route::get('/dashboard', [App\Http\Controllers\Customer\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/fetch', [App\Http\Controllers\Customer\DashboardController::class, 'fetch']);
 
+        Route::get('/verify-document', [App\Http\Controllers\Customer\DocumentVerificationController::class, 'index'])->name('verify-document');
+        Route::post('/verify-document', [App\Http\Controllers\Customer\DocumentVerificationController::class, 'store']);
+
         Route::prefix('egovpay')->name('egovpay.')->group(function () {
             Route::post('/pay', [App\Http\Controllers\Customer\EgovPayController::class, 'pay'])->name('pay');
             Route::post('/callback', [App\Http\Controllers\Customer\EgovPayController::class, 'callback'])->name('callback');

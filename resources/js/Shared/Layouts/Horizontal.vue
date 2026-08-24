@@ -114,6 +114,13 @@ export default {
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Downloads</span>
                     </Link>
                 </li>
+                <li class="nav-item">
+                    <Link href="/verify-document" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Customer/VerifyDocument') }">
+                    <i class="ri-shield-check-line"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Verify Document</span>
+                    </Link>
+                </li>
             </ul>
           </BContainer>
           <!-- Sidebar -->
