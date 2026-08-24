@@ -243,6 +243,7 @@ class ViewClass
             'barcodeImage' => $base64Image,
             'name' => $stock->item->name,
             'code' => $stock->code,
+            'number' => $stock->number,
         ];
 
         $width = 6.30 * 28.35;
