@@ -8,34 +8,34 @@
             }
             html * {
                 font-family:Arial, Helvetica, sans-serif;
-                margin: 0;
+                margin-top: 5;
                 padding: 0;
             }
             body {
                 text-align: center;
-                padding: 4pt 6pt 2pt 6pt;
+                padding: 3pt 6pt 2pt 6pt;
             }
             .image {
                 width: 155pt;
-                height: 155pt;
+                height: 32pt;
             }
             .name {
-                font-size: 6pt;
+                font-size: 7pt;
                 font-weight: normal;
-                margin-top: -5pt;
-                line-height: 1.15;
+                margin-top: 2pt;
+                line-height: 1.1;
                 word-wrap: break-word;
             }
             .code {
-                font-size: 7pt;
+                font-size: 6pt;
                 color: #333333;
-                margin-top: 0pt;
+                margin-top: 1pt;
             }
         </style>
     </head>
 
     <body>
-        <img class="image" src="<?php echo $qrCodeImage; ?>" alt="QR Code"/>
+        <img class="image" src="<?php echo $barcodeImage; ?>" alt="Barcode"/>
         <div class="name">{{ $name }}</div>
         <div class="code">{{ $code }}</div>
     </body>

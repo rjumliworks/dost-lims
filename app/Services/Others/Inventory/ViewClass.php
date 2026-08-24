@@ -8,8 +8,6 @@ use App\Models\InventoryItem;
 use App\Models\InventoryStock;
 use App\Models\InventoryWithdrawal;
 use Illuminate\Database\Eloquent\Builder;
-use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\Builder\Builder as QrCodeBuilder;
 use App\Http\Resources\Others\Inventory\ItemResource;
 use App\Http\Resources\Others\Inventory\StockResource;
 
@@ -237,24 +235,19 @@ class ViewClass
     public function printLabel($request){
         $stock = InventoryStock::with('item:id,name')->findOrFail($request->id);
 
-        $result = new QrCodeBuilder(
-            writer: new PngWriter(),
-            data: $stock->code,
-            size: 300,
-            margin: 10,
-        );
-        $qrCodeImageString = $result->build()->getString();
-        $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+        $barcode = new \TCPDFBarcode($stock->code, 'C128');
+        $barcodePngString = $barcode->getBarcodePngData(2, 50);
+        $base64Image = 'data:image/png;base64,' . base64_encode($barcodePngString);
 
         $array = [
-            'qrCodeImage' => $base64Image,
+            'barcodeImage' => $base64Image,
             'name' => $stock->item->name,
             'code' => $stock->code,
         ];
 
-        $width = 6.20 * 28.35;
-        $height = 6.00 * 28.35;
+        $width = 6.30 * 28.35;
+        $height = 2.40 * 28.35;
         $pdf = \PDF::loadView('qrcodes.inventory-stock', $array)->setPaper([0, 0, $width, $height], 'portrait');
-        return $pdf->stream($stock->code.'_qrcode.pdf');
+        return $pdf->stream($stock->code.'_barcode.pdf');
     }
 }
