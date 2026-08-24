@@ -6,7 +6,10 @@ use Hashids\Hashids;
 use App\Models\ListDropdown;
 use App\Models\InventoryItem;
 use App\Models\InventoryStock;
+use App\Models\InventoryWithdrawal;
 use Illuminate\Database\Eloquent\Builder;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Builder\Builder as QrCodeBuilder;
 use App\Http\Resources\Others\Inventory\ItemResource;
 use App\Http\Resources\Others\Inventory\StockResource;
 
@@ -16,7 +19,8 @@ class ViewClass
         return [
             'counts' => $this->counts($request,$statuses),
             'statuses' => $this->statuses(),
-            'stocks' => $this->stocks()
+            'stocks' => $this->stocks(),
+            'stockouts' => $this->stockouts()
             // 'categories' => $this->categories()
         ];
     }
@@ -208,5 +212,49 @@ class ViewClass
             });
 
         return $stocks;
+    }
+
+    public function stockouts(){
+        $dates = InventoryWithdrawal::query()
+            ->selectRaw('DATE(created_at) as date')
+            ->distinct()
+            ->orderByDesc('date')
+            ->take(5)
+            ->pluck('date');
+
+        $withdrawals = InventoryWithdrawal::query()
+            ->with('stock.item', 'stock.unittype', 'user.profile')
+            ->whereIn(\DB::raw('DATE(created_at)'), $dates)
+            ->orderByDesc('created_at')
+            ->get()
+            ->groupBy(function ($item) {
+                return $item->created_at->format('Y-m-d');
+            });
+
+        return $withdrawals;
+    }
+
+    public function printLabel($request){
+        $stock = InventoryStock::with('item:id,name')->findOrFail($request->id);
+
+        $result = new QrCodeBuilder(
+            writer: new PngWriter(),
+            data: $stock->code,
+            size: 300,
+            margin: 10,
+        );
+        $qrCodeImageString = $result->build()->getString();
+        $base64Image = 'data:image/png;base64,' . base64_encode($qrCodeImageString);
+
+        $array = [
+            'qrCodeImage' => $base64Image,
+            'name' => $stock->item->name,
+            'code' => $stock->code,
+        ];
+
+        $width = 6.20 * 28.35;
+        $height = 6.00 * 28.35;
+        $pdf = \PDF::loadView('qrcodes.inventory-stock', $array)->setPaper([0, 0, $width, $height], 'portrait');
+        return $pdf->stream($stock->code.'_qrcode.pdf');
     }
 }

@@ -242,11 +242,43 @@
                             <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Stock Out</span></h5>
                             <p class="text-muted text-truncate-two-lines fs-11">Reduces available stock levels</p>
                         </div>
+                        <div class="flex-shrink-0">
+                            <a href="/inventory/checkout" target="_blank" rel="noopener" class="btn btn-danger btn-sm">
+                                <i class="ri-logout-box-r-line align-bottom me-1"></i> Checkout
+                            </a>
+                        </div>
                     </div>
                 </div>
                 <div class="card shadow-none" no-body>
                     <simplebar data-simplebar style="height: calc(100vh - 405px);">
+                    <div class="p-3">
+                        <template v-for="(items, date, index) in stockouts" :key="date">
+                            <h6 class="text-muted fw-semibold text-uppercase mb-3 fs-11" :class="(index == 0) ? '' : 'mt-3'"><i class="ri-calendar-2-fill me-1"></i> {{ formatDate(date) }}</h6>
 
+                            <div class="d-flex align-items-center" :class="(index == 0) ? '' : 'mt-2'" v-for="(withdrawal, index) in items" :key="withdrawal.id">
+                                <div class="avatar-xs flex-shrink-0">
+                                    <span class="avatar-title bg-light rounded-circle material-shadow">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus-circle icon-dual-danger icon-sm"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                    </span>
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <h6 class="fs-12 mb-0">{{ withdrawal.stock.item.name }}</h6>
+                                    <p class="text-muted fs-12 mb-0">
+                                        <i class="mdi mdi-circle-medium text-danger fs-15 align-middle"></i> Ref: {{ withdrawal.user && withdrawal.user.profile ? withdrawal.user.profile.fullname : 'N/A' }}
+                                    </p>
+                                </div>
+                                <div class="flex-shrink-0 text-end">
+                                    <h6 class="fs-12 mb-0 text-danger">-{{withdrawal.quantity}} {{ withdrawal.stock.unittype.name }}</h6>
+                                </div>
+                            </div>
+
+                        </template>
+
+                        <div class="mt-3 text-center" v-if="Object.keys(stockouts).length">
+                            <a href="javascript:void(0);" class="text-muted text-decoration-underline">Load More</a>
+                        </div>
+
+                    </div>
                     </simplebar>
                 </div>
             </div>
@@ -281,6 +313,7 @@ export default {
             statuses: [],
             categories: [],
             stocks: [],
+            stockouts: [],
             status: null,
             icons: ['ri-information-line','ri-wallet-3-line','ri-indeterminate-circle-line','ri-checkbox-circle-line','ri-close-circle-line'],
         }
@@ -308,9 +341,10 @@ export default {
                 }
             })
             .then(response => {
-                this.counts = response.data.counts; 
+                this.counts = response.data.counts;
                 this.statuses = response.data.statuses;
                 this.stocks = response.data.stocks;
+                this.stockouts = response.data.stockouts;
             })
             .catch(err => console.log(err));
         },

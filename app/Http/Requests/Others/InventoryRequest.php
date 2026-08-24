@@ -56,6 +56,12 @@ class InventoryRequest extends FormRequest
                     },
                 ],
             ];
+        }else if($this->option == 'checkout'){
+            return [
+                'items' => 'required|array|min:1',
+                'items.*.id' => 'required|integer|exists:inventory_stocks,id',
+                'items.*.quantity' => 'required|integer|min:1',
+            ];
         }
         return [];
     }

@@ -42,25 +42,18 @@
                     <td class="text-center">
                         <div class="d-flex gap-3 justify-content-center">
                             <div class="dropdown">
-                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
-                                    <template #button-content> 
+                                <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown"  strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }">
+                                    <template #button-content>
                                         <i class="ri-more-fill"></i>
                                     </template>
                                     <li>
-                                            <a :href="`/tsrs/${list.reference}`" target="_blank" class="dropdown-item d-flex align-items-center" role="button">
+                                        <a @click="openView(list)" class="dropdown-item d-flex align-items-center" role="button">
                                             <i class="ri-eye-line me-2"></i> View
-                                            </a>
+                                        </a>
                                     </li>
                                     <li>
                                         <a @click="openEdit(list,index)" class="dropdown-item d-flex align-items-center" role="button">
                                             <i class="ri-pencil-line me-2"></i>Update
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a @click="openActivation('activation',list,index)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
-                                            <span v-if="list.is_active"><i class="ri-lock-2-fill me-2"></i> Deactivate</span>
-                                            <span v-else><i class="ri-lock-unlock-line me-2"></i> Activate</span>
                                         </a>
                                     </li>
                                 </BDropdown>
@@ -80,13 +73,15 @@
         <Pagination class="ms-2 me-2 mt-n1 mb-n3" v-if="meta" @fetch="fetch" :lists="lists.length" :links="links" :pagination="meta" />
     </div>
     <Add @add="fetch()" :dropdowns="dropdowns" ref="stock"/>
+    <View ref="view"/>
 </template>
 <script>
 import _ from 'lodash';
 import Add from '../Modals/Add.vue';
+import View from '../Modals/View.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { Pagination, Add },
+    components: { Pagination, Add, View },
     props: ['item','dropdowns'],
     data(){
         return {
@@ -137,6 +132,9 @@ export default {
         },
         addStock(data){
             this.$refs.stock.show(data);
+        },
+        openView(data){
+            this.$refs.view.show(data);
         },
     }
 }

@@ -50,6 +50,9 @@ class InventoryController extends Controller
             case 'checkout':
                 return $this->checkout->item($request);
             break;
+            case 'print-label':
+                return $this->view->printLabel($request);
+            break;
             default :
             return inertia('Others/Inventory/Index',[
                 'dropdowns' => [
@@ -81,6 +84,9 @@ class InventoryController extends Controller
                 break;
                 case 'stock':
                     return $this->save->stock($request);
+                break;
+                case 'checkout':
+                    return $this->checkout->process($request);
                 break;
             }
         });
