@@ -419,7 +419,6 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const sigBlob = await fetch(signature.src).then(res => res.blob());
                 const timestamp = new Date().toLocaleString();
-                const pages = [1,2,3,4];
 
                 const formData = new FormData();
                 formData.append('pdf', pdfBlob, 'signed-report.pdf');
@@ -428,9 +427,7 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 formData.append('timestamp', timestamp);
                 formData.append('option', 'report');
                 formData.append('role', this.signRole);
-                pages.forEach(p => {
-                    formData.append('page_numbers[]', p);
-                });
+                formData.append('page', this.currentPage);
                 formData.append('box_x0', pdfX);
                 formData.append('box_y0', pdfY);
                 formData.append('box_x1', pdfX + SIGNATURE_BOX_WIDTH);
@@ -459,9 +456,19 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                     forceFormData: true,
                     onSuccess: (page) => {
                         // Update selected.attachment with new data from backend
-                   
+
                         if (page.props.flash) {
                             this.selected.attachment = page.props.flash.data;
+                        }
+
+                        // A new upload/reupload resets every signatory's status to
+                        // pending server-side (see SaveClass::reupload/upload) —
+                        // mirror that here so the sidebar doesn't keep showing the
+                        // old analyzed/certified/approved dates until a reload.
+                        if (this.selected.signatory) {
+                            this.selected.signatory.analyzed_date = null;
+                            this.selected.signatory.certified_date = null;
+                            this.selected.signatory.approved_date = null;
                         }
 
                         // Cache busting

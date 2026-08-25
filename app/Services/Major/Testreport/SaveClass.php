@@ -384,7 +384,7 @@ class SaveClass
             )->post('http://127.0.0.1:8000/sign',[
                 'p12_file' => $tempP12Path,
                 'p12_pass' => $user->certificate->password,
-                'field_name' => $request->role,
+                'field_name' => $request->role . '_' . $request->page,
                 'page_number' => $request->page,        // Page number from Vue
                 'box_x0' => $request->box_x0,
                 'box_y0' => $request->box_y0,
