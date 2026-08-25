@@ -632,6 +632,7 @@ export default {
             formData.append('option', 'report');
             formData.append('role', this.signRole());
             formData.append('page', this.currentPage);
+            formData.append('total_pages', this.totalPages);
             formData.append('box_x0', pdfX);
             formData.append('box_y0', pdfY);
             formData.append('box_x1', pdfX + boxWidth);

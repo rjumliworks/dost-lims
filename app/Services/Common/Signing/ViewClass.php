@@ -49,21 +49,23 @@ class ViewClass
         $data->attachment = $attach;
         if($data->save()){
             $signatory = TsrSampleReportSignatory::where('report_id', $data->id)->first();
-            if($request->role == 'analyzed'){
+            $isLastPage = $request->page == $request->total_pages;
+
+            if($request->role == 'analyzed' && $isLastPage){
                 $signatory->update([
                     'analyzed_date' => now(),
                     'status_id' => 39
                 ]);
             }
 
-            if($request->role == 'certified'){
+            if($request->role == 'certified' && $isLastPage){
                 $signatory->update([
                     'certified_date' => now(),
                     'status_id' => 40
                 ]);
             }
 
-            if($request->role == 'approved'){
+            if($request->role == 'approved' && $isLastPage){
                 $signatory->update([
                     'approved_date' => now(),
                     'status_id' => 42
