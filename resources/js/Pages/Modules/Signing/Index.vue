@@ -324,6 +324,23 @@
                     </div>
                 </div>
                 <div class="card-body bg-white rounded-bottom" :style="{ height: selected ? 'calc(100vh - 292px)' : 'calc(100vh - 292px)', overflow: 'auto'}" v-if="selected">
+                    <b-row class="mb-2" v-if="totalPages > 1">
+                        <b-col class="d-flex justify-content-end">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination mb-0">
+                                    <li class="page-item" :class="{ disabled: currentPage === 1 }" @click="goToPage(currentPage - 1)">
+                                        <a class="page-link" href="#">Previous</a>
+                                    </li>
+                                    <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }" @click="goToPage(page)">
+                                        <a class="page-link" href="#">{{ page }}</a>
+                                    </li>
+                                    <li class="page-item" :class="{ disabled: currentPage === totalPages }" @click="goToPage(currentPage + 1)">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </b-col>
+                    </b-row>
                     <div ref="pdfContainer" class="position-relative w-100">
                         <img
                             v-show="showSignature"
@@ -608,6 +625,14 @@ export default {
         },
         toggleCollapse(id) {
             this.activeCollapse = this.activeCollapse === id ? null : id;
+        },
+        goToPage(page) {
+            if (page < 1 || page > this.totalPages) return;
+
+            this.showSignature = false;
+            this.showSave = false;
+
+            this.renderPdf(this.selected, this.index, page);
         }
     }
 }
