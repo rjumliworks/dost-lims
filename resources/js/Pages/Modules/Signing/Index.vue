@@ -311,13 +311,16 @@
                             <p class="text-muted text-truncate-two-lines fs-12">Click <strong>Sign</strong> and <strong>Save</strong> to complete the process.</p>
                         </div>
                         <div class="flex-shrink-0" style="width: 45%;">
-                            <div class="float-end" v-if="showSave">  
+                            <div class="float-end" v-if="showSave">
                                 <b-button variant="primary" class="w-sm" @click="savePdfWithSignature" block><i class="ri-save-fill me-2"></i> Save</b-button>
                             </div>
-                            <div v-if="!showSignature" class="float-end" @click="placeSignature">  
+                            <div v-if="showSignature && isPlacing" class="float-end text-muted fs-12 align-self-center me-2">
+                                Click inside the PDF to place the signature...
+                            </div>
+                            <div v-if="!showSignature" class="float-end" @click="placeSignature">
                                 <b-button variant="warning" class="w-sm" block><i class="ri-ball-pen-fill me-2"></i>Sign</b-button>
                             </div>
-                            <div class="float-end" @click="selected = null">  
+                            <div class="float-end" @click="selected = null">
                                 <b-button variant="light" class="w-sm me-2"  block><i class="ri-close-circle-fill text-danger me-2"></i>Close</b-button>
                             </div>
                         </div>
@@ -389,6 +392,7 @@ export default {
             currentPage: 1,
             totalPages: 0,
             showSignature: false,
+            isPlacing: false,
             isRendering: false,
             showSave: false,
             currentDateTime: new Date().toLocaleString(),
@@ -400,38 +404,6 @@ export default {
     mounted() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
         this.openFromQuery();
-    },
-    watch: {
-        showSignature(val) {
-            if (val && this.$refs.signature) {
-                this.$nextTick(() => {
-                    const sig = this.$refs.signature;
-                    interact(sig).unset();
-                    interact(sig).draggable({
-                        modifiers: [
-                            interact.modifiers.restrictRect({
-                                restriction: 'parent'
-                            })
-                        ],
-                        listeners: {
-                            move: event => {
-                                const target = event.target;
-                                const x = (parseFloat(target.dataset.x) || 0) + event.dx;
-                                const y = (parseFloat(target.dataset.y) || 0) + event.dy;
-
-                                target.style.left = `${x}px`;
-                                target.style.top = `${y}px`;
-
-                                target.dataset.x = x;
-                                target.dataset.y = y;
-
-                                this.signaturePos = { x, y };
-                            }
-                        }
-                    });
-                });
-            }
-        }
     },
     computed: {
         chunkedTags() {
@@ -479,6 +451,7 @@ export default {
             }
 
             this.currentPage = pageNum;
+            this.cancelPlacement();
             this.showSignature = false;
             this.isRendering = true;
 
@@ -519,27 +492,94 @@ export default {
                 this.isRendering = false;
             }
         },
+        // Signature-placement flow: click "Sign" to arm placement mode — the
+        // signature image tracks the cursor (via followCursor, bound to the
+        // PDF container so it stays correct even if the container was
+        // scrolled) until the user clicks inside the PDF to drop it
+        // (dropSignature). Only after it's dropped does interact.js take over
+        // for fine-tune dragging (enableDragging).
         placeSignature() {
             this.showSignature = true;
+            this.isPlacing = true;
             this.$nextTick(() => {
-                const canvas = this.$refs.pdfCanvas;
-                const sig = this.$refs.signature;
-                if (!canvas || !sig) return;
+                const container = this.$refs.pdfContainer;
+                if (!container) return;
 
-                const sigWidth = sig.offsetWidth;
-                const sigHeight = sig.offsetHeight;
-
-                const centerX = (canvas.offsetWidth - sigWidth) / 2;
-                const centerY = (canvas.offsetHeight - sigHeight) / 2;
-
-                sig.style.left = `${centerX}px`;
-                sig.style.top = `${centerY}px`;
-                sig.dataset.x = centerX;
-                sig.dataset.y = centerY;
-
-                this.signaturePos = { x: centerX, y: centerY };
+                container.addEventListener('mousemove', this.followCursor);
+                container.addEventListener('click', this.dropSignature);
             });
+        },
+        followCursor(e) {
+            if (!this.isPlacing) return;
+            const sig = this.$refs.signature;
+            const container = this.$refs.pdfContainer;
+            if (!sig || !container) return;
+
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left - sig.offsetWidth / 2;
+            const y = e.clientY - rect.top - sig.offsetHeight / 2;
+
+            sig.style.left = `${x}px`;
+            sig.style.top = `${y}px`;
+        },
+        dropSignature(e) {
+            if (!this.isPlacing) return;
+            const sig = this.$refs.signature;
+            const container = this.$refs.pdfContainer;
+            if (!sig || !container) return;
+
+            container.removeEventListener('mousemove', this.followCursor);
+            container.removeEventListener('click', this.dropSignature);
+
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left - sig.offsetWidth / 2;
+            const y = e.clientY - rect.top - sig.offsetHeight / 2;
+
+            sig.style.left = `${x}px`;
+            sig.style.top = `${y}px`;
+            sig.dataset.x = x;
+            sig.dataset.y = y;
+            this.signaturePos = { x, y };
+
+            this.isPlacing = false;
             this.showSave = true;
+            this.enableDragging();
+        },
+        enableDragging() {
+            const sig = this.$refs.signature;
+            if (!sig) return;
+
+            interact(sig).unset();
+            interact(sig).draggable({
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent'
+                    })
+                ],
+                listeners: {
+                    move: event => {
+                        const target = event.target;
+                        const x = (parseFloat(target.dataset.x) || 0) + event.dx;
+                        const y = (parseFloat(target.dataset.y) || 0) + event.dy;
+
+                        target.style.left = `${x}px`;
+                        target.style.top = `${y}px`;
+
+                        target.dataset.x = x;
+                        target.dataset.y = y;
+
+                        this.signaturePos = { x, y };
+                    }
+                }
+            });
+        },
+        cancelPlacement() {
+            const container = this.$refs.pdfContainer;
+            if (container) {
+                container.removeEventListener('mousemove', this.followCursor);
+                container.removeEventListener('click', this.dropSignature);
+            }
+            this.isPlacing = false;
         },
         async savePdfWithSignature() {
             const signature = this.$refs.signature;
