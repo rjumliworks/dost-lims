@@ -172,7 +172,7 @@ class ViewClass
             'box_y0' => $request->box_y0,
             'box_x1' => $request->box_x1,
             'box_y1' => $request->box_y1,
-            'signer_name' => $user->profile?->fullname,
+            'signer_name' => $user->profile?->pnpki_name,
         ]);
 
         @unlink($tempP12Path);
@@ -271,7 +271,7 @@ class ViewClass
                 'box_y0' => $request->box_y0,
                 'box_x1' => $request->box_x1,
                 'box_y1' => $request->box_y1,
-                'signer_name' => $user->profile?->fullname,
+                'signer_name' => $user->profile?->pnpki_name,
             ]);
 
             if (!$response->successful()) {

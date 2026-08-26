@@ -27,7 +27,7 @@ class UserProfile extends Model
         'agency_id',
         'user_id', 
     ];
-    protected $appends = ['name','fullname'];
+    protected $appends = ['name','fullname','pnpki_name'];
     protected $encryptable = [
         'firstname',
         'middlename',
@@ -60,6 +60,18 @@ class UserProfile extends Model
         }
 
         return $name;
+    }
+
+    public function getPnpkiNameAttribute()
+    {
+        $firstname = $this->formatNamePart($this->firstname);
+        $lastname = $this->formatNamePart($this->lastname);
+
+        $middleInitial = $this->middlename
+            ? strtoupper($this->middlename[0]) . '.'
+            : '';
+
+        return strtoupper(trim("{$firstname} {$middleInitial} {$lastname}"));
     }
 
     public function getNameAttribute()
