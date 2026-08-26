@@ -64,8 +64,7 @@
                                 </div>
                             </div>
                             <div class="flex-shrink-0 ms-2">
-                                <input type="file" ref="signatureInput" accept="image/png" class="d-none" @change="onSignatureSelected" />
-                                <button type="button" class="btn btn-sm btn-outline-primary" :disabled="signatureUploading" @click="$refs.signatureInput.click()">
+                                <button type="button" class="btn btn-sm btn-outline-primary" @click="$refs.signatureCrop.show()">
                                     <i class="ri-upload-2-line align-bottom me-1"></i> {{ certificate?.has_signature ? 'Replace' : 'Upload' }}
                                 </button>
                             </div>
@@ -123,19 +122,20 @@
         </div>
     </div>
 </div>
+<SignatureCrop ref="signatureCrop" />
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import InputError from '@/Shared/Components/Forms/InputError.vue';
+import SignatureCrop from '../Modals/SignatureCrop.vue';
 export default {
-    components: { InputLabel, TextInput, InputError },
+    components: { InputLabel, TextInput, InputError, SignatureCrop },
     data(){
         return {
             showPassword: false,
             p12Uploading: false,
-            signatureUploading: false,
             form: useForm({
                 id: this.$page.props.user.data.id,
                 username: this.$page.props.user.data.username,
@@ -232,25 +232,6 @@ export default {
                 forceFormData: true,
                 onFinish: () => {
                     this.p12Uploading = false;
-                    event.target.value = '';
-                },
-                onError: () => this.errors = this.$page.props.errors
-            });
-        },
-        onSignatureSelected(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const formData = new FormData();
-            formData.append('signature', file);
-            formData.append('option', 'signature');
-
-            this.signatureUploading = true;
-            this.$inertia.post('/profile', formData, {
-                preserveScroll: true,
-                forceFormData: true,
-                onFinish: () => {
-                    this.signatureUploading = false;
                     event.target.value = '';
                 },
                 onError: () => this.errors = this.$page.props.errors
