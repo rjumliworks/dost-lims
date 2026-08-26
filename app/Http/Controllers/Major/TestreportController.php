@@ -8,6 +8,7 @@ use App\Traits\HandlesTransaction;
 use Illuminate\Support\Facades\Storage;
 use App\Services\Major\Testreport\ViewClass;
 use App\Services\Major\Testreport\SaveClass;
+use App\Services\AgencyClass;
 use App\Models\UserRole;
 
 class TestreportController extends Controller
@@ -16,10 +17,12 @@ class TestreportController extends Controller
 
     protected ViewClass $view;
     protected SaveClass $save;
+    protected AgencyClass $agency;
 
-    public function __construct(ViewClass $view, SaveClass $save){
+    public function __construct(ViewClass $view, SaveClass $save, AgencyClass $agency){
         $this->view = $view;
         $this->save = $save;
+        $this->agency = $agency;
     }
 
     public function index(Request $request){
@@ -38,9 +41,15 @@ class TestreportController extends Controller
                 return $this->view->qrcode($request);
             break;
             default :
+                $isLaboratoryHead = \Auth::user()->roles()
+                    ->where('name', 'Laboratory Head')
+                    ->where('user_roles.is_active', 1)
+                    ->exists();
+
                 return inertia('Modules/Major/Testreports/Index',[
                     'count' => $this->view->count(),
-                    'laboratories' => $this->view->laboratories()
+                    'laboratories' => $isLaboratoryHead ? $this->agency->laboratories() : $this->view->laboratories(),
+                    'facilities' => $this->agency->facilities()
                 ]);
         }
     }

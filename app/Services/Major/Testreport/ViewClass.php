@@ -44,7 +44,29 @@ class ViewClass
     }
 
     public function list($request,$laboratory){
-        
+        $isLaboratoryHead = \Auth::user()->roles()
+            ->where('name', 'Laboratory Head')
+            ->where('user_roles.is_active', 1)
+            ->exists();
+
+        $facilityScope = $isLaboratoryHead ? $request->facility : \Auth::user()->profile?->facility_id;
+
+        $scopeToTsr = function ($query) use ($laboratory, $request, $isLaboratoryHead, $facilityScope) {
+            $query->when($facilityScope, function ($query, $facility) {
+                (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+            });
+
+            if($isLaboratoryHead){
+                $query->when($request->laboratory, function ($query, $labtype) {
+                    (is_array($labtype)) ? $query->whereIn('laboratory_id',$labtype) : $query->where('laboratory_id',$labtype);
+                });
+            }else{
+                $query->when($laboratory, function ($query, $labtype) {
+                    $query->whereIn('laboratory_id',$labtype);
+                });
+            }
+        };
+
         if($request->status == 'with'){
             $data = WithReportResource::collection(
                 TsrSampleReport::query()
@@ -65,11 +87,7 @@ class ViewClass
                 ->when($request->analyst, function ($query, $analyst) {
                     $query->where('user_id',$analyst);
                 })
-                ->whereHas('tsr', function ($query) use ($laboratory){
-                    $query->when($laboratory , function ($query, $labtype) {
-                        $query->whereIn('laboratory_id',$labtype);
-                    });
-                })
+                ->whereHas('tsr', $scopeToTsr)
                 ->orderBy('created_at','DESC')
                 ->paginate($request->count)
             );
@@ -78,8 +96,9 @@ class ViewClass
                 TsrSample::where('is_completed',1)
                 ->doesntHave('report')
                 ->doesntHave('reportlist')
-                ->withWhereHas('tsr', function ($query) {
+                ->withWhereHas('tsr', function ($query) use ($scopeToTsr) {
                     $query->where('status_id','!=',5);
+                    $scopeToTsr($query);
                 })
                 ->when($request->id, function ($query, $id) {
                     $query->where('id',$id);

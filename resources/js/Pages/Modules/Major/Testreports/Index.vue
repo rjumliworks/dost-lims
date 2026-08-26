@@ -27,9 +27,10 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                <input type="text" v-model="filter.keyword" placeholder="Search Report number, TSR Code, Sample Code" class="form-control" style="width: 30%;">
+                                <input type="text" v-model="filter.keyword" placeholder="Search Report number, TSR Code, Sample Code" class="form-control" style="width: 20%;">
                                 <Multiselect class="white" style="width: 17%;" :options="[]" v-model="filter.analyst" label="name" :searchable="true" placeholder="Select Analyst" />
-                                <Multiselect v-if="laboratories.length > 0" class="white" style="width: 17%;" :options="laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
+                                <Multiselect v-if="labs.length > 0" class="white" style="width: 17%;" :options="labs" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
+                                <Multiselect v-if="isLaboratoryHead && facilities && facilities.length > 1" class="white" style="width: 17%;" :options="facilities" v-model="filter.facility" label="name" :searchable="true" placeholder="Select Facility" />
                                 <Multiselect class="white" style="width: 8%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
                                     <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;"> 
                                     <i class="bx bx-refresh search-icon"></i>
@@ -179,23 +180,25 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
     components: { PageHeader, Pagination, Multiselect, View, Create },
-    props: ['dropdowns','count','laboratories','years'],
+    props: ['dropdowns','count','laboratories','facilities','years'],
     data(){
         return {
             currentUrl: window.location.origin,
             lists: [],
             meta: {},
             links: {},
+            labs: this.laboratories,
             filter: {
                 keyword: null,
-                laboratory: this.laboratories[0].value,
+                laboratory: (!this.$page.props.roles.includes('Laboratory Head') && this.laboratories.length > 0) ? this.laboratories[0].value : null,
+                facility: null,
                 analyst: null,
                 status: 'with',
                 year: new Date().getFullYear(),
             },
             index: null,
             selectedIndex: null,
-            selectedRow: null, 
+            selectedRow: null,
         }
     },
     watch: {
@@ -205,8 +208,18 @@ export default {
         "filter.laboratory"(newVal){
             this.fetch();
         },
+        "filter.facility"(newVal){
+            this.filter.laboratory = null;
+            this.fetchLaboratories(newVal);
+            this.fetch();
+        },
         "filter.analyst"(newVal){
             this.fetch();
+        }
+    },
+    computed: {
+        isLaboratoryHead() {
+            return this.$page.props.roles.includes('Laboratory Head');
         }
     },
     created(){
@@ -216,12 +229,29 @@ export default {
         checkSearchStr: _.debounce(function(string) {
             this.fetch();
         }, 300),
+        fetchLaboratories(facility){
+            if(!facility){
+                this.labs = this.laboratories;
+                return;
+            }
+            axios.get('/search',{
+                params: {
+                    option: 'laboratories',
+                    facility: facility
+                }
+            })
+            .then(response => {
+                this.labs = response.data;
+            })
+            .catch(err => console.log(err));
+        },
         fetch(page_url){
             page_url = page_url || '/testreports';
             axios.get(page_url,{
                 params : {
                     keyword: this.filter.keyword,
                     laboratory: this.filter.laboratory,
+                    facility: this.filter.facility,
                     status: this.filter.status,
                     analyst: this.filter.analyst,
                     count: 10,
@@ -254,6 +284,8 @@ export default {
             this.filter.keyword = null;
             this.filter.analyst = null;
             this.filter.laboratory = null;
+            this.filter.facility = null;
+            this.labs = this.laboratories;
             this.fetch();
         }
     }
