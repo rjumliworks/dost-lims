@@ -77,7 +77,7 @@
                             ref="signature"
                             :src="signature"
                             id="signature"
-                            style="position: absolute; width: auto; height: 120px; cursor: move;"
+                            :style="{ position: 'absolute', width: 'auto', height: signaturePreviewHeightPx + 'px', cursor: 'move' }"
                         />
                         <canvas
                             ref="pdfCanvas"
@@ -169,7 +169,7 @@
                             ref="signature"
                             :src="signature"
                             id="signature"
-                            style="position: absolute; width: auto; height: 120px; cursor: move;"
+                            :style="{ position: 'absolute', width: 'auto', height: signaturePreviewHeightPx + 'px', cursor: 'move' }"
                         />
                         <canvas
                             ref="pdfCanvas"
@@ -200,6 +200,8 @@ const FilePond = vueFilePond(FilePondPluginFileValidateType);
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import { PDFDocument } from 'pdf-lib';
 
+const SIGNATURE_BOX_HEIGHT = 55; // PDF points — fixed so the signature always prints at the same size
+
     export default {
         props: ['signature'],
         components: { PageHeader, FilePond },
@@ -218,12 +220,34 @@ import { PDFDocument } from 'pdf-lib';
                 signing: false,
                 normalizing: false,
                 errors: null,
+                pdfPageHeight: 0,
+                canvasHeightPx: 0,
             }
+        },
+        computed: {
+            // The preview's on-screen height is derived from the canvas's
+            // current rendered size so it always visually represents exactly
+            // SIGNATURE_BOX_HEIGHT points — this way the box the user sees is
+            // never bigger or smaller than what actually gets pasted onto the
+            // PDF, regardless of window size or zoom.
+            signaturePreviewHeightPx() {
+                if (!this.pdfPageHeight || !this.canvasHeightPx) return 120;
+                return (SIGNATURE_BOX_HEIGHT / this.pdfPageHeight) * this.canvasHeightPx;
+            },
         },
         mounted() {
             pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+            window.addEventListener('resize', this.updateCanvasMetrics);
+        },
+        beforeUnmount() {
+            window.removeEventListener('resize', this.updateCanvasMetrics);
         },
         methods: {
+            updateCanvasMetrics() {
+                const canvas = this.$refs.pdfCanvas;
+                if (!canvas) return;
+                this.canvasHeightPx = canvas.getBoundingClientRect().height;
+            },
             // Signature-placement flow: click "Sign" to arm placement mode —
             // the signature image tracks the cursor (via followCursor, bound to
             // the PDF container so it stays correct even if the container was
@@ -373,6 +397,7 @@ import { PDFDocument } from 'pdf-lib';
 
                         canvasEl.width = viewport.width;
                         canvasEl.height = viewport.height;
+                        this.pdfPageHeight = viewport.height / this.scale;
 
                         const context = canvasEl.getContext('2d');
                         const renderContext = {
@@ -382,6 +407,7 @@ import { PDFDocument } from 'pdf-lib';
 
                         page.render(renderContext).promise.then(() => {
                             this.isRendering = false;
+                            this.$nextTick(this.updateCanvasMetrics);
                         });
                     });
                 });
@@ -415,15 +441,15 @@ import { PDFDocument } from 'pdf-lib';
                 const canvasRect = canvas.getBoundingClientRect();
                 const sigRect = signature.getBoundingClientRect();
 
-                // Map the preview's on-screen rectangle straight into PDF point
-                // space, 1:1 — no hardcoded box size. Whatever rectangle is drawn
-                // on screen is exactly what gets sent to the backend as the
-                // signature image's box. Any extra room needed for the
-                // "DIGITALLY SIGNED BY" text is added server-side, to the right
-                // of this box, so it never affects where the image itself lands.
                 const ptPerPxX = pdfPageWidth / canvasRect.width;
                 const ptPerPxY = pdfPageHeight / canvasRect.height;
 
+                // The preview's on-screen height is already sized (see
+                // signaturePreviewHeightPx) to visually represent exactly
+                // SIGNATURE_BOX_HEIGHT points at the current canvas render
+                // scale, so mapping its on-screen rectangle straight into PDF
+                // point space both keeps the box at that fixed physical size
+                // and lands it exactly where it was dropped.
                 const boxWidth = sigRect.width * ptPerPxX;
                 const boxHeight = sigRect.height * ptPerPxY;
 

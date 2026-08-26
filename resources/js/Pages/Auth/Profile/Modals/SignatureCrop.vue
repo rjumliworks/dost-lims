@@ -13,7 +13,7 @@
 
             <template v-else>
                 <div class="text-center">
-                    <div class="text-muted mb-3 fs-13">Drag the signature to center it. The border shows the exact 500 x 200 area that will be saved.</div>
+                    <div class="text-muted mb-3 fs-13">Drag the signature to center it. The border shows the exact 400 x 200 area that will be saved.</div>
                     <div
                         ref="viewport"
                         class="signature-crop-viewport mx-auto"
@@ -52,8 +52,8 @@
 import { useForm } from '@inertiajs/vue3'
 
 const VIEWPORT_WIDTH = 400;
-const VIEWPORT_HEIGHT = 160;
-const OUTPUT_WIDTH = 500;
+const VIEWPORT_HEIGHT = 200;
+const OUTPUT_WIDTH = 400;
 const OUTPUT_HEIGHT = 200;
 
 export default {
@@ -239,7 +239,7 @@ export default {
 .signature-crop-viewport {
     position: relative;
     width: 400px;
-    height: 160px;
+    height: 200px;
     max-width: 100%;
     border-radius: 6px;
     overflow: hidden;

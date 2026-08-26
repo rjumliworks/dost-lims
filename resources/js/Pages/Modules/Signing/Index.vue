@@ -350,7 +350,7 @@
                             ref="signature"
                             :src="signature"
                             id="signature"
-                            style="position: absolute; width: auto; height: 120px; cursor: move;"
+                            :style="{ position: 'absolute', width: 'auto', height: signaturePreviewHeightPx + 'px', cursor: 'move' }"
                         />
                         <canvas ref="pdfCanvas" id="pdfcanvas" class="border border-dashed rounded" style="width: 100%; height: auto;"></canvas>
                         <div v-if="isRendering" class="loading-overlay-inside">
@@ -379,6 +379,9 @@ import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
 import { PDFDocument } from 'pdf-lib';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
+
+const SIGNATURE_BOX_HEIGHT = 55; // PDF points — fixed so the signature always prints at the same size
+
 export default {
     components: { PageHeader, Pagination },
     props: ['reports','signature'],
@@ -398,20 +401,26 @@ export default {
             currentDateTime: new Date().toLocaleString(),
             selected: null,
             index: null,
-            activeCollapse: null
+            activeCollapse: null,
+            pdfPageHeight: 0,
+            canvasHeightPx: 0,
         }
     },
     mounted() {
         pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
         this.openFromQuery();
+        window.addEventListener('resize', this.updateCanvasMetrics);
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.updateCanvasMetrics);
     },
     computed: {
         chunkedTags() {
             const tags = this.selected.lists || [];
             let chunkSize = 3;
 
-            if (tags.length >= 6) chunkSize = 2;  
-            else if (tags.length >= 4) chunkSize = 2; 
+            if (tags.length >= 6) chunkSize = 2;
+            else if (tags.length >= 4) chunkSize = 2;
 
             const chunks = [];
             for (let i = 0; i < tags.length; i += chunkSize) {
@@ -419,8 +428,22 @@ export default {
             }
             return chunks;
         },
+        // The preview's on-screen height is derived from the canvas's current
+        // rendered size so it always visually represents exactly
+        // SIGNATURE_BOX_HEIGHT points — this way the box the user sees is
+        // never bigger or smaller than what actually gets pasted onto the
+        // PDF, regardless of window size or zoom.
+        signaturePreviewHeightPx() {
+            if (!this.pdfPageHeight || !this.canvasHeightPx) return 120;
+            return (SIGNATURE_BOX_HEIGHT / this.pdfPageHeight) * this.canvasHeightPx;
+        },
     },
     methods: {
+        updateCanvasMetrics() {
+            const canvas = this.$refs.pdfCanvas;
+            if (!canvas) return;
+            this.canvasHeightPx = canvas.getBoundingClientRect().height;
+        },
         openFromQuery(){
             const params = new URLSearchParams(window.location.search);
             const reference = params.get('open');
@@ -478,6 +501,7 @@ export default {
 
                 canvasEl.width = viewport.width;
                 canvasEl.height = viewport.height;
+                this.pdfPageHeight = viewport.height / this.scale;
 
                 const context = canvasEl.getContext('2d');
 
@@ -487,6 +511,8 @@ export default {
                 }).promise;
 
                 this.isRendering = false;
+                await this.$nextTick();
+                this.updateCanvasMetrics();
             } catch (error) {
                 console.error(error);
                 this.isRendering = false;
@@ -602,17 +628,18 @@ export default {
 
             console.log('PDF size:', pdfPageWidth, pdfPageHeight);
 
-            // Map the preview's on-screen rectangle straight into PDF point
-            // space, 1:1 — no hardcoded box size, matching how the digital
-            // signing tool (Others/Signing) computes it. Whatever rectangle
-            // is drawn on screen is exactly what gets sent to the backend as
-            // the signature image's box.
             const canvasRect = canvas.getBoundingClientRect();
             const sigRect = signature.getBoundingClientRect();
 
             const ptPerPxX = pdfPageWidth / canvasRect.width;
             const ptPerPxY = pdfPageHeight / canvasRect.height;
 
+            // The preview's on-screen height is already sized (see
+            // signaturePreviewHeightPx) to visually represent exactly
+            // SIGNATURE_BOX_HEIGHT points at the current canvas render scale,
+            // so mapping its on-screen rectangle straight into PDF point
+            // space both keeps the box at that fixed physical size and lands
+            // it exactly where it was dropped.
             const boxWidth = sigRect.width * ptPerPxX;
             const boxHeight = sigRect.height * ptPerPxY;
 

@@ -19,7 +19,7 @@
                                     </div>
                                 </div>
                             </BCol>
-                            <template v-if="typeof form.customer === 'object' && form.customer?.classification == 8">
+                            <template v-if="typeof form.customer === 'string' || (typeof form.customer === 'object' && form.customer?.classification == 8)">
                             <BCol lg="12">
                                 <BRow class="g-3">
                                     <BCol lg="12"><hr class="text-muted mb-0" :class="(form.customer) ? 'mt-1' : 'mt-3'"/></BCol>
@@ -222,9 +222,9 @@ export default {
                     this.form.type_id = this.form.customer.type_id;
                     this.$refs.search.set(this.form.customer.name);
                }else if(typeof this.form.customer === 'string'){
-                    this.form.has_branches = false;
+                    this.form.has_branches = null;
                     this.$refs.search.set(this.form.customer);
-               }    
+               }
             }else{
                 this.form.name_id = null;
                 this.form.classification_id = null;
@@ -233,11 +233,11 @@ export default {
                 this.form.has_branches = false;
             }
         },
-        'form.has_branches'(){
-            if(!this.form.has_branches){
+        'form.has_branches'(newVal){
+            if(newVal === false){
                 this.form.name = 'Main';
                 this.form.is_main = true;
-            }else{
+            }else if(newVal === true){
                 this.form.name = null;
                 this.form.is_main = false;
             }
