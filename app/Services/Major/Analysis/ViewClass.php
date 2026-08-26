@@ -36,35 +36,27 @@ class ViewClass
             return IndexResource::collection($data);
         }else if($type == 'Tagged to Sample'){
             $sampletypes = $request->sampletypes;
-            
+
             if(count($sampletypes) > 0){
-                if(isset($request->samplenames)){
-                    $samplenames = $request->samplenames;
-                    $hasSampleNames = Testservice::query()
-                    ->whereHas('samples', function ($q) use ($samplenames) {
-                        $q->whereIn('sampleable_id', $samplenames)
-                        ->where('sampleable_type', SampleName::class);
-                    })
-                    ->exists();
-                }else{
-                    $samplenames = null;
-                    $hasSampleNames = false;
-                }
+                $samplenames = $request->samplenames ?? [];
+
                 $data = TestserviceResource::collection(
                     Testservice::query()
                         ->with('method.method','method.reference','laboratory')
-                        ->whereHas('samples', function ($q) use ($sampletypes, $samplenames, $hasSampleNames) {
+                        ->whereHas('samples', function ($q) use ($sampletypes, $samplenames) {
+                            $q->where(function ($q) use ($sampletypes, $samplenames) {
+                                $q->where(function ($q) use ($sampletypes) {
+                                    $q->whereIn('sampleable_id', $sampletypes)
+                                        ->where('sampleable_type', SampleType::class);
+                                });
 
-                            if ($hasSampleNames) {
-                                // ONLY sample names
-                                $q->whereIn('sampleable_id', $samplenames)
-                                ->where('sampleable_type', SampleName::class);
-                            } else {
-                                // fallback to sample types
-                                $q->whereIn('sampleable_id', $sampletypes)
-                                ->where('sampleable_type', SampleType::class);
-                            }
-
+                                if (count($samplenames) > 0) {
+                                    $q->orWhere(function ($q) use ($samplenames) {
+                                        $q->whereIn('sampleable_id', $samplenames)
+                                            ->where('sampleable_type', SampleName::class);
+                                    });
+                                }
+                            });
                         })
                         ->when($request->ids, function ($query, $ids) {
                             $query->whereNotIn('id', $ids);
