@@ -39,10 +39,19 @@ class AgencyClass
         return $data;
     }
 
-    public function facilities(){
-        $agencyId = Auth::user()->profile?->agency_id;
+    public function facilities($byRegion = false){
+        $profile = Auth::user()->profile;
+        $agencyId = $profile?->agency_id;
+
+        // A user stationed at a regional facility (is_regional = 1) oversees every
+        // facility in the agency; a satellite-facility user only sees their own.
+        $ownFacilityIsRegional = $profile?->facility && $profile->facility->is_regional;
+
         $data = AgencyFacility::where('agency_id', $agencyId)
         ->where('is_active',1)
+        ->when($byRegion && !$ownFacilityIsRegional, function ($query) use ($profile) {
+            $query->where('id', $profile->facility_id);
+        })
         ->get()->map(function ($item) {
             return [
                 'value' => $item->id,

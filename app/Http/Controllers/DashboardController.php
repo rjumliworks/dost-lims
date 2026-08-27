@@ -115,6 +115,7 @@ class DashboardController extends Controller
                         return inertia('Modules/Dashboard/Cro/Index',[
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
+                                'facilities' => $this->agency->facilities(true),
                             ]
                         ]);
                     break;
@@ -172,7 +173,7 @@ class DashboardController extends Controller
         switch($option){
             case 'cro':
                 return array_merge(
-                    $this->cro->dashboard($request,$this->agency->laboratories()),
+                    $this->cro->dashboard($request,$this->agency->laboratories($request->facility)),
                     $this->common->calendar($request)
                 );
             break;

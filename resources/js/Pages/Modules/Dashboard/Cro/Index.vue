@@ -19,9 +19,13 @@
                                         <div class="row g-3 mb-0 align-items-center">
                                             <div class="col-sm-auto">
                                                 <div class="input-group">
+                                                    <select v-if="dropdowns.facilities && dropdowns.facilities.length > 0" style="width: 200px;" v-model="filter.facility" class="form-select" aria-label="Default select example">
+                                                        <option :value="null">All Facilities</option>
+                                                        <option :value="list.value" v-for="list in dropdowns.facilities" v-bind:key="list.value">{{list.name}}</option>
+                                                    </select>
                                                     <select style="width: 250px;" v-model="filter.laboratory" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Laboratories</option>
-                                                        <option :value="list.value" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
+                                                        <option :value="list.value" v-for="list in laboratoryOptions" v-bind:key="list.value">{{list.name}}</option>
                                                     </select>
                                                     <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Months</option>
@@ -170,12 +174,18 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Request Monitoring & Alerts</span></h5>
+                                    <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Payment Monitoring & Alerts</span></h5>
                                     <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                                 </div>
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" no-body style="height: 340px;">
+                            <div class="d-flex align-items-center justify-content-center h-100" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div v-else>
                             <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
                             <li class="list-group-item px-0" v-for="(list,index) in collection" v-bind:key="index">
                                 <div class="d-flex">
@@ -215,6 +225,7 @@
                                 </div>
                             </li>
                         </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -236,10 +247,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card border-bottom shadow-none" no-body style="height: 340px;">
+                        <div class="card border-bottom shadow-none position-relative" no-body style="height: 340px; overflow: hidden;">
+                            <div class="d-flex align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 bg-light-subtle" style="z-index: 2;" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
                             <apexchart  ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
                                 :options="chartOptions1">
-                            </apexchart> 
+                            </apexchart>
                         </div>
                     </div>
                 </div>
@@ -262,7 +278,12 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" no-body style="height: 340px;">
-                            <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
+                            <div class="d-flex align-items-center justify-content-center h-100" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <ul v-else class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
                                 <li class="list-group-item px-0" v-for="(list,index) in statuses" v-bind:key="index">
                                     <div class="d-flex align-items-center">
                                         <div class="flex-shrink-0 me-2">
@@ -450,7 +471,12 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                            <div class="card-body">
+                            <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="card-body" v-else>
                                 <div v-if="schedules?.list?.length == 0" class="d-flex flex-column justify-content-center align-items-center text-center h-100 mt-n1">
                                     <div class="mb-3" style="width: 50px; height: 50px;">
                                         <div class="avatar-title bg-light rounded-circle text-muted">
@@ -527,7 +553,12 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                            <div class="card-body h-100">
+                            <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="card-body h-100" v-else>
                                 <div v-if="personnels?.list?.length == 0" class="d-flex flex-column justify-content-center align-items-center text-center h-100 mt-n1">
                                     <div class="mb-3" style="width: 50px; height: 50px;">
                                         <div class="avatar-title bg-light rounded-circle text-muted">
@@ -602,7 +633,12 @@
                             </div>
                         </div>
                         <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                            <div class="card-body h-100">
+                            <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            <div class="card-body h-100" v-else>
                                 <div v-if="wallets?.length == 0" class="d-flex flex-column justify-content-center align-items-center text-center h-100 mt-n1">
                                     <div class="mb-3" style="width: 50px; height: 50px;">
                                         <div class="avatar-title bg-light rounded-circle text-muted">
@@ -808,11 +844,13 @@ export default {
             activeList: null,
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
             laboratories: [],
+            laboratoryOptions: this.dropdowns.laboratories,
             total: [],
             filter: {
                 keyword: null,
                 type: 'Daily',
                 laboratory: null,
+                facility: null,
                 date: null,
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
@@ -829,6 +867,7 @@ export default {
             target: null,
             laboratory: null,
             total: [],
+            loading: true
         }
     },
     watch: {
@@ -846,6 +885,12 @@ export default {
             this.fetchDaily();
         },
         'filter.laboratory'(val){
+            this.fetch();
+            this.fetchDaily();
+        },
+        'filter.facility'(val){
+            this.filter.laboratory = null;
+            this.fetchLaboratories(val);
             this.fetch();
             this.fetchDaily();
         },
@@ -878,12 +923,30 @@ export default {
         }
     },
     methods: {
+        fetchLaboratories(facility){
+            if(!facility){
+                this.laboratoryOptions = this.dropdowns.laboratories;
+                return;
+            }
+            axios.get('/search',{
+                params: {
+                    option: 'laboratories',
+                    facility: facility
+                }
+            })
+            .then(response => {
+                this.laboratoryOptions = response.data;
+            })
+            .catch(err => console.log(err));
+        },
         fetch(){
+            this.loading = true;
             axios.get('/fetch',{
                 params : {
                     year: this.filter.year,
                     month: this.monthName,
                     laboratory: this.filter.laboratory,
+                    facility: this.filter.facility,
                     option: 'cro',
                 }
             })
@@ -908,9 +971,12 @@ export default {
                         }
                     }
                 };
-                this.series = response.data.charts.lists;     
+                this.series = response.data.charts.lists;
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err))
+            .finally(() => {
+                this.loading = false;
+            });
         },
         fetchDaily(){
             axios.get('/accomplishments',{
