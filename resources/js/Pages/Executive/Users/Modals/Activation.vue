@@ -40,7 +40,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             form: useForm({
-                code: null,
+                reference: null,
                 is_active: null,
                 option: 'status'
             }),
@@ -53,7 +53,7 @@ export default {
         show(type,data){
             this.user = data;
             this.type = type;
-            this.form.code = this.user.code,
+            this.form.reference = this.user.reference,
             this.form.is_active = (this.user.is_active == 1) ? 0 : 1,
             this.showModal = true;
         },

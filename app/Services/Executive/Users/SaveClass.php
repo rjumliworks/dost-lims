@@ -97,11 +97,9 @@ class SaveClass
     }
 
     public function status($request){
-        $hashids = new Hashids('krad',10);
-        $id = $hashids->decode($request->code);
         $data = User::with('profile:user_id,firstname,middlename,lastname,suffix_id,avatar,mobile','profile.suffix')
         ->with('myroles:role_id,id,user_id','myroles.role:id,name')
-        ->where('id',$id)->first();
+        ->where('id',$request->user_id)->first();
         $data->is_active = $request->is_active;
         $data->save();
 

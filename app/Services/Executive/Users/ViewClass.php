@@ -18,6 +18,11 @@ class ViewClass
     public function list($request){
         $data = User::with('profile:user_id,firstname,middlename,lastname,suffix_id,avatar,mobile','profile.suffix')
         ->with('myroles:role_id,id,user_id,added_by,laboratory_id,removed_by,removed_at,created_at,is_active','myroles.role:id,name','myroles.added:id','myroles.laboratory:id,name','myroles.added.profile:user_id,firstname,middlename,lastname,suffix_id','myroles.removed:id','myroles.removed.profile:user_id,firstname,middlename,lastname,suffix_id')
+        ->when($request->keyword, function ($query, $keyword) {
+            $query->whereHas('profile', function ($q) use ($keyword) {
+                $q->where('lastname', 'like', '%'.$keyword.'%');
+            });
+        })
         ->when($request->role, function ($query) use ($request) {
             $query->whereHas('myroles', function ($q) use ($request) {
                 $q->when($request->role, function ($q, $role) {

@@ -32,7 +32,7 @@ export default {
     data(){
         return {
             form: useForm({
-                code: null,
+                reference: null,
                 type: 'remove',
                 option: 'role'
             }),
@@ -43,7 +43,7 @@ export default {
     methods: { 
         show(selected){
             this.form.reset();
-            this.form.code = selected.code;
+            this.form.reference = selected.code;
             this.selected = selected;
             this.showModal = true;
         },

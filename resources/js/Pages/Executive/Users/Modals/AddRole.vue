@@ -43,7 +43,7 @@ export default {
     data(){
         return {
             form: useForm({
-                code: null,
+                reference: null,
                 role: null,
                 role_id: null,
                 laboratory_id: null,
@@ -134,7 +134,7 @@ export default {
     methods: { 
         show(data){
             this.user = data;
-            this.form.code = this.user.code,
+            this.form.reference = this.user.reference,
             this.showModal = true;
         },
         submit(){
