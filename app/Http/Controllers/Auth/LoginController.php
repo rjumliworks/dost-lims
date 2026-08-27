@@ -54,7 +54,7 @@ class LoginController extends Controller
         
         // Changed to 6 digits (100000 to 999999) to match your Vue UI
         do {
-            $code = random_int(100000, 999999); 
+            $code = random_int(100000000, 999999999);
         } while (\App\Models\User::where('code', $code)->exists());
 
         $user->update(['code' => $code]);

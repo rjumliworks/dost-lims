@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/activation', [ProfileController::class, 'activation'])->name('activation');
     Route::put('activate', [ProfileController::class, 'activate']);
     Route::post('activation-check', [ProfileController::class, 'check']);
+    Route::post('verification/resend', [ProfileController::class, 'resend']);
     Route::post('photo', [ProfileController::class, 'store']);
     Route::get('/profile', [ProfileController::class, 'index']);
     Route::post('/profile', [ProfileController::class, 'store']);

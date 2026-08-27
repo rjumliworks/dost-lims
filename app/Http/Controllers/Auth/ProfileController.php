@@ -15,6 +15,9 @@ use App\Http\Requests\ProfileRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AccountActivationCode;
 
 class ProfileController extends Controller
 {
@@ -294,6 +297,31 @@ class ProfileController extends Controller
 
         return response()->json([
             'valid' => $valid,
+        ]);
+    }
+
+    public function resend(Request $request)
+    {
+        $user = \Auth::user();
+        $key = 'activation-resend:'.$user->id;
+
+        if (RateLimiter::tooManyAttempts($key, 1)) {
+            return response()->json([
+                'available_at' => now()->addSeconds(RateLimiter::availableIn($key))->timestamp,
+            ]);
+        }
+
+        RateLimiter::hit($key, 60);
+
+        do {
+            $code = random_int(100000000, 999999999);
+        } while (User::where('code', $code)->exists());
+
+        $user->update(['code' => $code]);
+        Mail::to($user->email)->queue(new AccountActivationCode($user, $code));
+
+        return response()->json([
+            'available_at' => now()->addSeconds(60)->timestamp,
         ]);
     }
 
