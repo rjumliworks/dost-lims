@@ -79,9 +79,12 @@
                                                     </template>
                                                 </div>
                                                 <p class="fs-10 text-muted">Please enter the 9-digit activation code sent to your registered email address.</p>
-                                                <h5 v-if="remainingTime > 0" class="fs-13 mt-4 text-primary text-center fw-semibold"><i class="ri-mail-send-fill me-2"></i>Resend available in {{ formattedTime }}</h5>
-                                                <h5 v-else-if="codeValid == false" class="fs-11 mt-4 text-danger text-center"><i class="ri-error-warning-line fs-14 me-1"></i>Invalid activation code. Please check your email and try again.</h5>
-                                                <h5 v-else class="fs-13 mt-4 text-primary text-center fw-semibold"><i class="ri-mail-send-fill me-2"></i>Resend Verification Code</h5>
+                                                <h5 v-if="codeValid == false" class="fs-11 mt-4 mb-1 text-danger text-center"><i class="ri-error-warning-line fs-14 me-1"></i>Invalid activation code. Please check your email and try again.</h5>
+                                                <h5 v-if="remainingTime > 0" class="fs-13 mt-2 text-primary text-center fw-semibold"><i class="ri-mail-send-fill me-2"></i>Resend available in {{ formattedTime }}</h5>
+                                                <h5 v-else class="fs-13 mt-2 text-primary text-center fw-semibold text-decoration-underline" style="cursor: pointer;" role="button" @click="resendCode">
+                                                    <i class="ri-mail-send-fill me-2"></i>{{ resending ? 'Sending...' : 'Resend Verification Code' }}
+                                                </h5>
+                                                <p v-if="resendError" class="fs-10 text-danger text-center mb-0">{{ resendError }}</p>
                                             </div>
                                         </div>
 
@@ -307,6 +310,8 @@ export default {
                     length: 9
                 }, () => ''),
             codeValid: null,
+            resending: false,
+            resendError: null,
         }
     },
     computed: {
@@ -537,10 +542,20 @@ export default {
         },
 
         async resendCode() {
-            // Call Laravel API to resend code
-            const response = await axios.post('/verification/resend');
-            const endTime = response.data.available_at; // timestamp in seconds
-            this.startTimer(endTime);
+            if (this.resending || this.remainingTime > 0) return;
+
+            this.resending = true;
+            this.resendError = null;
+            try {
+                const response = await axios.post('/verification/resend');
+                const endTime = response.data.available_at; // timestamp in seconds
+                this.startTimer(endTime);
+            } catch (error) {
+                this.resendError = 'Unable to resend the code. Please try again.';
+                console.log(error);
+            } finally {
+                this.resending = false;
+            }
         }
     },
     mounted() {
