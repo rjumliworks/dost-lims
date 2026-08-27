@@ -122,13 +122,14 @@ class DashboardController extends Controller
                         return inertia('Modules/Dashboard/LabHead/Index',[
                             'dropdowns' => [
                                 'laboratories' => $this->agency->laboratories(),
+                                'facilities' => $this->agency->facilities(),
                             ]
                         ]);
                     break;
                     case 'Technical Manager':
                         return inertia('Modules/Dashboard/TechnicalManager/Index',[
                             'dropdowns' => [
-                                'laboratories' => $this->agency->laboratories(),
+                                'laboratories' => $this->manager->laboratories(),
                             ]
                         ]);
                     break;
@@ -184,8 +185,20 @@ class DashboardController extends Controller
                     $this->common->calendar($request)
                 );
             break;
+            case 'manager':
+                return array_merge(
+                    $this->manager->dashboard($request),
+                    $this->common->calendar($request)
+                );
+            break;
             case 'performance':
                 return $this->analyst->performance($request);
+            break;
+            case 'performance-excel':
+                return $this->analyst->excel($request);
+            break;
+            case 'performance-print':
+                return $this->analyst->print($request);
             break;
             case 'tsr':
                 

@@ -20,10 +20,7 @@
                         <div class="flex-shrink-0"></div>
                     </div>
                 </div>
-                <div class="card-body border-bottom bg-white" style="cursor: pointer;" @click="openPerformance()">
-                    <p class="mb-0 text-primary fs-12 fw-semibold">Analyst Performance Summary</p>
-                </div>
-                <div class="card bg-white border-bottom shadow-none mb-0" style="height: calc(100vh - 343px); overflow: auto;">
+                <div class="card bg-white border-bottom shadow-none mb-0" style="height: calc(100vh - 293px); overflow: auto;">
                     <ul class="list-group list-group-flush border-dashed mb-n3 mt-n1 p-3">
                         <li class="list-group-item px-0" v-for="(list,index) in tasks" v-bind:key="index">
                             <div class="d-flex">
@@ -72,15 +69,13 @@
             <Main :laboratories="laboratories" :years="years" ref="main"/>
         </div>
     </b-row>
-    <Performance ref="performance"/>
 </template>
 <script>
 import _ from 'lodash';
 import Main from './Components/Main.vue';
-import Performance from './Modals/Performance.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { PageHeader, Performance, Main },
+    components: { PageHeader, Main },
     props: ['tasks','reminders','laboratories','years'],
     data(){
         return {
@@ -126,9 +121,6 @@ export default {
         },
         isActive(name) {
             return this.activeList === name;
-        },
-        openPerformance(){
-            this.$refs.performance.show();
         }
     }
     

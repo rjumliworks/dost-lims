@@ -3,9 +3,12 @@
 namespace App\Services\Dashboard;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\UserRole;
 use App\Models\TsrSample;
 use App\Models\TsrAnalysis;
+use App\Models\ListLaboratory;
+use App\Exports\Excel\AnalystPerformanceExport;
 
 class AnalystClass
 {
@@ -89,6 +92,37 @@ class AnalystClass
     }
 
     public function performance($request){
+        return $this->computePerformance($request);
+    }
+
+    public function exportData($request){
+        $data = $this->computePerformance($request);
+        $userId = ($request->id) ? $request->id : \Auth::user()->id;
+
+        return [
+            'title' => 'Analyst Performance Summary',
+            'analyst' => User::with('profile')->find($userId)?->profile?->fullname ?? '',
+            'laboratory' => $request->laboratory ? (ListLaboratory::find($request->laboratory)?->name ?? 'All Laboratories') : 'All Laboratories',
+            'period' => trim(($request->month ?? '').' '.($request->year ?? '')),
+            'monthly' => $data['monthly'],
+            'summary' => $data['summary'],
+        ];
+    }
+
+    public function excel($request){
+        $export = $this->exportData($request);
+
+        return \Excel::download(new AnalystPerformanceExport($export), 'analyst-performance-'.$request->year.'.xlsx');
+    }
+
+    public function print($request){
+        $export = $this->exportData($request);
+
+        $pdf = \PDF::loadView('reports.analyst-performance', $export)->setPaper('a4', 'portrait');
+        return $pdf->stream('analyst-performance-'.$request->year.'.pdf');
+    }
+
+    private function computePerformance($request){
         $userId = ($request->id) ? $request->id : \Auth::user()->id;
         $year = $request->year;
         $month = $request->month;
@@ -96,10 +130,20 @@ class AnalystClass
         $endMonth = $startMonth + 5;
         $laboratory = $request->laboratory;
 
-        $monthlyCounts = [];
+        $monthlyData = [];
+        $summary = [
+            'tests_performed' => 0,
+            'total_cost' => 0,
+            'samples_handled' => 0,
+            'avg_turnaround_days' => null,
+        ];
+
+        $sampleIds = [];
+        $turnaroundSum = 0;
+        $turnaroundCount = 0;
 
         for ($m = $startMonth; $m <= $endMonth; $m++) {
-            $query = TsrAnalysis::where('status_id', 12)
+            $rows = TsrAnalysis::where('status_id', 12)
             ->where('started_by', $userId)
             ->whereHas('sample', function ($query) use ($laboratory) {
                 $query->whereHas('tsr', function ($query) use ($laboratory) {
@@ -107,18 +151,40 @@ class AnalystClass
                             $query->where('laboratory_id',$laboratory);
                         });
                 });
-            })->whereYear('start_at', $year)->whereMonth('start_at', $m);
+            })->whereYear('start_at', $year)->whereMonth('start_at', $m)
+            ->get(['sample_id', 'fee', 'start_at', 'end_at']);
 
-            $count = $query->count();
-            $totalCost = round($query->sum('fee'), 2);
+            $count = $rows->count();
+            $totalCost = round($rows->sum(fn ($row) => (float) $row->getRawOriginal('fee')), 2);
+            $monthSampleIds = $rows->pluck('sample_id')->unique();
+
+            $turnarounds = $rows->filter(fn ($row) => $row->start_at && $row->end_at)
+                ->map(fn ($row) => Carbon::parse($row->start_at)->diffInDays(Carbon::parse($row->end_at)));
+
+            $avgTurnaround = $turnarounds->count() > 0 ? round($turnarounds->avg(), 1) : null;
 
             $monthName = Carbon::create()->month($m)->format('F');
             $monthlyData[$monthName] = [
                 'tests_performed' => $count,
-                'total_cost' => $totalCost
+                'total_cost' => $totalCost,
+                'samples_handled' => $monthSampleIds->count(),
+                'avg_turnaround_days' => $avgTurnaround,
             ];
+
+            $summary['tests_performed'] += $count;
+            $summary['total_cost'] += $totalCost;
+            $sampleIds = array_merge($sampleIds, $monthSampleIds->all());
+            $turnaroundSum += $turnarounds->sum();
+            $turnaroundCount += $turnarounds->count();
         }
 
-        return $monthlyData;
+        $summary['total_cost'] = round($summary['total_cost'], 2);
+        $summary['samples_handled'] = count(array_unique($sampleIds));
+        $summary['avg_turnaround_days'] = $turnaroundCount > 0 ? round($turnaroundSum / $turnaroundCount, 1) : null;
+
+        return [
+            'monthly' => $monthlyData,
+            'summary' => $summary,
+        ];
     }
 }

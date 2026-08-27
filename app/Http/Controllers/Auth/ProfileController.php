@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\Profile\ViewClass;
 use App\Services\Profile\SaveClass;
+use App\Services\Dashboard\AnalystClass;
 use App\Services\Common\Signing\CertificateVerifier;
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Validation\Rules\Password;
@@ -19,10 +20,11 @@ class ProfileController extends Controller
 {
     use HandlesTransaction;
 
-    public function __construct(ViewClass $view, SaveClass $save, CertificateVerifier $certificateVerifier){
+    public function __construct(ViewClass $view, SaveClass $save, CertificateVerifier $certificateVerifier, AnalystClass $analyst){
         $this->view = $view;
         $this->save = $save;
         $this->certificateVerifier = $certificateVerifier;
+        $this->analyst = $analyst;
     }
 
     public function index(Request $request){
@@ -45,7 +47,9 @@ class ProfileController extends Controller
             break;
             default:
             UserCertificate::firstOrCreate(['user_id' => \Auth::user()->id]);
-            return inertia('Auth/Profile/Index');
+            return inertia('Auth/Profile/Index',[
+                'laboratories' => $this->analyst->laboratories()
+            ]);
         }
     }
 

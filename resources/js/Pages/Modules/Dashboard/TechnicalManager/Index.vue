@@ -18,9 +18,8 @@
                                         <div class="row g-3 mb-0 align-items-center">
                                             <div class="col-sm-auto">
                                                 <div class="input-group">
-                                                    <select style="width: 250px;" v-model="filter.laboratory" class="form-select" aria-label="Default select example">
-                                                        <option :value="null">All Laboratories</option>
-                                                        <option :value="list" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
+                                                    <select v-if="dropdowns.laboratories && dropdowns.laboratories.length > 1" style="width: 250px;" v-model="filter.laboratory" class="form-select" aria-label="Default select example">
+                                                        <option :value="list.value" v-for="list in dropdowns.laboratories" v-bind:key="list.value">{{list.name}}</option>
                                                     </select>
                                                     <select style="width: 160px;" v-model="monthName" class="form-select" aria-label="Default select example">
                                                         <option :value="null">All Months</option>
@@ -64,6 +63,14 @@
                                 </h4>
                             </div>
                         </div>
+                        <div v-else>
+                            <p class="card-text placeholder-glow mb-1">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                            </p>
+                        </div>
                     </b-card-body>
                 </b-card>
             </b-col>
@@ -79,13 +86,18 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1">
-                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Collection Summary</span></h5>
+                                <h5 class="mb-0 mt-0 fs-13"><span class="text-body">Payment Monitoring & Alerts</span></h5>
                                 <p class="text-muted text-truncate-two-lines fs-11">Highlights urgency and updates</p>
                             </div>
                         </div>
                     </div>
                     <div class="card border-bottom shadow-none" no-body style="height: 330px;">
-                       
+                        <div class="d-flex align-items-center justify-content-center h-100" v-if="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div v-else>
                         <ul class="list-group list-group-flush border-dashed mb-n4 p-3 mt-n2">
                             <li class="list-group-item px-0" v-for="(list,index) in collection" v-bind:key="index">
                                 <div class="d-flex">
@@ -144,37 +156,54 @@
                                 </div>
                             </li>
                         </ul> -->
+                        </div>
                     </div>
                 </div>
             </b-col>
         </div>
-        
+
         <div class="col-md-6 mt-n1">
             <div class="row g-3">
-                <b-col lg="4" v-for="(item, index) of counts" :key="index">
-                    <b-card no-body :class="item.color" class="border shadow-none">
-                        <b-card-body>
-                            <div class="d-flex align-items-center">
-                                <!-- <div class="avatar-sm flex-shrink-0">
-                                    <span class="avatar-title bg-light text-primary rounded-circle fs-3">
-                                        <i :class="`${item.icon} align-middle`"></i>
-                                    </span>
-                                </div> -->
-                                <div class="flex-grow-1">
-                                    <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
-                                        {{ item.name }}
-                                    </p>
-                                    <h4 class="mb-0">
-                                        <span class="counter-value">{{item.total}}</span>
-                                    </h4>
+                <template v-if="counts.length > 0">
+                    <b-col lg="4" v-for="(item, index) of counts" :key="index">
+                        <b-card no-body :class="item.color" class="border shadow-none">
+                            <b-card-body>
+                                <div class="d-flex align-items-center">
+                                    <!-- <div class="avatar-sm flex-shrink-0">
+                                        <span class="avatar-title bg-light text-primary rounded-circle fs-3">
+                                            <i :class="`${item.icon} align-middle`"></i>
+                                        </span>
+                                    </div> -->
+                                    <div class="flex-grow-1">
+                                        <p class="text-uppercase text-truncate fw-semibold fs-10 text-muted mb-1">
+                                            {{ item.name }}
+                                        </p>
+                                        <h4 class="mb-0">
+                                            <span class="counter-value">{{item.total}}</span>
+                                        </h4>
+                                    </div>
+                                    <div class="flex-shrink-0 align-self-end">
+                                        <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
+                                    </div>
                                 </div>
-                                <div class="flex-shrink-0 align-self-end">
-                                    <apexchart class="apex-charts" height="40" width="100" type="area" dir="ltr" :series="item.series" :options="chartOptions"></apexchart>
-                                </div>
-                            </div>
-                        </b-card-body>
-                    </b-card>
-                </b-col>
+                            </b-card-body>
+                        </b-card>
+                    </b-col>
+                </template>
+                <template v-else>
+                    <b-col lg="4" v-for="n in 3" :key="n">
+                        <b-card no-body class="border shadow-none">
+                            <b-card-body>
+                                <p class="card-text placeholder-glow mb-1">
+                                    <span class="placeholder col-7"></span>
+                                    <span class="placeholder col-4"></span>
+                                    <span class="placeholder col-4"></span>
+                                    <span class="placeholder col-6"></span>
+                                </p>
+                            </b-card-body>
+                        </b-card>
+                    </b-col>
+                </template>
                 <b-col lg="12" class="mt-n2">
                     <div class="card bg-light-subtle shadow-none border">
                         <div class="card-header bg-light-subtle">
@@ -192,7 +221,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                        <div class="card border-bottom shadow-none position-relative" no-body style="height: 330px; overflow: hidden;">
+                            <div class="d-flex align-items-center justify-content-center position-absolute top-0 start-0 w-100 h-100 bg-light-subtle" style="z-index: 2;" v-if="loading">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
                             <apexchart ref="realtimeChart" class="apex-charts" type="area" style="padding: 20px;" dir="ltr" :series="series"
                                 :options="chartOptions1">
                             </apexchart>
@@ -222,6 +256,14 @@
                                 </h4>
                             </div>
                         </div>
+                        <div v-else>
+                            <p class="card-text placeholder-glow mb-1">
+                                <span class="placeholder col-7"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-4"></span>
+                                <span class="placeholder col-6"></span>
+                            </p>
+                        </div>
                     </b-card-body>
                 </b-card>
             </b-col>
@@ -244,6 +286,12 @@
                         </div>
                     </div>
                     <div class="card border-bottom shadow-none" no-body style="height: 330px;">
+                        <div class="d-flex align-items-center justify-content-center h-100" v-if="loading">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div v-else>
                     <!-- <ul class="list-group list-group-flush border-dashed mb-n4 mt-n2 p-3">
                             <li class="list-group-item px-0" v-for="(list,index) in statuses" v-bind:key="index">
                                 <div class="d-flex">
@@ -301,6 +349,7 @@
                                 </div>
                             </li>
                         </ul>
+                        </div>
                     </div>
 
                 </div>
@@ -373,7 +422,12 @@
                     </div>
                 </div>
                 <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                    <div class="card-body">
+                    <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" v-else>
                         <ul class="list-group list-group-flush border-dashed mt-n2">
                             <li class="list-group-item ps-0" v-for="(list,index) in schedules.list" v-bind:key="index">
                                 <div class="row align-items-center g-3">
@@ -443,7 +497,12 @@
                     </div>
                 </div>
                 <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                    <div class="card-body">
+                    <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" v-else>
                         <ul class="list-group list-group-flush border-dashed mt-n2">
                             <li class="list-group-item ps-0" v-for="(list,index) in personnels.list" v-bind:key="index">
                                 <div class="row align-items-center g-3">
@@ -513,7 +572,12 @@
                     </div>
                 </div>
                 <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                    <div class="card-body">
+                    <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" v-else>
                         <ul class="list-group list-group-flush border-dashed mt-n2">
                             <li class="list-group-item ps-0" v-for="(list,index) in equipments.list" v-bind:key="index">
                                 <div class="row align-items-center g-3">
@@ -575,7 +639,12 @@
                     </div>
                 </div>
                 <div class="card border-bottom shadow-none" style="height: 300px; overflow: auto;">
-                    <div class="card-body">
+                    <div class="card-body d-flex align-items-center justify-content-center h-100" v-if="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="card-body" v-else>
                         <ul class="list-group list-group-flush border-dashed mt-n2">
                             <li class="list-group-item ps-0" v-for="(list,index) in inventory.list" v-bind:key="index">
                                 <div class="row align-items-center g-3">
@@ -682,7 +751,7 @@ export default {
             filter: {
                 keyword: null,
                 type: 'Daily',
-                laboratory: null,
+                laboratory: this.dropdowns.laboratories?.[0]?.value ?? null,
                 date: null,
                 month: new Date().toLocaleString('default', { month: 'long' }),
                 year: new Date().getFullYear()
@@ -699,7 +768,8 @@ export default {
             customer: [],
             customer_summary: [],
             fee: null,
-            target: null
+            target: null,
+            loading: true
         }
     },
     watch: {
@@ -716,6 +786,10 @@ export default {
         'filter.type'(val) {
             this.fetchDaily();
         },
+        'filter.laboratory'(val) {
+            this.fetch();
+            this.fetchDaily();
+        },
         'monthName'(val) {
             this.fetch();
         },
@@ -726,12 +800,13 @@ export default {
     },
     methods: {
         fetch(){
+            this.loading = true;
             axios.get('/fetch',{
                 params : {
                     year: this.filter.year,
                     month: this.monthName,
                     laboratory: this.filter.laboratory,
-                    option: 'labhead',
+                    option: 'manager',
                 }
             })
             .then(response => {
@@ -756,9 +831,12 @@ export default {
                         }
                     }
                 };
-                this.series = response.data.charts.lists;     
+                this.series = response.data.charts.lists;
             })
-            .catch(err => console.log(err));
+            .catch(err => console.log(err))
+            .finally(() => {
+                this.loading = false;
+            });
         },
         fetchDaily(){
             axios.get('/accomplishments',{
@@ -766,6 +844,7 @@ export default {
                     date: this.filter.date,
                     month: this.filter.month,
                     year: this.filter.year,
+                    laboratory: this.filter.laboratory,
                     type: this.filter.type.toLowerCase(),
                     option: 'accomplishment',
                 }

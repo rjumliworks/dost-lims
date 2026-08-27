@@ -10,6 +10,7 @@
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" placeholder="Accomplishments" class="form-control" style="width: 40%;">
                                 <Multiselect class="white" style="width: 15%;" :options="types" v-model="type" label="name" :allow-empty="false" :searchable="true" placeholder="Select Type" />
+                                <Multiselect class="white" style="width: 15%;" :options="facilityTypes" v-model="facilityType" label="name" :allow-empty="false" :searchable="true" placeholder="Facility Type" />
                                 <Multiselect class="white" style="width: 15%;" :options="years" v-model="year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
                                 <b-button type="button" variant="primary" @click="openCreate">
                                     <i class="ri-search-eye-fill align-bottom"></i>
@@ -152,7 +153,9 @@ data(){
             quarters: ['1st Quarter','2nd Quarter','3rd Quarter','4th Quarter'],
             types: ['Months','Quarters'],
             type: 'Months',
-            selectedRow: null, 
+            facilityTypes: ['All','Regional','PSTO'],
+            facilityType: 'All',
+            selectedRow: null,
             selectedColumn: null,
             expandedRows: {},
             kpis: [],
@@ -184,6 +187,9 @@ data(){
         'year'(val) {
             this.fetch();
         },
+        'facilityType'(val) {
+            this.fetch();
+        },
     },
     created(){
         this.fetch();
@@ -195,6 +201,7 @@ data(){
                 params : {
                     year: this.year,
                     option: 'targets',
+                    facility_type: this.facilityType,
                 }
             })
             .then(response => {

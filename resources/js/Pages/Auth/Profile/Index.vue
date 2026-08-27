@@ -46,7 +46,7 @@
             </div>
         </div> 
         <div class="col-md-9" style="margin-top: 6px;">
-            <Overview v-if="activeTab === 1"/>
+            <Overview v-if="activeTab === 1" :laboratories="laboratories"/>
             <Edit v-if="activeTab === 2"/>
             <Certificate v-if="activeTab === 6"/>
             <Security v-if="activeTab === 3"/>
@@ -66,6 +66,7 @@ import AuthenticationLog from "./Pages/AuthenticationLog.vue";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security, Certificate },
+    props: ['laboratories'],
     data() {
         return {
             currentUrl: window.location.origin,

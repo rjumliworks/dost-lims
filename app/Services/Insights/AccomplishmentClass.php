@@ -5,6 +5,7 @@ namespace App\Services\Insights;
 use Carbon\Carbon;
 use App\Models\Customer;
 use App\Models\ListLaboratory;
+use App\Models\AgencyFacility;
 use App\Models\AgencyFacilityLaboratory;
 use App\Models\Tsr;
 use App\Models\TsrSample;
@@ -219,20 +220,29 @@ class AccomplishmentClass
     public function targets($request){
         $year = $request->year;
         $data = Target::with('breakdowns.laboratory','breakdowns.objective.type','breakdowns.items.item')->where('year',$year)->first();
+
+        $facilityType = $request->facility_type;
+        $facilityIds = null;
+        if ($facilityType && $facilityType !== 'All') {
+            $facilityIds = AgencyFacility::where('agency_id', $data->agency_id)
+                ->where('is_regional', $facilityType === 'Regional' ? 1 : 0)
+                ->pluck('id')
+                ->toArray();
+        }
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun','Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         $breakdowns = $data->breakdowns;
         $grandtotal = 0;
-        $grouped = $breakdowns->groupBy('objective_id')->map(function ($items) use ($months,$year,$grandtotal){
-           
+        $grouped = $breakdowns->groupBy('objective_id')->map(function ($items) use ($months,$year,$grandtotal,$facilityIds){
+
             $breakdown = []; $monthly = [];
             $monthly_all = [];
             foreach ($items as $item) {
-                 $total = 0; 
+                 $total = 0;
                 if($item->laboratory) {
                     $laboratory_id = $item->laboratory->id;
                     $monthly = [];
                     foreach($months as $index => $month){
-                        $count = $this->count($item->objective->name,$index,$year,$month,$laboratory_id);
+                        $count = $this->count($item->objective->name,$index,$year,$month,$laboratory_id,$facilityIds);
                         $total = $total + $count;
                         $monthly[] = [
                             'name' => $month,
@@ -264,7 +274,7 @@ class AccomplishmentClass
 
                     foreach($months as $index => $month){
 
-                        $count = $this->count($item->objective->name, null, $year, $month, null);
+                        $count = $this->count($item->objective->name, null, $year, $month, null, $facilityIds);
 
                         $total += $count;
 
@@ -300,7 +310,7 @@ class AccomplishmentClass
 
                         foreach ($months as $index => $month) {
 
-                            $subCount = $this->subCount($item->objective->name,$subItem->item->name, $year, $month);
+                            $subCount = $this->subCount($item->objective->name,$subItem->item->name, $year, $month, $facilityIds);
 
                             $subTotal += $subCount;
 
@@ -356,7 +366,7 @@ class AccomplishmentClass
         return $grouped;
     }
 
-    public function subCount($name,$subname,$year,$month){
+    public function subCount($name,$subname,$year,$month,$facilityIds = null){
         $months = [
             'Jan' => 1,
             'Feb' => 2,
@@ -374,7 +384,7 @@ class AccomplishmentClass
 
          switch($name){
             case 'Number of MSMEs / LGUs / HEIs, communities and other customers assisted':
-               
+
                 if($subname == 'RSTL (Non-Paying)'){
                          $m = $months[$month] ?? null;
                     $count = Tsr::whereHas('payment', function ($query) {
@@ -383,6 +393,7 @@ class AccomplishmentClass
                     ->whereHas('customer.customer_name', function ($query){
                         $query->where('classification_id',8);
                     })
+                    ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                     ->whereMonth('created_at', $m)
                     ->whereYear('created_at', $year)
                     ->count();
@@ -395,16 +406,17 @@ class AccomplishmentClass
             case 'Number of S&T Interventions Provided':
                if($subname == 'RSTL (Non-Paying)'){
                     $m = $months[$month] ?? null;
-                 
-                    $count = TsrAnalysis::whereHas('sample', function ($query) use ($m,$year){
+
+                    $count = TsrAnalysis::whereHas('sample', function ($query) use ($m,$year,$facilityIds){
                         $query->where('status_id','!=',13);
-                        $query->whereHas('tsr', function ($query) use ($m,$year){
+                        $query->whereHas('tsr', function ($query) use ($m,$year,$facilityIds){
                             $query  ->whereHas('payment', function ($query) {
                                 $query->whereIn('discount_id',[5,7]);
                             })
                             ->whereHas('customer.customer_name', function ($query){
                                 $query->where('classification_id',8);
                             })
+                            ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                             ->where('status_id','!=',5)
                             ->whereMonth('created_at',$m)
                             ->whereYear('created_at',$year);
@@ -413,7 +425,7 @@ class AccomplishmentClass
                     ->count();
 
                     return $count;
-                    
+
                }else{
                     return 0;
                }
@@ -421,7 +433,7 @@ class AccomplishmentClass
         }
     }
 
-    public function count($name,$index,$year,$month,$laboratory_id){
+    public function count($name,$index,$year,$month,$laboratory_id,$facilityIds = null){
         $months = [
             'Jan' => 1,
             'Feb' => 2,
@@ -439,21 +451,25 @@ class AccomplishmentClass
 
         switch($name){
             case 'Samples Received':
-                $count = TsrSample::whereMonth('created_at',$index+1)->whereYear('created_at',$year)->whereHas('tsr', function ($query) use ($laboratory_id){
-                    $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
+                $count = TsrSample::whereMonth('created_at',$index+1)->whereYear('created_at',$year)->whereHas('tsr', function ($query) use ($laboratory_id,$facilityIds){
+                    $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5)
+                        ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds));
                 })->count();
             break;
             case 'Services Conducted':
-                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$year,$index){
+                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$year,$index,$facilityIds){
                     $query->where('status_id','!=',13);
-                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$year,$index){
-                        $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5)->whereMonth('created_at',$index+1)->whereYear('created_at',$year);
+                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$year,$index,$facilityIds){
+                        $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5)->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
+                            ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds));
                     });
                 })
                 ->count();
             break;
             case 'Customers Served':
-                $count = Tsr::where('status_id','!=',5)->whereMonth('created_at',$index+1)->whereYear('created_at',$year)->where('laboratory_id',$laboratory_id)->count();
+                $count = Tsr::where('status_id','!=',5)->whereMonth('created_at',$index+1)->whereYear('created_at',$year)->where('laboratory_id',$laboratory_id)
+                    ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
+                    ->count();
             break;
             case 'New Customers Served':
                 $m = $months[$month] ?? null;
@@ -475,6 +491,7 @@ class AccomplishmentClass
                 $count = Tsr::query()
                 ->where('is_first',1)
                 ->where('status_id', '!=', 5) // 🚫 exclude cancelled
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->whereMonth('created_at', $m)
                 ->whereYear('created_at', $year)
                 ->count();
@@ -492,6 +509,7 @@ class AccomplishmentClass
                     $query->where('classification_id',8);
                 })
                 ->where('laboratory_id',$laboratory_id)
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->whereMonth('created_at', $m)
                 ->whereYear('created_at', $year)
                 ->count();
@@ -504,6 +522,7 @@ class AccomplishmentClass
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
                 ->where('laboratory_id',$laboratory_id)
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->get()
                 ->sum(function ($tsr) {
                     return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
@@ -516,6 +535,7 @@ class AccomplishmentClass
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
                 ->where('laboratory_id',$laboratory_id)
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->get()
                 ->sum(function ($tsr) {
                     return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
@@ -527,6 +547,7 @@ class AccomplishmentClass
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
                 ->where('laboratory_id',$laboratory_id)
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->get()
                 ->sum(function ($tsr) {
                     return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
@@ -535,24 +556,26 @@ class AccomplishmentClass
                 $count = $gratis + $discount;
             break;
             case 'Paying Testing/Calibration Services Provided':
-                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$index,$year){
-                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$index,$year){
+                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$index,$year,$facilityIds){
+                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$index,$year,$facilityIds){
                         $query->withWhereHas('payment', function ($query) {
                             $query->where('is_free',0);
                         });
                         $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
+                        $query->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds));
                         $query->whereMonth('created_at',$index+1)->whereYear('created_at',$year);
                     });
                 })
                 ->count();
             break;
             case 'Non-Paying Testing/Calibration Services Provided':
-                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$index,$year){
-                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$index,$year){
+                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id,$index,$year,$facilityIds){
+                    $query->whereHas('tsr', function ($query) use ($laboratory_id,$index,$year,$facilityIds){
                         $query->withWhereHas('payment', function ($query) {
                             $query->where('is_free',1);
                         });
                         $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
+                        $query->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds));
                         $query->whereMonth('created_at',$index+1)->whereYear('created_at',$year);
                     });
                 })
@@ -564,7 +587,7 @@ class AccomplishmentClass
                 })
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
-                
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->get()
                 ->sum(function ($tsr) {
                     return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
@@ -575,7 +598,7 @@ class AccomplishmentClass
                 })
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
-                
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->get()
                 ->sum(function ($tsr) {
                     return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
@@ -586,7 +609,7 @@ class AccomplishmentClass
                 })
                 ->where('status_id','!=',5)
                 ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
-                
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->get()
                 ->sum(function ($tsr) {
                     return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount);
@@ -613,6 +636,7 @@ class AccomplishmentClass
                     ->where('status_id','!=',5)
                     ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
                     ->where('laboratory_id',$laboratory_id)
+                    ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                     ->get()
                     ->sum(function ($tsr) {
                         return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
@@ -627,6 +651,7 @@ class AccomplishmentClass
                     ->where('status_id','!=',5)
                     ->whereMonth('created_at',$index+1)->whereYear('created_at',$year)
                     ->where('laboratory_id',$laboratory_id)
+                    ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                     ->get()
                     ->sum(function ($tsr) {
                         return str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total);
@@ -636,8 +661,9 @@ class AccomplishmentClass
             break;
             case 'Number of Reports Generated ':
                 $count = TsrSampleReport::whereMonth('created_at',$index+1)->whereYear('created_at',$year)
-                ->whereHas('tsr', function ($query) use ($laboratory_id) {
-                    $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5);
+                ->whereHas('tsr', function ($query) use ($laboratory_id,$facilityIds) {
+                    $query->where('laboratory_id',$laboratory_id)->where('status_id','!=',5)
+                        ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds));
                 })
                 ->count();
             break;
@@ -650,6 +676,7 @@ class AccomplishmentClass
                     });
                 })
                 ->where('laboratory_id',$laboratory_id)
+                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                 ->whereHas('payment', function ($query) {
                     $query->where('is_free', 1);
                 })
@@ -662,12 +689,13 @@ class AccomplishmentClass
 
                 $count = TsrSample::whereMonth('created_at', $index + 1)
                     ->whereYear('created_at', $year)
-                    ->whereHas('tsr', function ($query) use ($laboratory_id, $isPsto) {
+                    ->whereHas('tsr', function ($query) use ($laboratory_id, $isPsto, $facilityIds) {
                         $query->whereHas('referral', function ($query) use ($isPsto) {
                             $query->where('is_psto', $isPsto); // Use the dynamic flag
                         });
                         $query->where('laboratory_id', $laboratory_id)
                             ->where('status_id', '!=', 5)
+                            ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                             ->where('is_referral', 1);
                     })->count();
                 break;
@@ -677,15 +705,16 @@ class AccomplishmentClass
                 // Determine the flag based on the current case
                 $isPsto = ($name === 'Number of Services Referred from PSTOs') ? 1 : 0;
 
-                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id, $year, $index, $isPsto) {
+                $count = TsrAnalysis::whereHas('sample', function ($query) use ($laboratory_id, $year, $index, $isPsto, $facilityIds) {
                         $query->where('status_id', '!=', 13);
-                        $query->whereHas('tsr', function ($query) use ($laboratory_id, $year, $index, $isPsto) {
+                        $query->whereHas('tsr', function ($query) use ($laboratory_id, $year, $index, $isPsto, $facilityIds) {
                             $query->whereHas('referral', function ($query) use ($isPsto) {
                                 $query->where('is_psto', $isPsto); // Use the dynamic flag
                             });
                             $query->where('is_referral', 1)
                                 ->where('laboratory_id', $laboratory_id)
                                 ->where('status_id', '!=', 5)
+                                ->when($facilityIds, fn($q) => $q->whereIn('facility_id',$facilityIds))
                                 ->whereMonth('created_at', $index + 1)
                                 ->whereYear('created_at', $year);
                         });

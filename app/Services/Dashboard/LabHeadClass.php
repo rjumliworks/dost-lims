@@ -39,16 +39,21 @@ class LabHeadClass
 
 
     private function fees($request){
-        $month = ($request->month) ? \DateTime::createFromFormat('F', $request->month)->format('m') : date('m');  
+        $month = ($request->month) ? \DateTime::createFromFormat('F', $request->month)->format('m') : null;
         $year = ($request->year) ? $request->year : date('Y');
         $laboratory = $request->laboratory;
+        $facility = $request->facility;
 
-        $total = TsrPayment::where('paid_at','!=',NULL)->whereHas('tsr', function ($query) use ($month,$year,$laboratory){
+        //where('paid_at','!=',NULL)-> remove to tie with accomplshment report
+        $total = TsrPayment::whereHas('tsr', function ($query) use ($month,$year,$laboratory,$facility){
             $query->when($month, function ($query) use ($month) {
                 $query->whereMonth('created_at', $month);
             })
             ->when($laboratory, function ($query) use ($laboratory) {
                 $query->where('laboratory_id', $laboratory);
+            })
+            ->when($facility, function ($query) use ($facility) {
+                $query->where('facility_id', $facility);
             })
             ->whereYear('created_at',$year)->where('status_id','!=',5);
         })->sum('total');
@@ -65,6 +70,7 @@ class LabHeadClass
 {
     $year = $request->year ?? date('Y');
     $targetId = 2;
+    $laboratory = $request->laboratory;
 
     $months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     $currentMonthIndex = $request->month ? (int) \DateTime::createFromFormat('F', $request->month)->format('m') - 1 : date('m') - 1;
@@ -73,6 +79,7 @@ class LabHeadClass
     $breakdowns = TargetBreakdown::with('objective')
         ->where('target_id', $targetId)
         ->whereHas('objective', fn($q) => $q->where('type_id', 76))
+        ->when($laboratory, fn($q) => $q->where('laboratory_id', $laboratory))
         ->get();
 
     $totalTarget = 0;
@@ -229,9 +236,10 @@ public function count($name,$index,$year,$month,$laboratory_id){
         $year = $request->year;
         $monthInput = $request->month;
         $laboratory = $request->laboratory;
+        $facility = $request->facility;
 
         if (is_null($monthInput)) {
-            $month = null; 
+            $month = null;
         } else {
             $month = date('m', strtotime($monthInput));
         }
@@ -244,6 +252,9 @@ public function count($name,$index,$year,$month,$laboratory_id){
         })
         ->when($laboratory, function ($query) use ($laboratory) {
             $query->where('laboratory_id', $laboratory);
+        })
+        ->when($facility, function ($query) use ($facility) {
+            $query->where('facility_id', $facility);
         })
         ->whereYear('created_at', $year)
         ->groupBy(\DB::raw('DATE(created_at)'))
@@ -270,6 +281,9 @@ public function count($name,$index,$year,$month,$laboratory_id){
             ->when($laboratory, function ($query) use ($laboratory) {
                 $query->where('laboratory_id', $laboratory);
             })
+            ->when($facility, function ($query) use ($facility) {
+                $query->where('facility_id', $facility);
+            })
             ->whereYear('created_at',$year)->whereIn('status_id',[1,2,3,4])->count()
         ];
     }
@@ -278,18 +292,22 @@ public function count($name,$index,$year,$month,$laboratory_id){
         $year = $request->year;
         $monthInput = $request->month;
         $laboratory = $request->laboratory;
+        $facility = $request->facility;
 
         if (is_null($monthInput)) {
-            $month = null; 
+            $month = null;
         } else {
             $month = date('m', strtotime($monthInput));
         }
         $series = [];
         $data = TsrSample::select(\DB::raw('DATE(created_at) AS x'), \DB::raw('count(*) AS y'))
-        ->whereHas('tsr', function ($query) use ($laboratory){
+        ->whereHas('tsr', function ($query) use ($laboratory,$facility){
             $query->whereIn('status_id',[1,2,3,4])
             ->when($laboratory, function ($query) use ($laboratory) {
                 $query->where('laboratory_id', $laboratory);
+            })
+            ->when($facility, function ($query) use ($facility) {
+                $query->where('facility_id', $facility);
             });
         })
         ->when($month, function ($query) use ($month) {
@@ -316,10 +334,13 @@ public function count($name,$index,$year,$month,$laboratory_id){
             'series' => $series,
             'total' => TsrSample::when($month, function ($query) use ($month) {
                     $query->whereMonth('created_at', $month);
-                })->whereYear('created_at', $year)->whereHas('tsr', function ($query) use ($laboratory){
+                })->whereYear('created_at', $year)->whereHas('tsr', function ($query) use ($laboratory,$facility){
                 $query->whereIn('status_id',[1,2,3,4])
                 ->when($laboratory, function ($query) use ($laboratory) {
                     $query->where('laboratory_id', $laboratory);
+                })
+                ->when($facility, function ($query) use ($facility) {
+                    $query->where('facility_id', $facility);
                 });
             })->count()
         ];
@@ -329,19 +350,23 @@ public function count($name,$index,$year,$month,$laboratory_id){
         $year = $request->year;
         $monthInput = $request->month;
         $laboratory = $request->laboratory;
+        $facility = $request->facility;
 
         if (is_null($monthInput)) {
-            $month = null; 
+            $month = null;
         } else {
             $month = date('m', strtotime($monthInput));
         }
         $series = [];
         $data = TsrAnalysis::select(\DB::raw('DATE(created_at) AS x'), \DB::raw('count(*) AS y'))
-        ->whereHas('sample', function ($query) use ($laboratory){
-            $query->whereHas('tsr', function ($query) use ($laboratory){
+        ->whereHas('sample', function ($query) use ($laboratory,$facility){
+            $query->whereHas('tsr', function ($query) use ($laboratory,$facility){
                 $query->whereIn('status_id',[1,2,3,4])
                 ->when($laboratory, function ($query) use ($laboratory) {
                     $query->where('laboratory_id', $laboratory);
+                })
+                ->when($facility, function ($query) use ($facility) {
+                    $query->where('facility_id', $facility);
                 });
             });
         })
@@ -370,11 +395,14 @@ public function count($name,$index,$year,$month,$laboratory_id){
             'series' => $series,
             'total' => TsrAnalysis::when($month, function ($query) use ($month) {
                     $query->whereMonth('created_at', $month);
-                })->whereYear('created_at', $year)->whereHas('sample', function ($query) use ($laboratory){
-                    $query->whereHas('tsr', function ($query) use ($laboratory){
+                })->whereYear('created_at', $year)->whereHas('sample', function ($query) use ($laboratory,$facility){
+                    $query->whereHas('tsr', function ($query) use ($laboratory,$facility){
                         $query->whereIn('status_id',[1,2,3,4])
                         ->when($laboratory, function ($query) use ($laboratory) {
                             $query->where('laboratory_id', $laboratory);
+                        })
+                        ->when($facility, function ($query) use ($facility) {
+                            $query->where('facility_id', $facility);
                         });
                     });
                 })->count()
@@ -382,18 +410,37 @@ public function count($name,$index,$year,$month,$laboratory_id){
     }
 
     public function reminders($request){
+        $laboratory = $request->laboratory;
+        $facility = $request->facility;
+
         return [
             [
                 'name' => 'Due Soon',
                 'description' => '5 days ahead of the due date',
-                'count' => Tsr::whereBetween('due_at', [Carbon::now()->startOfDay(), Carbon::now()->addDays(5)->endOfDay()])->where('status_id','!=',4)->count(),
+                'count' => Tsr::whereBetween('due_at', [Carbon::now()->startOfDay(), Carbon::now()->addDays(5)->endOfDay()])
+                ->where('status_id','!=',4)
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($facility, function ($query) use ($facility) {
+                    $query->where('facility_id', $facility);
+                })
+                ->count(),
                 'icon' => 'ri-error-warning-fill fs-20',
                 'color' => 'text-warning'
             ],
             [
                 'name' => 'Overdue Request',
                 'description' => 'Keep track of all laboratory tasks',
-                'count' => Tsr::whereDate('due_at','<',now())->whereNotIn('status_id',[4,5])->count(),
+                'count' => Tsr::whereDate('due_at','<',now())
+                ->whereNotIn('status_id',[4,5])
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($facility, function ($query) use ($facility) {
+                    $query->where('facility_id', $facility);
+                })
+                ->count(),
                 'icon' => 'ri-error-warning-fill fs-20',
                 'color' => 'text-danger'
             ],
@@ -402,6 +449,16 @@ public function count($name,$index,$year,$month,$laboratory_id){
                 'description' => 'Reports ready for release within 30 days',
                 'count' => TsrRelease::where('status_id',26)
                 ->where('created_at','>=', Carbon::now()->subDays(30))
+                ->when($laboratory || $facility, function ($query) use ($laboratory,$facility) {
+                    $query->whereHas('tsr', function ($query) use ($laboratory,$facility) {
+                        $query->when($laboratory, function ($query) use ($laboratory) {
+                            $query->where('laboratory_id', $laboratory);
+                        })
+                        ->when($facility, function ($query) use ($facility) {
+                            $query->where('facility_id', $facility);
+                        });
+                    });
+                })
                 ->count(),
                 'icon' => 'ri-alert-fill fs-20',
                 'color' => 'text-info'
@@ -409,14 +466,32 @@ public function count($name,$index,$year,$month,$laboratory_id){
             [
                 'name' => 'Unclaimed Reports',
                 'description' => 'Reports unclaimed for more than 30 days',
-                'count' => TsrRelease::where('status_id',26)->where('created_at','<=', Carbon::now()->subDays(30))->count(),
+                'count' => TsrRelease::where('status_id',26)->where('created_at','<=', Carbon::now()->subDays(30))
+                ->when($laboratory || $facility, function ($query) use ($laboratory,$facility) {
+                    $query->whereHas('tsr', function ($query) use ($laboratory,$facility) {
+                        $query->when($laboratory, function ($query) use ($laboratory) {
+                            $query->where('laboratory_id', $laboratory);
+                        })
+                        ->when($facility, function ($query) use ($facility) {
+                            $query->where('facility_id', $facility);
+                        });
+                    });
+                })
+                ->count(),
                 'icon' => 'ri-information-fill fs-20',
                 'color' => 'text-dark'
             ],
              [
                 'name' => 'Completed',
                 'description' => 'Reports unclaimed for more than 30 days',
-                'count' => Tsr::where('status_id',4)->where('created_at','<=', Carbon::now()->subDays(30))->count(),
+                'count' => Tsr::where('status_id',4)->where('created_at','<=', Carbon::now()->subDays(30))
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
+                ->when($facility, function ($query) use ($facility) {
+                    $query->where('facility_id', $facility);
+                })
+                ->count(),
                 'icon' => 'ri-checkbox-circle-fill fs-20',
                 'color' => 'text-success'
             ],
@@ -429,22 +504,26 @@ public function count($name,$index,$year,$month,$laboratory_id){
          $monthInput = $request->month;
 
         if (is_null($monthInput)) {
-            $month = null; 
+            $month = null;
         } else {
             $month = date('m', strtotime($monthInput));
         }
         $laboratory = $request->laboratory;
+        $facility = $request->facility;
 
         return [
             [
                 'name' => 'Collected Amount (Receipted)',
                 'description' => 'Successfully collected and receipted',
                 // 'description' => ' Total amount successfully collected and receipted',
-                'total' => (function () use ($laboratory, $month, $year) {
-                    $total = TsrPayment::whereHas('tsr', function ($query) use ($laboratory, $month, $year) {
+                'total' => (function () use ($laboratory, $facility, $month, $year) {
+                    $total = TsrPayment::whereHas('tsr', function ($query) use ($laboratory, $facility, $month, $year) {
                             $query->where('status_id', '!=', 5);
                             $query->when($laboratory, function ($query, $laboratory) {
                                 $query->where('laboratory_id', $laboratory);
+                            });
+                            $query->when($facility, function ($query, $facility) {
+                                $query->where('facility_id', $facility);
                             });
                             if ($year) {
                                 $query->whereYear('created_at', $year);
@@ -455,7 +534,6 @@ public function count($name,$index,$year,$month,$laboratory_id){
                         })
                         ->where('status_id', 7)
                         ->where('is_paid', 1)
-                        ->where('is_child', 0)
                         ->sum('total');
 
                     // ✅ Add manual values for 2024 (Jan–Sep)
@@ -491,11 +569,14 @@ public function count($name,$index,$year,$month,$laboratory_id){
                 'name' => 'Uncollected Amount',
                 'description' => 'Pending payments not yet received',
                 // 'description' => 'Total pending payments not yet received',
-                'total' => (function () use ($laboratory, $year, $month) {
-                    $total = TsrPayment::whereHas('tsr', function ($query) use ($laboratory, $year, $month) {
+                'total' => (function () use ($laboratory, $facility, $year, $month) {
+                    $total = TsrPayment::whereHas('tsr', function ($query) use ($laboratory, $facility, $year, $month) {
                             $query->where('status_id', '!=', 5);
                             $query->when($laboratory, function ($query, $laboratory) {
                                 $query->where('laboratory_id', $laboratory);
+                            });
+                            $query->when($facility, function ($query, $facility) {
+                                $query->where('facility_id', $facility);
                             });
                             if ($year) {
                                 $query->whereYear('created_at', $year);
@@ -520,18 +601,29 @@ public function count($name,$index,$year,$month,$laboratory_id){
                 'color' => 'text-danger'
             ],
             [
-                'name' => 'Total Transaction Value',
-                'description' => 'Total monetary value of all transactions',
-                'total' => TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$year,$month){
-                    $query->where('status_id','!=',5);
-                    $query->when($laboratory, function ($query, $laboratory) {
-                        $query->where('laboratory_id',$laboratory);
-                    });
-                    ($year) ? $query->whereYear('created_at',$year) : '';
-                    ($month) ? $query->whereMonth('created_at',$month) : '';
-                })->whereIn('status_id',[6,7,18])->where('is_child',0)->sum('total'),
-                'icon' => 'ri-radio-button-fill fs-20',
-                'color' => 'text-primary'
+                'name' => 'Online Payment',
+                'description' => 'Received online, pending cashier tagging',
+                'total' => TsrPayment::whereHas('tsr', function ($query) use ($laboratory, $facility, $month, $year) {
+                        $query->where('status_id', '!=', 5);
+                        $query->when($laboratory, function ($query, $laboratory) {
+                            $query->where('laboratory_id', $laboratory);
+                        });
+                        $query->when($facility, function ($query, $facility) {
+                            $query->where('facility_id', $facility);
+                        });
+                        if ($year) {
+                            $query->whereYear('created_at', $year);
+                        }
+                        if ($month) {
+                            $query->whereMonth('created_at', $month);
+                        }
+                    })
+                    ->where('status_id', 45)
+                    ->where('is_paid', 0)
+                    ->where('is_child', 0)
+                    ->sum('total'),
+                'icon' => 'ri-secure-payment-fill fs-20',
+                'color' => 'text-info'
             ]
         ];
     }
@@ -542,50 +634,73 @@ public function count($name,$index,$year,$month,$laboratory_id){
          $monthInput = $request->month;
 
         if (is_null($monthInput)) {
-            $month = null; 
+            $month = null;
         } else {
             $month = date('m', strtotime($monthInput));
         }
         $laboratory = $request->laboratory;
+        $facility = $request->facility;
+
+        $complimentary = TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$facility,$year,$month){
+            $query->where('status_id','!=',5);
+            $query->when($laboratory, function ($query, $laboratory) {
+                $query->where('laboratory_id',$laboratory);
+            });
+            $query->when($facility, function ($query, $facility) {
+                $query->where('facility_id',$facility);
+            });
+            ($year) ? $query->whereYear('created_at',$year) : '';
+            ($month) ? $query->whereMonth('created_at',$month) : '';
+        })->where('is_free',1)->sum('discount');
+
+        $discounted = TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$facility,$year,$month){
+            $query->where('status_id','!=',5);
+            $query->when($laboratory, function ($query, $laboratory) {
+                $query->where('laboratory_id',$laboratory);
+            });
+            $query->when($facility, function ($query, $facility) {
+                $query->where('facility_id',$facility);
+            });
+            ($year) ? $query->whereYear('created_at',$year) : '';
+            ($month) ? $query->whereMonth('created_at',$month) : '';
+        })->where('is_free',0)->sum('discount');
+
+        // $collected = TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$facility,$year,$month) {
+        //     $query->where('status_id','!=',5);
+        //     $query->when($laboratory, function ($query, $laboratory) {
+        //         $query->where('laboratory_id',$laboratory);
+        //     });
+        //     $query->when($facility, function ($query, $facility) {
+        //         $query->where('facility_id',$facility);
+        //     });
+        //     ($year) ? $query->whereYear('created_at',$year) : '';
+        //     ($month) ? $query->whereMonth('created_at',$month) : '';
+        // })->whereIn('status_id',[6,7,18])->where('is_child',0)->sum('total');
 
         return [
+            [
+                'name' => 'Discounted Service Amount',
+                'description' => 'Value of discounts applied to paid services',
+                'total' => $discounted,
+                'icon' => 'ri-price-tag-3-fill fs-20',
+                'color' => 'text-primary'
+            ],
             [
                 'name' => 'Complimentary Service Amount',
                 // 'description' => 'Total value of services provided free of charge.',
                 'description' => 'Value of services free of charge',
-                'total' => TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$year,$month){
-                    $query->where('status_id','!=',5);
-                    $query->when($laboratory, function ($query, $laboratory) {
-                        $query->where('laboratory_id',$laboratory);
-                    });
-                    ($year) ? $query->whereYear('created_at',$year) : '';
-                    ($month) ? $query->whereMonth('created_at',$month) : '';
-                })->where('status_id',8)->where('is_free',1)->where('is_child',0)->sum('discount'),
+                'total' => $complimentary,
                 'icon' => 'ri-hearts-fill fs-20',
                 'color' => 'text-warning'
             ],
-            [
-                'name' => 'Aggregate Collection Value',
-                'description' => 'Collected, Paid & Complimentary',
-                // 'description' => 'Total collected, payments and complimentary services.',
-                'total' => TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$year,$month) {
-                    $query->where('status_id','!=',5);
-                    $query->when($laboratory, function ($query, $laboratory) {
-                        $query->where('laboratory_id',$laboratory);
-                    });
-                    ($year) ? $query->whereYear('created_at',$year) : '';
-                    ($month) ? $query->whereMonth('created_at',$month) : '';
-                })->whereIn('status_id',[6,7,18])->where('is_child',0)->sum('total') + TsrPayment::whereHas('tsr', function ($query) use ($laboratory,$year,$month){
-                    $query->where('status_id','!=',5);
-                    $query->when($laboratory, function ($query, $laboratory) {
-                        $query->where('laboratory_id',$laboratory);
-                    });
-                    ($year) ? $query->whereYear('created_at',$year) : '';
-                    ($month) ? $query->whereMonth('created_at',$month) : '';
-                })->where('status_id',8)->where('is_free',1)->where('is_child',0)->sum('discount'),
-                'icon' => 'ri-medal-fill fs-20',
-                'color' => 'text-info'
-            ]
+            // [
+            //     'name' => 'Aggregate Collection Value',
+            //     'description' => 'Collected, Complimentary & Discounted',
+            //     // 'description' => 'Total collected, payments and complimentary services.',
+            //     'total' => $collected + $complimentary + $discounted,
+            //     'icon' => 'ri-medal-fill fs-20',
+            //     'color' => 'text-info'
+            // ]
         ];
     }
 

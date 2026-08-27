@@ -21,13 +21,15 @@ class CommonClass
         ];
     }
 
-    private function inventory(){
+    private function inventory($request){
         $start = now()->startOfWeek();
         $end   = now()->startOfWeek()->addDays(4);
+        $laboratory = $request->laboratory;
 
-       
-
-        $outOfStockItems = InventoryItem::withSum('stocks', 'quantity')
+        $outOfStockItems = InventoryItem::when($laboratory, function ($query) use ($laboratory) {
+                $query->where('laboratory_id', $laboratory);
+            })
+            ->withSum('stocks', 'quantity')
             ->havingRaw('COALESCE(stocks_sum_quantity, 0) = 0')
             ->get()
             ->map(function ($item) {
@@ -42,6 +44,11 @@ class CommonClass
         $expiredStocks = InventoryStock::with('item')
             ->where('quantity', '!=', 0)
             ->where('expired_at', '<=', $end)
+            ->when($laboratory, function ($query) use ($laboratory) {
+                $query->whereHas('item', function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                });
+            })
             ->get()
             ->map(function ($stock) {
                 return [
@@ -66,16 +73,21 @@ class CommonClass
         ];
     }
 
-    private function equipments(){
+    private function equipments($request){
         $start = now()->startOfWeek();
         $end   = now()->startOfWeek()->addDays(4);
+        $laboratory = $request->laboratory;
 
         $cutoff = now()->startOfWeek()->addDays(4);
 
         $equipments = Equipment::where(function ($q) use ($cutoff) {
             $q->whereDate('maintenance_due', '<=', $cutoff)
             ->orWhereDate('calibration_due', '<=', $cutoff);
-        })->get();
+        })
+        ->when($laboratory, function ($query) use ($laboratory) {
+            $query->where('laboratory_id', $laboratory);
+        })
+        ->get();
 
         $data = $equipments->map(function ($item) use ($cutoff) {
 
@@ -110,11 +122,17 @@ class CommonClass
         return [
             'maintenance' => Equipment::whereNotIn('status_id',[36,37])
                 ->whereDate('maintenance_due', '<=', $end)
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
                 ->count(),
 
             'calibration' => Equipment::whereNotIn('status_id',[36,37])
                 ->whereDate('calibration_due', '<=', $end)
                 ->where('calibration_program','!=','Not Applicable')
+                ->when($laboratory, function ($query) use ($laboratory) {
+                    $query->where('laboratory_id', $laboratory);
+                })
                 ->count(),
 
             'list' => $data
