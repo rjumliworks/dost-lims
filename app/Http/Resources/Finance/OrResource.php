@@ -18,7 +18,7 @@ class OrResource extends JsonResource
             $amount = $this->total;
             $excess = '-';
         }else{
-            $amount = $this->activeReceipt->detail->amount;
+            $amount = optional($this->activeReceipt->detail)->amount ?? $this->total;
             if($this->activeReceipt->wallet){
                 $excess = $this->activeReceipt->wallet->amount;
             }else{
