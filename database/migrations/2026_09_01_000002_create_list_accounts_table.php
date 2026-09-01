@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('list_accounts', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+            $table->smallIncrements('id');
+            $table->unsignedInteger('agency_id');
+            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
+            $table->string('name');
+            $table->string('code')->nullable();
+            $table->string('account')->nullable();
+            $table->boolean('is_active')->default(1);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('list_accounts');
+    }
+};

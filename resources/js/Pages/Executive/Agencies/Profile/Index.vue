@@ -41,6 +41,20 @@
                                         </BButton>
                                     </div>
                                 </template>
+                                <template v-if="type == 'Accounts'">
+                                    <div class="flex-shrink-0">
+                                        <BButton @click="addAccount(selected.data.id)" variant="danger" class="btn-sm waves-effect waves-light mt-1">
+                                            Add Account
+                                        </BButton>
+                                    </div>
+                                </template>
+                                <template v-if="type == 'Funding'">
+                                    <div class="flex-shrink-0">
+                                        <BButton @click="addFunding(selected.data.id)" variant="danger" class="btn-sm waves-effect waves-light mt-1">
+                                            Add Funding Source
+                                        </BButton>
+                                    </div>
+                                </template>
                             </div>
                         </div>
                         <div class="card bg-white rounded-bottom shadow-none mb-0">
@@ -68,6 +82,8 @@
                                                     <Facilities :lists="selected.data.facilities" :laboratories="laboratories" v-if="menu == 'Facilities'"/>
                                                     <Discounts :lists="selected.data.discounts" v-if="menu == 'Discounts'"/>
                                                     <Services :lists="selected.data.fees" v-if="menu == 'Fees'"/>
+                                                    <Accounts :lists="selected.data.accounts" v-if="menu == 'Accounts'"/>
+                                                    <Funding :lists="selected.data.funds" v-if="menu == 'Funding'"/>
                                                     <!-- <Lists :id="customer.data.id" v-if="menu == 'TSRs'"/>
                                                     <Conforme :lists="customer.data.conformes" v-if="menu == 'Conformes'"/>
                                                     <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/>
@@ -88,6 +104,8 @@
     <Fee ref="fee"/>
     <Facility :regions="regions" ref="facility"/>
     <Discount :discounts="selected.data.discounts" :options="discounts" ref="discount"/>
+    <AccountModal ref="account"/>
+    <FundingModal ref="funding"/>
 </template>
 <script>
 import Top from './Top.vue';
@@ -97,17 +115,21 @@ import Services from './Components/Services.vue';
 import Laboratories from './Components/Laboratories.vue';
 import Facilities from './Components/Facilities.vue';
 import Discounts from './Components/Discounts.vue';
+import Accounts from './Components/Accounts.vue';
+import Funding from './Components/Funding.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Facility from './Modals/Facility.vue';
 import Discount from './Modals/Discount.vue';
 import Fee from './Modals/Fee.vue';
+import AccountModal from './Modals/Account.vue';
+import FundingModal from './Modals/Funding.vue';
 export default {
     props:['selected','laboratories','discounts','regions','labs'],
-    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Laboratories, Services, Logs, Facility, Discount, Fee },
+    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Laboratories, Services, Logs, Accounts, Funding, Facility, Discount, Fee, AccountModal, FundingModal },
     data(){
         return {
             menus: [
-                'Discounts','Facilities','Laboratories','Fees','Activity Logs'
+                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Activity Logs'
             ],
             type: 'Discounts',
             index: null,
@@ -122,6 +144,12 @@ export default {
         },
         addFacility(id){
             this.$refs.facility.show(id,this.selected.data.address.region_code);
+        },
+        addAccount(id){
+            this.$refs.account.show(id);
+        },
+        addFunding(id){
+            this.$refs.funding.show(id);
         },
     }
 }

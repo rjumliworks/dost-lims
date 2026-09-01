@@ -6,12 +6,51 @@ use App\Models\Customer;
 use App\Models\FinanceReceipt;
 use App\Models\FinanceDeposit;
 use App\Models\FinanceDepositList;
+use App\Models\AgencyFund;
+use App\Models\ListAccount;
 use App\Exports\Finance\CashReceiptsExport;
 use App\Http\Resources\DefaultResource;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ReportsClass
 {
+    public function accounts()
+    {
+        $user = \Auth::user();
+
+        return ListAccount::where('agency_id', $user->profile->agency_id)
+            ->where('is_active', 1)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'name' => $item->name,
+                    'code' => $item->code,
+                    'account' => $item->account,
+                ];
+            });
+    }
+
+    public function funds()
+    {
+        $user = \Auth::user();
+
+        return AgencyFund::with('agency:id,name,code')
+            ->where('agency_id', $user->profile->agency_id)
+            ->where('is_active', 1)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'value' => $item->id,
+                    'name' => $item->source,
+                    'source' => $item->source,
+                    'code' => $item->code,
+                    'agency_name' => $item->agency->name ?? '',
+                    'agency_code' => $item->agency->code ?? '',
+                ];
+            });
+    }
+
     public function cashReceipts($request)
     {
         $month_name = $request->month ?: date('F');
@@ -175,6 +214,8 @@ class ReportsClass
             'created_by' => $user->id,
             'agency_id' => $user->profile->agency_id,
             'date' => $request->date ?: date('Y-m-d'),
+            'account_id' => $request->account_id,
+            'funding_id' => $request->funding_id,
         ]);
 
         foreach ($receipts as $receipt) {
@@ -229,10 +270,28 @@ class ReportsClass
 
     public function depositView($request)
     {
-        $deposit = FinanceDeposit::with('deposit:id,name')->find($request->id);
+        return $this->depositBundle($request->id);
+    }
+
+    public function depositPrint($request)
+    {
+        $data = $this->depositBundle($request->id);
+
+        if (! $data['deposit']) {
+            abort(404);
+        }
+
+        $pdf = \PDF::loadView('finance.reports.deposit-slip', $data)->setPaper('legal', 'portrait');
+
+        return $pdf->stream('deposit-slip-'.$data['deposit']['start'].'-'.$data['deposit']['end'].'.pdf');
+    }
+
+    private function depositBundle($id)
+    {
+        $deposit = FinanceDeposit::with('deposit:id,name', 'createdby.profile', 'account:id,name,code,account', 'funding.agency:id,name,code')->find($id);
 
         if (! $deposit) {
-            return ['deposit' => null, 'receipts' => []];
+            return ['deposit' => null, 'receipts' => [], 'breakdown' => []];
         }
 
         $lists = FinanceDepositList::where('finance_deposit_id', $deposit->id)
@@ -255,29 +314,61 @@ class ReportsClass
             ])
             ->get();
 
-        $receipts = $lists->map(function ($list) {
+        $receipts = [];
+        $breakdown = ['cash' => 0, 'cheque' => 0];
+
+        foreach ($lists as $list) {
             $receipt = $list->receipt;
             $op = $receipt->op;
+            $amount = $this->receiptAmount($op, $receipt);
 
-            return [
+            $receipts[] = [
                 'date' => $receipt->created_at,
                 'reference' => $receipt->number,
                 'payor' => $this->payorName($op),
                 'nature' => $op->collection->name ?? '',
                 'payment' => $op->payment->name ?? '',
-                'amount' => number_format($this->receiptAmount($op, $receipt), 2),
+                'amount' => number_format($amount, 2),
             ];
-        });
+
+            if ($op->payment && $op->payment->name === 'Cash') {
+                $breakdown['cash'] += $amount;
+            } elseif ($op->payment && $op->payment->name === 'Cheque') {
+                $breakdown['cheque'] += $amount;
+            }
+        }
+
+        $dateRange = FinanceReceipt::whereIn('id', $lists->pluck('finance_receipt_id'))
+            ->selectRaw('MIN(created_at) as min_date, MAX(created_at) as max_date')
+            ->first();
 
         return [
             'deposit' => [
+                'id' => $deposit->id,
                 'start' => $deposit->start,
                 'end' => $deposit->end,
                 'total' => $deposit->total,
                 'type' => $deposit->deposit->name ?? '',
                 'date' => date('F d, Y', strtotime($deposit->date)),
+                'account' => $deposit->account->account ?? '',
+                'account_name' => $deposit->account->name ?? '',
+                'account_code' => $deposit->account->code ?? '',
+                'funding_source' => $deposit->funding->source ?? '',
+                'fund_code' => $deposit->funding->code ?? '',
+                'agency_credited' => $deposit->funding->agency->name ?? '',
+                'agency_code' => $deposit->funding->agency->code ?? '',
+                'collecting_officer' => $deposit->createdby->profile->fullname ?? ($deposit->createdby->name ?? ''),
+                'date_collected' => $dateRange && $dateRange->min_date
+                    ? ($dateRange->min_date === $dateRange->max_date
+                        ? date('m/d/Y', strtotime($dateRange->min_date))
+                        : date('m/d/Y', strtotime($dateRange->min_date)).' - '.date('m/d/Y', strtotime($dateRange->max_date)))
+                    : '',
             ],
             'receipts' => $receipts,
+            'breakdown' => [
+                'cash' => number_format($breakdown['cash'], 2),
+                'cheque' => number_format($breakdown['cheque'], 2),
+            ],
         ];
     }
 

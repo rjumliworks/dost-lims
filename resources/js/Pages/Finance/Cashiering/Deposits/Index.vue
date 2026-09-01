@@ -57,8 +57,11 @@
                                     <td class="text-center fs-12">{{ list.count }}</td>
                                     <td class="text-center fs-12">{{ list.total }}</td>
                                     <td class="text-end">
-                                        <b-button @click="openView(list)" variant="info" v-b-tooltip.hover title="View" size="sm">
+                                        <b-button @click="openView(list)" variant="info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                             <i class="ri-eye-fill align-bottom"></i>
+                                        </b-button>
+                                        <b-button @click="openPrint(list)" variant="success" v-b-tooltip.hover title="Print" size="sm">
+                                            <i class="ri-printer-fill align-bottom"></i>
                                         </b-button>
                                     </td>
                                 </tr>
@@ -127,6 +130,9 @@ export default {
         },
         openView(data){
             this.$refs.view.show(data);
+        },
+        openPrint(data){
+            window.open(this.currentUrl + '/cashiering?option=depositprint&id='+data.id);
         }
     }
 }

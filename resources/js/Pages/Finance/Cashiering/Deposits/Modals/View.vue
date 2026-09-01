@@ -53,6 +53,58 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-3">
+                <div class="p-1 border border-dashed rounded">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-0">
+                            <div class="avatar-title rounded bg-transparent text-primary fs-18"><i class="ri-price-tag-3-line"></i></div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="text-muted fs-11 mb-0">Account :</p>
+                            <h5 class="fs-12 mb-0">{{ deposit.account || 'Not Available' }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="p-1 border border-dashed rounded">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-0">
+                            <div class="avatar-title rounded bg-transparent text-primary fs-18"><i class="ri-funds-line"></i></div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="text-muted fs-11 mb-0">Funding Source :</p>
+                            <h5 class="fs-12 mb-0">{{ deposit.funding_source || 'Not Available' }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="p-1 border border-dashed rounded">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-0">
+                            <div class="avatar-title rounded bg-transparent text-primary fs-18"><i class="ri-price-tag-3-line"></i></div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="text-muted fs-11 mb-0">Fund Code :</p>
+                            <h5 class="fs-12 mb-0">{{ deposit.fund_code || 'Not Available' }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="p-1 border border-dashed rounded">
+                    <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-0">
+                            <div class="avatar-title rounded bg-transparent text-primary fs-18"><i class="ri-building-line"></i></div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="text-muted fs-11 mb-0">Agency Credited :</p>
+                            <h5 class="fs-12 mb-0">{{ deposit.agency_credited }} ({{ deposit.agency_code }})</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <hr class="text-muted mt-0"/>
         <div class="table-responsive table-card">
@@ -86,6 +138,9 @@
         </div>
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Close</b-button>
+            <b-button @click="print()" variant="success" block>
+                <i class="ri-printer-fill align-bottom me-1"></i> Print
+            </b-button>
         </template>
     </b-modal>
 </template>
@@ -93,6 +148,8 @@
 export default {
     data(){
         return {
+            currentUrl: window.location.origin,
+            depositId: null,
             deposit: null,
             receipts: [],
             showModal: false
@@ -101,6 +158,7 @@ export default {
     methods: {
         show(data){
             this.showModal = true;
+            this.depositId = data.id;
             axios.get('/cashiering', {
                 params: {
                     option: 'depositview',
@@ -115,9 +173,13 @@ export default {
             })
             .catch(err => console.log(err));
         },
+        print(){
+            window.open(this.currentUrl + '/cashiering?option=depositprint&id='+this.depositId);
+        },
         hide(){
             this.deposit = null;
             this.receipts = [];
+            this.depositId = null;
             this.showModal = false;
         }
     }

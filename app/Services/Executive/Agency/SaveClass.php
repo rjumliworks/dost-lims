@@ -88,6 +88,26 @@ class SaveClass
         ];
     }
 
+    public function account($request){
+        $data = Agency::findOrFail($request->agency_id);
+        $data->accounts()->create($request->all());
+        return [
+            'data' => $data,
+            'message' => 'Account added was successful!',
+            'info' => "You've successfully added an account."
+        ];
+    }
+
+    public function funding($request){
+        $data = Agency::findOrFail($request->agency_id);
+        $data->funds()->create($request->all());
+        return [
+            'data' => $data,
+            'message' => 'Funding source added was successful!',
+            'info' => "You've successfully added a funding source."
+        ];
+    }
+
     public function facility($request){
         $data = Agency::findOrFail($request->agency_id);
         $facility = $data->facilities()->create($request->all());

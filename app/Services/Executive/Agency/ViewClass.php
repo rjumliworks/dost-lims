@@ -35,7 +35,7 @@ class ViewClass
             Agency::with('member','type','configuration',
             'facilities.region','facilities.province','facilities.municipality','facilities.barangay','facilities.laboratories.laboratory.fees',
             'facilities.signatories','facilities.signatories.accountant.profile','facilities.signatories.cashier.profile',
-            'address','fees','discounts.discount')
+            'address','fees','discounts.discount','accounts','funds')
             ->where('id',$id)->first()
         );
 

@@ -120,20 +120,62 @@
 
     <b-modal v-model="depositModal" header-class="p-3 bg-light" title="Deposit to Bank" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <p class="fs-13">You are about to group <strong>{{ selected.length }}</strong> official receipt(s) as deposited to the bank.</p>
-        <div class="mb-3">
-            <label class="form-label fs-13">Deposit Date</label>
-            <input type="date" v-model="depositDate" class="form-control">
+        <div class="row g-3 customform">
+            <div class="col-md-12">
+                <label class="form-label fs-13">Deposit Date</label>
+                <input type="date" v-model="deposit.date" class="form-control">
+            </div>
+            <div class="col-md-12 mt-1">
+                <label class="form-label fs-13">Account</label>
+                <Multiselect
+                :options="dropdowns.accounts"
+                v-model="deposit.account_id"
+                label="name"
+                :searchable="true"
+                placeholder="Select Account">
+                    <template #option="{ option }">
+                        <span>{{ option.account || option.name }} <span class="text-muted ms-1" v-if="option.account">({{ option.name }})</span></span>
+                    </template>
+                    <template #singlelabel="{ value }">
+                        <span class="multiselect-single-label">{{ value.account || value.name }} <span class="text-muted ms-1" v-if="value.account">({{ value.name }})</span></span>
+                    </template>
+                </Multiselect>
+            </div>
+            <div class="col-md-12 mt-2">
+                <label class="form-label fs-13">Funding Source</label>
+                <Multiselect
+                :options="dropdowns.funds"
+                v-model="deposit.funding_id"
+                label="name"
+                :searchable="true"
+                placeholder="Select Funding Source">
+                    <template #option="{ option }">
+                        <span>{{ option.source }} <span class="text-muted" v-if="option.code">({{ option.code }})</span></span>
+                    </template>
+                    <template #singlelabel="{ value }">
+                        <span class="multiselect-single-label">{{ value.source }} <span class="text-muted ms-1" v-if="value.code">({{ value.code }})</span></span>
+                    </template>
+                </Multiselect>
+            </div>
+            <div class="col-md-12" v-if="selectedFund">
+                <div class="alert alert-light border mb-0 fs-12">
+                    <div><strong>Agency to be Credited:</strong> {{ selectedFund.agency_name }} ({{ selectedFund.agency_code }})</div>
+                    <div><strong>Funding Source Code:</strong> {{ selectedFund.source || 'Not Available' }}</div>
+                    <div><strong>Fund Code:</strong> {{ selectedFund.code || 'Not Available' }}</div>
+                </div>
+            </div>
         </div>
         <template v-slot:footer>
             <b-button @click="depositModal = false" variant="light" block>Close</b-button>
-            <b-button @click="submitDeposit" variant="primary" :disabled="!depositDate || depositing" block>Confirm Deposit</b-button>
+            <b-button @click="submitDeposit" variant="primary" :disabled="!deposit.date || depositing" block>Confirm Deposit</b-button>
         </template>
     </b-modal>
 </template>
 <script>
+import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { PageHeader },
+    components: { PageHeader, Multiselect },
     props: ['dropdowns'],
     data(){
         const currentYear = new Date().getFullYear();
@@ -155,7 +197,11 @@ export default {
             sortField: null,
             sortDirection: 'asc',
             depositModal: false,
-            depositDate: null,
+            deposit: {
+                date: null,
+                account_id: null,
+                funding_id: null
+            },
             depositing: false
         }
     },
@@ -163,6 +209,10 @@ export default {
         depositedCount(){
             const deposited = this.rows.filter(row => row.is_deposited).length;
             return deposited + '/' + this.rows.length;
+        },
+        selectedFund(){
+            if(!this.deposit.funding_id || !this.dropdowns.funds) return null;
+            return this.dropdowns.funds.find(f => f.value === this.deposit.funding_id) || null;
         }
     },
     watch: {
@@ -263,14 +313,20 @@ export default {
             window.open(this.currentUrl + '/cashiering?option=cashreceiptsexcel&'+this.exportParams());
         },
         openDeposit(){
-            this.depositDate = new Date().toISOString().slice(0,10);
+            this.deposit = {
+                date: new Date().toISOString().slice(0,10),
+                account_id: null,
+                funding_id: null
+            };
             this.depositModal = true;
         },
         submitDeposit(){
             this.depositing = true;
             axios.post('/cashreceipts/deposit', {
                 ids: this.selected,
-                date: this.depositDate
+                date: this.deposit.date,
+                account_id: this.deposit.account_id,
+                funding_id: this.deposit.funding_id
             })
             .then(() => {
                 this.depositModal = false;

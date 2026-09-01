@@ -54,6 +54,12 @@ class AgencyController extends Controller
                 case 'discount':
                     return $this->save->discount($request);
                 break;
+                case 'account':
+                    return $this->save->account($request);
+                break;
+                case 'funding':
+                    return $this->save->funding($request);
+                break;
                 case 'facility':
                     return $this->save->facility($request);
                 break;

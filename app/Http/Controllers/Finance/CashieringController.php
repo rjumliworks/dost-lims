@@ -48,6 +48,9 @@ class CashieringController extends Controller
             case 'depositview':
                 return $this->reports->depositView($request);
             break;
+            case 'depositprint':
+                return $this->reports->depositPrint($request);
+            break;
         }
     }
 
@@ -104,6 +107,8 @@ class CashieringController extends Controller
             'dropdowns' => [
                 'collections' => $this->dropdown->dropdowns('Collection Type'),
                 'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
+                'funds' => $this->reports->funds(),
+                'accounts' => $this->reports->accounts(),
             ]
         ]);
     }
