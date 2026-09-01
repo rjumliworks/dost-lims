@@ -100,7 +100,12 @@ class CashieringController extends Controller
     }
 
     public function cashreceipts(){
-        return inertia('Finance/Cashiering/Cash/Index');
+        return inertia('Finance/Cashiering/Cash/Index',[
+            'dropdowns' => [
+                'collections' => $this->dropdown->dropdowns('Collection Type'),
+                'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
+            ]
+        ]);
     }
 
     public function deposits(){

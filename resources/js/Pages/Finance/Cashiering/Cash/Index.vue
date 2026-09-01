@@ -24,12 +24,21 @@
                         <b-col lg>
                             <div class="input-group mb-1">
                                 <input type="text" placeholder="Search Request" class="form-control" style="width: 10%;">
+                                      <select v-model="filter.nature" class="form-select" style="max-width: 220px;">
+                                    <option :value="null">All Nature of Collection</option>
+                                    <option v-for="(c,index) in dropdowns.collections" :key="index" :value="c.name">{{ c.name }}</option>
+                                </select>
+                                <select v-model="filter.payment" class="form-select" style="max-width: 180px;">
+                                    <option :value="null">All Payment Types</option>
+                                    <option v-for="(p,index) in dropdowns.payments" :key="index" :value="p.name">{{ p.name }}</option>
+                                </select>
                                 <select v-model="filter.month" class="form-select" style="max-width: 160px;">
                                     <option :value="list" v-for="list in months" v-bind:key="list">{{ list }}</option>
                                 </select>
                                 <select v-model="filter.year" class="form-select" style="max-width: 110px;">
                                     <option :value="list" v-for="list in years" v-bind:key="list">{{ list }}</option>
                                 </select>
+                          
                                 <span @click="fetch()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
@@ -56,8 +65,14 @@
                                     <th style="width: 8%;">Date</th>
                                     <th style="width: 10%;" class="text-center">Reference No.</th>
                                     <th>Payor</th>
-                                    <th style="width: 13%;" class="text-center">Nature of Collection</th>
-                                    <th style="width: 10%;" class="text-center">Collection</th>
+                                    <th style="width: 13%;" class="text-center" role="button" @click="sortBy('nature')">
+                                        Nature of Collection
+                                        <i :class="sortIcon('nature')"></i>
+                                    </th>
+                                    <th style="width: 10%;" class="text-center" role="button" @click="sortBy('collection')">
+                                        Collection
+                                        <i :class="sortIcon('collection')"></i>
+                                    </th>
                                     <th style="width: 10%;" class="text-center">BTR</th>
                                     <th style="width: 10%;" class="text-center">Trust Fund</th>
                                     <th style="width: 10%;" class="text-center">Deposited ({{ depositedCount }})</th>
@@ -79,8 +94,8 @@
                                     </td>
                                     <td class="text-center">{{ row.trust || '-' }}</td>
                                     <td class="text-center">
-                                        <i v-if="row.undeposited" class="ri-close-circle-fill text-danger fs-16"></i>
-                                        <i v-else class="ri-checkbox-circle-fill text-success fs-16"></i>
+                                        <i v-if="row.is_deposited" class="ri-checkbox-circle-fill text-success fs-16"></i>
+                                        <i v-else class="ri-close-circle-fill text-danger fs-16"></i>
                                     </td>
                                 </tr>
                                 <tr v-if="rows.length === 0">
@@ -119,6 +134,7 @@
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     components: { PageHeader },
+    props: ['dropdowns'],
     data(){
         const currentYear = new Date().getFullYear();
         return {
@@ -128,12 +144,16 @@ export default {
             totals: { collection: '0.00', btr: '0.00', trust: '0.00', undeposited: '0.00' },
             filter: {
                 month: new Date().toLocaleString('default', { month: 'long' }),
-                year: currentYear
+                year: currentYear,
+                nature: null,
+                payment: null
             },
             months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
             years: Array.from({length: 6}, (_, i) => currentYear - i),
             selected: [],
             lastCheckedIndex: null,
+            sortField: null,
+            sortDirection: 'asc',
             depositModal: false,
             depositDate: null,
             depositing: false
@@ -141,13 +161,15 @@ export default {
     },
     computed: {
         depositedCount(){
-            const deposited = this.rows.filter(row => !row.undeposited).length;
+            const deposited = this.rows.filter(row => row.is_deposited).length;
             return deposited + '/' + this.rows.length;
         }
     },
     watch: {
         "filter.month"(){ this.fetch(); },
-        "filter.year"(){ this.fetch(); }
+        "filter.year"(){ this.fetch(); },
+        "filter.nature"(){ this.fetch(); },
+        "filter.payment"(){ this.fetch(); }
     },
     created(){
         this.fetch();
@@ -158,7 +180,9 @@ export default {
                 params: {
                     option: 'cashreceipts',
                     month: this.filter.month,
-                    year: this.filter.year
+                    year: this.filter.year,
+                    nature: this.filter.nature,
+                    payment: this.filter.payment
                 }
             })
             .then(response => {
@@ -168,9 +192,43 @@ export default {
                     this.totals = response.data.totals;
                     this.selected = [];
                     this.lastCheckedIndex = null;
+                    this.sortField = null;
                 }
             })
             .catch(err => console.log(err));
+        },
+        sortBy(field){
+            if(this.sortField === field){
+                this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+            }else{
+                this.sortField = field;
+                this.sortDirection = 'asc';
+            }
+
+            const direction = this.sortDirection === 'asc' ? 1 : -1;
+
+            this.rows.sort((a, b) => {
+                let valA = a[field];
+                let valB = b[field];
+
+                if(field === 'collection'){
+                    valA = parseFloat((valA || '0').toString().replace(/,/g, ''));
+                    valB = parseFloat((valB || '0').toString().replace(/,/g, ''));
+                }else{
+                    valA = (valA || '').toString().toLowerCase();
+                    valB = (valB || '').toString().toLowerCase();
+                }
+
+                if(valA < valB) return -1 * direction;
+                if(valA > valB) return 1 * direction;
+                return 0;
+            });
+
+            this.lastCheckedIndex = null;
+        },
+        sortIcon(field){
+            if(this.sortField !== field) return 'ri-expand-up-down-line text-muted';
+            return this.sortDirection === 'asc' ? 'ri-sort-asc' : 'ri-sort-desc';
         },
         toggleCheckbox(row, index, checked){
             if(checked){
@@ -192,11 +250,17 @@ export default {
                 this.lastCheckedIndex = index;
             }
         },
+        exportParams(){
+            return 'month='+encodeURIComponent(this.filter.month)
+                +'&year='+encodeURIComponent(this.filter.year)
+                +'&nature='+encodeURIComponent(this.filter.nature || '')
+                +'&payment='+encodeURIComponent(this.filter.payment || '');
+        },
         openPrint(){
-            window.open(this.currentUrl + '/cashiering?option=cashreceiptsprint&month='+this.filter.month+'&year='+this.filter.year);
+            window.open(this.currentUrl + '/cashiering?option=cashreceiptsprint&'+this.exportParams());
         },
         openExcel(){
-            window.open(this.currentUrl + '/cashiering?option=cashreceiptsexcel&month='+this.filter.month+'&year='+this.filter.year);
+            window.open(this.currentUrl + '/cashiering?option=cashreceiptsexcel&'+this.exportParams());
         },
         openDeposit(){
             this.depositDate = new Date().toISOString().slice(0,10);

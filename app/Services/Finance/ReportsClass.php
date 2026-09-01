@@ -35,8 +35,18 @@ class ReportsClass
             ])
             ->where('is_cancelled', 0)
             ->where('created_by', $user->id)
-            ->whereHas('op', function ($q) {
-                $q->where('status_id', 7);
+            ->whereHas('op', function ($q) use ($request) {
+                $q->where('status_id', 7)
+                    ->when($request->nature, function ($q2, $nature) {
+                        $q2->whereHas('collection', function ($q3) use ($nature) {
+                            $q3->where('name', $nature);
+                        });
+                    })
+                    ->when($request->payment, function ($q2, $payment) {
+                        $q2->whereHas('payment', function ($q3) use ($payment) {
+                            $q3->where('name', $payment);
+                        });
+                    });
             })
             ->whereMonth('created_at', $month)
             ->whereYear('created_at', $year)
@@ -57,6 +67,7 @@ class ReportsClass
             $amount = $this->receiptAmount($op, $receipt);
 
             $isTrust = $op->payment && in_array($op->payment->name, ['Online Transfer', 'Bank Deposit']);
+            $isBtr = $op->payment && in_array($op->payment->name, ['Cash', 'Cheque']);
             $isDeposited = (bool) $receipt->depositList;
 
             $btr = null;
@@ -66,7 +77,7 @@ class ReportsClass
             if ($isTrust) {
                 $trust = $amount;
                 $totals['trust'] += $amount;
-            } elseif ($isDeposited) {
+            } elseif ($isBtr) {
                 $btr = $amount;
                 $totals['btr'] += $amount;
             } else {
@@ -86,8 +97,9 @@ class ReportsClass
                 'btr' => $btr !== null ? number_format($btr, 2) : null,
                 'trust' => $trust !== null ? number_format($trust, 2) : null,
                 'undeposited' => $undeposited !== null ? number_format($undeposited, 2) : null,
+                'is_deposited' => $isTrust || $isDeposited,
                 'deposit_date' => $receipt->depositList->deposit->date ?? null,
-                'can_deposit' => ! $isTrust && ! $isDeposited,
+                'can_deposit' => $isBtr && ! $isDeposited,
             ];
         }
 
