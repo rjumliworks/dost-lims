@@ -8,16 +8,18 @@ use Illuminate\Http\Request;
 use App\Services\DropdownClass;
 use App\Services\Finance\OrseriesClass;
 use App\Services\Finance\NameClass;
+use App\Services\Finance\ReportsClass;
 use App\Http\Requests\Finance\CashieringRequest;
 
 class CashieringController extends Controller
 {
     use HandlesTransaction;
 
-    public function __construct(OrseriesClass $orseries, NameClass $name, DropdownClass $dropdown){
+    public function __construct(OrseriesClass $orseries, NameClass $name, DropdownClass $dropdown, ReportsClass $reports){
         $this->orseries = $orseries;
         $this->name = $name;
         $this->dropdown = $dropdown;
+        $this->reports = $reports;
     }
 
     public function index(Request $request){
@@ -31,7 +33,13 @@ class CashieringController extends Controller
             case 'orseries':
                 return $this->orseries->lists($request);
             break;
-        }   
+            case 'cashreceipts':
+                return $this->reports->cashReceipts($request);
+            break;
+            case 'cashreceiptsprint':
+                return $this->reports->cashReceiptsPrint($request);
+            break;
+        }
     }
 
     public function store(CashieringRequest $request){
@@ -80,5 +88,9 @@ class CashieringController extends Controller
 
     public function names(){
         return inertia('Finance/Cashiering/Names/Index');
+    }
+
+    public function cashreceipts(){
+        return inertia('Finance/Cashiering/Cash/Index');
     }
 }

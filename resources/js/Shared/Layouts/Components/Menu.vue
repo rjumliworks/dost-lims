@@ -189,9 +189,15 @@
                 </li>
                  <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
-                    <span data-key="t-menu">Accountant</span>
+                    <span data-key="t-menu">Reports</span>
                 </li>
-               
+                 <li class="nav-item">
+                    <Link href="/cashreceipts" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Cash') }">
+                    <i class="ri-file-text-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Cash Receipt Records</span>
+                    </Link>
+                </li>
                  <li class="nav-item">
                     <Link href="/reports" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Reports') }">
