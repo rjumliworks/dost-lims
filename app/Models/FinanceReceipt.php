@@ -15,7 +15,7 @@ class FinanceReceipt extends Model
         'deposit_id',
         'created_by',
         'agency_id',
-        'is_deposited',
+        'is_deposit',
         'is_cancelled'
     ];
 
@@ -37,6 +37,11 @@ class FinanceReceipt extends Model
     public function deposit()
     {
         return $this->belongsTo('App\Models\ListDropdown', 'deposit_id', 'id');
+    }
+
+    public function depositList()
+    {
+        return $this->hasOne('App\Models\FinanceDepositList', 'finance_receipt_id', 'id');
     }
 
     public function op()

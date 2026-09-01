@@ -84,6 +84,8 @@ Route::middleware(['role:Accountant,Cashier'])->group(function () {
     Route::get('/orseries', [App\Http\Controllers\Finance\CashieringController::class, 'orseries']);
     Route::get('/names', [App\Http\Controllers\Finance\CashieringController::class, 'names']);
     Route::get('/cashreceipts', [App\Http\Controllers\Finance\CashieringController::class, 'cashreceipts']);
+    Route::post('/cashreceipts/deposit', [App\Http\Controllers\Finance\CashieringController::class, 'depositBtr']);
+    Route::get('/deposits', [App\Http\Controllers\Finance\CashieringController::class, 'deposits']);
 });
 
 Route::middleware(['role:Administrator'])->group(function () {

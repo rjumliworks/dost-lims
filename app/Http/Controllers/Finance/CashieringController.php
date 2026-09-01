@@ -42,6 +42,12 @@ class CashieringController extends Controller
             case 'cashreceiptsexcel':
                 return $this->reports->cashReceiptsExcel($request);
             break;
+            case 'depositslist':
+                return $this->reports->deposits($request);
+            break;
+            case 'depositview':
+                return $this->reports->depositView($request);
+            break;
         }
     }
 
@@ -95,5 +101,13 @@ class CashieringController extends Controller
 
     public function cashreceipts(){
         return inertia('Finance/Cashiering/Cash/Index');
+    }
+
+    public function deposits(){
+        return inertia('Finance/Cashiering/Deposits/Index');
+    }
+
+    public function depositBtr(Request $request){
+        return $this->reports->depositBtr($request);
     }
 }

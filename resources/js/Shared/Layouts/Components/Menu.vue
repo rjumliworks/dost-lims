@@ -174,6 +174,13 @@
                     </Link>
                 </li>
                 <li class="nav-item">
+                    <Link href="/deposits" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Finance/Cashiering/Deposits') }">
+                    <i class="ri-bank-line"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Deposits</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
                     <Link href="/orseries" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Finance/Cashiering/Orseries') }">
                     <i class="ri-coupon-line"></i>

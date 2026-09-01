@@ -103,6 +103,9 @@
                                         <b-button @click="openView(list)" variant="info" class="me-1" v-b-tooltip.hover title="View" size="sm">
                                             <i class="ri-eye-fill align-bottom"></i>
                                         </b-button>
+                                        <b-button @click="openEditOr(list)" variant="warning" class="me-1" v-b-tooltip.hover title="Edit" size="sm">
+                                            <i class="ri-pencil-fill align-bottom"></i>
+                                        </b-button>
                                         <b-button @click="openPrint(list.or_id)" variant="success" class="me-1" v-b-tooltip.hover title="Print" size="sm">
                                             <i class="ri-printer-fill align-bottom"></i>
                                         </b-button>
@@ -120,16 +123,18 @@
     </BRow>
     <View @update="fetch()" ref="view"/>
     <Edit ref="edit"/>
+    <EditOr :dropdowns="dropdowns" @update="fetch()" ref="editor"/>
 </template>
 <script>
 import _ from 'lodash';
 import Edit from './Modals/Edit.vue';
 import View from './Modals/View.vue';
+import EditOr from './Modals/EditOr.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, View, Edit },
+    components: { PageHeader, Pagination, Multiselect, View, Edit, EditOr },
     props: ['dropdowns','counts'],
     data(){
         return {
@@ -186,6 +191,9 @@ export default {
         },
         openView(data){
             this.$refs.view.show(data);
+        },
+        openEditOr(data){
+            this.$refs.editor.show(data);
         },
         viewPayment(index,mode){
             this.index = index;

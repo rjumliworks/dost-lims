@@ -11,14 +11,16 @@ use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\DropdownClass;
+use App\Services\Finance\Or\UpdateClass;
 use App\Http\Resources\Finance\NonlabResource;
 
 class NonlabController extends Controller
 {
     use HandlesTransaction;
 
-    public function __construct(DropdownClass $dropdown){
+    public function __construct(DropdownClass $dropdown, UpdateClass $update){
         $this->dropdown = $dropdown;
+        $this->update = $update;
     }
 
     public function index(Request $request){
@@ -30,6 +32,7 @@ class NonlabController extends Controller
             return inertia('Finance/Cashiering/Nonlab/Index',[
                 'dropdowns' => [
                     'payments' => $this->dropdown->dropdowns('Payment Mode','n/a'),
+                    'collections' => $this->dropdown->dropdowns('Collection Type','Non-laboratory'),
                     'statuses' => $this->dropdown->statuses('Payment'),
                 ]
             ]);
@@ -83,6 +86,12 @@ class NonlabController extends Controller
                 break;
                 case 'add':
                     return $this->add($request);
+                break;
+                case 'detail':
+                    return $this->update->detail($request);
+                break;
+                case 'op':
+                    return $this->update->op($request);
                 break;
             }
         });
