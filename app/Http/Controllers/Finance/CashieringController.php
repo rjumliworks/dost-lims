@@ -39,6 +39,9 @@ class CashieringController extends Controller
             case 'cashreceiptsprint':
                 return $this->reports->cashReceiptsPrint($request);
             break;
+            case 'cashreceiptsexcel':
+                return $this->reports->cashReceiptsExcel($request);
+            break;
         }
     }
 

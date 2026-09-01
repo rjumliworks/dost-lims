@@ -4,7 +4,8 @@ namespace App\Services\Finance;
 
 use App\Models\Customer;
 use App\Models\FinanceReceipt;
-use Illuminate\Support\Str;
+use App\Exports\Finance\CashReceiptsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportsClass
 {
@@ -63,18 +64,19 @@ class ReportsClass
                     : (float) str_replace(',', '', trim($op->total, '₱ '));
             }
 
-            $isOnline = $op->payment && Str::contains(strtolower($op->payment->name), 'online');
+            $isTrust = $op->payment && in_array($op->payment->name, ['Online Transfer', 'Bank Deposit']);
+            $isCash = $op->payment && in_array($op->payment->name, ['Cash', 'Cheque']);
 
             $btr = null;
             $trust = null;
             $undeposited = null;
 
-            if ($isOnline) {
-                $btr = $amount;
-                $totals['btr'] += $amount;
-            } elseif ($receipt->is_deposit) {
+            if ($isTrust) {
                 $trust = $amount;
                 $totals['trust'] += $amount;
+            } elseif ($isCash || $receipt->is_deposit) {
+                $btr = $amount;
+                $totals['btr'] += $amount;
             } else {
                 $undeposited = $amount;
                 $totals['undeposited'] += $amount;
@@ -118,5 +120,14 @@ class ReportsClass
         $pdf = \PDF::loadView('finance.reports.cash-receipts', $data)->setPaper('legal', 'landscape');
 
         return $pdf->stream('cash-receipts-record-'.strtolower($data['header']['month']).'-'.$data['header']['year'].'.pdf');
+    }
+
+    public function cashReceiptsExcel($request)
+    {
+        $data = $this->cashReceipts($request);
+
+        $filename = 'cash-receipts-record-'.strtolower($data['header']['month']).'-'.$data['header']['year'].'.xlsx';
+
+        return Excel::download(new CashReceiptsExport($data), $filename);
     }
 }

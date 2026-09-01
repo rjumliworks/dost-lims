@@ -15,7 +15,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-14"><span class="text-body">Cash Receipts Record</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">Monthly record of collections and deposits (BTR = Online Payment, Trust Fund = Over-the-counter Deposit).</p>
+                            <p class="text-muted text-truncate-two-lines fs-12">Monthly record of collections and deposits (BTR = Cash/Cheque, Trust Fund = Online Transfer/Bank Deposit).</p>
                         </div>
                     </div>
                 </div>
@@ -33,7 +33,10 @@
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
                                 <b-button type="button" variant="success" @click="openPrint">
-                                    <i class="ri-printer-fill align-bottom me-1"></i> Print
+                                    <i class="ri-printer-fill align-bottom me-1"></i> PDF
+                                </b-button>
+                                <b-button type="button" variant="primary" @click="openExcel">
+                                    <i class="ri-file-excel-2-fill align-bottom me-1"></i> Excel
                                 </b-button>
                             </div>
                         </b-col>
@@ -44,42 +47,42 @@
                         <span class="fw-semibold">Accountable Officer:</span> {{ header.officer }}
                         <span class="fw-semibold ms-4">Station:</span> {{ header.station }}
                     </div>
-                    <div class="table-responsive table-card" style="height: calc(100vh - 500px); overflow: auto;">
+                    <div class="table-responsive table-card" style="height: calc(100vh - 400px); overflow: auto;">
                         <table class="table table-nowrap align-middle mb-0">
                             <thead class="table-light">
                                 <tr class="fs-11">
                                     <th style="width: 8%;">Date</th>
-                                    <th style="width: 10%;">Reference No.</th>
+                                    <th style="width: 10%;" class="text-center">Reference No.</th>
                                     <th>Payor</th>
-                                    <th style="width: 13%;">Nature of Collection</th>
-                                    <th style="width: 10%;" class="text-end">Collection</th>
-                                    <th style="width: 10%;" class="text-end">BTR</th>
-                                    <th style="width: 10%;" class="text-end">Trust Fund</th>
-                                    <th style="width: 10%;" class="text-end">Undeposited</th>
+                                    <th style="width: 13%;" class="text-center">Nature of Collection</th>
+                                    <th style="width: 10%;" class="text-center">Collection</th>
+                                    <th style="width: 10%;" class="text-center">BTR</th>
+                                    <th style="width: 10%;" class="text-center">Trust Fund</th>
+                                    <th style="width: 10%;" class="text-center">Undeposited</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="(row,index) in rows" v-bind:key="index" class="fs-12">
                                     <td>{{ row.date }}</td>
-                                    <td>{{ row.reference }}</td>
+                                    <td class="text-center">{{ row.reference }}</td>
                                     <td>{{ row.payor }}</td>
-                                    <td>{{ row.nature }}</td>
-                                    <td class="text-end">{{ row.collection }}</td>
-                                    <td class="text-end">{{ row.btr }}</td>
-                                    <td class="text-end">{{ row.trust }}</td>
-                                    <td class="text-end">{{ row.undeposited }}</td>
+                                    <td class="text-center">{{ row.nature }}</td>
+                                    <td class="text-center">{{ row.collection }}</td>
+                                    <td class="text-center">{{ row.btr }}</td>
+                                    <td class="text-center">{{ row.trust }}</td>
+                                    <td class="text-center">-</td>
                                 </tr>
                                 <tr v-if="rows.length === 0">
                                     <td colspan="8" class="text-center text-muted py-4">No collections recorded for the selected month.</td>
                                 </tr>
                             </tbody>
-                            <tfoot v-if="rows.length" class="table-light fw-semibold fs-12">
+                            <tfoot v-if="rows.length" class="table-light tfoot-fixed fw-semibold fs-12">
                                 <tr>
                                     <td colspan="4" class="text-end">TOTAL</td>
-                                    <td class="text-end">{{ totals.collection }}</td>
-                                    <td class="text-end">{{ totals.btr }}</td>
-                                    <td class="text-end">{{ totals.trust }}</td>
-                                    <td class="text-end">{{ totals.undeposited }}</td>
+                                    <td class="text-center">{{ totals.collection }}</td>
+                                    <td class="text-center">{{ totals.btr }}</td>
+                                    <td class="text-center">{{ totals.trust }}</td>
+                                    <td class="text-center">-</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -135,6 +138,9 @@ export default {
         },
         openPrint(){
             window.open(this.currentUrl + '/cashiering?option=cashreceiptsprint&month='+this.filter.month+'&year='+this.filter.year);
+        },
+        openExcel(){
+            window.open(this.currentUrl + '/cashiering?option=cashreceiptsexcel&month='+this.filter.month+'&year='+this.filter.year);
         }
     }
 }
