@@ -240,7 +240,7 @@ class ReportsClass
         $user = \Auth::user();
 
         $deposits = FinanceDeposit::with('deposit:id,name')
-            ->where('created_by', $user->id)
+            ->where('agency_id', $user->profile->agency_id)
             ->when($request->keyword, function ($query, $keyword) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('start', 'like', "%{$keyword}%")
