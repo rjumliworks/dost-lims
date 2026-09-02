@@ -109,10 +109,7 @@ class SaveClass
             $isIndividual = $request->classification_id == 9;
 
             return CustomerName::create([
-                'name'         => $request->customer,
-                'firstname'    => $isIndividual ? $request->firstname : null,
-                'middlename'   => $isIndividual ? $request->middlename : null,
-                'lastname'     => $isIndividual ? $request->lastname : null,
+                'name'         => $isIndividual ? $this->formatIndividualName($request) : $request->customer,
                 'has_branches' => $request->has_branches,
                 'type_id'      => $request->type_id,
                 'industry_id'  => $request->industry_id,
@@ -129,6 +126,23 @@ class SaveClass
             }
         }
         return $name->id;
+    }
+
+    private function formatIndividualName($request): string
+    {
+        $firstname = trim((string) $request->firstname);
+        $middlename = trim((string) $request->middlename);
+        $lastname = trim((string) $request->lastname);
+
+        $parts = [$firstname];
+
+        if ($middlename !== '') {
+            $parts[] = mb_strtoupper(mb_substr($middlename, 0, 1)) . '.';
+        }
+
+        $parts[] = $lastname;
+
+        return implode(' ', array_filter($parts, fn ($part) => $part !== ''));
     }
 
     private function generateCode(): string

@@ -347,9 +347,20 @@ export default {
         capitalizeWords(str) {
             return str ? str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) : '';
         },
+        formatIndividualName(){
+            const firstname = (this.form.firstname || '').trim();
+            const middlename = (this.form.middlename || '').trim();
+            const lastname = (this.form.lastname || '').trim();
+
+            const parts = [];
+            if (firstname) parts.push(firstname);
+            if (middlename) parts.push(middlename[0].toUpperCase() + '.');
+            if (lastname) parts.push(lastname);
+
+            return parts.length ? parts.join(' ') : null;
+        },
         syncIndividualName(){
-            const parts = [this.form.firstname, this.form.middlename, this.form.lastname].filter(Boolean);
-            this.form.customer = parts.length ? parts.join(' ') : null;
+            this.form.customer = this.formatIndividualName();
             this.checkIndividualDuplicate();
         },
         checkIndividualDuplicate: _.debounce(function() {
