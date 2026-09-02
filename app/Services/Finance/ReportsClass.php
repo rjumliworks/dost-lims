@@ -182,7 +182,6 @@ class ReportsClass
         $ids = $request->ids ?: [];
 
         $receipts = FinanceReceipt::whereIn('id', $ids)
-            ->where('created_by', $user->id)
             ->where('is_cancelled', 0)
             ->whereDoesntHave('depositList')
             ->with('op:id,total,payment_id', 'op.payment:id,name', 'detail:id,receipt_id,amount')
