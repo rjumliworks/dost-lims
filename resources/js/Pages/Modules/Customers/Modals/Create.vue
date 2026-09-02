@@ -408,6 +408,7 @@ export default {
         },
         submit(){
             this.form.option = 'validation';
+            this.form.is_main = !this.form.has_branches;
             this.form.post('/customers',{
                 preserveScroll: true,
                 onSuccess: (response) => {
@@ -427,6 +428,7 @@ export default {
         confirmSubmit(isNew) {
             this.form.is_new = isNew;
             this.form.option = 'customer';
+            this.form.is_main = !this.form.has_branches;
 
             this.form.post('/customers', {
                 preserveScroll: true,
