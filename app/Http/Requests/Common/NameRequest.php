@@ -48,6 +48,10 @@ class NameRequest extends FormRequest
             return;
         }
 
+        if (! $this->filled('reference')) {
+            return;
+        }
+
         $validator->after(function ($validator) {
             $hashids = new Hashids('krad', 10);
             $id = $hashids->decode($this->reference)[0] ?? null;
