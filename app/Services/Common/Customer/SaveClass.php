@@ -66,6 +66,9 @@ class SaveClass
         $customer->address()->create(
             $request->except([
                 'name',
+                'firstname',
+                'middlename',
+                'lastname',
                 'tin',
                 'is_main',
                 'email',
