@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrPayment extends Model
 {
+    use LogsActivity;
+
     public $timestamps = false;
     protected $fillable = [
         'discount_id',
@@ -86,5 +90,17 @@ class TsrPayment extends Model
     public function getPaidAtAttribute($value)
     {
         return ($value) ?  date('M d, Y g:i a', strtotime($value)) : '-';
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly([
+            'discount_id','total','subtotal','discount','or_number','payment_id','collection_id',
+            'status_id','paid_at','is_paid','is_free','is_child','has_deduction'
+        ])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Payment')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

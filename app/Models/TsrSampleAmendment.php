@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrSampleAmendment extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'sample_id',
         'previous_description',
@@ -48,5 +52,17 @@ class TsrSampleAmendment extends Model
     public function getReviewedAtAttribute($value)
     {
         return ($value) ? date('M d, Y g:i a', strtotime($value)) : null;
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly([
+            'previous_description','proposed_description','previous_customer_description','proposed_customer_description',
+            'remarks','review_remarks','requested_by','reviewed_by','reviewed_at','status_id'
+        ])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Sample Amendment')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

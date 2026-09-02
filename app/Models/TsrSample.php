@@ -5,9 +5,13 @@ namespace App\Models;
 use Hashids\Hashids;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrSample extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'code',
         'name',
@@ -115,4 +119,16 @@ class TsrSample extends Model
     // {
     //     return Str::after($value, '-');
     // }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly([
+            'code','name','customer_description','description','remarks','is_disposed','is_completed',
+            'samplename_id','sampletype_id','category_id','completed_at'
+        ])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Sample')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
+    }
 }

@@ -331,6 +331,13 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Agencies</span>
                     </Link>
                 </li>
+                <li class="nav-item">
+                    <Link href="/history" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/History') }">
+                    <i class="ri-history-line"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">History</span>
+                    </Link>
+                </li>
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Configurations</span>
