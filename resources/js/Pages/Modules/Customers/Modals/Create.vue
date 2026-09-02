@@ -110,11 +110,11 @@
                     <div class="card bg-light-subtle border-1 rounded-bottom shadow-none mt-3 p-3" v-if="typeof form.customer?.value != 'number' && form.customer">
                         <form class="customform">
                             <BRow>
-                                <BCol v-if="form.classification_id != 9" :lg="(form.sex_id == 71 || form.sex_id == 70) ? '3' : '6'" class="mt-0 mb-1">
+                                <BCol v-if="form.classification_id != 9" lg="6" class="mt-0 mb-1">
                                     <InputLabel for="sex_id" value="Sex" :message="form.errors.sex_id"/>
                                     <Multiselect :options="dropdowns.sexs" label="name" :searchable="true" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')" />
                                 </BCol>
-                                <BCol v-if="form.classification_id == 9" lg="3" class="mt-0 mb-1">
+                                <BCol v-if="form.classification_id == 9" lg="6" class="mt-0 mb-1">
                                     <InputLabel for="sex_id" value="Sex" :message="form.errors.sex_id"/>
                                     <Multiselect :options="dropdowns.sexs" label="name" v-model="form.sex_id" placeholder="Select Sex" @input="handleInput('sex_id')" />
                                 </BCol>
@@ -122,13 +122,9 @@
                                     <InputLabel for="type_id" value="Type" :message="form.errors.type_id"/>
                                     <Multiselect :options="dropdowns.individuals" label="name" v-model="form.type_id" placeholder="Select Type" @input="handleInput('type_id')"/>
                                 </BCol>
-                                <BCol v-if="form.sex_id == 71 && form.classification_id != 9" lg="3" class="mt-0 mb-1">
+                                <BCol v-if="form.classification_id != 9" lg="6" class="mt-0 mb-1">
                                     <InputLabel for="led_id" value="Type" :message="form.errors.led_id"/>
-                                    <Multiselect :options="dropdowns.females" label="name" v-model="form.led_id" placeholder="Select Type" @input="handleInput('led')" />
-                                </BCol>
-                                <BCol v-if="form.sex_id == 70 && form.classification_id != 9" lg="3" class="mt-0 mb-1">
-                                    <InputLabel for="led_id" value="Type" :message="form.errors.led_id"/>
-                                    <Multiselect :options="dropdowns.males" label="name" v-model="form.led_id" placeholder="Select Type" @input="handleInput('led')" />
+                                    <Multiselect :options="ledOptions" label="name" v-model="form.led_id" placeholder="Select Type" :disabled="!ledApplicable" @input="handleInput('led')" />
                                 </BCol>
                                 <BCol v-if="form.classification_id != 9" :lg="(subs.length > 0) ? '6' : '12'" class="mt-0 mb-1">
                                     <InputLabel for="industry_id" value="Industry Type" :message="form.errors.industry_id"/>
@@ -149,7 +145,7 @@
                                     <div class="d-flex">
                                         <div style="width: 100%;">
                                             <InputLabel value="Address" :message="form.errors.address"/>
-                                            <TextInput readonly v-model="address" type="text" class="form-control" placeholder="Please enter address" @input="handleInput('address')"/>
+                                            <TextInput readonly v-model="address" type="text" class="form-control" style="cursor: pointer;" placeholder="Please enter address" @click="addLocation(index)" @input="handleInput('address')"/>
                                         </div>
                                         <div class="flex-shrink-0">
                                             <b-button @click="addLocation(index)" style="margin-top: 20px;" variant="light" class="waves-effect waves-light ms-1"><i class="ri-map-pin-fill"></i></b-button>
@@ -287,6 +283,11 @@ export default {
                 this.form.is_main = false;
             }
         },
+        'form.sex_id'(newVal){
+            if(newVal != 71 && newVal != 70){
+                this.form.led_id = null;
+            }
+        },
         'industry'(){
             if(this.industry){
                 if(this.industry.is_alone == 1){
@@ -303,6 +304,14 @@ export default {
     computed: {
         industries() {
             return this.dropdowns.industries.filter(industry => industry.is_main == 1);
+        },
+        ledApplicable() {
+            return this.form.sex_id == 71 || this.form.sex_id == 70;
+        },
+        ledOptions() {
+            if (this.form.sex_id == 71) return this.dropdowns.females;
+            if (this.form.sex_id == 70) return this.dropdowns.males;
+            return [];
         },
         canSubmit() {
             if(this.form.processing) return false;
