@@ -28,6 +28,7 @@ class SaveClass
             $config->laboratories = [];
             $config->form = $form;
             $config->contact = [];
+            $config->functionalities = AgencyConfiguration::defaultFunctionalities();
             $config->samplecode_year = 0;
             $config->agency_id = $data->id;
             $config->show_others = 0;
@@ -65,6 +66,18 @@ class SaveClass
             'data' => $data,
             'message' => 'User creation was successful!', 
             'info' => "You've successfully created an account for the user."
+        ];
+    }
+
+    public function functionalities($request){
+        $data = AgencyConfiguration::where('id',$request->id)->first();
+        $data->functionalities = $request->functionalities;
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Functionalities updated successfully!',
+            'info' => "The agency's enabled modules have been updated."
         ];
     }
 

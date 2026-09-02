@@ -8,11 +8,34 @@ use Illuminate\Database\Eloquent\Model;
 
 class AgencyConfiguration extends Model
 {
+    public const FUNCTIONALITIES = [
+        'schedules' => 'Calendar / Schedules',
+        'equipments' => 'Equipments',
+        'digitalsigning' => 'Digital Signing',
+        'inventory' => 'Inventory',
+        'testservices' => 'Test Services',
+        'packages' => 'Packages',
+        'categories' => 'Categories',
+    ];
+
     protected $casts = [
         'laboratories' => 'array',
         'form' => 'array',
         'contact' => 'array',
+        'functionalities' => 'array',
     ];
+
+    public static function defaultFunctionalities(): array
+    {
+        return array_fill_keys(array_keys(self::FUNCTIONALITIES), true);
+    }
+
+    public function isFunctionalityEnabled(string $key): bool
+    {
+        $functionalities = $this->functionalities ?? [];
+
+        return (bool) ($functionalities[$key] ?? true);
+    }
 
     protected static function booted()
     {
@@ -42,7 +65,7 @@ class AgencyConfiguration extends Model
     }
     
     protected $fillable = [
-        'laboratories','form','contact','samplecode_year','show_others','strict_mode','agency_id'
+        'laboratories','form','contact','functionalities','samplecode_year','show_others','strict_mode','agency_id'
     ];
 
     public function agency()

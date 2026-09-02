@@ -80,6 +80,7 @@
 import _ from 'lodash';
 
 export default {
+    props: ['classificationId'],
     data() {
         return {
             currentUrl: window.location.origin,
@@ -105,7 +106,8 @@ export default {
             axios.get('/customers', {
                 params: {
                     keyword: this.keyword,
-                    option: 'search'
+                    option: 'search',
+                    classification_id: this.classificationId
                 }
             })
             .then(response => {

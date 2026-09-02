@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Executive;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\AgencyConfiguration;
 use App\Services\DropdownClass;
 use App\Services\Executive\Agency\SaveClass;
 use App\Services\Executive\Agency\ViewClass;
@@ -44,6 +45,9 @@ class AgencyController extends Controller
                 break;
                 case 'settings':
                     return $this->save->settings($request);
+                break;
+                case 'functionalities':
+                    return $this->save->functionalities($request);
                 break;
                 case 'activate':
                     return $this->save->activate($request);
@@ -91,6 +95,9 @@ class AgencyController extends Controller
             'laboratories' => $this->dropdown->laboratories(),
             'discounts' =>  $this->dropdown->discounts(),
             'regions' => $this->dropdown->regions(),
+            'functionalities' => collect(AgencyConfiguration::FUNCTIONALITIES)->map(function ($label, $key) {
+                return ['key' => $key, 'label' => $label];
+            })->values(),
         ]);
     }
 }

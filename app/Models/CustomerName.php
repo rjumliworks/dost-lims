@@ -12,7 +12,7 @@ class CustomerName extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['name','alias','has_branches','is_active','industry_id','classification_id','type_id'];
+    protected $fillable = ['name','firstname','middlename','lastname','alias','has_branches','is_active','industry_id','classification_id','type_id'];
 
     protected static function booted()
     {
@@ -59,10 +59,19 @@ class CustomerName extends Model
 
     public function getActivitylogOptions(): LogOptions {
         return LogOptions::defaults()
-        ->logOnly(['name','alias','has_branches', 'is_active','industry_id','classification_id','type_id'])
+        ->logOnly(['name','firstname','middlename','lastname','alias','has_branches', 'is_active','industry_id','classification_id','type_id'])
         ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
         ->useLogName('Name')
         ->logOnlyDirty()
         ->dontSubmitEmptyLogs();
+    }
+
+    public function setAttribute($key, $value)
+    {
+        if (in_array($key, ['firstname', 'middlename', 'lastname']) && ! is_null($value) && $value !== '') {
+            $value = ucwords(strtolower($value));
+        }
+
+        return parent::setAttribute($key, $value);
     }
 }

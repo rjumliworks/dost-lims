@@ -98,6 +98,9 @@ class ViewClass
                 $query->whereRaw('LOWER(name) LIKE ?', ["%{$keyword}%"])
                   ->orWhereRaw('LOWER(alias) LIKE ?', ["%{$keyword}%"]);
             })
+            ->when($request->classification_id, function ($query) use ($request) {
+                $query->where('classification_id', $request->classification_id);
+            })
             ->get()->take(5)->map(function ($item) {
                 return [
                     'value' => $item->id,

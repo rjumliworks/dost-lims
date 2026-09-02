@@ -103,8 +103,13 @@ class SaveClass
     private function resolveCustomerName($request): int
     {
         if (!is_array($request->customer)) {
+            $isIndividual = $request->classification_id == 9;
+
             return CustomerName::create([
-                'name'         => (is_array($request->customer)) ? $request->customer['name'] : $request->customer,
+                'name'         => $request->customer,
+                'firstname'    => $isIndividual ? $request->firstname : null,
+                'middlename'   => $isIndividual ? $request->middlename : null,
+                'lastname'     => $isIndividual ? $request->lastname : null,
                 'has_branches' => $request->has_branches,
                 'type_id'      => $request->type_id,
                 'industry_id'  => $request->industry_id,

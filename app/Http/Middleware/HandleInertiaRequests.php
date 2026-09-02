@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 : null,
             'is_gad' => str_starts_with($request->getHost(), 'gad.'),
             'show' => (\Auth::guard('web')->check()) ? AgencyConfiguration::value('show_others') : null,
+            'functionalities' => (\Auth::guard('web')->check()) ? $this->functionalities() : null,
             'years' => (\Auth::guard('web')->check()) ? Target::distinct()->orderBy('year','desc')->pluck('year') : null,
             'notifications' => (\Auth::guard('web')->check()) ? [
                 'requests' => [
@@ -63,6 +64,25 @@ class HandleInertiaRequests extends Middleware
                 'type'    => session('type') ?? null,
             ],
         ];
+    }
+
+    private function functionalities(): array
+    {
+        $defaults = AgencyConfiguration::defaultFunctionalities();
+
+        if (\Auth::guard('web')->user()->hasRole('Administrator')) {
+            return $defaults;
+        }
+
+        $agencyId = \Auth::guard('web')->user()->profile?->agency_id;
+
+        if (! $agencyId) {
+            return $defaults;
+        }
+
+        $config = AgencyConfiguration::withoutGlobalScopes()->where('agency_id', $agencyId)->first();
+
+        return array_merge($defaults, $config?->functionalities ?? []);
     }
 
     private function pendingRequestsCount(): int

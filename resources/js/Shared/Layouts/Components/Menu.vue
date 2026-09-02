@@ -125,21 +125,21 @@
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Directory Modules</span>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="$page.props.functionalities?.testservices !== false">
                     <Link href="/testservices" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Testservices') }">
                     <i class="ri-flask-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Test Services</span>
                     </Link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="$page.props.functionalities?.packages !== false">
                     <Link href="/packages" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Packages') }">
                     <i class="ri-archive-fill"></i>
                     <span class="fw-semibold fs-14" data-key="t-dashboards">Packages</span>
                     </Link>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" v-if="$page.props.functionalities?.categories !== false">
                     <Link href="/categories" class="nav-link menu-link"
                     :class="{'active': $page.component.startsWith('Modules/Categories') }">
                     <i class="ri-list-check"></i>
@@ -267,7 +267,7 @@
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Released</span>
                         </Link>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="$page.props.functionalities?.schedules !== false">
                         <Link href="/schedules" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Schedules') }">
                         <i class="ri-calendar-fill"></i>
@@ -282,34 +282,34 @@
                         <i class="ri-more-fill" aria-expanded="false"></i>
                         <span data-key="t-menu">Other Modules</span>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="$page.props.functionalities?.digitalsigning !== false">
                         <Link href="/digitalsigning" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Signing') }">
                         <i class="ri-mark-pen-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Digital Signing</span>
                         </Link>
-                    </li> 
-                    <li class="nav-item">
+                    </li>
+                    <li class="nav-item" v-if="$page.props.functionalities?.schedules !== false">
                         <Link href="/schedules" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Schedules') }">
                         <i class="ri-calendar-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Schedules</span>
                         </Link>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="$page.props.functionalities?.equipments !== false">
                         <Link href="/equipments" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Equipments') }">
                         <i class="ri-tools-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Equipments</span>
                         </Link>
-                    </li> 
-                    <li class="nav-item">
+                    </li>
+                    <li class="nav-item" v-if="$page.props.functionalities?.inventory !== false">
                         <Link href="/inventory" class="nav-link menu-link"
                         :class="{'active': $page.component.startsWith('Others/Inventory') }">
                         <i class="ri-archive-fill"></i>
                         <span class="fw-semibold fs-14" data-key="t-dashboards">Inventory</span>
                         </Link>
-                    </li> 
+                    </li>
                 </template>
             </template>
             <template v-if="$page.props.roles.includes('Administrator')">

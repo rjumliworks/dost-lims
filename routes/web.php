@@ -50,10 +50,10 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
     Route::resource('/requests', App\Http\Controllers\Common\RequestController::class);
 
     Route::resource('/customers', App\Http\Controllers\Common\CustomerController::class);
-    Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class);
-    Route::get('/testservices/reports', [App\Http\Controllers\Common\TestserviceController::class, 'reports']);
-    Route::resource('/testservices', App\Http\Controllers\Common\TestserviceController::class);
-    Route::resource('/packages', App\Http\Controllers\Common\PackageController::class);
+    Route::resource('/categories', App\Http\Controllers\Common\CategoryController::class)->middleware('functionality:categories');
+    Route::get('/testservices/reports', [App\Http\Controllers\Common\TestserviceController::class, 'reports'])->middleware('functionality:testservices');
+    Route::resource('/testservices', App\Http\Controllers\Common\TestserviceController::class)->middleware('functionality:testservices');
+    Route::resource('/packages', App\Http\Controllers\Common\PackageController::class)->middleware('functionality:packages');
 
     Route::resource('/tsrs', App\Http\Controllers\Major\TsrController::class);
     Route::resource('/quotations', App\Http\Controllers\Major\QuotationController::class);
@@ -61,14 +61,16 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
     Route::resource('/analyses', App\Http\Controllers\Major\AnalysisController::class);
     Route::resource('/testreports', App\Http\Controllers\Major\TestreportController::class);
 
-    Route::resource('/schedules', App\Http\Controllers\Others\ScheduleController::class);
-    Route::resource('/equipments', App\Http\Controllers\Others\EquipmentController::class);
-    Route::resource('/digitalsigning', App\Http\Controllers\Others\SigningController::class);
+    Route::resource('/schedules', App\Http\Controllers\Others\ScheduleController::class)->middleware('functionality:schedules');
+    Route::resource('/equipments', App\Http\Controllers\Others\EquipmentController::class)->middleware('functionality:equipments');
+    Route::resource('/digitalsigning', App\Http\Controllers\Others\SigningController::class)->middleware('functionality:digitalsigning');
 
-    Route::get('/inventory/stockin', [App\Http\Controllers\Others\InventoryController::class, 'stockIn']);
-    Route::get('/inventory/stockout', [App\Http\Controllers\Others\InventoryController::class, 'stockOut']);
-    Route::get('/inventory/checkout', [App\Http\Controllers\Others\InventoryController::class, 'checkout']);
-    Route::resource('/inventory', App\Http\Controllers\Others\InventoryController::class);
+    Route::middleware('functionality:inventory')->group(function () {
+        Route::get('/inventory/stockin', [App\Http\Controllers\Others\InventoryController::class, 'stockIn']);
+        Route::get('/inventory/stockout', [App\Http\Controllers\Others\InventoryController::class, 'stockOut']);
+        Route::get('/inventory/checkout', [App\Http\Controllers\Others\InventoryController::class, 'checkout']);
+        Route::resource('/inventory', App\Http\Controllers\Others\InventoryController::class);
+    });
     Route::post('/wallet', [App\Http\Controllers\Finance\WalletController::class, 'store']);
 });
 

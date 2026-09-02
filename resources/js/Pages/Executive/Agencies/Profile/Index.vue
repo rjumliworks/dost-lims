@@ -84,6 +84,7 @@
                                                     <Services :lists="selected.data.fees" v-if="menu == 'Fees'"/>
                                                     <Accounts :lists="selected.data.accounts" v-if="menu == 'Accounts'"/>
                                                     <Funding :lists="selected.data.funds" v-if="menu == 'Funding'"/>
+                                                    <Functionalities :id="selected.data.configuration?.id" :values="selected.data.configuration?.functionalities" :options="functionalities" v-if="menu == 'Functionalities'"/>
                                                     <!-- <Lists :id="customer.data.id" v-if="menu == 'TSRs'"/>
                                                     <Conforme :lists="customer.data.conformes" v-if="menu == 'Conformes'"/>
                                                     <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/>
@@ -117,6 +118,7 @@ import Facilities from './Components/Facilities.vue';
 import Discounts from './Components/Discounts.vue';
 import Accounts from './Components/Accounts.vue';
 import Funding from './Components/Funding.vue';
+import Functionalities from './Components/Functionalities.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Facility from './Modals/Facility.vue';
 import Discount from './Modals/Discount.vue';
@@ -124,12 +126,12 @@ import Fee from './Modals/Fee.vue';
 import AccountModal from './Modals/Account.vue';
 import FundingModal from './Modals/Funding.vue';
 export default {
-    props:['selected','laboratories','discounts','regions','labs'],
-    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Laboratories, Services, Logs, Accounts, Funding, Facility, Discount, Fee, AccountModal, FundingModal },
+    props:['selected','laboratories','discounts','regions','labs','functionalities'],
+    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Laboratories, Services, Logs, Accounts, Funding, Functionalities, Facility, Discount, Fee, AccountModal, FundingModal },
     data(){
         return {
             menus: [
-                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Activity Logs'
+                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Functionalities','Activity Logs'
             ],
             type: 'Discounts',
             index: null,
