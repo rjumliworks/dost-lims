@@ -73,7 +73,6 @@ class ReportsClass
                 'depositList.deposit:id,date',
             ])
             ->where('is_cancelled', 0)
-            ->where('created_by', $user->id)
             ->whereHas('op', function ($q) use ($request) {
                 $q->where('status_id', 7)
                     ->when($request->nature, function ($q2, $nature) {
