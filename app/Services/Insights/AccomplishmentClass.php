@@ -14,6 +14,7 @@ use App\Models\TsrSampleReport;
 use App\Models\Target;
 use App\Models\TargetBreakdown;
 use App\Models\ListDiscount;
+use App\Http\Resources\DefaultResource;
 use App\Exports\PezaExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -186,10 +187,12 @@ class AccomplishmentClass
     public function assistanceBreakdown($request){
         $year = $request->year;
         $month = $request->month;
+        $laboratoryId = $request->laboratory_id;
 
         $query = Tsr::withWhereHas('payment')
             ->where('status_id', '!=', 5)
-            ->whereYear('created_at', $year);
+            ->whereYear('created_at', $year)
+            ->when($laboratoryId, fn ($q) => $q->where('laboratory_id', $laboratoryId));
 
         if ($month) {
             $query->whereMonth('created_at', $month);
@@ -215,6 +218,199 @@ class AccomplishmentClass
             'breakdown' => $breakdown,
             'total' => $breakdown->sum('amount'),
         ];
+    }
+
+    public function assistanceRequests($request){
+        $year = $request->year;
+        $month = $request->month;
+        $discountId = $request->discount_id;
+        $laboratoryId = $request->laboratory_id;
+        $count = $request->count ?? 10;
+
+        $query = Tsr::withWhereHas('payment', function ($q) use ($discountId) {
+                if ($discountId == 0) {
+                    $q->where(function ($qq) {
+                        $qq->whereNull('discount_id')->orWhere('discount_id', 0);
+                    });
+                } else {
+                    $q->where('discount_id', $discountId);
+                }
+            })
+            ->with('customer')
+            ->where('status_id', '!=', 5)
+            ->whereYear('created_at', $year)
+            ->when($laboratoryId, fn ($q) => $q->where('laboratory_id', $laboratoryId));
+
+        if ($month) {
+            $query->whereMonth('created_at', $month);
+        }
+
+        $data = $query->orderByDesc('created_at')->paginate($count);
+
+        $data->getCollection()->transform(function ($tsr) {
+            return [
+                'id' => $tsr->id,
+                'code' => $tsr->code,
+                'customer' => optional($tsr->customer)->fullname ?? 'N/A',
+                'date' => $tsr->created_at,
+                'amount' => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->discount),
+            ];
+        });
+
+        return DefaultResource::collection($data);
+    }
+
+    private function resolveFacilityIds($year, $facilityType){
+        if (!$facilityType || $facilityType === 'All') {
+            return null;
+        }
+
+        $data = Target::where('year', $year)->first();
+        if (!$data) {
+            return null;
+        }
+
+        return AgencyFacility::where('agency_id', $data->agency_id)
+            ->where('is_regional', $facilityType === 'Regional' ? 1 : 0)
+            ->pluck('id')
+            ->toArray();
+    }
+
+    public function objectiveRequests($request){
+        $year = $request->year;
+        $month = $request->month;
+        $objective = $request->objective;
+        $laboratoryId = $request->laboratory_id;
+        $count = $request->count ?? 10;
+        $facilityIds = $this->resolveFacilityIds($year, $request->facility_type);
+
+        switch ($objective) {
+            case 'Actual Fees Collected':
+                $query = Tsr::withWhereHas('payment', fn ($q) => $q->where('is_free', 0))
+                    ->with('customer')
+                    ->where('status_id', '!=', 5)
+                    ->whereYear('created_at', $year)
+                    ->when($month, fn ($q) => $q->whereMonth('created_at', $month))
+                    ->when($facilityIds, fn ($q) => $q->whereIn('facility_id', $facilityIds))
+                    ->when($laboratoryId, fn ($q) => $q->where('laboratory_id', $laboratoryId));
+
+                $data = $query->orderByDesc('created_at')->paginate($count);
+                $data->getCollection()->transform(function ($tsr) {
+                    return [
+                        'id' => $tsr->id,
+                        'code' => $tsr->code,
+                        'customer' => optional($tsr->customer)->fullname ?? 'N/A',
+                        'date' => $tsr->created_at,
+                        'amount' => (float) str_replace(['₱ ', '₱', ',', ' '], '', $tsr->payment->total),
+                    ];
+                });
+            break;
+
+            case 'Firms Served':
+                $query = Tsr::whereIn('id', function ($q) use ($year) {
+                        $q->selectRaw('MIN(id)')
+                            ->from('tsrs')
+                            ->where('status_id', '!=', 5)
+                            ->whereYear('created_at', $year)
+                            ->groupBy('customer_id');
+                    })
+                    ->with('customer')
+                    ->whereHas('customer.customer_name', fn ($q) => $q->where('classification_id', 8))
+                    ->whereYear('created_at', $year)
+                    ->when($month, fn ($q) => $q->whereMonth('created_at', $month))
+                    ->when($facilityIds, fn ($q) => $q->whereIn('facility_id', $facilityIds))
+                    ->when($laboratoryId, fn ($q) => $q->where('laboratory_id', $laboratoryId));
+
+                $data = $query->orderByDesc('created_at')->paginate($count);
+                $data->getCollection()->transform(function ($tsr) {
+                    return [
+                        'id' => $tsr->id,
+                        'code' => $tsr->code,
+                        'customer' => optional($tsr->customer)->fullname ?? 'N/A',
+                        'date' => $tsr->created_at,
+                    ];
+                });
+            break;
+
+            case 'Customers Served':
+                $query = Tsr::with('customer')
+                    ->where('status_id', '!=', 5)
+                    ->whereYear('created_at', $year)
+                    ->when($month, fn ($q) => $q->whereMonth('created_at', $month))
+                    ->when($facilityIds, fn ($q) => $q->whereIn('facility_id', $facilityIds))
+                    ->when($laboratoryId, fn ($q) => $q->where('laboratory_id', $laboratoryId));
+
+                $data = $query->orderByDesc('created_at')->paginate($count);
+                $data->getCollection()->transform(function ($tsr) {
+                    return [
+                        'id' => $tsr->id,
+                        'code' => $tsr->code,
+                        'customer' => optional($tsr->customer)->fullname ?? 'N/A',
+                        'date' => $tsr->created_at,
+                    ];
+                });
+            break;
+
+            case 'Samples Received':
+                $tsrIds = TsrSample::whereYear('created_at', $year)
+                    ->when($month, fn ($q) => $q->whereMonth('created_at', $month))
+                    ->whereHas('tsr', function ($q) use ($facilityIds, $laboratoryId) {
+                        $q->where('status_id', '!=', 5)
+                            ->when($facilityIds, fn ($qq) => $qq->whereIn('facility_id', $facilityIds))
+                            ->when($laboratoryId, fn ($qq) => $qq->where('laboratory_id', $laboratoryId));
+                    })
+                    ->distinct()
+                    ->pluck('tsr_id');
+
+                $query = Tsr::whereIn('id', $tsrIds)
+                    ->withCount(['samples' => function ($q) use ($year, $month) {
+                        $q->whereYear('created_at', $year);
+                        if ($month) {
+                            $q->whereMonth('created_at', $month);
+                        }
+                    }]);
+
+                $data = $query->orderByDesc('created_at')->paginate($count);
+                $data->getCollection()->transform(function ($tsr) {
+                    return [
+                        'id' => $tsr->id,
+                        'code' => $tsr->code,
+                        'samples_count' => $tsr->samples_count,
+                    ];
+                });
+            break;
+
+            case 'Services Conducted':
+                $query = Tsr::where('status_id', '!=', 5)
+                    ->whereYear('created_at', $year)
+                    ->when($month, fn ($q) => $q->whereMonth('created_at', $month))
+                    ->when($facilityIds, fn ($q) => $q->whereIn('facility_id', $facilityIds))
+                    ->when($laboratoryId, fn ($q) => $q->where('laboratory_id', $laboratoryId))
+                    ->whereHas('samples.analyses')
+                    ->withCount('samples')
+                    ->addSelect(['analyses_count' => TsrAnalysis::query()
+                        ->selectRaw('count(*)')
+                        ->join('tsr_samples', 'tsr_samples.id', '=', 'tsr_analyses.sample_id')
+                        ->whereColumn('tsr_samples.tsr_id', 'tsrs.id')
+                    ]);
+
+                $data = $query->orderByDesc('created_at')->paginate($count);
+                $data->getCollection()->transform(function ($tsr) {
+                    return [
+                        'id' => $tsr->id,
+                        'code' => $tsr->code,
+                        'samples_count' => $tsr->samples_count,
+                        'analyses_count' => (int) $tsr->analyses_count,
+                    ];
+                });
+            break;
+
+            default:
+                $data = Tsr::whereRaw('1 = 0')->paginate($count);
+            break;
+        }
+
+        return DefaultResource::collection($data);
     }
 
     public function targets($request){
@@ -263,6 +459,7 @@ class AccomplishmentClass
                     $grandtotal =$grandtotal + $total;
                     $breakdown[] = [
                         'id' => $item->id,
+                        'laboratory_id' => $item->laboratory->id,
                         'name' => $item->laboratory->name,
                         'target' => $item->count,
                         'months' => $monthly,

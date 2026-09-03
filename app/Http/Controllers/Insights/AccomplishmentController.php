@@ -32,6 +32,12 @@ class AccomplishmentController extends Controller
             case 'assistance-breakdown':
                 return $this->accomplishment->assistanceBreakdown($request);
             break;
+            case 'assistance-requests':
+                return $this->accomplishment->assistanceRequests($request);
+            break;
+            case 'objective-requests':
+                return $this->accomplishment->objectiveRequests($request);
+            break;
             case 'location':
                 return $this->excel->location($request);
             break;

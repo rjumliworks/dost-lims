@@ -28,7 +28,7 @@
                             <div class="input-group mb-1">
                                 <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                 <input type="text" v-model="filter.keyword" placeholder="Search Report number, TSR Code, Sample Code" class="form-control" style="width: 20%;">
-                                <Multiselect class="white" style="width: 17%;" :options="[]" v-model="filter.analyst" label="name" :searchable="true" placeholder="Select Analyst" />
+                                <Multiselect class="white" style="width: 17%;" :options="analysts" v-model="filter.analyst" label="name" :searchable="true" placeholder="Select Analyst" />
                                 <Multiselect v-if="labs.length > 0" class="white" style="width: 17%;" :options="labs" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
                                 <Multiselect v-if="isLaboratoryHead && facilities && facilities.length > 1" class="white" style="width: 17%;" :options="facilities" v-model="filter.facility" label="name" :searchable="true" placeholder="Select Facility" />
                                 <Multiselect class="white" style="width: 8%;"  :can-clear="false" :can-deselect="false" :options="years" :searchable="true" v-model="filter.year" label="name" placeholder="Filter Year" />
@@ -188,6 +188,7 @@ export default {
             meta: {},
             links: {},
             labs: this.laboratories,
+            analysts: [],
             filter: {
                 keyword: null,
                 laboratory: (!this.$page.props.roles.includes('Laboratory Head') && this.laboratories.length > 0) ? this.laboratories[0].value : null,
@@ -206,6 +207,8 @@ export default {
             this.checkSearchStr(newVal);
         },
         "filter.laboratory"(newVal){
+            this.filter.analyst = null;
+            this.fetchAnalysts(newVal);
             this.fetch();
         },
         "filter.facility"(newVal){
@@ -224,11 +227,24 @@ export default {
     },
     created(){
         this.fetch();
+        this.fetchAnalysts(this.filter.laboratory);
     },
     methods: {
         checkSearchStr: _.debounce(function(string) {
             this.fetch();
         }, 300),
+        fetchAnalysts(laboratory){
+            axios.get('/testreports', {
+                params: {
+                    option: 'analysts',
+                    laboratory: laboratory,
+                }
+            })
+            .then(response => {
+                this.analysts = response.data;
+            })
+            .catch(err => console.log(err));
+        },
         fetchLaboratories(facility){
             if(!facility){
                 this.labs = this.laboratories;

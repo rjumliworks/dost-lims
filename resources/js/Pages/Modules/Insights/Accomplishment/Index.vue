@@ -55,8 +55,8 @@
                                             <td>{{ objective.name }}</td>
                                             <td class="text-center" @click="setOverallTarget(objective)">{{ (objective.is_amount) ? formatMoney(objective.target) : formatNumber(objective.target) }}</td>
                                             <template v-if="type == 'Months'" v-for="(m, xIndex) in objective.monthly" :key="xIndex">
-                                                <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex, 'cursor-pointer': isAssistanceRendered(objective)}" @click.stop="openDiscountBreakdown(objective, xIndex)">{{formatMoney(m.accomplish)}}</td>
-                                                <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex}">{{m.accomplish}}</td>
+                                                <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex, 'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, xIndex)">{{formatMoney(m.accomplish)}}</td>
+                                                <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === xIndex, 'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, xIndex)">{{m.accomplish}}</td>
                                             </template>
                                             <template v-if="type == 'Quarters'">
                                                 <td v-for="(q, qqIndex) in groupByQuarter(objective.monthly,objective.is_amount)" :key="'q' + qqIndex" class="text-center"
@@ -65,8 +65,8 @@
                                                     <span v-else>{{ q.accomplish }}</span>
                                                 </td>
                                             </template>
-                                            <td v-if="objective.is_amount" class="text-center" :class="{'cursor-pointer': isAssistanceRendered(objective)}" @click.stop="openDiscountBreakdown(objective, null)">{{ formatMoney(objective.accomplish) }}</td>
-                                            <td v-else class="text-center">{{ formatNumber(objective.accomplish) }}</td>
+                                            <td v-if="objective.is_amount" class="text-center" :class="{'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, null)">{{ formatMoney(objective.accomplish) }}</td>
+                                            <td v-else class="text-center" :class="{'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, null)">{{ formatNumber(objective.accomplish) }}</td>
                                             <td class="text-center">{{ objective.percentage }}</td>
                                             <!-- {{objective.breakdown[0].items}} -->
                                         </tr>
@@ -96,31 +96,31 @@
                                                 <td class="text-center">{{ breakdown.percentage }}</td>
                                             </tr>
                                         
-                                        <template v-if="!objective.is_consolidated"> 
+                                        <template v-if="!objective.is_consolidated">
                                             <!-- && expandedRows[typeIndex + '-' + oIndex -->
-                                            <tr style="cursor: pointer;" v-for="(breakdown, bIndex) in objective.breakdown" :key="`breakdown-${index}-${bIndex}`" @click="selectRow(`breakdown-${oIndex}-${bIndex}`)" 
+                                            <tr style="cursor: pointer;" v-for="(breakdown, bIndex) in objective.breakdown" :key="`breakdown-${index}-${bIndex}`" @click="selectRow(`breakdown-${oIndex}-${bIndex}`)"
                                             :class="{'bg-dark text-white fw-semibold': selectedRow === `breakdown-${oIndex}-${bIndex}`}">
                                                 <td class="text-center"></td>
                                                 <td class="ps-4">{{ breakdown.name || '-' }}</td>
                                                 <td v-if="objective.is_amount" class="text-center" @click="setTarget(objective.name,breakdown)">{{ formatMoney(breakdown.target) }}
                                                     <!-- {{ formatMoney(breakdown.target) }} -->
                                                 </td>
-                                                <td v-else class="text-center" @click="setTarget(objective.name,breakdown)">{{ breakdown.target }}</td> 
+                                                <td v-else class="text-center" @click="setTarget(objective.name,breakdown)">{{ breakdown.target }}</td>
                                                 <!-- {{ breakdown.target }} -->
                                                 <template v-if="type == 'Months'" v-for="(m, mIndex) in breakdown.months" :key="mIndex">
-                                                    <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex}">{{formatMoney(m.accomplish)}}</td>
-                                                <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex}">{{m.accomplish}}</td>
+                                                    <td v-if="objective.is_amount" class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex, 'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, mIndex, breakdown)">{{formatMoney(m.accomplish)}}</td>
+                                                <td v-else class="text-center" :class="{'bg-dark text-white fw-semibold': selectedColumn === mIndex, 'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, mIndex, breakdown)">{{m.accomplish}}</td>
                                                 </template>
                                                 <template v-if="type == 'Quarters'">
-                                                    <td v-for="(q, qIndex) in groupByQuarter(breakdown.months,objective.is_amount)" :key="'q' + qIndex" class="text-center" 
+                                                    <td v-for="(q, qIndex) in groupByQuarter(breakdown.months,objective.is_amount)" :key="'q' + qIndex" class="text-center"
                                                     :class="{'bg-dark text-white fw-semibold': selectedColumn === qIndex}">
                                                         <span v-if="objective.is_amount">{{ formatMoney(q.accomplish) }}</span>
                                                         <span v-else>{{ q.accomplish }}</span>
                                                     </td>
                                                 </template>
-                                                <td v-if="objective.is_amount" class="text-center">{{ formatMoney(breakdown.accomplish) }}</td>
+                                                <td v-if="objective.is_amount" class="text-center" :class="{'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, null, breakdown)">{{ formatMoney(breakdown.accomplish) }}</td>
                                                 <!-- {{ formatMoney(breakdown.accomplish) }} -->
-                                                <td v-else class="text-center">{{ formatNumber(breakdown.accomplish) }}</td>
+                                                <td v-else class="text-center" :class="{'cursor-pointer': isDrillable(objective)}" @click.stop="openDetail(objective, null, breakdown)">{{ formatNumber(breakdown.accomplish) }}</td>
                                                 <td class="text-center">{{ breakdown.percentage }}</td>
                                             </tr>
                                       </template>
@@ -135,14 +135,16 @@
     </div>
     <Target ref="target"/>
     <DiscountBreakdown ref="discountBreakdown"/>
+    <ObjectiveBreakdown ref="objectiveBreakdown"/>
 </template>
 <script>
 import Target from './Modals/Target.vue';
 import DiscountBreakdown from './Modals/DiscountBreakdown.vue';
+import ObjectiveBreakdown from './Modals/ObjectiveBreakdown.vue';
 import Multiselect from "@vueform/multiselect";
 export default {
     layout: null,
-    components: { Multiselect, Target, DiscountBreakdown },
+    components: { Multiselect, Target, DiscountBreakdown, ObjectiveBreakdown },
     props: ['years'],
 data(){
         return {
@@ -254,15 +256,42 @@ data(){
         isAssistanceRendered(objective){
             return objective.name === 'Values of Assistance Rendered';
         },
-        openDiscountBreakdown(objective, monthIndex){
+        isDrillable(objective){
+            return [
+                'Values of Assistance Rendered',
+                'Actual Fees Collected',
+                'Firms Served',
+                'Samples Received',
+                'Services Conducted',
+                'Customers Served',
+            ].includes(objective.name);
+        },
+        openDetail(objective, monthIndex, laboratory = null){
+            if (!this.isDrillable(objective)) return;
+
+            if (this.isAssistanceRendered(objective)) {
+                this.openDiscountBreakdown(objective, monthIndex, laboratory);
+                return;
+            }
+
+            const source = laboratory || objective;
+            const accomplish = (monthIndex === null) ? source.accomplish : source.months?.[monthIndex]?.accomplish ?? source.monthly?.[monthIndex]?.accomplish;
+            let periodLabel = (monthIndex === null) ? `${this.year} (Full Year)` : `${this.months[monthIndex]} ${this.year}`;
+            if (laboratory) periodLabel += ` — ${laboratory.name}`;
+            const month = (monthIndex === null) ? null : monthIndex + 1;
+
+            this.$refs.objectiveBreakdown.show(objective.name, this.year, month, periodLabel, accomplish, this.facilityType, laboratory?.laboratory_id ?? null);
+        },
+        openDiscountBreakdown(objective, monthIndex, laboratory = null){
             if (!this.isAssistanceRendered(objective)) return;
 
-            if (monthIndex === null) {
-                this.$refs.discountBreakdown.show(this.year, null, `${this.year} (Full Year)`, objective.accomplish);
-            } else {
-                const monthLabel = this.months[monthIndex];
-                this.$refs.discountBreakdown.show(this.year, monthIndex + 1, `${monthLabel} ${this.year}`, objective.monthly[monthIndex].accomplish);
-            }
+            const source = laboratory || objective;
+            const accomplish = (monthIndex === null) ? source.accomplish : source.months?.[monthIndex]?.accomplish ?? source.monthly?.[monthIndex]?.accomplish;
+            let periodLabel = (monthIndex === null) ? `${this.year} (Full Year)` : `${this.months[monthIndex]} ${this.year}`;
+            if (laboratory) periodLabel += ` — ${laboratory.name}`;
+            const month = (monthIndex === null) ? null : monthIndex + 1;
+
+            this.$refs.discountBreakdown.show(this.year, month, periodLabel, accomplish, laboratory?.laboratory_id ?? null);
         },
         setOverallTarget(objective){
             this.$refs.target.show('Overall',objective);

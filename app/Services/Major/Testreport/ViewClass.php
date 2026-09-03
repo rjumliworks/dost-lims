@@ -64,6 +64,9 @@ class ViewClass
                 $query->when($laboratory, function ($query, $labtype) {
                     $query->whereIn('laboratory_id',$labtype);
                 });
+                $query->when($request->laboratory, function ($query, $labtype) {
+                    (is_array($labtype)) ? $query->whereIn('laboratory_id',$labtype) : $query->where('laboratory_id',$labtype);
+                });
             }
         };
 
@@ -162,14 +165,34 @@ class ViewClass
     public function analysts($id){
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($id);
-        
+
         $data = UserRole::with('user.profile')
         ->whereHas('user', function ($query){
-            // $query->where('is_active',1);
+            $query->where('is_active',1);
         })
         ->whereIn('role_id',[3,5,10])
-        ->select('user_id')   
-        ->distinct()         
+        ->select('user_id')
+        ->distinct()
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->user_id,
+                'name' => $item->user->profile->firstname.' '.$item->user->profile->lastname
+            ];
+        });
+        return $data;
+    }
+
+    public function analystsByLaboratory($laboratory){
+        $data = UserRole::with('user.profile')
+        ->whereHas('user', function ($query){
+            $query->where('is_active',1);
+        })
+        ->whereIn('role_id',[3,5,10])
+        ->when($laboratory, function ($query, $laboratory) {
+            (is_array($laboratory)) ? $query->whereIn('laboratory_id',$laboratory) : $query->where('laboratory_id',$laboratory);
+        })
+        ->select('user_id')
+        ->distinct()
         ->get()->map(function ($item) {
             return [
                 'value' => $item->user_id,

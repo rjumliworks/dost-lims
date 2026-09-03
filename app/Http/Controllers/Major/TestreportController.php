@@ -40,6 +40,9 @@ class TestreportController extends Controller
             case 'qrcode':
                 return $this->view->qrcode($request);
             break;
+            case 'analysts':
+                return $this->view->analystsByLaboratory($request->laboratory);
+            break;
             default :
                 $isLaboratoryHead = \Auth::user()->roles()
                     ->where('name', 'Laboratory Head')
