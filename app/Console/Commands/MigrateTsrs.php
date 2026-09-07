@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
+use App\Models\AgencyFacility;
 use App\Models\Tsr;
 use App\Models\TsrSampleReport;
 use App\Models\User;
@@ -149,10 +150,10 @@ class MigrateTsrs extends Command
                         'laboratory_id' => $tsr->laboratory_id,
                         'purpose_id' => $tsr->purpose_id ?? 1,
                         'status_id' => $tsr->status_id,
-                        'facility_id' => 1,
-                        'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id') ?? 1,
+                        'facility_id' => AgencyFacility::where('old_id', $tsr->facility_id)->value('id'),
+                        'customer_id' => Customer::where('old_id', $tsr->customer_id)->value('id') ?? 30,
                         'conforme_id' => $newConformeId,
-                        'received_by' => User::where('old_id', $tsr->received_by)->value('id') ?? 1,
+                        'received_by' => User::where('old_id', $tsr->received_by)->value('id') ?? 30,
                         'release_id' => 16, //
                         'is_referral' => $tsr->is_referral,
                         'is_first' => $is_first,
@@ -174,7 +175,7 @@ class MigrateTsrs extends Command
                                 'amount'=> $remark->amount,
                                 'reason'=> $remark->reason,
                                 'type_id' => $remark->type_id,
-                                'user_id'=> User::where('old_id', $remark->user_id)->value('id') ?? 1,
+                                'user_id'=> User::where('old_id', $remark->user_id)->value('id') ?? 30,
                                 'remarkable_id'=> $newTsrId,
                                 'remarkable_type'=> 'App\Models\Tsr',
                                 'created_at'=> $remark->created_at,
@@ -198,9 +199,20 @@ class MigrateTsrs extends Command
                     $year = substr($numberBlock, -4); 
                     foreach ($samples as $sample) {
 
+                        // Old sample codes aren't guaranteed unique across TSRs (the old system
+                        // reused the same running number for different requests in the same year),
+                        // but the new schema enforces a unique code. Disambiguate on collision.
+                        $baseSampleCode = $sample->code.'-'.$year.'R9';
+                        $sampleCode = $baseSampleCode;
+                        $dupCount = 1;
+                        while (DB::table('tsr_samples')->where('code', $sampleCode)->exists()) {
+                            $dupCount++;
+                            $sampleCode = $baseSampleCode.'-'.$dupCount;
+                        }
+
                         $newSampleId = DB::table('tsr_samples')->insertGetId([
 
-                            'code'=>$sample->code.'-'.$year.'R9',
+                            'code'=>$sampleCode,
                             'name'=>$sample->name,
                             'customer_description'=>$sample->customer_description,
                             'description'=>$sample->description,
@@ -231,12 +243,12 @@ class MigrateTsrs extends Command
 
                         foreach ($analyses as $analysis) {
 
-                            $tsrTestservice = TestserviceList::where('old_id', $analysis->testservice_id)->first();
-                            if ($tsrTestservice) {
-                                $testserviceId = $tsrTestservice->testservice_id;
-                            } else {
-                                $testserviceId = null;
+                            $testserviceId = DB::table('testservices')->where('old_id', $analysis->testservice_id)->value('id')
+                                ?? TestserviceList::where('old_id', $analysis->testservice_id)->value('testservice_id');
+
+                            if (! $testserviceId) {
                                 $this->warn("Missing Testservice for old_id {$analysis->testservice_id} sample_id {$sample->id}");
+                                continue;
                             }
 
                             $newAnalysisId = DB::table('tsr_analyses')->insertGetId([
@@ -245,9 +257,9 @@ class MigrateTsrs extends Command
                                 'status_id'=>$analysis->status_id,
                                 'testservice_id'=> $testserviceId,
                                 'sample_id'=>$newSampleId,
-                                'started_by'=> User::where('old_id', $analysis->analyst_id)->value('id') ?? 1,
+                                'started_by'=> User::where('old_id', $analysis->analyst_id)->value('id') ?? 30,
                                 'start_at'=>$analysis->start_at,
-                                'ended_by'=> User::where('old_id', $analysis->analyst_id)->value('id') ?? 1,
+                                'ended_by'=> User::where('old_id', $analysis->analyst_id)->value('id') ?? 30,
                                 'end_at'=>$analysis->end_at,
                                 'created_at'=>$analysis->created_at,
                                 'updated_at'=>$analysis->updated_at
@@ -263,7 +275,7 @@ class MigrateTsrs extends Command
                                     'amount'=> $remark->amount,
                                     'reason'=> $remark->reason,
                                     'type_id' => $remark->type_id,
-                                    'user_id'=> User::where('old_id', $remark->user_id)->value('id') ?? 1,
+                                    'user_id'=> User::where('old_id', $remark->user_id)->value('id') ?? 30,
                                     'remarkable_id'=> $newAnalysisId,
                                     'remarkable_type'=> 'App\Models\TsrAnalysis',
                                     'created_at'=> $remark->created_at,
@@ -282,7 +294,7 @@ class MigrateTsrs extends Command
                             $disposal = $disposal->first();
 
                             DB::table('tsr_sample_disposals')->insert([
-                                'user_id'=> User::where('old_id', $disposal->user_id)->value('id') ?? 1,
+                                'user_id'=> User::where('old_id', $disposal->user_id)->value('id') ?? 30,
                                 'disposal_id'=>$disposal->disposal_id,
                                 'sample_id'=>$newSampleId,
                                 'status_id'=>$disposal->status_id,
@@ -306,7 +318,7 @@ class MigrateTsrs extends Command
                                 'passkey' => $report->passkey,
                                 'information' => $report->information,
                                 'attachment' => $report->attachment,
-                                'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 1,
+                                'user_id' => User::where('old_id', $report->user_id)->value('id') ?? 30,
                                 'tm_id' => $report->tm_id,
                                 'tsr_id' => $newTsrId,
                                 'created_at' => $report->created_at,
@@ -435,8 +447,32 @@ class MigrateTsrs extends Command
 
                     foreach ($services as $service) {
 
-                        $tsrAddon = TestserviceAddon::where('old_id', $service->service_id)->first();
-                        $serviceId = $tsrAddon?->id;
+                        $oldAddon = DB::connection('old_db')->table('testservice_addons')->where('id', $service->service_id)->first();
+                        $addonText = strtolower(($oldAddon->name ?? '').' '.($oldAddon->description ?? ''));
+
+                        // These fixed add-ons were wrongly tied to a Testservice (or lack an old_id
+                        // mapping altogether) in the old system; they actually belong to the
+                        // laboratory/agency, not a specific test. Resolve them by name instead.
+                        if ($oldAddon && (str_contains($addonText, 'onsite') || str_contains($addonText, 'on-site'))) {
+                            if (str_contains($addonText, '>') || str_contains($addonText, 'more than')) {
+                                $serviceId = 1; // more than 50km
+                            } elseif (str_contains($addonText, '<') || str_contains($addonText, 'within')) {
+                                $serviceId = 2; // within 50km
+                            } else {
+                                $serviceId = null;
+                            }
+                        } elseif ($oldAddon && str_contains($addonText, 'laboratory facilities')) {
+                            $serviceId = 3; // Use of Laboratory Facilities
+                        } elseif ($oldAddon && str_contains($addonText, 'certified true copy')) {
+                            $serviceId = 4; // Issuance of Certified True Copy
+                        } elseif ($oldAddon && str_contains($addonText, 'reissuance')) {
+                            $serviceId = 5; // Reissuance of Test Report
+                        } elseif ($oldAddon && (str_contains($addonText, 'ammendment') || str_contains($addonText, 'amendment'))) {
+                            $serviceId = 6; // Ammendment of Test Report
+                        } else {
+                            $tsrAddon = TestserviceAddon::where('old_id', $service->service_id)->first();
+                            $serviceId = $tsrAddon?->id;
+                        }
 
                         DB::table('tsr_services')->insert([
                             'fee'=> $service->fee,
@@ -496,7 +532,7 @@ class MigrateTsrs extends Command
                             'released_at'=>$release->released_at,
                             'release_id'=> 16,
                             'status_id'=>$release->status_id,
-                            'user_id'=> User::where('old_id', $release->user_id)->value('id') ?? 1,
+                            'user_id'=> User::where('old_id', $release->user_id)->value('id') ?? 30,
                             'tsr_id'=>$newTsrId,
                             'created_at'=>$release->created_at,
                             'updated_at'=>$release->updated_at

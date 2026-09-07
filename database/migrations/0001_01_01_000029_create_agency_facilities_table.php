@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('agency_facilities', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->tinyIncrements('id');
+            $table->integer('old_id')->nullable();
             $table->string('name',100);
             $table->string('short',20);
             $table->boolean('is_regional');

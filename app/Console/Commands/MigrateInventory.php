@@ -66,7 +66,7 @@ class MigrateInventory extends Command
                         'notify' => $stock->notify,
                         'unit_id' => $stock->unit_id,
                         'supplier_id' => Supplier::where('id', $stock->supplier_id)->value('id'),
-                        'user_id' => User::where('old_id', $stock->user_id)->value('id') ?? 1,
+                        'user_id' => User::where('old_id', $stock->user_id)->value('id') ?? 30,
                         'item_id' => $e,
                         'bought_at' => $stock->bought_at,
                         'expired_at' => $stock->expired_at,
@@ -84,7 +84,7 @@ class MigrateInventory extends Command
                         DB::table('inventory_withdrawals')->insert([
                             'quantity' => $withdrawal->quantity,
                             'stock_id' => $s,
-                            'user_id' => User::where('old_id', $withdrawal->user_id)->value('id') ?? 1,
+                            'user_id' => User::where('old_id', $withdrawal->user_id)->value('id') ?? 30,
                             'created_at' => $withdrawal->created_at,
                             'updated_at' => $withdrawal->updated_at
                         ]);

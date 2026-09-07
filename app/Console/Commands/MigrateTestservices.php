@@ -19,6 +19,9 @@ class MigrateTestServices extends Command
         DB::statement('SET FOREIGN_KEY_CHECKS=0');
 
         // Truncate target tables
+        DB::table('testservice_samples')->truncate();
+        DB::table('testservice_addons')->truncate();
+        DB::table('testservice_lists')->truncate();
         DB::table('testservice_methods')->truncate();
         DB::table('testservice_names')->truncate();
         DB::table('testservices')->truncate();
@@ -81,7 +84,7 @@ class MigrateTestServices extends Command
                 'type_id' => $oldName->type_id,
                 'laboratory_id' => $oldName->laboratory_id,
                 'agency_id' => 11,
-                'added_by' => 1,
+                'added_by' => 30,
                 'created_at' => $oldName->created_at,
                 'updated_at' => $oldName->updated_at,
             ]);
@@ -166,7 +169,7 @@ if (!$existing) {
         'status_id' => $oldService->status_id ?? 2,
         'laboratory_id' => $oldService->laboratory_id,
         'agency_id' => 11,
-        'added_by' => 1,
+        'added_by' => 30,
         'is_active' => $oldService->is_active ?? 1,
         'is_fixed' => 1,
         'old_id' => $oldService->id,
@@ -176,7 +179,11 @@ if (!$existing) {
 
     $serviceCount++;
 } else {
-    $this->warn("Skipping duplicate service {$oldService->id}");
+    DB::table('testservice_lists')->updateOrInsert(
+        ['old_id' => $oldService->id, 'testservice_id' => $existing->id],
+        ['created_at' => now(), 'updated_at' => now()]
+    );
+    $this->warn("Skipping duplicate service {$oldService->id}, mapped to existing testservice {$existing->id}");
 }
         }
         $this->info("Migrated {$serviceCount} testservices.");

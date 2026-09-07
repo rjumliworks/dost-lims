@@ -127,7 +127,7 @@ class MigrateCustomers extends Command
                         'is_active' => $oldCustomer->is_active,
                         'is_internal' => $oldCustomer->is_internal,
                         'is_main' => $oldCustomer->is_main,
-                        'user_id' => User::where('old_id', $oldCustomer->user_id)->value('id') ?? 1,
+                        'user_id' => User::where('old_id', $oldCustomer->user_id)->value('id') ?? 30,
                         'is_new' => $oldCustomer->is_new,
                         'agency_id' => $oldCustomer->agency_id,
                         'created_at' => $oldCustomer->created_at,

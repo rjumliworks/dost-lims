@@ -27,8 +27,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             1 => 
             array (
@@ -38,8 +38,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-dark',
                 'others' => 'text-dark',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             2 => 
             array (
@@ -49,8 +49,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-secondary',
                 'others' => 'text-secondary',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             3 => 
             array (
@@ -60,8 +60,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             4 => 
             array (
@@ -71,8 +71,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             5 => 
             array (
@@ -82,8 +82,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning-subtle',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             6 => 
             array (
@@ -93,8 +93,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success-subtle',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             7 => 
             array (
@@ -104,8 +104,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success-subtle',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             8 => 
             array (
@@ -115,8 +115,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger-subtle',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             9 => 
             array (
@@ -126,8 +126,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning-subtle',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             10 => 
             array (
@@ -137,8 +137,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-secondary-subtle',
                 'others' => 'text-secondary',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             11 => 
             array (
@@ -148,8 +148,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success-subtle',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             12 => 
             array (
@@ -159,8 +159,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger-subtle',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             13 => 
             array (
@@ -170,8 +170,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             14 => 
             array (
@@ -181,8 +181,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-info',
                 'others' => 'text-info',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             15 => 
             array (
@@ -192,8 +192,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             16 => 
             array (
@@ -203,8 +203,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             17 => 
             array (
@@ -214,8 +214,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger-subtle',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             18 => 
             array (
@@ -225,8 +225,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             19 => 
             array (
@@ -236,8 +236,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-secondary',
                 'others' => 'text-secondary',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             20 => 
             array (
@@ -247,8 +247,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             21 => 
             array (
@@ -258,8 +258,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             22 => 
             array (
@@ -269,8 +269,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning-subtle',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             23 => 
             array (
@@ -280,8 +280,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success-subtle',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             24 => 
             array (
@@ -291,8 +291,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger-subtle',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             25 => 
             array (
@@ -302,8 +302,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             26 => 
             array (
@@ -313,8 +313,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             27 => 
             array (
@@ -324,8 +324,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             28 => 
             array (
@@ -335,8 +335,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             29 => 
             array (
@@ -346,8 +346,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 0,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             30 => 
             array (
@@ -357,8 +357,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             31 => 
             array (
@@ -368,8 +368,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             32 => 
             array (
@@ -379,8 +379,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             33 => 
             array (
@@ -390,8 +390,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-dark',
                 'others' => 'text-dark',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             34 => 
             array (
@@ -401,8 +401,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             35 => 
             array (
@@ -412,8 +412,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-danger',
                 'others' => 'text-danger',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             36 => 
             array (
@@ -423,8 +423,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             37 => 
             array (
@@ -434,8 +434,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-warning',
                 'others' => 'text-warning',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             38 => 
             array (
@@ -445,8 +445,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-info',
                 'others' => 'text-info',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             39 => 
             array (
@@ -456,8 +456,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-purple',
                 'others' => 'text-purple',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             40 => 
             array (
@@ -467,8 +467,8 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-primary',
                 'others' => 'text-primary',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
             ),
             41 => 
             array (
@@ -478,8 +478,74 @@ class ListStatusesTableSeeder extends Seeder
                 'color' => 'bg-success',
                 'others' => 'text-success',
                 'is_active' => 1,
-                'created_at' => '2024-03-28 10:33:01',
-                'updated_at' => '2024-03-28 10:33:01',
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
+            ),
+            42 => 
+            array (
+                'id' => 43,
+                'name' => 'Mailed',
+                'type' => 'Releasing',
+                'color' => 'bginfo',
+                'others' => 'text-info',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
+            ),
+            43 => 
+            array (
+                'id' => 44,
+                'name' => 'Refunded',
+                'type' => 'Analysis',
+                'color' => 'bg-dark-subtle',
+                'others' => 'text-danger',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
+            ),
+            44 => 
+            array (
+                'id' => 45,
+                'name' => 'Online',
+                'type' => 'Payment',
+                'color' => 'bg-danger-subtle',
+                'others' => 'text-danger',
+                'is_active' => 1,
+                'created_at' => '2024-03-28 18:33:01',
+                'updated_at' => '2024-03-28 18:33:01',
+            ),
+            45 => 
+            array (
+                'id' => 46,
+                'name' => 'Pending',
+                'type' => 'Amendment',
+                'color' => 'bg-warning',
+                'others' => 'text-white',
+                'is_active' => 1,
+                'created_at' => '2026-08-06 22:45:27',
+                'updated_at' => '2026-08-06 22:45:27',
+            ),
+            46 => 
+            array (
+                'id' => 47,
+                'name' => 'Approved',
+                'type' => 'Amendment',
+                'color' => 'bg-success',
+                'others' => 'text-white',
+                'is_active' => 1,
+                'created_at' => '2026-08-06 22:45:27',
+                'updated_at' => '2026-08-06 22:45:27',
+            ),
+            47 => 
+            array (
+                'id' => 48,
+                'name' => 'Rejected',
+                'type' => 'Amendment',
+                'color' => 'bg-danger',
+                'others' => 'text-white',
+                'is_active' => 1,
+                'created_at' => '2026-08-06 22:45:27',
+                'updated_at' => '2026-08-06 22:45:27',
             ),
         ));
         

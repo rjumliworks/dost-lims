@@ -338,6 +338,27 @@
                     <span class="fw-semibold fs-14" data-key="t-dashboards">History</span>
                     </Link>
                 </li>
+                <li class="nav-item">
+                    <Link href="/tsrs-overview" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/Tsrs') }">
+                    <i class="ri-hand-coin-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">TSRs by Region</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/customers-overview" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/Customers') }">
+                    <i class="ri-team-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Customers by Region</span>
+                    </Link>
+                </li>
+                <li class="nav-item">
+                    <Link href="/testservices-overview" class="nav-link menu-link"
+                    :class="{'active': $page.component.startsWith('Executive/Testservices') }">
+                    <i class="ri-flask-fill"></i>
+                    <span class="fw-semibold fs-14" data-key="t-dashboards">Testservices by Region</span>
+                    </Link>
+                </li>
                 <li class="menu-title">
                     <i class="ri-more-fill" aria-expanded="false"></i>
                     <span data-key="t-menu">Configurations</span>

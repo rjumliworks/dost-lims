@@ -96,6 +96,9 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/references', App\Http\Controllers\Executive\ReferenceController::class);
     Route::resource('/discounts', App\Http\Controllers\Executive\DiscountController::class);
     Route::get('/history', [App\Http\Controllers\Executive\HistoryController::class, 'index']);
+    Route::get('/tsrs-overview', [App\Http\Controllers\Executive\TsrController::class, 'index']);
+    Route::get('/customers-overview', [App\Http\Controllers\Executive\CustomerController::class, 'index']);
+    Route::get('/testservices-overview', [App\Http\Controllers\Executive\TestserviceController::class, 'index']);
 });
 
 Route::middleware(['role:Releasing Officer'])->group(function () {
