@@ -20,7 +20,6 @@ class MigrateTestServices extends Command
 
         // Truncate target tables
         DB::table('testservice_samples')->truncate();
-        DB::table('testservice_addons')->truncate();
         DB::table('testservice_lists')->truncate();
         DB::table('testservice_methods')->truncate();
         DB::table('testservice_names')->truncate();
