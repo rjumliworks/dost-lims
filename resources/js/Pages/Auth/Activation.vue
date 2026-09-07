@@ -177,14 +177,11 @@
                                                     <div class="flex-shrink-0 me-3">
                                                         <div class="profile-user position-relative d-inline-block mx-auto mb-2">
                                                             <img :src="$page.props.user.data.avatar" class="rounded-circle avatar-lg img-thumbnail user-profile-image" alt="user-profile-image">
-                                                            <div class="avatar-xs p-0 rounded-circle profile-photo-edit position-absolute end-0 bottom-0">
-                                                                <input id="profile-img-file-input" type="file" class="profile-img-file-input d-none" accept="image/png, image/jpeg" @change="previewImage">
-                                                                <label for="profile-img-file-input" class="profile-photo-edit avatar-xs cursor-pointer">
-                                                                    <span class="avatar-title rounded-circle bg-light text-body">
-                                                                        <i class="ri-camera-fill"></i>
-                                                                    </span>
-                                                                </label>
-                                                            </div>
+                                                            <a href="javascript:void(0);" class="avatar-xs p-0 rounded-circle profile-photo-edit position-absolute end-0 bottom-0" @click="$refs.avatarCrop.show()">
+                                                                <span class="avatar-title rounded-circle bg-light text-body">
+                                                                    <i class="ri-camera-fill"></i>
+                                                                </span>
+                                                            </a>
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
@@ -280,12 +277,15 @@
             </BContainer>
         </div>
     </div>
+    <AvatarCrop ref="avatarCrop" @uploaded="hasAvatar = true"/>
 </template>
 <script>
 import { useForm } from '@inertiajs/vue3';
 import InputError from '@/Shared/Components/Forms/InputError.vue';
+import AvatarCrop from './Profile/Modals/AvatarCrop.vue';
 export default {
     layout: null,
+    components: { InputError, AvatarCrop },
     data() {
         return {
             currentUrl: window.location.origin,
@@ -295,9 +295,6 @@ export default {
                 password_confirmation: '',
                 is_active: 1,
                 option: 'activation'
-            }),
-            form2: useForm({
-                image: null,
             }),
             hasAvatar: (this.$page.props.user.data.avatar_name == window.location.origin+'/images/avatars/noavatar.jpg') ? false : true,
             uploaded: false,
@@ -381,48 +378,6 @@ export default {
                     }
                 },
             });
-        },
-        previewImage(e) {
-            var fileInput = document.querySelector(".profile-img-file-input");
-            var preview = document.querySelector(".user-profile-image");
-            var file = fileInput.files[0];
-
-            if (!file) return;
-
-             // Validate file type
-            const allowedTypes = ['image/jpeg', 'image/png'];
-            if (!allowedTypes.includes(file.type)) {
-                alert("Only JPEG or PNG images are allowed.");
-                fileInput.value = '';
-                return;
-            }
-
-            // Validate file size (2MB max)
-            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-            if (file.size > maxSize) {
-                alert("The image must be less than 2MB.");
-                fileInput.value = '';
-                return;
-            }
-
-
-            this.form2.image = file;
-            var reader = new FileReader();
-
-            reader.addEventListener("load", () => { 
-                preview.src = reader.result;
-                this.form2.post('/photo', {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        this.uploaded = true;
-                        this.hasAvatar = true;
-                    },
-                });
-            }, false);
-
-            if (file) { 
-                reader.readAsDataURL(file); 
-            }
         },
         toggleTab(tab, value) {
             this.activeTab = tab;

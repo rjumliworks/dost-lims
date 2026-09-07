@@ -9,14 +9,11 @@
                    <div class="text-center">
                         <div class="profile-user position-relative d-inline-block mx-auto mb-3">
                             <img :src="$page.props.user.data.avatar" class="rounded-circle avatar-xl img-thumbnail user-profile-image material-shadow">
-                            <div class="avatar-xs p-0 rounded-circle profile-photo-edit">
-                                <input id="profile-img-file-input" type="file" class="profile-img-file-input" @change="previewImage"/>
-                                <label for="profile-img-file-input" class="profile-photo-edit avatar-xs">
-                                    <span class="avatar-title rounded-circle bg-light text-body">
-                                    <i class="ri-camera-fill"></i>
-                                    </span>
-                                </label>
-                            </div>
+                            <a href="javascript:void(0);" class="profile-photo-edit avatar-xs" @click="$refs.avatarCrop.show()">
+                                <span class="avatar-title rounded-circle bg-light text-body">
+                                <i class="ri-camera-fill"></i>
+                                </span>
+                            </a>
                         </div>
                         <h5 class="fs-16 mb-0">{{ $page.props.user.data.name }}</h5>
                         <p class="text-muted mb-0">{{ $page.props.roles[0] }}</p>
@@ -54,73 +51,29 @@
             <ActivityLog v-if="activeTab === 5"/>
         </div>
     </div>
+    <AvatarCrop ref="avatarCrop"/>
 </template>
 <script>
-import { useForm } from "@inertiajs/vue3"
 import Overview from "./Pages/Overview.vue";
 import Edit from "./Pages/Edit.vue";
 import Security from './Pages/Security.vue';
 import Certificate from './Pages/Certificate.vue';
 import ActivityLog from './Pages/ActivityLog.vue';
 import AuthenticationLog from "./Pages/AuthenticationLog.vue";
+import AvatarCrop from './Modals/AvatarCrop.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
-    components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security, Certificate },
+    components: { PageHeader, Overview, Edit, AuthenticationLog, ActivityLog, Security, Certificate, AvatarCrop },
     props: ['laboratories'],
     data() {
         return {
             currentUrl: window.location.origin,
-            activeTab: 1, 
-            form: useForm({
-                image: null,
-            }),
+            activeTab: 1,
         };
     },
     methods: {
         show(tab){
             this.activeTab = tab;
-        },
-        previewImage(e) {
-            var fileInput = document.querySelector(".profile-img-file-input");
-            var preview = document.querySelector(".user-profile-image");
-            var file = fileInput.files[0];
-
-            if (!file) return;
-
-             // Validate file type
-            const allowedTypes = ['image/jpeg', 'image/png'];
-            if (!allowedTypes.includes(file.type)) {
-                alert("Only JPEG or PNG images are allowed.");
-                fileInput.value = '';
-                return;
-            }
-
-            // Validate file size (2MB max)
-            const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-            if (file.size > maxSize) {
-                alert("The image must be less than 2MB.");
-                fileInput.value = '';
-                return;
-            }
-
-
-            this.form.image = file;
-            var reader = new FileReader();
-
-            reader.addEventListener("load", () => { 
-                preview.src = reader.result;
-                this.form.post('/photo', {
-                    preserveScroll: true,
-                    onSuccess: () => {
-                        this.uploaded = true;
-                        this.hasAvatar = true;
-                    },
-                });
-            }, false);
-
-            if (file) { 
-                reader.readAsDataURL(file); 
-            }
         },
     }
 }
