@@ -66,6 +66,7 @@ return [
         'old_db' => [
             'driver' => 'mysql',
             'host' => env('OLD_DB_HOST'),
+            'port' => env('OLD_DB_PORT', 3306),
             'database' => env('OLD_DB_DATABASE'),
             'username' => env('OLD_DB_USERNAME'),
             'password' => env('OLD_DB_PASSWORD'),

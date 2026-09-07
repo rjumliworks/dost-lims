@@ -9,6 +9,8 @@
                         <th style="width: 10%;" class="text-center">Short</th>
                         <th style="width: 10%;" class="text-center">Type</th>
                         <th style="width: 10%;" class="text-center">Status</th>
+                        <th style="width: 12%;" class="text-center">Cashier</th>
+                        <th style="width: 12%;" class="text-center">Accountant</th>
                         <th style="width: 5%;" class="text-center"></th>
                     </tr>
                 </thead>
@@ -28,6 +30,8 @@
                             <span v-if="list.is_active" class="badge bg-success">Active</span>
                             <span v-else class="badge bg-danger">Inactive</span>
                         </td>
+                        <td class="text-center">{{ list.signatories?.cashier ? list.signatories.cashier.profile.fullname : '-' }}</td>
+                        <td class="text-center">{{ list.signatories?.accountant ? list.signatories.accountant.profile.fullname : '-' }}</td>
                         <td class="text-end">
                             <div class="d-flex gap-3 justify-content-center"> 
                                 <div class="dropdown">
@@ -66,7 +70,7 @@
                 </tbody>
                 <tbody v-else>
                     <tr>
-                        <td colspan="6" class="text-center text-muted">No records found.</td>
+                        <td colspan="8" class="text-center text-muted">No records found.</td>
                     </tr>
                </tbody>
            </table>
