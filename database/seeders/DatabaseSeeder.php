@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,6 +17,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Ensure pending migrations (e.g. list_statuses) have run before seeding.
+        Artisan::call('migrate', ['--force' => true]);
+
         // $this->call(ListDataTableSeeder::class);
         // $this->call(ListRolesTableSeeder::class);
         
