@@ -44,8 +44,10 @@ class MigrateFinance extends Command
             ->where('agency_id', 11)
             ->orderBy('id')->get();
 
+        $orseriesMap = []; // old_id => new_id
+
         foreach ($series as $ser) {
-            DB::table('finance_orseries')->insert([
+            $newSerId = DB::table('finance_orseries')->insertGetId([
                 'name' => $ser->name,
                 'start' => $ser->start,
                 'end' => $ser->end,
@@ -57,6 +59,8 @@ class MigrateFinance extends Command
                 'created_at' => $ser->created_at,
                 'updated_at' => $ser->updated_at
             ]);
+
+            $orseriesMap[$ser->id] = $newSerId;
 
             $this->info("Migrated series ID {$ser->id}");
         }
@@ -100,19 +104,29 @@ class MigrateFinance extends Command
         $finances = DB::connection('old_db')
             ->table('finance_ops')
             ->where('agency_id', 11)
+            ->whereNotIn('status_id', [5, 9]) // exclude Cancelled ops
             ->orderBy('id')->get();
 
         foreach ($finances as $finance) {
+            $payorableId = ($finance->payorable_type == 'App\Models\Customer')
+                ? Customer::where('old_id', $finance->payorable_id)->value('id')
+                : FinanceName::where('old_id', $finance->payorable_id)->value('id');
+
+            if (! $payorableId) {
+                $this->warn("Missing {$finance->payorable_type} for old_id {$finance->payorable_id} finance_id {$finance->id}");
+                continue;
+            }
+
             $newOpId = DB::table('finance_ops')->insertGetId([
                 'code' => $finance->code,
                 'total' => $finance->total,
                 'status_id' => $finance->status_id,
                 'collection_id' => $finance->collection_id,
                 'payment_id' => $finance->payment_id,
-                'payorable_id' => ($finance->payorable_type == 'App\Models\Customer') ? Customer::where('old_id', $finance->payorable_id)->value('id') : FinanceName::where('old_id', $finance->payorable_id)->value('id'),
+                'payorable_id' => $payorableId,
                 'payorable_type' => $finance->payorable_type,
                 'created_by' => User::where('old_id', $finance->created_by)->value('id') ?? 30,
-                'agency_id' => 11, 
+                'agency_id' => 11,
                 'created_at' => $finance->created_at,
                 'updated_at' => $finance->updated_at
             ]);
@@ -123,10 +137,19 @@ class MigrateFinance extends Command
                 ->get();
 
             foreach ($items as $item) {
+                $itemableId = ($item->itemable_type == 'App\Models\Tsr')
+                    ? Tsr::where('old_id', $item->itemable_id)->value('id')
+                    : FinanceItem::where('old_id', $item->itemable_id)->value('id');
+
+                if (! $itemableId) {
+                    $this->warn("Missing {$item->itemable_type} for old_id {$item->itemable_id} finance_op_item_id {$item->id}");
+                    continue;
+                }
+
                 DB::table('finance_op_items')->insert([
                     'op_id' => $newOpId,
                     'itemable_type' => $item->itemable_type,
-                    'itemable_id' => ($item->itemable_type == 'App\Models\Tsr') ? Tsr::where('old_id', $item->itemable_id)->value('id') : FinanceItem::where('old_id', $item->itemable_id)->value('id'),
+                    'itemable_id' => $itemableId,
                     'amount' => $item->amount,
                     'created_at' => $item->created_at,
                     'updated_at' => $item->updated_at
@@ -139,11 +162,16 @@ class MigrateFinance extends Command
                 ->get();
 
             foreach ($receipts as $receipt) {
+                if (! isset($orseriesMap[$receipt->orseries_id])) {
+                    $this->warn("Missing OR series for old_id {$receipt->orseries_id} receipt_id {$receipt->id}");
+                    continue;
+                }
+
                 $newReceiptId = DB::table('finance_receipts')->insertGetId([
                     'op_id' => $newOpId,
                     'number' => $receipt->number,
                     'is_deposit' => $receipt->is_deposit,
-                    'orseries_id' => $receipt->orseries_id,
+                    'orseries_id' => $orseriesMap[$receipt->orseries_id],
                     'deposit_id' => $receipt->deposit_id,
                     'created_by' => User::where('old_id', $receipt->created_by)->value('id') ?? 30,
                     'agency_id' => 11,
