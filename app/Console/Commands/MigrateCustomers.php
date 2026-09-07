@@ -38,12 +38,25 @@ class MigrateCustomers extends Command
         }
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
-        // 3️⃣ Migrate customer_names (only those with customers with TSRS)
+        // 3️⃣ Migrate customer_names (customers with TSRs, or acting as a finance payor)
        $oldNames = DB::connection('old_db')
             ->table('customer_names as cn')
             ->join('customers as c', 'c.name_id', '=', 'cn.id')
-            ->join('tsrs as t', 't.customer_id', '=', 'c.id')
-            ->where('t.agency_id', 11)
+            ->where(function ($q) {
+                $q->whereExists(function ($sub) {
+                    $sub->select(DB::raw(1))
+                        ->from('tsrs')
+                        ->whereColumn('tsrs.customer_id', 'c.id')
+                        ->where('tsrs.agency_id', 11);
+                })->orWhereExists(function ($sub) {
+                    $sub->select(DB::raw(1))
+                        ->from('finance_ops')
+                        ->whereColumn('finance_ops.payorable_id', 'c.id')
+                        ->where('finance_ops.payorable_type', 'App\Models\Customer')
+                        ->where('finance_ops.agency_id', 11)
+                        ->whereNotIn('finance_ops.status_id', [5, 9]);
+                });
+            })
             ->select(
                 'cn.id',
                 'cn.name',
@@ -98,14 +111,23 @@ class MigrateCustomers extends Command
             $nameMapping[$oldName->id] = $newNameId;
         }
 
-        // 4️⃣ Migrate customers with TSRS
+        // 4️⃣ Migrate customers with TSRs, or acting as a finance payor
         $query = DB::connection('old_db')
             ->table('customers')
-            ->whereExists(function ($q) {
-                $q->select(DB::raw(1))
-                    ->from('tsrs')
-                    ->whereColumn('tsrs.customer_id', 'customers.id')
-                    ->where('tsrs.agency_id', 11)->whereIn('tsrs.status_id', [2,3,4]);
+            ->where(function ($q) {
+                $q->whereExists(function ($sub) {
+                    $sub->select(DB::raw(1))
+                        ->from('tsrs')
+                        ->whereColumn('tsrs.customer_id', 'customers.id')
+                        ->where('tsrs.agency_id', 11)->whereIn('tsrs.status_id', [2,3,4]);
+                })->orWhereExists(function ($sub) {
+                    $sub->select(DB::raw(1))
+                        ->from('finance_ops')
+                        ->whereColumn('finance_ops.payorable_id', 'customers.id')
+                        ->where('finance_ops.payorable_type', 'App\Models\Customer')
+                        ->where('finance_ops.agency_id', 11)
+                        ->whereNotIn('finance_ops.status_id', [5, 9]);
+                });
             })
             ->orderBy('id');
 

@@ -577,6 +577,12 @@ class MigrateTsrs extends Command
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
 
+        $this->info('TSR migration completed.');
+
+        // Run finance (OP and OR) migration immediately so every migrated TSR
+        // is guaranteed to have its finance data attached in the same pass.
+        $this->call('migrate:finance');
+
         $this->info('Migration completed.');
 
     }
