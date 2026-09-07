@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             foreach ([
                 'migrate:fresh',
                 'db:wipe',
-                'db:seed',
+                // 'db:seed',
                 'migrate:refresh',
                 'migrate:reset',
                 'migrate:rollback',
