@@ -101,30 +101,47 @@
                                     </template>
                                 </template>
                                 <template v-else-if="customerType === 'individual'">
-                                    <BCol lg="12">
-                                        <BRow class="g-2">
-                                            <BCol lg="4" class="mt-1">
-                                                <InputLabel for="firstname" value="First name" :message="form.errors.firstname"/>
-                                                <TextInput id="firstname" v-model="form.firstname" type="text" class="form-control" placeholder="Please enter first name" @input="form.firstname = capitalizeWords(form.firstname); handleInput('firstname'); syncIndividualName()" :light="false"/>
-                                            </BCol>
-                                            <BCol lg="4" class="mt-1">
-                                                <InputLabel for="middlename" value="Middle name" :message="form.errors.middlename"/>
-                                                <TextInput id="middlename" v-model="form.middlename" type="text" class="form-control" placeholder="Please enter middle name" @input="form.middlename = capitalizeWords(form.middlename); handleInput('middlename'); syncIndividualName()" :light="false"/>
-                                            </BCol>
-                                            <BCol lg="4" class="mt-1">
-                                                <InputLabel for="lastname" value="Last name" :message="form.errors.lastname"/>
-                                                <TextInput id="lastname" v-model="form.lastname" type="text" class="form-control" placeholder="Please enter last name" @input="form.lastname = capitalizeWords(form.lastname); handleInput('lastname'); syncIndividualName()" :light="false"/>
-                                            </BCol>
-                                            <BCol lg="12" class="mt-2 mb-n2" v-if="form.firstname && form.lastname">
-                                                <div v-if="individualDuplicate === true" class="alert alert-danger mt-2 p-2 fs-12" role="alert">
+                                    <template v-if="!showIndividualForm">
+                                        <BCol lg="12" class="mt-1">
+                                            <Search @set="chooseIndividual" @new="triggerNewIndividual" :names="names" :classification-id="9" @search="checkSearchStr" ref="search" :class="(!form.customer) ? 'mb-n3' : ''"/>
+                                            <div v-if="form.customer && typeof form.customer === 'object'" class="mb-n2 mt-n3">
+                                                <div class="alert alert-danger mt-2 p-2 fs-12" role="alert">
                                                     This customer already exists as an individual customer. Duplicate entries are not allowed.
                                                 </div>
-                                                <div v-else-if="individualDuplicate === false" class="alert alert-success mt-2 p-2 fs-12" role="alert">
-                                                    No duplicate found. This appears to be a new customer.
-                                                </div>
-                                            </BCol>
-                                        </BRow>
-                                    </BCol>
+                                            </div>
+                                        </BCol>
+                                    </template>
+                                    <template v-else>
+                                        <BCol lg="12" class="d-flex justify-content-end mb-1">
+                                            <b-link @click="backToIndividualSearch" class="fs-11 text-muted">
+                                                <i class="ri-arrow-go-back-line align-bottom me-1"></i>Back to search
+                                            </b-link>
+                                        </BCol>
+                                        <BCol lg="12">
+                                            <BRow class="g-2">
+                                                <BCol lg="4" class="mt-1">
+                                                    <InputLabel for="firstname" value="First name" :message="form.errors.firstname"/>
+                                                    <TextInput id="firstname" v-model="form.firstname" type="text" class="form-control" placeholder="Please enter first name" @input="form.firstname = capitalizeWords(form.firstname); handleInput('firstname'); syncIndividualName()" :light="false"/>
+                                                </BCol>
+                                                <BCol lg="4" class="mt-1">
+                                                    <InputLabel for="middlename" value="Middle name" :message="form.errors.middlename"/>
+                                                    <TextInput id="middlename" v-model="form.middlename" type="text" class="form-control" placeholder="Please enter middle name" @input="form.middlename = capitalizeWords(form.middlename); handleInput('middlename'); syncIndividualName()" :light="false"/>
+                                                </BCol>
+                                                <BCol lg="4" class="mt-1">
+                                                    <InputLabel for="lastname" value="Last name" :message="form.errors.lastname"/>
+                                                    <TextInput id="lastname" v-model="form.lastname" type="text" class="form-control" placeholder="Please enter last name" @input="form.lastname = capitalizeWords(form.lastname); handleInput('lastname'); syncIndividualName()" :light="false"/>
+                                                </BCol>
+                                                <BCol lg="12" class="mt-2 mb-n2" v-if="form.firstname && form.lastname">
+                                                    <div v-if="individualDuplicate === true" class="alert alert-danger mt-2 p-2 fs-12" role="alert">
+                                                        This customer already exists as an individual customer. Duplicate entries are not allowed.
+                                                    </div>
+                                                    <div v-else-if="individualDuplicate === false" class="alert alert-success mt-2 p-2 fs-12" role="alert">
+                                                        No duplicate found. This appears to be a new customer.
+                                                    </div>
+                                                </BCol>
+                                            </BRow>
+                                        </BCol>
+                                    </template>
                                 </template>
                             </BRow>
                         </form>
@@ -260,7 +277,8 @@ export default {
             editable: false,
             subs: [],
             customerType: null,
-            individualDuplicate: null
+            individualDuplicate: null,
+            showIndividualForm: false
         }
     },
     watch: {
@@ -348,6 +366,7 @@ export default {
             this.names = [];
             this.customerType = null;
             this.individualDuplicate = null;
+            this.showIndividualForm = false;
             this.showModal = true;
         },
         selectType(type){
@@ -355,6 +374,7 @@ export default {
             if(type === 'individual'){
                 this.form.classification_id = 9;
                 this.form.has_branches = false;
+                this.showIndividualForm = false;
             }else{
                 this.form.classification_id = 8;
             }
@@ -373,8 +393,35 @@ export default {
             this.form.led_id = null;
             this.form.type_id = null;
             this.individualDuplicate = null;
+            this.showIndividualForm = false;
             this.names = [];
             if (this.$refs.search) this.$refs.search.clear();
+        },
+        chooseIndividual(data){
+            this.form.customer = data;
+            this.individualDuplicate = true;
+        },
+        triggerNewIndividual(keyword){
+            this.showIndividualForm = true;
+            this.individualDuplicate = null;
+            this.form.customer = null;
+
+            const parts = (keyword || '').trim().split(/\s+/).filter(Boolean);
+            if(parts.length){
+                this.form.firstname = this.capitalizeWords(parts[0]);
+                if(parts.length > 1) this.form.lastname = this.capitalizeWords(parts[parts.length - 1]);
+                if(parts.length > 2) this.form.middlename = this.capitalizeWords(parts.slice(1, -1).join(' '));
+                this.syncIndividualName();
+            }
+        },
+        backToIndividualSearch(){
+            this.showIndividualForm = false;
+            this.form.customer = null;
+            this.form.firstname = null;
+            this.form.middlename = null;
+            this.form.lastname = null;
+            this.individualDuplicate = null;
+            this.names = [];
         },
         capitalizeWords(str) {
             return str ? str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) : '';
@@ -516,6 +563,7 @@ export default {
             this.names = []; // clear search results
             this.customerType = null;
             this.individualDuplicate = null;
+            this.showIndividualForm = false;
 
             // ✅ clear Search input safely
             if (this.$refs.search) {
