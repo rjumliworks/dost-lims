@@ -164,7 +164,7 @@ export default {
                             <b-col lg>
                                 <div class="input-group mb-1">
                                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
-                                    <input type="text" v-model="filter.keyword" placeholder="Search Request" class="form-control" style="width: 40%;">
+                                    <input type="text" v-model="filter.keyword" placeholder="Search Customer or OP Number" class="form-control" style="width: 40%;">
                                     <input v-if="filter.datetype" type="date" v-model="filter.date" placeholder="Search Request" class="form-control" style="width: 100px;">
                                     <Multiselect class="white" style="width: 15%;" :options="dropdowns.payments" v-model="filter.mode" label="name" :searchable="true" placeholder="Select Payment mode" />
                                     <Multiselect class="white" style="width: 15%;" :options="dropdowns.statuses" v-model="filter.status" label="name" :searchable="true" placeholder="Select Status" />

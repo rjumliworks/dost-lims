@@ -23,6 +23,17 @@ class ViewClass
             ->when($request->mode, function ($query, $mode) {
                 $query->where('payment_id',$mode);
             })
+            ->when($request->keyword, function ($query, $keyword) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('code', 'LIKE', "%{$keyword}%")
+                        ->orWhereHasMorph('payorable', [Customer::class], function ($query) use ($keyword) {
+                            $query->where('name', 'LIKE', "%{$keyword}%")
+                                ->orWhereHas('customer_name', function ($query) use ($keyword) {
+                                    $query->where('name', 'LIKE', "%{$keyword}%");
+                                });
+                        });
+                });
+            })
             ->where('payorable_type','!=','App\Models\FinanceName')
             ->orderBy('updated_at','DESC')
             ->orderBy('id','DESC')

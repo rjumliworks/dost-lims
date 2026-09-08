@@ -28,9 +28,20 @@ class ViewClass
         $type = $request->type;
         
         if($type == 'Packages'){
+            $sampletypes = $request->sampletypes ?? [];
+
             $data = Package::with('testservices.testservice.method.method','testservices.testservice.method.reference','testservices.testservice.testname')
             ->where('laboratory_id', $request->laboratory_id)
             ->where('is_active', 1)
+            ->when(count($sampletypes) > 0, function ($query) use ($sampletypes) {
+                $query->where(function ($query) use ($sampletypes) {
+                    $query->whereNotIn('sampletype_id', $sampletypes)
+                        ->orWhereNull('sampletype_id');
+                });
+            })
+            ->when($keyword, function ($query, $keyword) {
+                $query->where('name', 'LIKE', "%{$keyword}%");
+            })
             ->get();
 
             return IndexResource::collection($data);
@@ -40,7 +51,7 @@ class ViewClass
             if(count($sampletypes) > 0){
                 $samplenames = $request->samplenames ?? [];
 
-                $data = TestserviceResource::collection(
+                $testservices = TestserviceResource::collection(
                     Testservice::query()
                         ->with('method.method','method.reference','laboratory')
                         ->whereHas('samples', function ($q) use ($sampletypes, $samplenames) {
@@ -71,6 +82,21 @@ class ViewClass
                         ->where('is_active', 1)
                         ->get()
                 );
+
+                if($request->with_packages){
+                    $packages = Package::with('testservices.testservice.method.method','testservices.testservice.method.reference','testservices.testservice.testname')
+                        ->whereIn('sampletype_id', $sampletypes)
+                        ->where('laboratory_id', $request->laboratory_id)
+                        ->where('is_active', 1)
+                        ->get();
+
+                    return [
+                        'testservices' => $testservices,
+                        'packages' => IndexResource::collection($packages),
+                    ];
+                }
+
+                $data = $testservices;
             }else{
                 $data = [];
             }

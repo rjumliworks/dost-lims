@@ -65,7 +65,7 @@
                         <div class="input-group mb-1">
                             <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                             <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 40%;">
-                            <Multiselect class="white" @search-change="checkSearchSample" :can-clear="false" :can-deselect="false" style="width: 45%;" :options="['Tagged to Sample','Not Tagged to Sample']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
+                            <Multiselect class="white" @search-change="checkSearchSample" :can-clear="false" :can-deselect="false" style="width: 45%;" :options="['Tagged to Sample','Not Tagged to Sample','Packages']" v-model="filter.type" label="name" :allow-empty="false" :searchable="true" placeholder="Search sampletype" ref="multiselectS"/>
                             <b-button type="button" variant="primary">
                                 <i class="ri-search-eye-line align-bottom me-1"></i> 
                             </b-button>
@@ -77,14 +77,26 @@
                 <simplebar data-simplebar style="max-height: 200px">
                     <div>
                         <table class="table table-centered table-bordered table-nowrap mb-0">
-                            <tbody>
-                                <tr class="align-middle" v-for="(list,index) in sortedTestservices" v-bind:key="list.id" :class="(isItemChecked(list.id)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
-                                    <td style="width: 7%;" class="text-center"> 
-                                        <input class="form-check-input me-1" type="checkbox" :checked="isItemChecked(list.id)" @change="toggleChecked(list,$event)">
+                            <tbody v-if="displayList.length > 0">
+                                <tr class="align-middle" v-for="(list,index) in displayList" v-bind:key="(isPackage(list) ? 'pkg-' : 'ts-') + list.id" :class="(isItemChecked(list)) ? 'table-success' : (index == matchedRowIndex) ? 'table-warning' : ''" :id="'row-' + index">
+                                    <td style="width: 7%;" class="text-center">
+                                        <input class="form-check-input me-1" type="checkbox" :checked="isItemChecked(list)" @change="toggleChecked(list,$event)">
                                     </td>
-                                    <td style="width: 25%;" class="text-center fs-11">{{list.testname}}</td>
-                                    <td style="width: 53%;" class="text-center fs-11">{{list.method}}<br /> <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span></td>
-                                    <td style="width: 15%;" class="text-center fs-11">{{list.fee}}</td>
+                                    <template v-if="isPackage(list)">
+                                        <td style="width: 25%;" class="text-center fs-11"><span class="badge bg-info-subtle text-info me-1">Package</span>{{list.name}}</td>
+                                        <td style="width: 53%;" class="text-center fs-11">{{list.testservices.length}} test services</td>
+                                        <td style="width: 15%;" class="text-center fs-11">{{ formatMoney(totalFees(list.testservices)) }}</td>
+                                    </template>
+                                    <template v-else>
+                                        <td style="width: 25%;" class="text-center fs-11">{{list.testname}}</td>
+                                        <td style="width: 53%;" class="text-center fs-11">{{list.method}}<br /> <span v-if="list.method_short" class="text-muted">({{list.method_short}})</span></td>
+                                        <td style="width: 15%;" class="text-center fs-11">{{list.fee}}</td>
+                                    </template>
+                                </tr>
+                            </tbody>
+                            <tbody v-else>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted fs-12">No records found.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -122,6 +134,8 @@ export default {
                 type: 'Tagged to Sample'
             },
             testservices: [],
+            taggedPackages: [],
+            packages: [],
             selected: {},
             checkedItems: [],
             sampletypes: [],
@@ -139,6 +153,8 @@ export default {
         'filter.type'(val){
             this.filter.keyword = null;
             this.testservices = [];
+            this.taggedPackages = [];
+            this.packages = [];
             this.fetchTest();
         }
     },
@@ -156,10 +172,62 @@ export default {
             return 0;
             });
         },
+        displayList() {
+            if (this.filter.type === 'Packages') {
+                return this.packages;
+            }
+            if (this.filter.type === 'Tagged to Sample') {
+                return this.taggedPackages.concat(this.sortedTestservices);
+            }
+            return this.sortedTestservices;
+        },
     },
-    methods: { 
+    methods: {
+        isPackage(item) {
+            return Array.isArray(item.testservices);
+        },
+        totalFees(testservices) {
+            return testservices.reduce((total, item) => {
+                return total + Number(String(item.fee).replace(/,/g, '').replace('₱', ''));
+            }, 0);
+        },
+        formatMoney(value) {
+            let val = (value/1).toFixed(2).replace(',', '.')
+            return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+        },
         toggleChecked(item, event) {
             const isChecked = event.target.checked;
+
+            if (this.isPackage(item)) {
+                if (isChecked) {
+                    item.testservices.forEach(service => {
+                        if (!this.checkedItems.some(i => i.id === service.id)) {
+                            this.checkedItems.push(service);
+
+                            const index = this.testservices.findIndex(t => t.id === service.id);
+                            if (index !== -1) {
+                                this.testservices.splice(index, 1);
+                            }
+                        }
+                    });
+                } else {
+                    item.testservices.forEach(service => {
+                        const index = this.checkedItems.findIndex(i => i.id === service.id);
+
+                        if (index !== -1) {
+                            const removed = this.checkedItems[index];
+                            this.checkedItems.splice(index, 1);
+
+                            if (!this.testservices.some(t => t.id === removed.id)) {
+                                this.testservices.push(removed);
+                            }
+                        }
+                    });
+                }
+
+                return;
+            }
+
             const itemId = item.id;
 
             if (isChecked) {
@@ -184,7 +252,12 @@ export default {
             }
         },
         isItemChecked(item) {
-            return this.checkedItems.some(checkedItem => checkedItem.id === item);
+            if (this.isPackage(item)) {
+                return item.testservices.every(service =>
+                    this.checkedItems.some(i => i.id === service.id)
+                );
+            }
+            return this.checkedItems.some(checkedItem => checkedItem.id === item.id);
         },
         openDeleteTest(data) {
             const index = this.checkedItems.findIndex(item => item.id === data.id);
@@ -198,6 +271,9 @@ export default {
         },
         show(data,laboratory){
             this.testservices = [];
+            this.taggedPackages = [];
+            this.packages = [];
+            this.filter.type = 'Tagged to Sample';
             this.form.samples = data.map(item => item.id);
             this.selected = data.map(item => item.sampletype.id);
             this.sampletypes = data.map(item => item.sampletype.id);
@@ -222,10 +298,19 @@ export default {
                     ids: this.checkedItems.map(item => item.id),
                     type: this.filter.type,
                     keyword: this.filter.keyword,
+                    with_packages: this.filter.type === 'Tagged to Sample',
                 }
             })
             .then(response => {
-                this.testservices = response.data.data;
+                if(this.filter.type === 'Packages'){
+                    this.packages = response.data.data;
+                }else if(this.filter.type === 'Tagged to Sample'){
+                    this.testservices = response.data.testservices || [];
+                    this.taggedPackages = response.data.packages || [];
+                }else{
+                    this.testservices = response.data.data;
+                    this.taggedPackages = [];
+                }
             })
             .catch(err => console.log(err));
         },
@@ -242,6 +327,8 @@ export default {
         hide(){
             this.checkedItems = [];
             this.testservices = [];
+            this.taggedPackages = [];
+            this.packages = [];
             this.form.fee = null;
             this.$refs.multiselectS.clear();
             this.form.reset();
