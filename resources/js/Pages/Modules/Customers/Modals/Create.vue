@@ -3,16 +3,35 @@
         <BRow>
             <BCol lg="12" class="mt-1 mb-n3">
                 <template v-if="!customerType">
+                    
                     <div class="card bg-light-subtle border-1 rounded shadow-none p-4 text-center mb-0">
                         <p class="fs-13 text-muted mb-3">Is this customer an individual or a firm/company?</p>
-                        <div class="d-flex justify-content-center gap-2">
-                            <b-button @click="selectType('individual')" variant="outline-primary" class="px-4 py-3">
-                                <i class="ri-user-fill fs-20 d-block mb-1"></i> Individual
-                            </b-button>
-                            <b-button @click="selectType('firm')" variant="outline-primary" class="px-4 py-3">
-                                <i class="ri-building-fill fs-20 d-block mb-1"></i> Firm / Company
-                            </b-button>
-                        </div>
+                        <BRow class="g-3">
+                            <div class="col-sm-6"  @click="selectType('individual')">
+                                <div data-bs-toggle="collapse" data-bs-target="#paymentmethodCollapse.show" aria-expanded="false"
+                                    aria-controls="paymentmethodCollapse">
+                                    <div class="form-check card-radio">
+                                        <input id="paymentMethod01" name="paymentMethod" v-model="selectedType" value="travel" type="radio" class="form-check-input">
+                                        <label class="form-check-label" for="paymentMethod01">
+                                            <span class="fs-16 text-muted me-2"><i class="ri-user-fill align-bottom"></i></span>
+                                            <span class="fs-14 text-wrap">Individual</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6" @click="selectType('firm')">
+                                <div data-bs-toggle="collapse" data-bs-target="#paymentmethodCollapse" aria-expanded="true"
+                                    aria-controls="paymentmethodCollapse">
+                                    <div class="form-check card-radio">
+                                        <input id="paymentMethod02" name="paymentMethod" v-model="selectedType" value="vehicle" type="radio" class="form-check-input">
+                                        <label class="form-check-label" for="paymentMethod02">
+                                            <span class="fs-16 text-muted me-2"><i class="ri-building-fill align-bottom"></i></span>
+                                            <span class="fs-14 text-wrap">Firm / Company</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </BRow>
                     </div>
                 </template>
                 <template v-else>
@@ -82,25 +101,29 @@
                                     </template>
                                 </template>
                                 <template v-else-if="customerType === 'individual'">
-                                    <BCol lg="4" class="mt-1">
-                                        <InputLabel for="firstname" value="First name" :message="form.errors.firstname"/>
-                                        <TextInput id="firstname" v-model="form.firstname" type="text" class="form-control" placeholder="Please enter first name" @input="form.firstname = capitalizeWords(form.firstname); handleInput('firstname'); syncIndividualName()" :light="false"/>
-                                    </BCol>
-                                    <BCol lg="4" class="mt-1">
-                                        <InputLabel for="middlename" value="Middle name" :message="form.errors.middlename"/>
-                                        <TextInput id="middlename" v-model="form.middlename" type="text" class="form-control" placeholder="Please enter middle name" @input="form.middlename = capitalizeWords(form.middlename); handleInput('middlename'); syncIndividualName()" :light="false"/>
-                                    </BCol>
-                                    <BCol lg="4" class="mt-1">
-                                        <InputLabel for="lastname" value="Last name" :message="form.errors.lastname"/>
-                                        <TextInput id="lastname" v-model="form.lastname" type="text" class="form-control" placeholder="Please enter last name" @input="form.lastname = capitalizeWords(form.lastname); handleInput('lastname'); syncIndividualName()" :light="false"/>
-                                    </BCol>
-                                    <BCol lg="12" class="mt-2 mb-n2" v-if="form.firstname && form.lastname">
-                                        <div v-if="individualDuplicate === true" class="alert alert-danger mt-2 p-2 fs-12" role="alert">
-                                            This customer already exists as an individual customer. Duplicate entries are not allowed.
-                                        </div>
-                                        <div v-else-if="individualDuplicate === false" class="alert alert-success mt-2 p-2 fs-12" role="alert">
-                                            No duplicate found. This appears to be a new customer.
-                                        </div>
+                                    <BCol lg="12">
+                                        <BRow class="g-2">
+                                            <BCol lg="4" class="mt-1">
+                                                <InputLabel for="firstname" value="First name" :message="form.errors.firstname"/>
+                                                <TextInput id="firstname" v-model="form.firstname" type="text" class="form-control" placeholder="Please enter first name" @input="form.firstname = capitalizeWords(form.firstname); handleInput('firstname'); syncIndividualName()" :light="false"/>
+                                            </BCol>
+                                            <BCol lg="4" class="mt-1">
+                                                <InputLabel for="middlename" value="Middle name" :message="form.errors.middlename"/>
+                                                <TextInput id="middlename" v-model="form.middlename" type="text" class="form-control" placeholder="Please enter middle name" @input="form.middlename = capitalizeWords(form.middlename); handleInput('middlename'); syncIndividualName()" :light="false"/>
+                                            </BCol>
+                                            <BCol lg="4" class="mt-1">
+                                                <InputLabel for="lastname" value="Last name" :message="form.errors.lastname"/>
+                                                <TextInput id="lastname" v-model="form.lastname" type="text" class="form-control" placeholder="Please enter last name" @input="form.lastname = capitalizeWords(form.lastname); handleInput('lastname'); syncIndividualName()" :light="false"/>
+                                            </BCol>
+                                            <BCol lg="12" class="mt-2 mb-n2" v-if="form.firstname && form.lastname">
+                                                <div v-if="individualDuplicate === true" class="alert alert-danger mt-2 p-2 fs-12" role="alert">
+                                                    This customer already exists as an individual customer. Duplicate entries are not allowed.
+                                                </div>
+                                                <div v-else-if="individualDuplicate === false" class="alert alert-success mt-2 p-2 fs-12" role="alert">
+                                                    No duplicate found. This appears to be a new customer.
+                                                </div>
+                                            </BCol>
+                                        </BRow>
                                     </BCol>
                                 </template>
                             </BRow>

@@ -125,8 +125,8 @@
                                                                     <i class="ri-file-copy-2-line me-2"></i>Copy
                                                                 </a>
                                                             </li>
-                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)"><hr class="dropdown-divider"></li>
-                                                            <li v-if="['Pending', 'For Payment'].includes(selected.status.name)">
+                                                            <li v-if="selected.status.name == 'Pending'"><hr class="dropdown-divider"></li>
+                                                            <li v-if="selected.status.name == 'Pending'">
                                                                 <a @click="openSampleRemove(list)" class="dropdown-item d-flex align-items-center" :class="(list.is_active) ? 'text-danger' : 'text-success'" href="#removeFileItemModal" data-id="1" data-bs-toggle="modal" role="button">
                                                                     <span class="text-danger"><i class="ri-delete-bin-fill me-2"></i> Remove</span>
                                                                 </a>

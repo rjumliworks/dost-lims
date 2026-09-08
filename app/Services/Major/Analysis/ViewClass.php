@@ -42,6 +42,7 @@ class ViewClass
             ->when($keyword, function ($query, $keyword) {
                 $query->where('name', 'LIKE', "%{$keyword}%");
             })
+            ->limit(5)
             ->get();
 
             return IndexResource::collection($data);

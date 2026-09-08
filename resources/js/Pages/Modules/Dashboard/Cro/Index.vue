@@ -508,11 +508,6 @@
                                         </div>
                                     </li>
                                 </ul>
-                                <div v-if="schedules.list?.length == 0">
-                                    <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
-                                        <i class="ri-alert-line label-icon"></i>No upcoming schedules for this week
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>                                                
@@ -666,11 +661,6 @@
                                         </div>
                                     </li>
                                 </ul>
-                                <div v-if="schedules.list?.length == 0">
-                                    <div class="alert alert-warning alert-dismissible alert-label-icon label-arrow fade show material-shadow fs-12 mt-2" role="alert">
-                                        <i class="ri-alert-line label-icon"></i>No upcoming schedules for this week
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>  
