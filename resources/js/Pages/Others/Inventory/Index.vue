@@ -165,14 +165,14 @@
                         <div class="card bg-light-subtle rounded-bottom shadow-none mb-0" style="height: calc(100vh - 551px); overflow-x: hidden;">
                             <div class="row row-cols-3 p-3 mt-2">
                                 <div class="col list-element" v-for="(list,index) in lists" v-bind:key="index">
-                                    <div class="card explore-box card-animate">
+                                    <div class="card explore-box">
                                         <div class="explore-place-bid-img overflow-hidden rounded"> 
                                             <img :src="list.img"  alt="" 
                                             class="card-img-top explore-img">
                                             <div class="bg-overlay"></div>
                                         </div>
                                         <div class="card-body">
-                                            <BDropdown variant="link" class="float-end dropdown mt-n1" toggle-class="btn btn-light btn-sm" no-caret data-bs-container="body" data-bs-display="static" menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 
+                                            <BDropdown variant="link" class="float-end dropdown mt-n1" toggle-class="btn btn-light btn-sm" no-caret strategy="fixed" data-bs-container="body" data-bs-display="static" menu-class="dropdown-menu-end" :offset="{ mainAxis: 4 }">
                                                 <template #button-content> 
                                                     <i class="ri-more-2-fill"></i>
                                                 </template>
