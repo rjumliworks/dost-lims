@@ -77,4 +77,27 @@ class CategoryController extends Controller
         ]);
     }
 
+    public function update(CategoryRequest $request){
+        $result = $this->handleTransaction(function () use ($request) {
+            switch($request->option){
+                case 'category':
+                    return $this->save->updateCategory($request);
+                break;
+                case 'type':
+                    return $this->save->updateType($request);
+                break;
+                case 'name':
+                    return $this->save->updateName($request);
+                break;
+            }
+        });
+
+        return back()->with([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'info' => $result['info'],
+            'status' => $result['status'],
+        ]);
+    }
+
 }

@@ -19,6 +19,7 @@ class ListResource extends JsonResource
             'method_short' => ($this->method->method->short) ? $this->method->method->short : '',
             'reference' => $this->method->reference->name,
             'fee' => $this->method->fee,
+            'fee_num' => trim(str_replace(',','',$this->method->fee),'₱'),
             'status' => $this->status,
             'created_at' => $this->created_at
         ];

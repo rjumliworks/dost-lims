@@ -4,10 +4,27 @@ namespace App\Services\Others\Inventory;
 
 use App\Models\InventoryItem;
 use App\Models\InventoryStock;
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Builder;
 use App\Http\Resources\Others\Inventory\ItemResource;
 class SaveClass
 {
+    public function supplier($request){
+        $data = Supplier::create(array_merge($request->only(['name','email','contact_no','address','municipality_code','barangay_code']),[
+            'is_active' => 1,
+            'user_id' => \Auth::user()->id,
+            'agency_id' => \Auth::user()->profile->agency_id
+        ]));
+        return [
+            'data' => [
+                'value' => $data->id,
+                'name' => $data->name
+            ],
+            'message' => 'Supplier creation was successful!',
+            'info' => "You've successfully created the new supplier."
+        ];
+    }
+
     public function item($request){
         $data = InventoryItem::create(array_merge($request->all(),[
             'code' => $this->generateCode($request),

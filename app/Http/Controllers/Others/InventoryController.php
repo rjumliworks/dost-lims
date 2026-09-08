@@ -72,6 +72,7 @@ class InventoryController extends Controller
                 'categories' => $this->dropdown->dropdowns('Inventory','Category'),
                 'suppliers' => $this->dropdown->suppliers(),
                 'units' => $this->dropdown->dropdowns('Inventory','Unit'),
+                'regions' => $this->dropdown->regions(),
             ],
         ]);
     }
@@ -84,6 +85,9 @@ class InventoryController extends Controller
                 break;
                 case 'stock':
                     return $this->save->stock($request);
+                break;
+                case 'supplier':
+                    return $this->save->supplier($request);
                 break;
                 case 'checkout':
                     return $this->checkout->process($request);

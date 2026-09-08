@@ -101,7 +101,7 @@
                                         <p class="fs-12 text-muted mb-0"> <span class="text-muted fs-11">{{list.laboratory.name}}</span></p>
                                     </td>
                                     <td class="text-center fs-12">{{ list.testservices.length }}</td>
-                                    <td class="text-center fs-12">-</td>
+                                    <td class="text-center fs-12">{{list.fee}}</td>
                                     <td class="text-center">
                                         <span v-if="list.is_active" class="fs-17 text-success"><i class="ri-checkbox-circle-fill"></i></span>
                                         <span v-else class="fs-17 text-danger"><i class="ri-close-circle-fill"></i></span>

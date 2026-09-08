@@ -14,11 +14,13 @@ class CategoryRequest extends FormRequest
 
     public function rules(): array
     {
+        $ignoreId = $this->isMethod('put') ? $this->id : null;
+
         if($this->option == 'category'){
             return [
                 'name' => [
                     'required',
-                    Rule::unique('sample_categories')->where(function ($query) {
+                    Rule::unique('sample_categories')->ignore($ignoreId)->where(function ($query) {
                         return $query->where('laboratory_id', $this->laboratory_id)
                             ->where('agency_id', $this->agency_id);
                     }),
@@ -28,7 +30,7 @@ class CategoryRequest extends FormRequest
             return [
                 'name' => [
                     'required',
-                    Rule::unique('sample_types')->where(function ($query) {
+                    Rule::unique('sample_types')->ignore($ignoreId)->where(function ($query) {
                         return $query->where('category_id', $this->category_id)
                             ->where('agency_id', $this->agency_id);
                     }),
@@ -38,7 +40,7 @@ class CategoryRequest extends FormRequest
             return [
                 'name' => [
                     'required',
-                    Rule::unique('sample_names')->where(function ($query) {
+                    Rule::unique('sample_names')->ignore($ignoreId)->where(function ($query) {
                         return $query->where('type_id', $this->type_id)
                             ->where('agency_id', $this->agency_id);
                     }),

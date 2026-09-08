@@ -14,8 +14,11 @@ class CategoryResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type->name,
+            'type_id' => $this->type->id,
             'category' => $this->type->category->name,
+            'category_id' => $this->type->category->id,
             'laboratory' => $this->type->category->laboratory->name,
+            'laboratory_id' => $this->type->category->laboratory->id,
             'is_active' => $this->is_active,
         ];
     }

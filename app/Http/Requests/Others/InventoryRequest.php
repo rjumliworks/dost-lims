@@ -15,14 +15,14 @@ class InventoryRequest extends FormRequest
     {
         if($this->option == 'supplier'){
             return [
-                'name' => 'sometimes|required|string|unique:inventory_suppliers,name,NULL,'.$this->id.',agency_id,'.$this->agency_id,
-                'email' => 'sometimes|required|email|max:150',
-                'contact_no' => 'sometimes|required|numeric|digits:11',
-                'address' => 'sometimes|required|string|max:200',
-                'region_code' => 'sometimes|required',
-                'province_code' => 'sometimes|required',
-                'municipality_code' => 'sometimes|required',
-                'barangay_code' => 'sometimes|nullable',
+                'name' => 'required|string',
+                'email' => 'required|email|max:150',
+                'contact_no' => 'required|numeric|digits:11',
+                'address' => 'required|string|max:200',
+                'region_code' => 'required',
+                'province_code' => 'required',
+                'municipality_code' => 'required',
+                'barangay_code' => 'nullable',
             ];
         }else if($this->option == 'item'){
             return [

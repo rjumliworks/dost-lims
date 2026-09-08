@@ -85,7 +85,7 @@
                                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                                     <Multiselect class="white" @search-change="checkCategory" style="width: 30%;" :options="categories" v-model="form.category_id" label="name" :allow-empty="false" :searchable="true" placeholder="Search Category" ref="multiselectC"/>
                                     <Multiselect class="white" @search-change="checkType" style="width: 30%;" :options="types" v-model="form.sampletype_id" label="name" :allow-empty="false" :searchable="true" placeholder="Search Type" ref="multiselectT"/>
-                                    <input type="text" v-model="filter.keyword" placeholder="Search" class="form-control" style="width: 30%;">
+                                    <input type="text" v-model="filter.keyword" placeholder="Search Testname or Method" class="form-control" style="width: 30%;">
                                     <b-button type="button" variant="primary">
                                         <i class="ri-search-eye-line align-bottom me-1"></i> 
                                     </b-button>
@@ -152,6 +152,7 @@ export default {
                 category_id: null,
                 sampletype_id: null,
                 name: null,
+                fee: 0,
                 lists: [],
                 option: 'create'
             }),

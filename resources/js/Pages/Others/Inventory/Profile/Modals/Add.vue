@@ -76,17 +76,18 @@
             <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Submit</b-button>
         </template>
     </b-modal>
-    <!-- <Supplier @message="pushNew" :dropdowns="dropdowns" ref="supplier"/> -->
+    <Supplier @message="pushNew" :dropdowns="dropdowns" ref="supplier"/>
 </template>
 <script>
 import _ from 'lodash';
 import { useForm } from '@inertiajs/vue3';
 import Amount from '@/Shared/Components/Forms/Amount.vue';
+import Supplier from './Supplier.vue';
 import Multiselect from '@/Shared/Components/Forms/Multiselect.vue';
 import InputLabel from '@/Shared/Components/Forms/InputLabel.vue';
 import TextInput from '@/Shared/Components/Forms/TextInput.vue';
 export default {
-    components: { InputLabel, TextInput, Multiselect, Amount },
+    components: { InputLabel, TextInput, Multiselect, Amount, Supplier },
     props: ['dropdowns'],
     data(){
         return {
@@ -174,7 +175,8 @@ export default {
             this.$refs.supplier.show();
         },
         pushNew(data){
-            this.form.supplier_id = data.data.id;
+            this.dropdowns.suppliers.push(data);
+            this.$refs.krad.emitSelectedValues(data.value);
         },
         hide(){
             this.showModal = false;

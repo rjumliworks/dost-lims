@@ -131,6 +131,21 @@
                                                             <i class="ri-edit-2-fill me-2"></i>Edit
                                                         </a>
                                                     </li>
+                                                    <li>
+                                                        <a @click="openEditCategory(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-folder-2-fill me-2"></i>Edit Category
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openEditType(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-flask-fill me-2"></i>Edit Sample Type
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a @click="openEditName(list,index)" class="dropdown-item d-flex align-items-center" role="button">
+                                                            <i class="ri-price-tag-3-fill me-2"></i>Edit Sample Name
+                                                        </a>
+                                                    </li>
                                                     <!-- <li><hr class="dropdown-divider"></li>
                                                     <li>
                                                         <a @click="openRole(list,index)" class="dropdown-item d-flex align-items-center" role="button">
@@ -161,15 +176,21 @@
         </div>
     </BRow>
     <Create :dropdowns="dropdowns" @message="fetch()" ref="create"/>
+    <AddCategory @updated="fetch()" ref="editCategory"/>
+    <AddType @updated="fetch()" ref="editType"/>
+    <EditName @updated="fetch()" ref="editName"/>
 </template>
 <script>
 import _ from 'lodash';
 import Create from './Modals/Create.vue';
+import AddType from './Modals/AddType.vue';
+import EditName from './Modals/EditName.vue';
+import AddCategory from './Modals/AddCategory.vue';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
 export default {
-    components: { PageHeader, Pagination, Multiselect, Create },
+    components: { PageHeader, Pagination, Multiselect, Create, AddCategory, AddType, EditName },
     props: ['dropdowns'],
     data(){
         return {
@@ -247,6 +268,34 @@ export default {
         },
         openCreate(){
             this.$refs.create.show();
+        },
+        openEdit(list,index){
+            this.selectedRow = index;
+            this.$refs.create.edit(list);
+        },
+        openEditCategory(list,index){
+            this.selectedRow = index;
+            this.$refs.editCategory.edit({
+                id: list.category_id,
+                name: list.category,
+                laboratory_id: list.laboratory_id
+            });
+        },
+        openEditType(list,index){
+            this.selectedRow = index;
+            this.$refs.editType.edit({
+                id: list.type_id,
+                name: list.type,
+                category_id: list.category_id
+            });
+        },
+        openEditName(list,index){
+            this.selectedRow = index;
+            this.$refs.editName.edit({
+                id: list.id,
+                name: list.name,
+                type_id: list.type_id
+            });
         },
         selectRow(index) {
             if (this.selectedRow === index) {

@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" header-class="p-3 bg-light" title="Add Sample Type" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" header-class="p-3 bg-light" :title="(editable) ? 'Edit Sample Type' : 'Add Sample Type'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <form class="customform">
             <BRow>
                 <BCol lg="12">
@@ -23,32 +23,55 @@ export default {
     data(){
         return {
             form: useForm({
+                id: null,
                 name: null,
                 category_id: null,
                 agency_id: this.$page.props.user.data.agency,
                 option: 'type'
             }),
             errors: '',
-            showModal: false
+            showModal: false,
+            editable: false
         }
     },
-    methods: { 
+    methods: {
         show(category,name){
+            this.editable = false;
+            this.form.id = null;
             this.form.name = name;
             this.form.category_id = category;
             this.showModal = true;
         },
+        edit(data){
+            this.editable = true;
+            this.form.id = data.id;
+            this.form.name = data.name;
+            this.form.category_id = data.category_id;
+            this.showModal = true;
+        },
         submit(){
-            this.form.post('/categories',{
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    this.$emit('selected',response.props.flash.data);
-                    this.hide();
-                },
-            });
+            if(this.editable){
+                this.form.put('/categories/update',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('updated',true);
+                        this.hide();
+                    },
+                });
+            }else{
+                this.form.post('/categories',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('selected',response.props.flash.data);
+                        this.hide();
+                    },
+                });
+            }
         },
         hide(){
-            this.form.name = null;
+            this.form.reset();
+            this.form.clearErrors();
+            this.editable = false;
             this.showModal = false;
         }
     }

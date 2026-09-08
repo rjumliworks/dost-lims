@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" style="--vz-modal-width: 600px;" header-class="p-3 bg-light" title="Add Sample Name" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" style="--vz-modal-width: 600px;" header-class="p-3 bg-light" :title="(editable) ? 'Edit Sample Name' : 'Add Sample Name'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
             
         <form class="customform">
             <BRow>
@@ -89,10 +89,12 @@ export default {
             type: null,
             showModal: false,
             editable: false,
+            initializing: false,
         }
     },
     watch: {
         'form.laboratory_id'(){
+            if(this.initializing) return;
             this.types = [];
             this.categories = [];
             this.$refs.multiselectC.clear();
@@ -104,15 +106,39 @@ export default {
     methods: { 
         show(){
             this.showModal = true;
-        }, 
+        },
+        edit(data){
+            this.editable = true;
+            this.initializing = true;
+            this.form.clearErrors();
+            this.form.id = data.id;
+            this.form.name = data.name;
+            this.form.laboratory_id = data.laboratory_id;
+            this.form.category_id = data.category_id;
+            this.form.type_id = data.type_id;
+            this.fetchCategory('');
+            this.fetchType('');
+            this.showModal = true;
+            this.$nextTick(() => { this.initializing = false; });
+        },
         submit(){
-            this.form.post('/categories',{
-                preserveScroll: true,
-                onSuccess: (response) => {
-                    this.$emit('message',true);
-                    this.hide();
-                },
-            });
+            if(this.editable){
+                this.form.put('/categories/update',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('message',true);
+                        this.hide();
+                    },
+                });
+            }else{
+                this.form.post('/categories',{
+                    preserveScroll: true,
+                    onSuccess: (response) => {
+                        this.$emit('message',true);
+                        this.hide();
+                    },
+                });
+            }
         },
         checkCategory: _.debounce(function(string) {
             this.fetchCategory(string);
@@ -174,6 +200,7 @@ export default {
             this.$refs.multiselectT.clear();
             this.filter.keyword = null;
             this.editable = false;
+            this.initializing = false;
             this.showModal = false;
         }
     }

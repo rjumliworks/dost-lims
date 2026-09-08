@@ -61,4 +61,14 @@ class Package extends Model
     {
         return date('M d, Y g:i a', strtotime($value));
     }
+
+    public function setFeeAttribute($value)
+    {
+        $this->attributes['fee'] = trim(str_replace(',','',$value),'₱ ');
+    }
+
+    public function getFeeAttribute($value)
+    {
+        return '₱'.$value;
+    }
 }

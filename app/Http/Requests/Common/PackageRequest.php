@@ -15,7 +15,7 @@ class PackageRequest extends FormRequest
     {
           return [
                 'name' => 'required',
-                'sampletype_id' => 'required',
+                'sampletype_id' => 'nullable',
                 'laboratory_id' => 'required',
                 'lists' => ['required', 'array', 'min:1'],
                 // 'lists.*' => ['required', 'integer'],

@@ -238,12 +238,16 @@ class ViewClass
 
     public function testservices($request)
     {
-        $type = $request->sampletype_id ? 'sampletype' : 'category';
-        $id   = $request->sampletype_id ?? $request->category_id;
-        
-        if ($request->filled('sampletype_id') || $request->filled('category_id')) {
-            $testservices = Testservice::with('testname', 'method.method', 'method.reference')
-            ->whereHas('samples', function ($q) use ($request) {
+        if (!$request->filled('sampletype_id') && !$request->filled('category_id') && !$request->filled('keyword')) {
+            return ListResource::collection([]);
+        }
+
+        $testservices = Testservice::with('testname', 'method.method', 'method.reference')
+        ->when($request->laboratory_id, function ($query, $laboratory) {
+            $query->where('laboratory_id', $laboratory);
+        })
+        ->when($request->filled('sampletype_id') || $request->filled('category_id'), function ($query) use ($request) {
+            $query->whereHas('samples', function ($q) use ($request) {
                 if ($request->filled('sampletype_id')) {
                     $q->whereHasMorph(
                         'sampleable',
@@ -263,13 +267,28 @@ class ViewClass
                         );
                     });
                 }
-            })
-            ->where('status_id',32)->where('is_active',1)
-            ->distinct()
-            ->get();
-        }else{
-            $testservices = [];
-        }
+            });
+        })
+        ->when($request->keyword, function ($query, $keyword) {
+            $query->where(function ($query) use ($keyword) {
+                $query->whereHas('testname', function ($query) use ($keyword) {
+                    $query->where('name', 'LIKE', "%{$keyword}%");
+                })
+                ->orWhereHas('method', function ($query) use ($keyword) {
+                    $query->whereHas('method', function ($query) use ($keyword) {
+                        $query->where('name', 'LIKE', "%{$keyword}%")
+                            ->orWhere('short', 'LIKE', "%{$keyword}%");
+                    })
+                    ->orWhereHas('reference', function ($query) use ($keyword) {
+                        $query->where('name', 'LIKE', "%{$keyword}%");
+                    });
+                });
+            });
+        })
+        ->where('status_id',32)->where('is_active',1)
+        ->distinct()
+        ->get();
+
         return ListResource::collection($testservices);
     }
 
