@@ -111,7 +111,15 @@ class ViewClass
             ->where('user_roles.is_active', 1)
             ->exists();
 
-        $facilityScope = $isLaboratoryHead ? $request->facility : \Auth::user()->profile?->facility_id;
+        $isRegionalCro = \Auth::user()->profile?->facility?->is_regional
+            && \Auth::user()->roles()
+                ->where('name', 'Customer Relation Officer')
+                ->where('user_roles.is_active', 1)
+                ->exists();
+
+        $canFilterFacility = $isLaboratoryHead || $isRegionalCro;
+
+        $facilityScope = $canFilterFacility ? $request->facility : \Auth::user()->profile?->facility_id;
 
         $data = ListResource::collection(
             Tsr::query()
