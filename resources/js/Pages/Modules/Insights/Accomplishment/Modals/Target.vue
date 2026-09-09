@@ -1,5 +1,5 @@
 <template>
-    <b-modal v-model="showModal" header-class="p-3 bg-light" title="Set Target" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
+    <b-modal v-model="showModal" header-class="p-3 bg-light" :title="selected.target == 0 ? 'Set Target' : 'Update Target'" class="v-modal-custom" modal-class="zoomIn" centered no-close-on-backdrop>
         <div class="row mb-3">
             <div class="col-md-12">
                 <div class="row align-items-center g-3">
@@ -25,14 +25,14 @@
                 <hr class="text-muted mt-n2 mb-2"/>
             </div>
         </div>
-        <form class="customform" v-if="selected.target == 0">
+        <form class="customform">
             <BRow>
                 <BCol lg="12">
                     <InputLabel value="Target" :message="form.errors.target"/>
-                    <TextInput v-if="selected.target == 0" v-model="form.target" type="text" class="form-control" placeholder="Please enter target" :light="true"/>
-                </BCol>   
-            </BRow>     
-        </form>       
+                    <TextInput v-model="form.target" type="text" class="form-control" placeholder="Please enter target" :light="true"/>
+                </BCol>
+            </BRow>
+        </form>
         <template v-slot:footer>
             <b-button @click="hide()" variant="light" block>Close</b-button>
             <b-button @click="submit('ok')" variant="primary" :disabled="form.processing" block>Submit</b-button>
@@ -73,8 +73,9 @@ export default {
                 this.form.list = this.selected.lists.map(item => item.id);
             }else{
                 this.form.id = data.id;
-                this.form.target = data.target; 
-            } 
+                this.form.option = 'target';
+                this.form.target = data.target;
+            }
             this.showModal = true;
         },
         submit(){

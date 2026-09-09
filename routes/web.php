@@ -17,6 +17,10 @@ Route::get('/usermanual', function () {
     return Inertia::render('Public/UserManual');
 });
 
+// Local-only Test Mode / Live Data DB switch (see App\Http\Middleware\SwitchDatabaseConnection).
+// Kept outside the auth group so it's reachable even if the switch logs the current session out.
+Route::post('/dev/db-mode', [App\Http\Controllers\Others\DatabaseModeController::class, 'toggle']);
+
 Route::domain('gad.' . config('app.app_host'))->as('gad.')->group(function () {
     Route::get('/', [App\Http\Controllers\Others\GadController::class, 'index']);
     Route::get('/workforce', [App\Http\Controllers\Others\GadController::class, 'workforce']);

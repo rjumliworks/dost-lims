@@ -43,6 +43,8 @@ class HandleInertiaRequests extends Middleware
                 ? Customer::with('contact','customer_name')->find(\Auth::guard('customer')->id())
                 : null,
             'is_gad' => str_starts_with($request->getHost(), 'gad.'),
+            'isLocal' => app()->environment('local'),
+            'testMode' => app()->environment('local') ? (bool) session('db_test_mode', false) : false,
             'show' => (\Auth::guard('web')->check()) ? AgencyConfiguration::value('show_others') : null,
             'functionalities' => (\Auth::guard('web')->check()) ? $this->functionalities() : null,
             'years' => (\Auth::guard('web')->check()) ? Target::distinct()->orderBy('year','desc')->pluck('year') : null,

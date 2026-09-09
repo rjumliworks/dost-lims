@@ -29,6 +29,19 @@
                             <span></span>
                         </span>
                     </BButton>
+
+                    <div class="ms-2 d-none d-md-flex align-items-center header-item" v-if="$page.props.isLocal">
+                        <BButton
+                            size="sm"
+                            :variant="$page.props.testMode ? 'warning' : 'outline-secondary'"
+                            class="d-flex align-items-center gap-1 fw-semibold"
+                            @click="toggleDbMode"
+                            title="Local-only: switches all app data between the live and test databases"
+                        >
+                            <i class="mdi" :class="$page.props.testMode ? 'mdi-flask-outline' : 'mdi-database-outline'"></i>
+                            {{ $page.props.testMode ? 'Test Mode' : 'Live Data' }}
+                        </BButton>
+                    </div>
                 </div>
 
                 <div class="d-flex align-items-center">
@@ -279,7 +292,10 @@ import { router } from '@inertiajs/vue3';
 import { layoutMethods } from "@/Shared/State/helpers";
 const logout = () => {
   router.post('/logout');
-}; 
+};
+const toggleDbMode = () => {
+  router.post('/dev/db-mode', {}, { preserveScroll: true, preserveState: false });
+};
 </script>
 <script>
 import simplebar from "simplebar-vue";

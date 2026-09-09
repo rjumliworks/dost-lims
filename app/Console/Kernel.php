@@ -13,6 +13,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+
+        // Every start of the year, carry over each agency's targets/target_breakdowns
+        // from the previous year, based on that agency's current laboratories.
+        $schedule->command('targets:generate')->yearlyOn(1, 1, '00:05');
     }
 
     /**

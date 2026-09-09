@@ -417,6 +417,12 @@ class AccomplishmentClass
         $year = $request->year;
         $data = Target::with('breakdowns.laboratory','breakdowns.objective.type','breakdowns.items.item')->where('year',$year)->first();
 
+        $agencyId = \Auth::user()->profile?->agency_id;
+        if ($agencyId && (!$data || ((int) $data->agency_id === (int) $agencyId && $data->breakdowns->isEmpty()))) {
+            $data = app(TargetGenerationService::class)->generateForAgency($agencyId, $year);
+            $data->load('breakdowns.laboratory','breakdowns.objective.type','breakdowns.items.item');
+        }
+
         $facilityType = $request->facility_type;
         $facilityIds = null;
         if ($facilityType && $facilityType !== 'All') {
