@@ -20,9 +20,11 @@ class DatabaseSeeder extends Seeder
         // Ensure pending migrations (e.g. list_statuses) have run before seeding.
         Artisan::call('migrate', ['--force' => true]);
 
-        // $this->call(ListDataTableSeeder::class);
-        // $this->call(ListRolesTableSeeder::class);
-        
+        $this->call(ListDataTableSeeder::class);
+        $this->call(ListRolesTableSeeder::class);
+
+        // Superseded by UsersTableSeeder/UserProfilesTableSeeder/UserRolesTableSeeder below
+        // (kept commented to avoid a duplicate id=1 insert and a hardcoded plaintext password).
         // User::create([
         //     'username' => 'rij0311',
         //     'email' => 'rjumli.dost9@gmail.com',
@@ -47,24 +49,25 @@ class DatabaseSeeder extends Seeder
         //     'updated_at' => now(),
         // ]);
 
-        // $this->call(LocationRegionsTableSeeder::class);
-        // $this->call(LocationProvincesTableSeeder::class);
-        // $this->call(LocationMunicipalitiesTableSeeder::class);
-        // $this->call(LocationBarangaysTableSeeder::class);
-        // $this->call(LocationDistrictsTableSeeder::class);
-        // $this->call(ListDropdownsTableSeeder::class);
+        $this->call(LocationRegionsTableSeeder::class);
+        $this->call(LocationProvincesTableSeeder::class);
+        $this->call(LocationMunicipalitiesTableSeeder::class);
+        $this->call(LocationBarangaysTableSeeder::class);
+        $this->call(LocationDistrictsTableSeeder::class);
+        $this->call(ListDropdownsTableSeeder::class);
         $this->call(ListStatusesTableSeeder::class);
-        // $this->call(ListLaboratoriesTableSeeder::class);
-        // $this->call(ListIndustriesTableSeeder::class);
-        // $this->call(ListDiscountsTableSeeder::class);
-        // $this->call(ListObjectivesTableSeeder::class);
+        $this->call(ListLaboratoriesTableSeeder::class);
+        $this->call(ListIndustriesTableSeeder::class);
+        $this->call(ListDiscountsTableSeeder::class);
+        $this->call(ListObjectivesTableSeeder::class);
 
-        // $this->call(MembersTableSeeder::class);
-        // $this->call(AgenciesTableSeeder::class);
-        // $this->call(AgencyAddressesTableSeeder::class);
-        // $this->call(AgencyConfigurationsTableSeeder::class);
-        // $this->call(AgencyFacilitiesTableSeeder::class);
+        $this->call(MembersTableSeeder::class);
+        $this->call(AgenciesTableSeeder::class);
+        $this->call(AgencyAddressesTableSeeder::class);
+        $this->call(AgencyConfigurationsTableSeeder::class);
+        $this->call(AgencyFacilitiesTableSeeder::class);
 
+        // Superseded by UserRolesTableSeeder below.
         // \DB::table('user_roles')->insert([
         //     'user_id' => 1,
         //     'role_id' => 1,
@@ -72,31 +75,34 @@ class DatabaseSeeder extends Seeder
         //     'created_at' => now(),
         //     'updated_at' => now(),
         // ]);
-        
-        // $this->call(AgencyDiscountsTableSeeder::class);
-        // $this->call(AgencyFacilityLaboratoriesTableSeeder::class);
-    
-        // $this->call(UsersTableSeeder::class);
-        // $this->call(UserProfilesTableSeeder::class);
-        // $this->call(UserRolesTableSeeder::class);
-        // $this->call(UserCertificatesTableSeeder::class);
 
-        // $this->call(SampleCategoriesTableSeeder::class);
-        // $this->call(SampleTypesTableSeeder::class);
-        // $this->call(SampleNamesTableSeeder::class);
-        // $this->call(TsrSequencesTableSeeder::class);
-        // $this->call(AgencyFacilitySignatoriesTableSeeder::class);
-        // $this->call(TestserviceNamesTableSeeder::class);
-        // $this->call(TestserviceMethodsTableSeeder::class);
-        // $this->call(TestservicesTableSeeder::class);
-        // $this->call(TestserviceAddonsTableSeeder::class);
-        // $this->call(TestserviceListsTableSeeder::class);
-        // $this->call(ListEventsTableSeeder::class);
-        // $this->call(TargetsTableSeeder::class);
-        // $this->call(TargetBreakdownsTableSeeder::class);
+        $this->call(AgencyDiscountsTableSeeder::class);
+        $this->call(AgencyFacilityLaboratoriesTableSeeder::class);
+
+        $this->call(UsersTableSeeder::class);
+        $this->call(UserProfilesTableSeeder::class);
+        $this->call(UserRolesTableSeeder::class);
+        $this->call(UserCertificatesTableSeeder::class);
+
+        $this->call(SampleCategoriesTableSeeder::class);
+        $this->call(SampleTypesTableSeeder::class);
+        $this->call(SampleNamesTableSeeder::class);
+        $this->call(TsrSequencesTableSeeder::class);
+        $this->call(AgencyFacilitySignatoriesTableSeeder::class);
+        $this->call(TestserviceNamesTableSeeder::class);
+        $this->call(TestserviceMethodsTableSeeder::class);
+        $this->call(TestservicesTableSeeder::class);
+        $this->call(TestserviceAddonsTableSeeder::class);
+        $this->call(TestserviceListsTableSeeder::class);
+        $this->call(ListEventsTableSeeder::class);
+        $this->call(TargetsTableSeeder::class);
+        $this->call(TargetBreakdownsTableSeeder::class);
+        // Not seeded: schedule_information/schedule_users reference real customers/tsrs/quotations,
+        // none of which are part of this seed chain. The seeder files themselves are kept up to
+        // date (see SchedulesTableSeeder etc.), just not auto-run here.
         // $this->call(SchedulesTableSeeder::class);
         // $this->call(ScheduleInformationTableSeeder::class);
         // $this->call(ScheduleUsersTableSeeder::class);
-        // $this->call(ListObjectiveItemsTableSeeder::class);
+        $this->call(ListObjectiveItemsTableSeeder::class);
     }
 }

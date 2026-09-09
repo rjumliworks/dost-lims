@@ -14,10 +14,10 @@ class AgencyFacilitiesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('agency_facilities')->delete();
-        
+
         \DB::table('agency_facilities')->insert(array (
             0 => 
             array (
@@ -39,8 +39,28 @@ class AgencyFacilitiesTableSeeder extends Seeder
                 'created_at' => '2026-02-11 15:02:16',
                 'updated_at' => '2026-02-11 15:02:16',
             ),
+            1 => 
+            array (
+                'id' => 2,
+                'name' => 'ZDN Satellite Laboratory',
+                'short' => 'ZDN',
+                'is_regional' => 0,
+                'is_separated' => 0,
+                'is_psto' => 1,
+                'is_active' => 1,
+                'address' => 'Upper Turno',
+                'longitude' => '122.218344',
+                'latitude' => '11.729967',
+                'barangay_code' => '097202020',
+                'municipality_code' => '097202000',
+                'province_code' => '097200000',
+                'region_code' => '090000000',
+                'agency_id' => 14,
+                'created_at' => '2026-07-16 17:27:03',
+                'updated_at' => '2026-07-16 17:27:03',
+            ),
         ));
-        
-        
+
+
     }
 }

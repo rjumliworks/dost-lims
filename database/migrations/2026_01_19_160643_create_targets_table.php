@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('targets', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->year('year')->unique();
+            $table->year('year');
             $table->json('data');
             $table->boolean('is_completed')->default(0);
             $table->unsignedInteger('agency_id');

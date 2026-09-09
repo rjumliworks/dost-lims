@@ -60,6 +60,7 @@
                                                 <div :key="index" class="tab-content">
                                                     <Sampletype :samples="service.data.samples" v-if="menu == 'Sampletype'"/>
                                                     <List :fees="service.data.fees" @edit-fee="editFee" v-if="menu == 'Add-ons'"/>
+                                                    <Tsrs :id="service.data.id" v-if="menu == 'TSRS'"/>
                                                     <ActivityLog :id="service.data.id" v-if="menu == 'Logs'"/>
                                                 </div>
                                             </transition>
@@ -84,15 +85,16 @@ import Sample from './Modals/Sample.vue';
 import List from './Components/List.vue';
 import ActivityLog from './Components/ActivityLog.vue';
 import Sampletype from './Components/Sampletype.vue';
+import Tsrs from './Components/Tsrs.vue';
 import Sidebar from './Sidebar.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     props:['service'],
-    components: { PageHeader, Top, Sidebar, List, Fee, Sampletype, Sample, ActivityLog },
+    components: { PageHeader, Top, Sidebar, List, Fee, Sampletype, Sample, ActivityLog, Tsrs },
     data(){
         return {
             menus: [
-                'Sampletype','Add-ons','Logs'
+                'Sampletype','Add-ons','TSRS','Logs'
             ],
             type: 'Sampletype',
             index: null,

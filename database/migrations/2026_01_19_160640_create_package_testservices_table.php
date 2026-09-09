@@ -16,6 +16,7 @@ return new class extends Migration
             $table->increments('id');
             $table->unsignedInteger('testservice_id');
             $table->foreign('testservice_id')->references('id')->on('testservices')->onDelete('cascade');
+            $table->decimal('fee',12,2)->default(0.00);
             $table->unsignedInteger('package_id');
             $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
             $table->timestamps();

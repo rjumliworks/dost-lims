@@ -14,10 +14,10 @@ class ListObjectivesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('list_objectives')->delete();
-        
+
         \DB::table('list_objectives')->insert(array (
             0 => 
             array (
@@ -206,8 +206,30 @@ class ListObjectivesTableSeeder extends Seeder
                 'created_at' => '2025-07-02 16:41:43',
                 'updated_at' => '2025-07-02 16:41:43',
             ),
+            17 => 
+            array (
+                'id' => 18,
+                'name' => 'Number of S&T Interventions Provided',
+                'type_id' => 94,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
+            18 => 
+            array (
+                'id' => 19,
+                'name' => 'Number of MSMEs / LGUs / HEIs, communities and other customers assisted',
+                'type_id' => 94,
+                'is_amount' => 0,
+                'is_consolidated' => 0,
+                'is_active' => 1,
+                'created_at' => '2025-07-02 16:41:43',
+                'updated_at' => '2025-07-02 16:41:43',
+            ),
         ));
-        
-        
+
+
     }
 }

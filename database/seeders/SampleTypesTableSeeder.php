@@ -14,12 +14,13 @@ class SampleTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('sample_types')->delete();
-        
+
         \DB::table('sample_types')->insert(array (
-            0 => array (
+            0 => 
+            array (
                 'id' => 1,
                 'name' => 'n/a',
                 'is_active' => 0,
@@ -428,7 +429,7 @@ class SampleTypesTableSeeder extends Seeder
             37 => 
             array (
                 'id' => 38,
-            'name' => 'Non-Automatic Weighing Instrument (NAWI)',
+                'name' => 'Non-Automatic Weighing Instrument (NAWI)',
                 'is_active' => 1,
                 'category_id' => 11,
                 'user_id' => 2,
@@ -876,8 +877,52 @@ class SampleTypesTableSeeder extends Seeder
                 'created_at' => '2026-03-14 15:03:07',
                 'updated_at' => '2026-03-14 15:03:07',
             ),
+            78 => 
+            array (
+                'id' => 79,
+                'name' => 'Flour',
+                'is_active' => 1,
+                'category_id' => 18,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-03-14 15:00:33',
+                'updated_at' => '2026-03-14 15:00:33',
+            ),
+            79 => 
+            array (
+                'id' => 80,
+                'name' => 'Synthetic Rubber',
+                'is_active' => 1,
+                'category_id' => 2,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-02-12 11:20:59',
+                'updated_at' => '2026-02-12 11:20:59',
+            ),
+            80 => 
+            array (
+                'id' => 81,
+                'name' => 'Retort',
+                'is_active' => 1,
+                'category_id' => 21,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-08-05 17:31:43',
+                'updated_at' => '2026-08-05 17:31:43',
+            ),
+            81 => 
+            array (
+                'id' => 82,
+                'name' => 'Coastal/Marine Water',
+                'is_active' => 1,
+                'category_id' => 8,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-08-19 13:00:12',
+                'updated_at' => '2026-08-19 13:00:12',
+            ),
         ));
-        
-        
+
+
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Major\Testreport;
 
+use App\Models\TsrReport;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,7 @@ class WithReportResource extends JsonResource
             'code' => $this->code,
             // 'sample_code' => $this->sample->code,
             // 'sample_id' => $this->sample->id,
+            'tsr_id' => $this->tsr_id,
             'tsr_code' => $this->tsr->code,
             // 'analyses' => $this->sample->analyses,
             'user' => $this->user->profile->fullname,
@@ -21,7 +23,12 @@ class WithReportResource extends JsonResource
             'lists' => $this->lists,
             'attachment' => json_decode($this->attachment),
             'signatory' => $this->signatory,
-            'created_at' => $this->created_at
-        ]; 
+            'created_at' => $this->created_at,
+            // Shared per TSR (same password across every testreport under one
+            // TSR) — set by SaveClass::upload/reupload via resolveTsrSecret().
+            // Not tsr_sample_reports.passkey, which is per-report and unused
+            // for encryption now.
+            'pdf_password' => TsrReport::where('tsr_id', $this->tsr_id)->value('secret_key'),
+        ];
     }
 }

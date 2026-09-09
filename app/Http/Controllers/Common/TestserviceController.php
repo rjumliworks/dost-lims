@@ -53,6 +53,9 @@ class TestserviceController extends Controller
             case 'activity-logs':
                 return $this->view->activitylogs($request);
             break;
+            case 'tsrs':
+                return $this->view->tsrs($request);
+            break;
             case 'download':
                 return $this->view->download($request);
             break;

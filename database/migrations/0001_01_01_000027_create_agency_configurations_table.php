@@ -15,6 +15,7 @@ return new class extends Migration
             $table->tinyIncrements('id');
             $table->json('laboratories');
             $table->json('form');
+            $table->json('functionalities')->nullable();
             $table->json('contact');
             $table->boolean('samplecode_year');
             $table->boolean('show_others');

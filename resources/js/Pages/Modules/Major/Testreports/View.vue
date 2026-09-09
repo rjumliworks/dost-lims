@@ -174,6 +174,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div v-if="selected.pdf_password" class="d-flex align-items-center mt-1 pt-1 border-top">
+                                        <span class="text-muted fs-11 me-1">PDF password:</span>
+                                        <code class="fs-11">{{ selected.pdf_password }}</code>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -327,7 +331,10 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 const canvasEl = this.$refs.pdfCanvas;
                 const fileUrl = this.pdfUrl;
 
-                const loadingTask = pdfjsLib.getDocument({ url: fileUrl });
+                const loadingTask = pdfjsLib.getDocument({
+                    url: fileUrl,
+                    password: this.selected.pdf_password || undefined,
+                });
 
                 loadingTask.promise.then(pdf => {
                     this.totalPages = pdf.numPages;
@@ -353,6 +360,9 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                             this.isRendering = false;
                         });
                     });
+                }).catch(error => {
+                    console.error('Failed to load PDF:', error);
+                    this.isRendering = false;
                 });
             },
             async savePdfWithSignature() {
@@ -363,8 +373,12 @@ import PageHeader from '@/Shared/Components/PageHeader.vue';
                 // Fetch PDF bytes
                 const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
 
-                // Load PDF with pdf-lib
-                const pdfDoc = await PDFDocument.load(pdfBytes);
+                // ignoreEncryption: true — pdf-lib can't decrypt password-protected
+                // PDFs, but we only read the page's MediaBox (plain numbers, never
+                // encrypted by the PDF standard security handler) for layout math
+                // below; we never touch encrypted strings/streams or call .save()
+                // here, so skipping decryption is safe for this read-only use.
+                const pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
 
                 // Get the page you want to sign (example: first page)
                 const page = pdfDoc.getPage(this.currentPage - 1); // zero-indexed

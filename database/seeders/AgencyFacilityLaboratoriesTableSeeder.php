@@ -14,10 +14,10 @@ class AgencyFacilityLaboratoriesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('agency_facility_laboratories')->delete();
-        
+
         \DB::table('agency_facility_laboratories')->insert(array (
             0 => 
             array (
@@ -51,8 +51,16 @@ class AgencyFacilityLaboratoriesTableSeeder extends Seeder
                 'created_at' => '2026-02-11 15:21:47',
                 'updated_at' => '2026-02-11 15:21:47',
             ),
+            4 => 
+            array (
+                'id' => 5,
+                'laboratory_id' => 3,
+                'facility_id' => 2,
+                'created_at' => '2026-08-14 09:40:08',
+                'updated_at' => '2026-08-14 09:40:08',
+            ),
         ));
-        
-        
+
+
     }
 }

@@ -33,7 +33,23 @@
                             <b-button variant="light" size="sm" @click="reset"><i class="ri-refresh-line me-1"></i>Check another file</b-button>
                         </div>
 
-                        <div v-if="!result.has_signatures" class="alert alert-warning d-flex align-items-center mb-0">
+                        <div v-if="result.password_required" class="mb-0">
+                            <div class="alert alert-info d-flex align-items-center mb-3">
+                                <i class="ri-lock-2-fill fs-20 me-2"></i>
+                                <div>
+                                    <div class="fw-semibold">This document is password-protected</div>
+                                    <div class="fs-12">Enter the password to check its signatures.</div>
+                                </div>
+                            </div>
+                            <div class="input-group" style="max-width: 320px;">
+                                <input type="password" class="form-control" :class="{ 'is-invalid': result.password_incorrect }"
+                                    v-model="password" placeholder="Document password" @keyup.enter="submitCheck" />
+                                <b-button variant="primary" :disabled="checking" @click="submitCheck">Check</b-button>
+                            </div>
+                            <div class="text-danger fs-12 mt-2" v-if="result.password_incorrect">Incorrect password.</div>
+                        </div>
+
+                        <div v-else-if="!result.has_signatures" class="alert alert-warning d-flex align-items-center mb-0">
                             <i class="ri-error-warning-fill fs-20 me-2"></i>
                             <div>
                                 <div class="fw-semibold">No digital signature found</div>
@@ -104,6 +120,8 @@ export default {
             resultReady: false,
             result: null,
             fileName: '',
+            file: null,
+            password: '',
         }
     },
     computed: {
@@ -124,12 +142,20 @@ export default {
         handleAddFile(error, fileItem) {
             if (error) return console.error('FilePond error:', error);
 
+            this.file = fileItem.file;
+            this.fileName = fileItem.file.name;
+            this.password = '';
+            this.submitCheck();
+        },
+        submitCheck() {
+            if (!this.file) return;
+
             this.errors = null;
             this.checking = true;
-            this.fileName = fileItem.file.name;
 
             const formData = new FormData();
-            formData.append('pdf', fileItem.file, fileItem.file.name || 'document.pdf');
+            formData.append('pdf', this.file, this.fileName || 'document.pdf');
+            if (this.password) formData.append('password', this.password);
 
             this.$inertia.post('/verify-document', formData, {
                 preserveScroll: true,
@@ -161,6 +187,8 @@ export default {
             this.resultReady = false;
             this.result = null;
             this.fileName = '';
+            this.file = null;
+            this.password = '';
             this.errors = null;
             if (this.$refs.pond) this.$refs.pond.removeFiles();
         },

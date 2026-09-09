@@ -15,8 +15,9 @@ return new class extends Migration
             $table->engine = 'InnoDB'; 
             $table->increments('id');
             $table->string('name');
+            $table->decimal('fee',12,2)->default(0.00);
             $table->boolean('is_active')->default(1);
-            $table->unsignedInteger('sampletype_id');
+            $table->unsignedInteger('sampletype_id')->nullable();
             $table->foreign('sampletype_id')->references('id')->on('sample_types')->onDelete('cascade');
             $table->unsignedTinyInteger('laboratory_id');
             $table->foreign('laboratory_id')->references('id')->on('list_laboratories')->onDelete('cascade');
@@ -25,7 +26,7 @@ return new class extends Migration
             $table->unsignedInteger('added_by')->nullable();
             $table->foreign('added_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
-            $table->unique(['name','agency_id','laboratory_id','sampletype_id']);    
+            $table->unique(['name','agency_id','laboratory_id']);
         });
     }
 

@@ -14,10 +14,10 @@ class ListDropdownsTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('list_dropdowns')->delete();
-        
+
         \DB::table('list_dropdowns')->insert(array (
             0 => 
             array (
@@ -812,7 +812,7 @@ class ListDropdownsTableSeeder extends Seeder
             79 => 
             array (
                 'id' => 80,
-                'name' => 'Balance Score Card',
+                'name' => 'Balance Score Card (Outcome 4 / 5th Strategic Objective)',
                 'classification' => 'Objective',
                 'type' => 'n/a',
                 'color' => 'text-white',
@@ -822,7 +822,7 @@ class ListDropdownsTableSeeder extends Seeder
             80 => 
             array (
                 'id' => 81,
-            'name' => 'Laboratory Policies (QM-004)',
+                'name' => 'Laboratory Policies (QM-004)',
                 'classification' => 'Objective',
                 'type' => 'n/a',
                 'color' => 'text-white',
@@ -852,7 +852,7 @@ class ListDropdownsTableSeeder extends Seeder
             83 => 
             array (
                 'id' => 84,
-            'name' => 'Regulatory (FDA)',
+                'name' => 'Regulatory (FDA)',
                 'classification' => 'Purpose',
                 'type' => 'n/a',
                 'color' => 'n/a',
@@ -949,8 +949,18 @@ class ListDropdownsTableSeeder extends Seeder
                 'others' => 'bg-pink',
                 'is_active' => 1,
             ),
+            93 => 
+            array (
+                'id' => 94,
+                'name' => 'Balance Score Card (Outcome 4 / 1st & 2nd Strategic Objective)',
+                'classification' => 'Objective',
+                'type' => 'n/a',
+                'color' => 'text-white',
+                'others' => 'n/a',
+                'is_active' => 1,
+            ),
         ));
-        
-        
+
+
     }
 }

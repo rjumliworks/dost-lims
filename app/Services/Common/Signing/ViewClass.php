@@ -4,6 +4,7 @@ namespace App\Services\Common\Signing;
 
 use Hashids\Hashids;
 use App\Models\User;
+use App\Models\TsrReport;
 use App\Models\TsrSampleReport;
 use App\Models\TsrSampleReportSignatory;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +28,14 @@ class ViewClass
                 $query->where('approved_by', $user_id)->where('status_id', 40);
             });
         })->get();
+
+        $secretsByTsrId = TsrReport::whereIn('tsr_id', $data->pluck('tsr_id')->unique())
+            ->get()
+            ->keyBy('tsr_id');
+
+        $data->each(function ($report) use ($secretsByTsrId) {
+            $report->pdf_password = $secretsByTsrId->get($report->tsr_id)?->secret_key;
+        });
 
         return $data;
     }
@@ -81,9 +90,11 @@ class ViewClass
         ->where('id',$id[0])
         ->first();
 
+        $data->pdf_password = TsrReport::where('tsr_id', $data->tsr_id)->first()?->secret_key;
+
         return [
             'data' => $data,
-            'message' => 'Testreport updated.', 
+            'message' => 'Testreport updated.',
             'info' => 'Testreport details have been successfully updated.',
         ];
     }
@@ -91,13 +102,14 @@ class ViewClass
     public function upload($data, $request)
     {
         $name = $data->code;
+        $password = TsrReport::where('tsr_id', $data->tsr_id)->first()?->secret_key;
 
         if ($request->hasFile('pdf')) {
             $pdf = $request->file('pdf');
             $extension = strtolower($pdf->getClientOriginalExtension());
             $file_name = strtolower($name) . '.' . $extension;
             $file_path = 'uploads/testreports/' . $file_name;
-            
+
             if ($data->attachment == null) {
 
                 $response = Http::attach(
@@ -105,7 +117,8 @@ class ViewClass
                     file_get_contents($pdf->getRealPath()),
                     $file_name
                 )->post('http://127.0.0.1:8000/normalize',[
-                    'verification_url' => url('/verification/sample/'.$data->reference)
+                    'verification_url' => url('/verification/sample/'.$data->reference),
+                    'password' => $password,
                 ]);
 
                 if (!$response->successful()) {
@@ -166,6 +179,7 @@ class ViewClass
                 'box_x1' => $request->box_x1,
                 'box_y1' => $request->box_y1,
                 'signer_name' => $user->profile?->pnpki_name,
+                'password' => $password,
             ]);
 
             if (!$response->successful()) {

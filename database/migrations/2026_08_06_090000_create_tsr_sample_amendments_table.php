@@ -17,7 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('sample_id');
             $table->foreign('sample_id')->references('id')->on('tsr_samples')->onDelete('cascade');
             $table->longText('previous_description')->nullable();
+            $table->longText('previous_customer_description')->nullable();
             $table->longText('proposed_description');
+            $table->longText('proposed_customer_description')->nullable();
             $table->longText('remarks')->nullable();
             $table->longText('review_remarks')->nullable();
             $table->unsignedInteger('requested_by');

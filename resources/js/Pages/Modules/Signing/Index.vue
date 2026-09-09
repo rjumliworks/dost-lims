@@ -35,7 +35,7 @@
                                     <td class="text-center">{{  index + 1 }}.</td>
                                     <td>
                                         <h5 class="fs-13 mb-0 fw-semibold text-primary">{{list.code}}</h5>
-                                        <p class="fs-12 text-muted mb-0">{{JSON.parse(list.attachment).name}}</p>
+                                        <p class="fs-12 text-muted mb-0">{{ list.attachment ? JSON.parse(list.attachment).name : 'Not yet uploaded' }}</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -464,6 +464,11 @@ export default {
             this.selected = selected;
             this.index = index;
 
+            if (!selected.attachment) {
+                console.warn('This report has no file uploaded yet.');
+                return;
+            }
+
             await this.$nextTick();
 
             const canvasEl = this.$refs.pdfCanvas;
@@ -483,7 +488,8 @@ export default {
             }?v=${Date.now()}`;
 
             const loadingTask = pdfjsLib.getDocument({
-                url: this.pdfUrl
+                url: this.pdfUrl,
+                password: this.selected.pdf_password || undefined,
             });
 
             try {
@@ -615,8 +621,12 @@ export default {
             // Fetch PDF bytes
             const pdfBytes = await fetch(this.pdfUrl).then(res => res.arrayBuffer());
 
-            // Load PDF with pdf-lib
-            const pdfDoc = await PDFDocument.load(pdfBytes);
+            // ignoreEncryption: true — pdf-lib can't decrypt password-protected
+            // PDFs, but we only read the page's MediaBox (plain numbers, never
+            // encrypted by the PDF standard security handler) for layout math
+            // below; we never touch encrypted strings/streams or call .save()
+            // here, so skipping decryption is safe for this read-only use.
+            const pdfDoc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
 
             // Get the page you want to sign (example: first page)
             const page = pdfDoc.getPage(this.currentPage - 1); // zero-indexed

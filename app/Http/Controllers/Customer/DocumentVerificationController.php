@@ -17,6 +17,7 @@ class DocumentVerificationController extends Controller
     {
         $request->validate([
             'pdf' => 'required|file|mimes:pdf|max:20480',
+            'password' => 'nullable|string',
         ]);
 
         $pdf = $request->file('pdf');
@@ -25,7 +26,9 @@ class DocumentVerificationController extends Controller
             'file',
             file_get_contents($pdf->getRealPath()),
             $pdf->getClientOriginalName()
-        )->post('http://127.0.0.1:8000/verify');
+        )->post('http://127.0.0.1:8000/verify', [
+            'password' => $request->password,
+        ]);
 
         if (!$response->successful()) {
             return back()->with([

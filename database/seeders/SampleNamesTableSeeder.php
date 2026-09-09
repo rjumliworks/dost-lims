@@ -14,10 +14,10 @@ class SampleNamesTableSeeder extends Seeder
      */
     public function run()
     {
-        
+
 
         \DB::table('sample_names')->delete();
-        
+
         \DB::table('sample_names')->insert(array (
             0 => 
             array (
@@ -1595,7 +1595,7 @@ class SampleNamesTableSeeder extends Seeder
             143 => 
             array (
                 'id' => 144,
-                'name' => 'Industrial Wastewater/Effluent',
+                'name' => 'Industrial Wastewater',
                 'is_active' => 1,
                 'type_id' => 30,
                 'user_id' => 2,
@@ -1650,7 +1650,7 @@ class SampleNamesTableSeeder extends Seeder
             148 => 
             array (
                 'id' => 149,
-            'name' => 'Groundwater (Monitoring Wells)',
+                'name' => 'Groundwater (Monitoring Wells)',
                 'is_active' => 1,
                 'type_id' => 31,
                 'user_id' => 2,
@@ -1870,7 +1870,7 @@ class SampleNamesTableSeeder extends Seeder
             168 => 
             array (
                 'id' => 169,
-            'name' => 'Test Weight (Stainless Steel)',
+                'name' => 'Test Weight (Stainless Steel)',
                 'is_active' => 1,
                 'type_id' => 37,
                 'user_id' => 2,
@@ -1881,7 +1881,7 @@ class SampleNamesTableSeeder extends Seeder
             169 => 
             array (
                 'id' => 170,
-            'name' => 'Mass Standard (Stainless Steel)',
+                'name' => 'Mass Standard (Stainless Steel)',
                 'is_active' => 1,
                 'type_id' => 37,
                 'user_id' => 2,
@@ -1892,7 +1892,7 @@ class SampleNamesTableSeeder extends Seeder
             170 => 
             array (
                 'id' => 171,
-            'name' => 'Test Weight (Other than Stainless Steel)',
+                'name' => 'Test Weight (Other than Stainless Steel)',
                 'is_active' => 1,
                 'type_id' => 37,
                 'user_id' => 2,
@@ -1903,7 +1903,7 @@ class SampleNamesTableSeeder extends Seeder
             171 => 
             array (
                 'id' => 172,
-            'name' => 'Mass Standard (Other than Stainless Steel)',
+                'name' => 'Mass Standard (Other than Stainless Steel)',
                 'is_active' => 1,
                 'type_id' => 37,
                 'user_id' => 2,
@@ -2662,7 +2662,7 @@ class SampleNamesTableSeeder extends Seeder
             240 => 
             array (
                 'id' => 241,
-            'name' => 'Heat Treated Fermented Milks (Sterilized, UHT)',
+                'name' => 'Heat Treated Fermented Milks (Sterilized, UHT)',
                 'is_active' => 1,
                 'type_id' => 60,
                 'user_id' => 2,
@@ -2684,7 +2684,7 @@ class SampleNamesTableSeeder extends Seeder
             242 => 
             array (
                 'id' => 243,
-            'name' => 'Soft Cheese (from Pasteurized Milk)',
+                'name' => 'Soft Cheese (from Pasteurized Milk)',
                 'is_active' => 1,
                 'type_id' => 60,
                 'user_id' => 2,
@@ -2871,7 +2871,7 @@ class SampleNamesTableSeeder extends Seeder
             259 => 
             array (
                 'id' => 260,
-            'name' => 'Rice-Based Desserts (Ready to Eat)',
+                'name' => 'Rice-Based Desserts (Ready to Eat)',
                 'is_active' => 1,
                 'type_id' => 61,
                 'user_id' => 2,
@@ -2926,7 +2926,7 @@ class SampleNamesTableSeeder extends Seeder
             264 => 
             array (
                 'id' => 265,
-            'name' => 'Frozen Bakery Products (Ready to Eat)',
+                'name' => 'Frozen Bakery Products (Ready to Eat)',
                 'is_active' => 1,
                 'type_id' => 63,
                 'user_id' => 2,
@@ -2937,7 +2937,7 @@ class SampleNamesTableSeeder extends Seeder
             265 => 
             array (
                 'id' => 266,
-            'name' => 'Frozen Bakery Products (To Be Cooked)',
+                'name' => 'Frozen Bakery Products (To Be Cooked)',
                 'is_active' => 1,
                 'type_id' => 63,
                 'user_id' => 2,
@@ -3058,7 +3058,7 @@ class SampleNamesTableSeeder extends Seeder
             276 => 
             array (
                 'id' => 277,
-            'name' => 'Fermented Comminuted Meat (Not Cooked)',
+                'name' => 'Fermented Comminuted Meat (Not Cooked)',
                 'is_active' => 1,
                 'type_id' => 65,
                 'user_id' => 2,
@@ -3069,7 +3069,7 @@ class SampleNamesTableSeeder extends Seeder
             277 => 
             array (
                 'id' => 278,
-            'name' => 'Cooked Poultry Meat (Frozen to Be Reheated Before Eating)',
+                'name' => 'Cooked Poultry Meat (Frozen to Be Reheated Before Eating)',
                 'is_active' => 1,
                 'type_id' => 65,
                 'user_id' => 2,
@@ -3245,7 +3245,7 @@ class SampleNamesTableSeeder extends Seeder
             293 => 
             array (
                 'id' => 294,
-            'name' => 'Fish & Shellfish Products (Cooked Crustaceans in Hermetically Sealed Containers)',
+                'name' => 'Fish & Shellfish Products (Cooked Crustaceans in Hermetically Sealed Containers)',
                 'is_active' => 1,
                 'type_id' => 66,
                 'user_id' => 2,
@@ -3278,7 +3278,7 @@ class SampleNamesTableSeeder extends Seeder
             296 => 
             array (
                 'id' => 297,
-            'name' => 'Salt-Fermented Fish and Shrimps (Bagoong)',
+                'name' => 'Salt-Fermented Fish and Shrimps (Bagoong)',
                 'is_active' => 1,
                 'type_id' => 66,
                 'user_id' => 2,
@@ -3344,7 +3344,7 @@ class SampleNamesTableSeeder extends Seeder
             302 => 
             array (
                 'id' => 303,
-            'name' => 'Spices (Ready to Eat)',
+                'name' => 'Spices (Ready to Eat)',
                 'is_active' => 1,
                 'type_id' => 67,
                 'user_id' => 2,
@@ -3509,7 +3509,7 @@ class SampleNamesTableSeeder extends Seeder
             317 => 
             array (
                 'id' => 318,
-            'name' => 'Chocolate Confectionaries (Chocolate Bars)',
+                'name' => 'Chocolate Confectionaries (Chocolate Bars)',
                 'is_active' => 1,
                 'type_id' => 70,
                 'user_id' => 2,
@@ -3520,7 +3520,7 @@ class SampleNamesTableSeeder extends Seeder
             318 => 
             array (
                 'id' => 319,
-            'name' => 'Sugar Confectionaries (Hard and Soft Candies, Toffees, Caramel, Fondants, Cream, Paste)',
+                'name' => 'Sugar Confectionaries (Hard and Soft Candies, Toffees, Caramel, Fondants, Cream, Paste)',
                 'is_active' => 1,
                 'type_id' => 70,
                 'user_id' => 2,
@@ -3531,7 +3531,7 @@ class SampleNamesTableSeeder extends Seeder
             319 => 
             array (
                 'id' => 320,
-            'name' => 'Ethnic Milk-Based Confectionaries (Pastillas and Yeam)',
+                'name' => 'Ethnic Milk-Based Confectionaries (Pastillas and Yeam)',
                 'is_active' => 1,
                 'type_id' => 70,
                 'user_id' => 2,
@@ -3542,7 +3542,7 @@ class SampleNamesTableSeeder extends Seeder
             320 => 
             array (
                 'id' => 321,
-            'name' => 'Ethnic Flour-Based Confectionaries (Polvoron, Piaya and Barquillos)',
+                'name' => 'Ethnic Flour-Based Confectionaries (Polvoron, Piaya and Barquillos)',
                 'is_active' => 1,
                 'type_id' => 70,
                 'user_id' => 2,
@@ -3575,7 +3575,7 @@ class SampleNamesTableSeeder extends Seeder
             323 => 
             array (
                 'id' => 324,
-            'name' => 'Liquid Sugar (Sugar Syrup)',
+                'name' => 'Liquid Sugar (Sugar Syrup)',
                 'is_active' => 1,
                 'type_id' => 70,
                 'user_id' => 2,
@@ -3619,7 +3619,7 @@ class SampleNamesTableSeeder extends Seeder
             327 => 
             array (
                 'id' => 328,
-            'name' => 'Fruits & Vegetable Products in Hermetically Sealed Containers (Thermally Processed)',
+                'name' => 'Fruits & Vegetable Products in Hermetically Sealed Containers (Thermally Processed)',
                 'is_active' => 1,
                 'type_id' => 71,
                 'user_id' => 2,
@@ -3641,7 +3641,7 @@ class SampleNamesTableSeeder extends Seeder
             329 => 
             array (
                 'id' => 330,
-            'name' => 'Coconut (Desiccated)',
+                'name' => 'Coconut (Desiccated)',
                 'is_active' => 1,
                 'type_id' => 71,
                 'user_id' => 2,
@@ -3696,7 +3696,7 @@ class SampleNamesTableSeeder extends Seeder
             334 => 
             array (
                 'id' => 335,
-            'name' => 'Purple Yam (Ube) Jam (Halaya)',
+                'name' => 'Purple Yam (Ube) Jam (Halaya)',
                 'is_active' => 1,
                 'type_id' => 71,
                 'user_id' => 2,
@@ -3707,7 +3707,7 @@ class SampleNamesTableSeeder extends Seeder
             335 => 
             array (
                 'id' => 336,
-            'name' => 'Malunggay (Moringa) Powder',
+                'name' => 'Malunggay (Moringa) Powder',
                 'is_active' => 1,
                 'type_id' => 71,
                 'user_id' => 2,
@@ -3729,7 +3729,7 @@ class SampleNamesTableSeeder extends Seeder
             337 => 
             array (
                 'id' => 338,
-            'name' => 'Infant Formula Liquid (UHT/Sterilized)',
+                'name' => 'Infant Formula Liquid (UHT/Sterilized)',
                 'is_active' => 1,
                 'type_id' => 72,
                 'user_id' => 2,
@@ -3784,7 +3784,7 @@ class SampleNamesTableSeeder extends Seeder
             342 => 
             array (
                 'id' => 343,
-            'name' => 'Ready-to-Use Therapeutic Foods (RUTF) and Ready-to-Eat Supplementary Foods (RUSF)',
+                'name' => 'Ready-to-Use Therapeutic Foods (RUTF) and Ready-to-Eat Supplementary Foods (RUSF)',
                 'is_active' => 1,
                 'type_id' => 72,
                 'user_id' => 2,
@@ -3916,7 +3916,7 @@ class SampleNamesTableSeeder extends Seeder
             354 => 
             array (
                 'id' => 355,
-            'name' => 'Industrial Water (Treated Recirculating)',
+                'name' => 'Industrial Water (Treated Recirculating)',
                 'is_active' => 1,
                 'type_id' => 75,
                 'user_id' => 2,
@@ -4023,8 +4023,63 @@ class SampleNamesTableSeeder extends Seeder
                 'created_at' => NULL,
                 'updated_at' => NULL,
             ),
+            364 => 
+            array (
+                'id' => 365,
+                'name' => 'Flour',
+                'is_active' => 1,
+                'type_id' => 79,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-06-15 15:34:53',
+                'updated_at' => '2026-06-15 15:34:53',
+            ),
+            365 => 
+            array (
+                'id' => 366,
+                'name' => 'EPDM',
+                'is_active' => 1,
+                'type_id' => 80,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-02-12 11:21:21',
+                'updated_at' => '2026-02-12 11:21:21',
+            ),
+            366 => 
+            array (
+                'id' => 367,
+                'name' => 'Polyethylene',
+                'is_active' => 1,
+                'type_id' => 80,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-07-01 11:22:33',
+                'updated_at' => '2026-07-01 11:22:33',
+            ),
+            367 => 
+            array (
+                'id' => 368,
+                'name' => 'Fish Oil',
+                'is_active' => 1,
+                'type_id' => 68,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-07-13 16:03:20',
+                'updated_at' => '2026-07-13 16:03:20',
+            ),
+            368 => 
+            array (
+                'id' => 369,
+                'name' => 'Coastal/Marine Water',
+                'is_active' => 1,
+                'type_id' => 31,
+                'user_id' => 2,
+                'agency_id' => 14,
+                'created_at' => '2026-08-19 13:01:42',
+                'updated_at' => '2026-08-19 13:01:42',
+            ),
         ));
-        
-        
+
+
     }
 }

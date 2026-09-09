@@ -26,6 +26,10 @@ return new class extends Migration
             $table->unsignedInteger('agency_id');
             $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
             $table->date('date');
+            $table->unsignedSmallInteger('account_id')->nullable();
+            $table->foreign('account_id')->references('id')->on('list_accounts')->onDelete('cascade');
+            $table->unsignedInteger('funding_id')->nullable();
+            $table->foreign('funding_id')->references('id')->on('agency_funds')->onDelete('cascade');
             $table->timestamps();
         });
     }

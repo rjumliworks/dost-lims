@@ -10,6 +10,7 @@ use App\Models\SampleCategory;
 use App\Models\SampleType;
 use App\Models\SampleName;
 use App\Models\ListLaboratory;
+use App\Models\Tsr;
 use App\Models\TsrSample;
 use App\Models\TsrAnalysis;
 use App\Exports\TestServiceExport;
@@ -17,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Http\Resources\Common\TestserviceResource;
 use App\Http\Resources\Common\Testservice\ListResource;
 use App\Http\Resources\Common\Testservice\ListsResource;
+use App\Http\Resources\Major\Tsr\ListResource as TsrListResource;
 use App\Http\Resources\DefaultResource;
 use App\Http\Resources\ActivityResource;
 
@@ -363,6 +365,19 @@ class ViewClass
         ])->setPaper('a4', 'portrait');
          return $pdf->stream('test-service-report.pdf');
 
+    }
+
+    public function tsrs($request)
+    {
+        $data = Tsr::query()
+        ->whereHas('samples.analyses', function ($query) use ($request) {
+            $query->where('testservice_id', $request->id);
+        })
+        ->with('laboratory', 'status', 'customer.customer_name', 'payment.status')
+        ->orderBy('created_at', 'DESC')
+        ->paginate($request->count ?: 15);
+
+        return TsrListResource::collection($data);
     }
 
     public function activitylogs($request)

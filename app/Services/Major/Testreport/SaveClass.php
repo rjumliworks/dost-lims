@@ -11,6 +11,7 @@ use App\Models\UserRole;
 use App\Models\ListLaboratory;
 use App\Models\TsrSample;
 use App\Models\TsrSequence;
+use App\Models\TsrReport;
 use App\Models\TsrSampleReport;
 use App\Models\TsrSampleReportList;
 use App\Models\TsrSampleReportSignatory;
@@ -207,6 +208,42 @@ class SaveClass
         return $passkey;
     }
 
+    // PDF password shared by every sample report under the same TSR (keyed by
+    // tsr_id), as opposed to tsr_sample_reports.passkey which is generated
+    // per report row. tsr_reports is normally populated by the separate
+    // GenerateTsrReport command; this creates the row on demand when a
+    // report is uploaded/signed before that command has ever run for its
+    // TSR, so a secret always exists by the time /normalize or /sign need it.
+    private function resolveTsrSecret($tsr_id)
+    {
+        $tsrReport = TsrReport::where('tsr_id', $tsr_id)->first();
+
+        if (!$tsrReport) {
+            $tsrReport = TsrReport::create([
+                'tsr_id' => $tsr_id,
+                'information' => '{}',
+                'secret_key' => $this->generateTsrSecretKey(),
+            ]);
+        } elseif (!$tsrReport->secret_key) {
+            $tsrReport->secret_key = $this->generateTsrSecretKey();
+            $tsrReport->save();
+        }
+
+        return $tsrReport->secret_key;
+    }
+
+    private function generateTsrSecretKey($length = 8)
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $secret = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $secret .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+
+        return $secret;
+    }
+
     public function report($request){
         $hashids = new Hashids('krad',10);
         $id = $hashids->decode($request->id);
@@ -275,7 +312,8 @@ class SaveClass
                 file_get_contents($pdf->getRealPath()),
                 $file_name
             )->post('http://127.0.0.1:8000/normalize',[
-                'verification_url' => url('/verification/sample/'.$data->reference)
+                'verification_url' => url('/verification/sample/'.$data->reference),
+                'password' => $this->resolveTsrSecret($data->tsr_id),
             ]);
 
             if (!$response->successful()) {
@@ -293,7 +331,7 @@ class SaveClass
             $signatory->certified_date = null;
             $signatory->approved_date = null;
             $signatory->status_id = 38;
-            $signatory->save(); 
+            $signatory->save();
             $attach = [
                 'name' => $file_name,
                 'file' => $file_path,
@@ -307,7 +345,7 @@ class SaveClass
         if($data->save()){
             return [
                 'data' => $data->attachment,
-                'message' => 'Testreport updated.', 
+                'message' => 'Testreport updated.',
                 'info' => 'Testreport details have been successfully updated.',
             ];
         }
@@ -322,7 +360,7 @@ class SaveClass
             $extension = strtolower($pdf->getClientOriginalExtension());
             $file_name = strtolower($name) . '.' . $extension;
             $file_path = 'uploads/testreports/' . $file_name;
-            
+
             if ($data->attachment == null) {
 
                 $response = Http::attach(
@@ -330,7 +368,8 @@ class SaveClass
                     file_get_contents($pdf->getRealPath()),
                     $file_name
                 )->post('http://127.0.0.1:8000/normalize',[
-                    'verification_url' => url('/verification/sample/'.$data->reference)
+                    'verification_url' => url('/verification/sample/'.$data->reference),
+                    'password' => $this->resolveTsrSecret($data->tsr_id),
                 ]);
 
                 if (!$response->successful()) {
@@ -390,6 +429,7 @@ class SaveClass
                 'box_y0' => $request->box_y0,
                 'box_x1' => $request->box_x1,
                 'box_y1' => $request->box_y1,
+                'password' => $this->resolveTsrSecret($data->tsr_id),
             ]);
 
             if (!$response->successful()) {
