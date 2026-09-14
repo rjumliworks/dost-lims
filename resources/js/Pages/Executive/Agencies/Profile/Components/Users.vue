@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="d-flex mb-3">
+        <div class="d-flex mb-4">
             <div class="flex-grow-1">
-                <div class="input-group">
+                <div class="input-group mb-1">
                     <span class="input-group-text"> <i class="ri-search-line search-icon"></i></span>
                     <input type="text" v-model="filter.keyword" placeholder="Search Employee" class="form-control">
                     <Multiselect v-if="filter.role?.has_lab" class="white" style="width: 20%;" :options="dropdowns.laboratories" v-model="filter.laboratory" label="name" :searchable="true" placeholder="Select Laboratory" />
@@ -29,7 +29,7 @@
                 </div>
             </div>
         </div>
-        <div class="table-responsive table-card" style="height: calc(100vh - 470px);">
+        <div class="table-responsive table-card" style="height: calc(100vh - 521px);">
             <simplebar data-simplebar style="height: calc(100vh - 476px);">
                 <table class="table align-middle table-striped table-centered mb-0">
                     <thead class="table-light thead-fixed">
@@ -38,8 +38,6 @@
                             <th>Name</th>
                             <th style="width: 10%;" class="text-center">Username</th>
                             <th style="width: 10%;" class="text-center">Email</th>
-                            <th style="width: 10%;" class="text-center">Mobile</th>
-                            <th style="width: 10%;" class="text-center">Code</th>
                             <th style="width: 10%;" class="text-center">Status</th>
                             <th style="width: 6%;"></th>
                         </tr>
@@ -63,8 +61,6 @@
                             </td>
                             <td class="text-center">{{ list.username }}</td>
                             <td class="text-center">{{ list.email }}</td>
-                            <td class="text-center">{{ list.mobile }}</td>
-                            <td class="text-center">{{ (list.code) ? list.code : '-' }}</td>
                             <td class="text-center">
                                 <span v-if="list.is_active" class="badge bg-success">Active</span>
                                 <span v-else class="badge bg-danger">Inactive</span>
