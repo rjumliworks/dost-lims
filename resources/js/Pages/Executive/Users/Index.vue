@@ -101,7 +101,8 @@
                             <tbody class="table-white fs-12">
                                 <tr v-for="(list,index) in lists" v-bind:key="index" @click="selectRow(index)" :class="{
                                     'bg-info-subtle': index === selectedRow,
-                                    'bg-danger-subtle': list.is_active === 0 && index !== selectedRow
+                                    'bg-danger-subtle': list.is_active === 0 && index !== selectedRow,
+                                    'bg-warning-subtle': list.is_active !== 0 && list.must_change && index !== selectedRow
                                 }">
                                     <td class="text-center"> 
                                         <div class="avatar-xs chat-user-img online">
@@ -124,8 +125,8 @@
                                     </td>
                                     <td class="text-end">
                                         <div class="d-flex gap-3 justify-content-center"> 
-                                            <button type="button" class="btn btn-ghost-primary btn-icon btn-sm material-shadow-none favourite-btn"> 
-                                                <i class="ri-star-fill fs-13 align-bottom"></i>
+                                            <button type="button" class="btn btn-ghost-primary btn-icon btn-sm material-shadow-none favourite-btn">
+                                                <i class="ri-star-fill fs-13 align-bottom" :class="!list.is_active ? 'text-muted' : (list.must_change ? 'text-danger' : 'text-success')"></i>
                                             </button>
                                             <div class="dropdown">
                                                 <BDropdown variant="link" toggle-class="btn btn-light btn-sm dropdown" strategy="fixed" no-caret menu-class="dropdown-menu-end" :offset="{ alignmentAxis: -130, crossAxis: 0, mainAxis: 10 }"> 

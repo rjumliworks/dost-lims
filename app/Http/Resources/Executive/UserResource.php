@@ -25,6 +25,7 @@ class UserResource extends JsonResource
             'username' => $this->username,
             'roles' => RoleResource::collection($this->myroles),
             'is_active' => $this->is_active,
+            'must_change' => $this->must_change,
             'last_login_at' => $this->last_login_at,
             'email_verified_at' => $this->email_verified_at,
             'two_factor_confirmed_at' => $this->two_factor_confirmed_at,
