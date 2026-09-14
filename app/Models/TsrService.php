@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrService extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'fee',
         'total',
@@ -52,5 +56,14 @@ class TsrService extends Model
     public function getCreatedAtAttribute($value)
     {
         return date('M d, Y g:i a', strtotime($value));
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['fee', 'total', 'quantity', 'service_id', 'is_additional'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Service')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

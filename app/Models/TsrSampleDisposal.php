@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrSampleDisposal extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'disposed_at',
         'disposal_id',
@@ -37,5 +41,14 @@ class TsrSampleDisposal extends Model
     public function getDisposedAtAttribute($value)
     {
         return ($value) ? date('M d, Y', strtotime($value)) : null;
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['disposed_at', 'disposal_id', 'sample_id', 'user_id', 'status_id'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Sample Disposal')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrPaymentDeduction extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'amount',
         'code',
@@ -37,5 +41,14 @@ class TsrPaymentDeduction extends Model
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id', 'id');
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['amount', 'code', 'user_id', 'payment_id', 'wallet_id'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Payment Deduction')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

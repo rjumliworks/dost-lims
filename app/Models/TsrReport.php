@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrReport extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['information','tsr_id','secret_key'];
 
     public function tsr()
@@ -32,5 +36,14 @@ class TsrReport extends Model
     public function getInformationAttribute($value)
     {
         return Crypt::decryptString($value);
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['tsr_id'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Report')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

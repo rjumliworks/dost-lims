@@ -6,9 +6,13 @@ use Hashids\Hashids;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class TsrSampleReport extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'code',
         'information',
@@ -79,5 +83,14 @@ class TsrSampleReport extends Model
     public function getCodeAttribute($value)
     {
         return Str::after($value, '-');
+    }
+
+    public function getActivitylogOptions(): LogOptions {
+        return LogOptions::defaults()
+        ->logOnly(['code', 'attachment', 'tsr_id', 'user_id', 'cro_id', 'tm_id'])
+        ->setDescriptionForEvent(fn(string $eventName) => "{$eventName}")
+        ->useLogName('Sample Report')
+        ->logOnlyDirty()
+        ->dontSubmitEmptyLogs();
     }
 }

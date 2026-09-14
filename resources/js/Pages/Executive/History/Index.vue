@@ -16,7 +16,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <h5 class="mb-0 fs-14"><span class="text-body">TSR Change History</span></h5>
-                            <p class="text-muted text-truncate-two-lines fs-12">Track every change made to TSRs, samples, analyses, amendments, payments, and releases.</p>
+                            <p class="text-muted text-truncate-two-lines fs-12">Track every change made across all TSR-related records — TSRs, samples, analyses, amendments, payments, deductions, referrals, reports, disposals, remarks, services, and releases.</p>
                         </div>
                     </div>
                 </div>
