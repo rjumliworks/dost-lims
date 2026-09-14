@@ -101,6 +101,12 @@ class AgencyController extends Controller
             'functionalities' => collect(AgencyConfiguration::FUNCTIONALITIES)->map(function ($label, $key) {
                 return ['key' => $key, 'label' => $label];
             })->values(),
+            'dropdowns' => [
+                'roles' => $this->dropdown->roles(),
+                'laboratories' => $this->dropdown->laboratories(),
+                'suffixes' => $this->dropdown->datas('Suffix'),
+                'agencies' => $this->dropdown->agencies(),
+            ],
         ]);
     }
 }

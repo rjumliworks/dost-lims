@@ -250,7 +250,10 @@ export default {
         }
     },
     methods: { 
-        show(){
+        show(presetAgency){
+            if(presetAgency){
+                this.agency = presetAgency;
+            }
             this.showModal = true;
         },
         edit(data){

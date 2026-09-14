@@ -85,10 +85,10 @@
                                                     <Accounts :lists="selected.data.accounts" v-if="menu == 'Accounts'"/>
                                                     <Funding :lists="selected.data.funds" v-if="menu == 'Funding'"/>
                                                     <Functionalities :id="selected.data.configuration?.id" :values="selected.data.configuration?.functionalities" :options="functionalities" v-if="menu == 'Functionalities'"/>
+                                                    <Users :agency="agencyOption" :facilities="facilityOptions" :dropdowns="dropdowns" v-if="menu == 'Users'"/>
                                                     <!-- <Lists :id="customer.data.id" v-if="menu == 'TSRs'"/>
                                                     <Conforme :lists="customer.data.conformes" v-if="menu == 'Conformes'"/>
-                                                    <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/>
-                                                    <Logs :id="customer.data.id" v-if="menu == 'Logs'"/> -->
+                                                    <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/> -->
                                                 </div>
                                             </transition>
                                         </div>
@@ -115,6 +115,7 @@ import Logs from './Components/Logs.vue';
 import Services from './Components/Services.vue';
 import Laboratories from './Components/Laboratories.vue';
 import Facilities from './Components/Facilities.vue';
+import Users from './Components/Users.vue';
 import Discounts from './Components/Discounts.vue';
 import Accounts from './Components/Accounts.vue';
 import Funding from './Components/Funding.vue';
@@ -126,15 +127,31 @@ import Fee from './Modals/Fee.vue';
 import AccountModal from './Modals/Account.vue';
 import FundingModal from './Modals/Funding.vue';
 export default {
-    props:['selected','laboratories','discounts','regions','labs','functionalities'],
-    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Laboratories, Services, Logs, Accounts, Funding, Functionalities, Facility, Discount, Fee, AccountModal, FundingModal },
+    props:['selected','laboratories','discounts','regions','labs','functionalities','dropdowns'],
+    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Users, Laboratories, Services, Logs, Accounts, Funding, Functionalities, Facility, Discount, Fee, AccountModal, FundingModal },
     data(){
         return {
             menus: [
-                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Functionalities','Activity Logs'
+                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Functionalities','Users'
             ],
             type: 'Discounts',
             index: null,
+        }
+    },
+    computed: {
+        agencyOption(){
+            return {
+                value: this.selected.data.id,
+                name: this.selected.data.member?.name,
+                region: this.selected.data.address?.region_code,
+                facilities: this.facilityOptions
+            };
+        },
+        facilityOptions(){
+            return (this.selected.data.facilities || []).map((facility) => ({
+                value: facility.id,
+                name: facility.name
+            }));
         }
     },
     methods: {
