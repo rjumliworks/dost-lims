@@ -2,6 +2,9 @@
 
 namespace App\Traits;
 
+use Illuminate\Database\QueryException;
+use Throwable;
+
 trait HandlesTransaction
 {
     public static function handleTransaction($callback){
@@ -20,10 +23,7 @@ trait HandlesTransaction
         } catch (QueryException $e) {
             $info = 'Transaction failed: ' . $e->getMessage();
             $message = 'Error occured';
-        } catch (DeadlockException $e) {
-            $info = 'Transaction failed due to deadlock: ' . $e->getMessage();
-            $message = 'Error occured';
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $info = 'An unexpected error occurred: ' . $e->getMessage();
             $message = 'Error occured';
         }

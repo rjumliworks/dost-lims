@@ -91,6 +91,10 @@ export default {
         }
     },
     methods: {
+        openUpdate(data,index){
+            this.index = index;
+            this.$emit('edit', data);
+        },
         addSignatory(data,index){
             this.index = index;
             this.$refs.signatory.show(data);

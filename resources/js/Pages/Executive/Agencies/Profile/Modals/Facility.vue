@@ -109,6 +109,7 @@ export default {
         return {
             currentUrl: window.location.origin,
             form: useForm({
+                id: null,
                 name: null,
                 short: null,
                 is_psto: null,
@@ -166,7 +167,7 @@ export default {
     },
     computed: {
         isFormValid() {
-            return this.form.address && this.form.region_code && this.form.province_code && this.form.municipality_code && this.form.barangay_code;
+            return this.form.name && this.form.short && this.form.is_psto !== null && this.form.address && this.form.region_code && this.form.province_code && this.form.municipality_code && this.form.barangay_code;
         }
     },
     methods: { 
@@ -176,12 +177,43 @@ export default {
             this.form.latitude = this.coordinates.lat;
         },
         show(id,region){
+            this.form.reset();
+            this.form.clearErrors();
+            this.editable = false;
+            this.form.option = 'facility';
             this.form.agency_id = id;
+            this.$refs.map.empty();
             this.$refs.map.view();
             this.form.region_code = region;
             this.fetchProvince(region);
             this.showModal = true;
-        },  
+        },
+        edit(data){
+            this.form.reset();
+            this.form.clearErrors();
+            this.editable = true;
+            this.form.option = 'updatefacility';
+            this.form.id = data.id;
+            this.form.agency_id = data.agency_id;
+            this.form.name = data.name;
+            this.form.short = data.short;
+            this.form.is_psto = data.is_psto;
+            this.form.is_regional = data.is_regional;
+            this.form.is_separated = data.is_separated;
+            this.form.address = data.address;
+            this.form.longitude = data.longitude;
+            this.form.latitude = data.latitude;
+            this.form.region_code = data.region_code;
+            this.form.province_code = data.province_code;
+            this.form.municipality_code = data.municipality_code;
+            this.form.barangay_code = data.barangay_code;
+            this.$refs.map.view();
+            this.$nextTick(() => this.$refs.map.setLocation(data.latitude, data.longitude));
+            this.fetchProvince(data.region_code);
+            this.fetchMunicipality(data.province_code);
+            this.fetchBarangay(data.municipality_code);
+            this.showModal = true;
+        },
         submit(){
             this.form.post('/agencies',{
                 preserveScroll: true,

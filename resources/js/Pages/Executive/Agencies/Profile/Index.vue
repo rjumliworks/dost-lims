@@ -79,7 +79,7 @@
                                             <transition mode="out-in">
                                                 <div :key="index" class="tab-content">
                                                     <Laboratories :id="selected.data.id" :lists="labs" v-if="menu == 'Laboratories'"/>
-                                                    <Facilities :lists="selected.data.facilities" :laboratories="laboratories" v-if="menu == 'Facilities'"/>
+                                                    <Facilities :lists="selected.data.facilities" :laboratories="laboratories" @edit="editFacility" v-if="menu == 'Facilities'"/>
                                                     <Discounts :lists="selected.data.discounts" v-if="menu == 'Discounts'"/>
                                                     <Services :lists="selected.data.fees" v-if="menu == 'Fees'"/>
                                                     <Accounts :lists="selected.data.accounts" v-if="menu == 'Accounts'"/>
@@ -146,6 +146,9 @@ export default {
         },
         addFacility(id){
             this.$refs.facility.show(id,this.selected.data.address.region_code);
+        },
+        editFacility(data){
+            this.$refs.facility.edit(data);
         },
         addAccount(id){
             this.$refs.account.show(id);

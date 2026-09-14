@@ -132,8 +132,22 @@ class SaveClass
         ];
     }
 
+    public function updatefacility($request){
+        $data = AgencyFacility::findOrFail($request->id);
+        $data->fill($request->only([
+            'name','short','is_regional','is_psto','is_separated','address','longitude','latitude','barangay_code','municipality_code','province_code','region_code'
+        ]));
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Facility updated successfully!',
+            'info' => "You've successfully updated the facility."
+        ];
+    }
+
     public function signatory($request){
-        $data = AgencyFacilitySignatory::where('facility_id',$request->id)->first();
+        $data = AgencyFacilitySignatory::firstOrCreate(['facility_id' => $request->id]);
         if($request->type == 'Cashier'){
            $data->cashier_id =  $request->user_id;
         }else{

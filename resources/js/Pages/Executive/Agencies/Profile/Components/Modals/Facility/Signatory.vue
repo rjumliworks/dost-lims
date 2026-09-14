@@ -7,7 +7,7 @@
                     <div class="col-md-6" style="cursor: pointer;" @click="openSet('Cashier')">
                         <div class="card-body border rounded-4 text-center p-4">
                             <div class="mb-2 mx-auto">
-                                <img :src="(selected.signatories) ? (selected.signatories.accountant) ? (selected.signatories.cashier.profile.avatar == 'noavatar.jpg') ? '/images/avatars/avatar.jpg' : '/'+selected.signatories.cashier.profile.avatar : '/images/avatars/avatar.jpg' : '/images/avatars/avatar.jpg'" alt="" id="candidate-img" class="avatar-sm img-thumbnail rounded-circle shadow-none">
+                                <img :src="(selected.signatories) ? (selected.signatories.cashier) ? (selected.signatories.cashier.profile.avatar == 'noavatar.jpg') ? '/images/avatars/avatar.jpg' : '/'+selected.signatories.cashier.profile.avatar : '/images/avatars/avatar.jpg' : '/images/avatars/avatar.jpg'" alt="" id="candidate-img" class="avatar-sm img-thumbnail rounded-circle shadow-none">
                             </div>
             
                             <h5 v-if="selected.signatories?.cashier" class="fs-12 mb-0 text-warning fw-semibold">

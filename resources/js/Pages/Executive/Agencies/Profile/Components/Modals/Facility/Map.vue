@@ -49,6 +49,13 @@ export default {
         empty(){
                 this.coordinates = {};
                 this.markerLatLng = null;
+        },
+        setLocation(lat,lng){
+            if(lat && lng){
+                this.coordinates = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                this.markerLatLng = this.coordinates;
+                this.center = latLng(this.coordinates.lat, this.coordinates.lng);
+            }
         }
     },
 };

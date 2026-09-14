@@ -67,6 +67,9 @@ class AgencyController extends Controller
                 case 'facility':
                     return $this->save->facility($request);
                 break;
+                case 'updatefacility':
+                    return $this->save->updatefacility($request);
+                break;
                 case 'signatory':
                     return $this->save->signatory($request);
                 break;
