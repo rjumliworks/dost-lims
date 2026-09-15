@@ -79,6 +79,9 @@ class UserController extends Controller
                 case 'status':
                     return $this->save->status($request);
                 break;
+                case 'must_change':
+                    return $this->save->mustChange($request);
+                break;
                 case 'credential':
                     return $this->save->credential($request);
                 break;

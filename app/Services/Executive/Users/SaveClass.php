@@ -105,7 +105,21 @@ class SaveClass
 
         return [
             'data' => new UserResource($data),
-            'message' => 'User update was successful!', 
+            'message' => 'User update was successful!',
+            'info' => "You've successfully updated the selected user."
+        ];
+    }
+
+    public function mustChange($request){
+        $data = User::with('profile:user_id,firstname,middlename,lastname,suffix_id,avatar,mobile','profile.suffix')
+        ->with('myroles:role_id,id,user_id','myroles.role:id,name')
+        ->where('id',$request->user_id)->first();
+        $data->must_change = $data->must_change ? 0 : 1;
+        $data->save();
+
+        return [
+            'data' => new UserResource($data),
+            'message' => 'User update was successful!',
             'info' => "You've successfully updated the selected user."
         ];
     }

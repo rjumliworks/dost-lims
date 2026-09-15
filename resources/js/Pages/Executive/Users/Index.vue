@@ -125,7 +125,7 @@
                                     </td>
                                     <td class="text-end">
                                         <div class="d-flex gap-3 justify-content-center"> 
-                                            <button type="button" class="btn btn-ghost-primary btn-icon btn-sm material-shadow-none favourite-btn">
+                                            <button type="button" class="btn btn-ghost-primary btn-icon btn-sm material-shadow-none favourite-btn" @click.stop="toggleMustChange(list,index)">
                                                 <i class="ri-star-fill fs-13 align-bottom" :class="!list.is_active ? 'text-muted' : (list.must_change ? 'text-danger' : 'text-success')"></i>
                                             </button>
                                             <div class="dropdown">
@@ -296,6 +296,17 @@ export default {
             } else {
                 this.selectedRow = index;
             }
+        },
+        toggleMustChange(list,index){
+            this.$inertia.put('/users/update', {
+                reference: list.reference,
+                option: 'must_change'
+            }, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    this.lists[index] = this.$page.props.flash.data.data;
+                },
+            });
         }
     }
 }

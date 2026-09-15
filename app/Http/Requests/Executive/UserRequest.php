@@ -37,7 +37,7 @@ class UserRequest extends FormRequest
                 $validator->errors()->add('code', 'Invalid code provided.');
                 return;
             }
-            if ($this->option === 'credential' || $this->option === 'status') {
+            if ($this->option === 'credential' || $this->option === 'status' || $this->option === 'must_change') {
                 $user = \App\Models\User::with('profile')->find($id);
 
                 if (!$user) {
@@ -64,7 +64,7 @@ class UserRequest extends FormRequest
                     $validator->errors()->add('mobile', 'The mobile number has already been taken.');
                 }
             }
-            if ($this->option === 'credential' || $this->option === 'status') {
+            if ($this->option === 'credential' || $this->option === 'status' || $this->option === 'must_change') {
                 $this->merge(['user_id' => $user->id]);
             }else{
                 $this->merge(['id' => $id]);

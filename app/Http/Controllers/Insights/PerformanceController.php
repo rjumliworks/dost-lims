@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Insights;
 
+use App\Models\Target;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\AgencyClass;
@@ -41,6 +42,7 @@ class PerformanceController extends Controller
             default:
             return inertia('Modules/Insights/Performance/Index',[
                 'types' => $this->agency->laboratories(),
+                'years' => Target::distinct()->pluck('year'),
                 'info' => [
                     'month' => \DateTime::createFromFormat('!m', date('m'))->format('F'),
                     'year' => date('Y')

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Insights;
 
+use App\Models\Target;
 use App\Traits\HandlesTransaction;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -53,13 +54,17 @@ class AccomplishmentController extends Controller
              case 'peza':
                 return $this->accomplishment->peza($request);
             break;
-            default: 
-                return inertia('Modules/Insights/Accomplishment/Index');
+            default:
+                return inertia('Modules/Insights/Accomplishment/Index',[
+                    'years' => Target::distinct()->pluck('year'),
+                ]);
         }
     }
 
     public function figures(){
-        return inertia('Modules/Insights/Accomplishment/Figures');
+        return inertia('Modules/Insights/Accomplishment/Figures',[
+            'years' => Target::distinct()->pluck('year'),
+        ]);
     }
 
      public function update(Request $request){
