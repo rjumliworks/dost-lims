@@ -54,7 +54,7 @@ export default {
     },
     methods: {
         openPrint(id){
-            window.open(this.currentUrl + '/receipts?option=print&id='+id);
+            window.open(this.currentUrl + '/receipts?option=print&id='+id+'&agency='+this.$page.props.user.data.agency);
         }
     }
 }

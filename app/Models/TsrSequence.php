@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TsrSequence extends Model
 {
-    protected $fillable = ['next_sequence', 'year', 'facility_id', 'agency_id', 'laboratory_id','is_tsr'];
+    protected $fillable = ['next_sequence', 'year', 'facility_id', 'agency_id', 'laboratory_id', 'type_id', 'is_tsr'];
 
     public static function getNextCode($laboratoryId,$typeId)
     {
@@ -124,9 +124,14 @@ class TsrSequence extends Model
             if (! Auth::check()) {
                 return;
             }
+
+            if (Auth::user()->hasRole('Administrator')) {
+                return;
+            }
+
             $agencyId = Auth::user()->profile?->agency_id;
             $facilityId = Auth::user()->profile?->facility_id;
-            
+
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');
             }

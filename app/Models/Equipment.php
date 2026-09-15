@@ -87,6 +87,14 @@ class Equipment extends Model
     protected static function booted()
     {
         static::addGlobalScope('agency', function (Builder $builder) {
+            if (! Auth::check()) {
+                return;
+            }
+
+            if (Auth::user()->hasRole('Administrator')) {
+                return;
+            }
+
             $agencyId = Auth::user()->profile?->agency_id;
             if (! $agencyId) {
                 abort(403, 'User has no agency assigned.');

@@ -86,6 +86,7 @@
                                                     <Funding :lists="selected.data.funds" v-if="menu == 'Funding'"/>
                                                     <Functionalities :id="selected.data.configuration?.id" :values="selected.data.configuration?.functionalities" :options="functionalities" v-if="menu == 'Functionalities'"/>
                                                     <Users :agency="agencyOption" :facilities="facilityOptions" :dropdowns="dropdowns" v-if="menu == 'Users'"/>
+                                    <Sequence :lists="sequences" v-if="menu == 'Sequence'"/>
                                                     <!-- <Lists :id="customer.data.id" v-if="menu == 'TSRs'"/>
                                                     <Conforme :lists="customer.data.conformes" v-if="menu == 'Conformes'"/>
                                                     <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/> -->
@@ -120,6 +121,7 @@ import Discounts from './Components/Discounts.vue';
 import Accounts from './Components/Accounts.vue';
 import Funding from './Components/Funding.vue';
 import Functionalities from './Components/Functionalities.vue';
+import Sequence from './Components/Sequence.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Facility from './Modals/Facility.vue';
 import Discount from './Modals/Discount.vue';
@@ -127,12 +129,12 @@ import Fee from './Modals/Fee.vue';
 import AccountModal from './Modals/Account.vue';
 import FundingModal from './Modals/Funding.vue';
 export default {
-    props:['selected','laboratories','discounts','regions','labs','functionalities','dropdowns'],
-    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Users, Laboratories, Services, Logs, Accounts, Funding, Functionalities, Facility, Discount, Fee, AccountModal, FundingModal },
+    props:['selected','laboratories','discounts','regions','labs','functionalities','dropdowns','sequences'],
+    components: { PageHeader, Top, Sidebar, Discounts, Facilities, Users, Laboratories, Services, Logs, Accounts, Funding, Functionalities, Sequence, Facility, Discount, Fee, AccountModal, FundingModal },
     data(){
         return {
             menus: [
-                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Functionalities','Users'
+                'Discounts','Facilities','Laboratories','Fees','Accounts','Funding','Functionalities','Users','Sequence'
             ],
             type: 'Discounts',
             index: null,

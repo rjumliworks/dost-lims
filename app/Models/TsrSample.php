@@ -110,6 +110,10 @@ class TsrSample extends Model
 
     public function getCodeAttribute($value)
 {
+    if (!$value) {
+        return $value;
+    }
+
     $parts = explode('-', $value);
 
     return implode('-', array_slice($parts, 0, -1));

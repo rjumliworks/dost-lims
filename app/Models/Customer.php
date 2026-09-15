@@ -54,7 +54,7 @@ class Customer extends Authenticatable
     public function getFullnameAttribute()
     {
         $subname = ($this->is_main) ? '' : ' - '.$this->name;
-        $name = $this->customer_name->name.$subname;
+        $name = ($this->customer_name?->name ?? $this->name).$subname;
         return $name;
     }
 

@@ -10,11 +10,6 @@ use App\Http\Resources\Finance\OrResource;
 
 class ViewClass
 {
-    public function __construct()
-    {
-        $this->configuration = AgencyConfiguration::with('agency')->first();
-    }
-
     public function list($request){
         $data = OrResource::collection(
             FinanceOp::query()
@@ -60,6 +55,7 @@ class ViewClass
     public function print($request){
         $id = $request->id;
         $items = [];
+        $configuration = AgencyConfiguration::with('agency')->where('agency_id', $request->agency)->first();
         $data = FinanceReceipt::with('op.payorable','op.items.itemable','agency','op.collection','op.payment','transaction','detail')->where('id',$id)->first();
         // return Excel::download(new OrExport($id), 'or.xlsx');
         if($data){
@@ -111,7 +107,7 @@ class ViewClass
         }
 
         $array = [
-            'agency' => $this->configuration->agency->name,
+            'agency' => $configuration->agency->name,
             'customer' => $customer.$sub,
             'word' => $numberInWords,
             'date' => $data->created_at,
@@ -121,7 +117,8 @@ class ViewClass
             'payment' => $data->op->payment->name,
         ];
        
-        $pdf = \PDF::loadView('finance.receipts.r9',$array)->setPaper([0, 0, 300, 641.68], 'portrait');
+        $view = (strtolower($configuration->agency->code) == 'r9') ? 'finance.receipts.r9' : 'finance.receipts.r6';
+        $pdf = \PDF::loadView($view,$array)->setPaper([0, 0, 300, 641.68], 'portrait');
         return $pdf->stream($data->number.'.pdf');
     }
 }

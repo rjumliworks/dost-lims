@@ -28,6 +28,7 @@ class ListResource extends JsonResource
                 'name' => $this->facility->name,
                 'region' => $this->facility->region,
             ] : null,
+            'payment' => $this->payment,
             'due_at' => $this->due_at,
             'created_at' => $this->created_at,
         ];

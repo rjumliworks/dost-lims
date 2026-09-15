@@ -92,7 +92,7 @@ export default {
             return '₱'+val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
         },
         openPrint(id){
-            window.open(this.currentUrl + '/receipts?option=print&id='+id);
+            window.open(this.currentUrl + '/receipts?option=print&id='+id+'&agency='+this.$page.props.user.data.agency);
         }
     }
 }

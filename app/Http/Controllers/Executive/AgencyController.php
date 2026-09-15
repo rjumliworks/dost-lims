@@ -79,6 +79,12 @@ class AgencyController extends Controller
                 case 'addfee':
                     return $this->save->addfee($request);
                 break;
+                case 'generate_sequence':
+                    return $this->save->generateSequence($request);
+                break;
+                case 'update_sequence':
+                    return $this->save->updateSequence($request);
+                break;
             }
         });
 
@@ -95,6 +101,7 @@ class AgencyController extends Controller
         return inertia('Executive/Agencies/Profile/Index',[
             'selected' => $data[0],
             'labs' => $data[1],
+            'sequences' => $this->view->sequences($id),
             'laboratories' => $this->dropdown->laboratories(),
             'discounts' =>  $this->dropdown->discounts(),
             'regions' => $this->dropdown->regions(),

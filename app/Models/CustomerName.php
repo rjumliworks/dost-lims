@@ -21,7 +21,10 @@ class CustomerName extends Model
                 return;
             }
             if (Auth::check()) {
-                $builder->where('agency_id', Auth::user()->profile->agency_id);
+                if (Auth::user()->hasRole('Administrator')) {
+                    return;
+                }
+                $builder->where('agency_id', Auth::user()->profile?->agency_id);
             }
         });
 

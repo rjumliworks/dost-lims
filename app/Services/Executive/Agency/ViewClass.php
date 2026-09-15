@@ -5,6 +5,9 @@ namespace App\Services\Executive\Agency;
 use Hashids\Hashids;
 use App\Models\Member;
 use App\Models\Agency;
+use App\Models\AgencyFacility;
+use App\Models\ListData;
+use App\Models\TsrSequence;
 use App\Http\Resources\Executive\AgencyResource;
 
 class ViewClass
@@ -45,5 +48,70 @@ class ViewClass
         ->unique('id')
         ->values();
         return [$data,$laboratories];
+    }
+
+    public function sequences($id){
+        $hashids = new Hashids('krad',10);
+        $agencyId = $hashids->decode($id)[0] ?? null;
+
+        $facilities = AgencyFacility::with('laboratories.laboratory')->where('agency_id',$agencyId)->get();
+        $types = ListData::where('type','Sequence')->where('is_active',1)->orderBy('id')->get();
+        $year = date('Y');
+
+        $sequences = TsrSequence::withoutGlobalScope('agency')
+            ->where('agency_id',$agencyId)
+            ->where('year',$year)
+            ->get();
+
+        // Quotation sequences are tracked per facility only (laboratory_id is a
+        // placeholder), so they're looked up ignoring laboratory_id.
+        $existingByLab = $sequences->keyBy(fn($sequence) => $sequence->facility_id.'-'.$sequence->laboratory_id.'-'.$sequence->type_id);
+        $existingByFacility = $sequences->keyBy(fn($sequence) => $sequence->facility_id.'-'.$sequence->type_id);
+
+        $rows = [];
+        foreach($facilities as $facility){
+            foreach($types as $type){
+                $isQuotation = strtolower($type->name) === 'quotation';
+
+                if($isQuotation){
+                    $sequence = $existingByFacility->get($facility->id.'-'.$type->id);
+                    $rows[] = [
+                        'facility_id' => $facility->id,
+                        'facility_name' => $facility->name,
+                        'is_regional' => (bool) $facility->is_regional,
+                        'laboratory_id' => null,
+                        'laboratory_name' => null,
+                        'laboratory_short' => null,
+                        'type_id' => $type->id,
+                        'type_name' => $type->name,
+                        'year' => $year,
+                        'sequence_id' => $sequence->id ?? null,
+                        'next_sequence' => $sequence->next_sequence ?? null,
+                    ];
+                    continue;
+                }
+
+                foreach($facility->laboratories as $facilityLaboratory){
+                    if(!$facilityLaboratory->laboratory) continue;
+                    $laboratory = $facilityLaboratory->laboratory;
+                    $sequence = $existingByLab->get($facility->id.'-'.$laboratory->id.'-'.$type->id);
+                    $rows[] = [
+                        'facility_id' => $facility->id,
+                        'facility_name' => $facility->name,
+                        'is_regional' => (bool) $facility->is_regional,
+                        'laboratory_id' => $laboratory->id,
+                        'laboratory_name' => $laboratory->name,
+                        'laboratory_short' => $laboratory->short,
+                        'type_id' => $type->id,
+                        'type_name' => $type->name,
+                        'year' => $year,
+                        'sequence_id' => $sequence->id ?? null,
+                        'next_sequence' => $sequence->next_sequence ?? null,
+                    ];
+                }
+            }
+        }
+
+        return $rows;
     }
 }

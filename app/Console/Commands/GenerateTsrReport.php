@@ -184,7 +184,7 @@ class GenerateTsrReport extends Command
         if (in_array($address->municipality->name, ['Zamboanga City', 'Isabela City'])) {
             $a = $address->municipality->name;
         } elseif ($address->municipality->name == 'Iloilo City') {
-            $a = $address->district->name . ', ' . $address->municipality->name;
+            $a = $address->district ? $address->district->name . ', ' . $address->municipality->name : $address->municipality->name;
         } elseif ($address->province->name == 'Sulu') {
             $a = $address->municipality->name . ', ' . $address->province->name;
         } else {

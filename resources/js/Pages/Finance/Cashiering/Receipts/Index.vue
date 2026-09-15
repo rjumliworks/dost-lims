@@ -238,7 +238,7 @@ export default {
             this.fetch();
         },
         openPrint(id){
-            window.open(this.currentUrl + '/receipts?option=print&id='+id);
+            window.open(this.currentUrl + '/receipts?option=print&id='+id+'&agency='+this.$page.props.user.data.agency);
         },
         updateList(data){
             this.lists[this.index].detail = data;

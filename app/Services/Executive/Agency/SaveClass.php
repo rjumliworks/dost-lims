@@ -8,6 +8,7 @@ use App\Models\AgencyConfiguration;
 use App\Models\AgencyFacilitySignatory;
 use App\Models\AgencyFacilityLaboratory;
 use App\Models\ListLaboratory;
+use App\Models\TsrSequence;
 use App\Http\Resources\Executive\AgencyResource;
 
 class SaveClass
@@ -184,8 +185,60 @@ class SaveClass
         $fee = $data->fees()->create($request->all());
         return [
             'data' => $fee,
-            'message' => 'Additional fee added was successful!', 
+            'message' => 'Additional fee added was successful!',
             'info' => "You've successfully added additional fee."
+        ];
+    }
+
+    public function generateSequence($request){
+        $facility = AgencyFacility::findOrFail($request->facility_id);
+        $year = date('Y');
+        $created = [];
+
+        foreach($request->rows as $row){
+            $isQuotation = empty($row['laboratory_id']);
+            $laboratoryId = $row['laboratory_id'] ?? 1;
+
+            $query = TsrSequence::withoutGlobalScope('agency')->where([
+                'agency_id' => $facility->agency_id,
+                'facility_id' => $facility->id,
+                'year' => $year,
+                'type_id' => $row['type_id'],
+            ]);
+            // Quotation sequences are tracked per facility only, so ignore laboratory_id.
+            if(!$isQuotation){
+                $query->where('laboratory_id', $laboratoryId);
+            }
+            $exists = $query->exists();
+
+            if(!$exists){
+                $created[] = TsrSequence::create([
+                    'agency_id' => $facility->agency_id,
+                    'facility_id' => $facility->id,
+                    'laboratory_id' => $laboratoryId,
+                    'year' => $year,
+                    'type_id' => $row['type_id'],
+                    'next_sequence' => $row['next_sequence'] ?? 1,
+                ]);
+            }
+        }
+
+        return [
+            'data' => $created,
+            'message' => 'Sequence generation was successful!',
+            'info' => "You've successfully generated the missing sequences for the facility."
+        ];
+    }
+
+    public function updateSequence($request){
+        $data = TsrSequence::withoutGlobalScope('agency')->findOrFail($request->id);
+        $data->next_sequence = $request->next_sequence;
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Sequence update was successful!',
+            'info' => "You've successfully updated the sequence."
         ];
     }
 }

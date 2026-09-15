@@ -23,7 +23,10 @@ class Testservice extends Model
         static::addGlobalScope('agency', function (Builder $builder) {
             if (Auth::check()) {
                 if (auth()->guard('web')->check()) {
-                    $builder->where('agency_id', Auth::user()->profile->agency_id);
+                    if (Auth::user()->hasRole('Administrator')) {
+                        return;
+                    }
+                    $builder->where('agency_id', Auth::user()->profile?->agency_id);
                 }
             }
         });

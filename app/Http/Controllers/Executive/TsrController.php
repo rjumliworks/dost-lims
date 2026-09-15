@@ -22,11 +22,12 @@ class TsrController extends Controller
     {
         switch ($request->option) {
             case 'list':
-                return $this->view->list($request);
+                return $this->view->list($request, $this->dropdown->statuses('Request'));
             default:
                 return inertia('Executive/Tsrs/Index', [
                     'dropdowns' => [
-                        'regions' => $this->dropdown->regions(),
+                        'agencies' => $this->dropdown->agencies(),
+                        'laboratories' => $this->dropdown->laboratories(),
                         'statuses' => $this->dropdown->statuses('Request'),
                         'years' => $this->dropdown->years(),
                     ],
