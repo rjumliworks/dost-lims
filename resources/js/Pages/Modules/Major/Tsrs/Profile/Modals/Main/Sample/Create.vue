@@ -253,37 +253,50 @@ export default {
         },
        setSample(category, type, name) {
 
-            this.categories = [{
-                value: category.id,
-                name: category.name
-            }];
+            if (category) {
+                this.categories = [{
+                    value: category.id,
+                    name: category.name
+                }];
+                this.category = category.id;
+                this.form.category_id = category.id;
+            } else {
+                this.categories = [];
+                this.category = null;
+                this.form.category_id = null;
+            }
 
-            this.types = [{
-                value: type.id,
-                name: type.name
-            }];
+            if (type) {
+                this.types = [{
+                    value: type.id,
+                    name: type.name
+                }];
+                this.sampletype = {
+                    value: type.id,
+                    name: type.name
+                };
+                this.form.sampletype_id = type.id;
+            } else {
+                this.types = [];
+                this.sampletype = null;
+                this.form.sampletype_id = null;
+            }
 
-            this.names = [{
-                value: name.id,
-                name: name.name
-            }];
-
-            this.samplename = name.id;
-            this.category = category.id;
-
-            this.sampletype = {
-                value: type.id,
-                name: type.name
-            };
-
-            this.samplename = {
-                value: name.id,
-                name: name.name
-            };
-
-            this.form.category_id = category.id;
-            this.form.sampletype_id = type.id;
-            this.form.samplename_id = name.id;
+            if (name) {
+                this.names = [{
+                    value: name.id,
+                    name: name.name
+                }];
+                this.samplename = {
+                    value: name.id,
+                    name: name.name
+                };
+                this.form.samplename_id = name.id;
+            } else {
+                this.names = [];
+                this.samplename = null;
+                this.form.samplename_id = null;
+            }
         },
         fetchCategory(code){
             axios.get('/categories',{

@@ -16,8 +16,9 @@
                                     <span class="fw-medium"> {{ summary.sampletype.name }}</span>
                                 </div>
                                 <div class="vr" style="width: 1px;"></div>
-                                <div>Sample Category : 
-                                    <span class="fw-medium"> {{ summary.category.name }}</span>
+                                <div>Sample Category :
+                                    <span v-if="summary.category" class="fw-medium"> {{ summary.category.name }}</span>
+                                    <span v-else class="text-muted">Not Available</span>
                                 </div>
                                 <!-- <div class="vr" style="width: 1px;"></div>
                                 <div>Serial No. : 
