@@ -31,6 +31,9 @@ class SearchController extends Controller
             case 'barangays':
                 return $this->dropdown->barangays($request->code);
             break;
+            case 'districts':
+                return $this->dropdown->districts($request->code);
+            break;
             case 'tsrsamples':
                 return $this->dropdown->tsrsamples($request->keyword);
             break;

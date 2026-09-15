@@ -11,9 +11,10 @@ class UpdateClass
 {
     public function customer($request)
     {
-        $customer = Customer::with(['contact', 'address'])->findOrFail($request->id);
+        $customer = Customer::with(['contact', 'address', 'customer_name'])->findOrFail($request->id);
         $customer->updateIfDirty(
             $request->only([
+                'name',
                 'industry_id',
                 'classification_id',
                 'type_id',
@@ -21,6 +22,9 @@ class UpdateClass
                 'led_id',
             ])
         );
+        if ($request->filled('customer_name') && $customer->customer_name) {
+            $customer->customer_name->update(['name' => $request->customer_name]);
+        }
         optional($customer->contact)->updateIfDirty(
             $request->only(['email', 'contact_no'])
         );

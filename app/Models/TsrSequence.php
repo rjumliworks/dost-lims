@@ -88,13 +88,13 @@ class TsrSequence extends Model
             $agencyId = $user->profile?->agency_id;
             $facilityId = $user->profile?->facility_id;
             $year = date('Y');
-            
-            $sequence = TsrSequence::where([
-                'agency_id' => $agencyId,
-                'facility_id' => $facilityId,
-                'year' => $year,
-                'type_id' => $typeId
-            ])->lockForUpdate()->first();
+
+            $sequence = TsrSequence::withoutGlobalScope('agency')
+                ->where([
+                    'agency_id' => $agencyId,
+                    'year' => $year,
+                    'type_id' => $typeId
+                ])->lockForUpdate()->first();
 
             if (!$sequence) {
                 $sequence = TsrSequence::create([

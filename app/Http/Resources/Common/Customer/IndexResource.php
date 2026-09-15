@@ -25,6 +25,7 @@ class IndexResource extends JsonResource
             'is_active' => $this->is_active,
             'is_new' => $this->is_new,
             'customer_name' => $this?->customer_name->name,
+            'has_branches' => (bool) $this->customer_name->has_branches,
             'classification' => $this->customer_name->classification,
             'type' => $this->customer_name->type,
             'industry' => $this->customer_name->industry,

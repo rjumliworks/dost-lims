@@ -19,6 +19,7 @@ use App\Models\LocationRegion;
 use App\Models\LocationProvince;
 use App\Models\LocationMunicipality;
 use App\Models\LocationBarangay;
+use App\Models\LocationDistrict;
 use App\Models\SampleCategory;
 use App\Models\Schedule;
 use App\Models\Customer;
@@ -273,6 +274,20 @@ class DropdownClass
 
     public function barangays($code){
         $data = LocationBarangay::where('municipality_code',$code)->get()->map(function ($item) {
+            return [
+                'value' => $item->code,
+                'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
+    public function districts($code){
+        if (\Auth::user()?->profile?->agency_id != 11) {
+            return [];
+        }
+
+        $data = LocationDistrict::where('municipality_code',$code)->get()->map(function ($item) {
             return [
                 'value' => $item->code,
                 'name' => $item->name

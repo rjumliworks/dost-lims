@@ -3,17 +3,20 @@
         
             <BRow v-if="selected">
                 <BCol lg="12" class="mt-n1">
-                    <TextInput id="address" :value="selected.customer" type="text" class="form-control" :light="true" readonly/>
-                    <hr class="text-muted mt-3 mb-4"/>
-                    <div class="mt-3">
+                    <div class="mt-1">
                     <form class="customform">
                         <BRow>
                             <BCol lg="12">
                                 <BRow class="g-3">
-                                    <BCol lg="12" v-if="form.has_branches" class="mt-1 mb-n1">
-                                        <InputLabel for="name" value="Branch" :message="errors.name"/>
-                                        <TextInput id="name" v-model="form.name" type="text" class="form-control" placeholder="Please enter name" @input="handleInput('name')" :light="true"/>
+                                    <BCol :lg="form.has_branches ? 6 : 12" class="mt-1 mb-n1">
+                                        <InputLabel for="customer_name" :value="form.has_branches ? 'Main Name' : 'Name'" :message="errors.customer_name"/>
+                                        <TextInput id="customer_name" v-model="form.customer_name" type="text" class="form-control" placeholder="Please enter name" @input="handleInput('customer_name')" :light="true"/>
                                     </BCol>
+                                    <BCol lg="6" v-if="form.has_branches" class="mt-1 mb-n1">
+                                        <InputLabel for="name" value="Branch Name" :message="errors.name"/>
+                                        <TextInput id="name" v-model="form.name" type="text" class="form-control" placeholder="Please enter branch name" @input="handleInput('name')" :light="true"/>
+                                    </BCol>
+                                    <BCol lg="12"><hr class="text-muted mt-1 mb-1"/></BCol>
                                     <BCol lg="6" class="mt-1 mb-n1">
                                         <InputLabel for="email" value="Email" :message="errors.email"/>
                                         <TextInput id="email" v-model="form.email" type="email" class="form-control" placeholder="Please enter email" @input="handleInput('email')" :light="true"/>
@@ -94,6 +97,9 @@ export default {
             currentUrl: window.location.origin,
             form: useForm({
                 id: null,
+                name: null,
+                customer_name: null,
+                has_branches: false,
                 email: null,
                 contact_no: null,
                 classification_id: null,
@@ -152,6 +158,9 @@ export default {
         show(data){
             this.selected = data;
             this.form.id = data.id;
+            this.form.name = data.name;
+            this.form.customer_name = data.customer_name;
+            this.form.has_branches = data.has_branches;
             this.form.email = data.email;
             this.form.contact_no = data.contact_no;
             this.form.classification_id = data.classification.id;
