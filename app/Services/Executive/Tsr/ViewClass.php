@@ -62,6 +62,18 @@ class ViewClass
         ];
     }
 
+    public function codes($request)
+    {
+        return Tsr::whereNotNull('code')
+            ->when($request->keyword, function ($query, $keyword) {
+                $query->where('code', 'LIKE', "%{$keyword}%");
+            })
+            ->orderBy('code')
+            ->limit(20)
+            ->get(['id', 'code'])
+            ->map(fn ($tsr) => ['value' => $tsr->id, 'name' => $tsr->code]);
+    }
+
     public function list($request, $statuses)
     {
         $data = ListResource::collection(

@@ -101,6 +101,7 @@ Route::middleware(['role:Administrator'])->group(function () {
     Route::resource('/discounts', App\Http\Controllers\Executive\DiscountController::class);
     Route::get('/history', [App\Http\Controllers\Executive\HistoryController::class, 'index']);
     Route::get('/tsrs-overview', [App\Http\Controllers\Executive\TsrController::class, 'index']);
+    Route::post('/tsrs-overview/sync', [App\Http\Controllers\Executive\TsrController::class, 'sync']);
     Route::get('/customers-overview', [App\Http\Controllers\Executive\CustomerController::class, 'index']);
     Route::get('/testservices-overview', [App\Http\Controllers\Executive\TestserviceController::class, 'index']);
 });

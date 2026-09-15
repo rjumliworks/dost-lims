@@ -39,6 +39,9 @@
                                 <span @click="refresh()" class="input-group-text" v-b-tooltip.hover title="Refresh" style="cursor: pointer;">
                                     <i class="bx bx-refresh search-icon"></i>
                                 </span>
+                                <b-button @click="$refs.syncModal.show()" variant="primary" v-b-tooltip.hover title="Sync a range of TSRs to refresh their printed version">
+                                    <i class="ri-refresh-line align-bottom me-1"></i> Sync Printed TSRs
+                                </b-button>
                             </div>
                         </b-col>
                     </b-row>
@@ -157,14 +160,16 @@
             </div>
         </div>
     </BRow>
+    <Sync ref="syncModal" @success="fetch()"/>
 </template>
 <script>
 import _ from 'lodash';
 import Multiselect from "@vueform/multiselect";
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 import Pagination from "@/Shared/Components/Pagination.vue";
+import Sync from './Modals/Sync.vue';
 export default {
-    components: { PageHeader, Pagination, Multiselect },
+    components: { PageHeader, Pagination, Multiselect, Sync },
     props: ['dropdowns'],
     data(){
         return {
