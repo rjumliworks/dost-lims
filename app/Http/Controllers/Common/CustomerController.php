@@ -38,6 +38,9 @@ class CustomerController extends Controller
             case 'logs':
                 return $this->view->logs($request);
             break;
+            case 'changelogs':
+                return $this->view->nameLogs($request);
+            break;
             case 'pick':
                 return $this->view->pick($request);
             break;

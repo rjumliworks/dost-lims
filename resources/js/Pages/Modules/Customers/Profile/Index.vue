@@ -62,6 +62,7 @@
                                                     <Conforme :lists="customer.data.conformes" v-if="menu == 'Conformes'"/>
                                                     <Payor :lists="customer.data.payors" v-if="menu == 'Payors'"/>
                                                     <Logs :id="customer.data.id" v-if="menu == 'Logs'"/>
+                                                    <Changelogs :id="customer.data.id" v-if="menu == 'Changelogs'"/>
                                                 </div>
                                             </transition>
                                         </div>
@@ -83,6 +84,7 @@ import Top from './Top.vue';
 import Count from './Count.vue';
 import Sidebar from './Sidebar.vue';
 import Logs from './Components/Logs.vue';
+import Changelogs from './Components/Changelogs.vue';
 import Lists from './Components/Lists.vue';
 import Payor from './Components/Payor.vue';
 import Conforme from './Components/Conforme.vue';
@@ -91,11 +93,11 @@ import AddPayor from './Modals/Payor.vue';
 import PageHeader from '@/Shared/Components/PageHeader.vue';
 export default {
     props:['customer'],
-    components: { PageHeader, Top, Count, Sidebar, Lists, Conforme, Payor, Logs, AddConforme, AddPayor },
+    components: { PageHeader, Top, Count, Sidebar, Lists, Conforme, Payor, Logs, Changelogs, AddConforme, AddPayor },
     data(){
         return {
             menus: [
-                'TSRs','Conformes','Payors','Logs'
+                'TSRs','Conformes','Payors','Logs','Changelogs'
             ],
             type: null,
             index: null,

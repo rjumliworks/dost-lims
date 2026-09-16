@@ -62,6 +62,9 @@ Route::middleware(['2fa','auth','verified'])->group(function () {
     Route::resource('/tsrs', App\Http\Controllers\Major\TsrController::class);
     Route::resource('/quotations', App\Http\Controllers\Major\QuotationController::class);
     Route::resource('/samples', App\Http\Controllers\Major\SampleController::class);
+    Route::get('/sample-templates', [App\Http\Controllers\Major\SampleTemplateController::class, 'index']);
+    Route::post('/sample-templates', [App\Http\Controllers\Major\SampleTemplateController::class, 'store']);
+    Route::delete('/sample-templates/{id}', [App\Http\Controllers\Major\SampleTemplateController::class, 'destroy']);
     Route::resource('/analyses', App\Http\Controllers\Major\AnalysisController::class);
     Route::resource('/testreports', App\Http\Controllers\Major\TestreportController::class);
 

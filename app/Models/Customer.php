@@ -218,4 +218,29 @@ class Customer extends Authenticatable
         })
         ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
     }
+
+    public function nameActivities()
+    {
+        $nameId = $this->name_id;
+
+        return Activity::with(['causer:id','causer.profile:user_id,firstname,lastname,middlename,suffix_id'])
+        ->where(function ($query) use ($nameId) {
+            $query->where(function ($q) {
+                $q->where('subject_type', Customer::class)
+                  ->where('subject_id', $this->id);
+            });
+
+            if ($nameId) {
+                $query->orWhere(function ($q) use ($nameId) {
+                    $q->where('subject_type', CustomerName::class)
+                      ->where('subject_id', $nameId);
+                });
+            }
+        })
+        ->where(function ($query) {
+            $query->whereJsonContainsKey('properties->attributes->name')
+                  ->orWhereJsonContainsKey('properties->old->name');
+        })
+        ->orderBy('created_at', 'desc')->orderBy('id', 'desc');
+    }
 }

@@ -175,6 +175,13 @@ class ViewClass
         return ActivityResource::collection($data);
     }
 
+    public function nameLogs($request)
+    {
+        $customer = Customer::findOrFail($request->id);
+        $data = $customer->nameActivities()->paginate(15);
+        return ActivityResource::collection($data);
+    }
+
     public function region(){
         return auth()->user()?->profile?->agency?->address?->region_code;
     }
