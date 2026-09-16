@@ -30,6 +30,11 @@ class ViewClass
                 });
             });
         })
+        ->when($request->laboratory, function ($query, $laboratory) {
+            $query->whereHas('myroles', function ($q) use ($laboratory) {
+                $q->where('laboratory_id', $laboratory);
+            });
+        })
         ->when($request->agency, function ($query, $agency) {
             $query->whereHas('profile', function ($q) use ($agency){
                 $q->where('agency_id', $agency);

@@ -58,8 +58,8 @@ class ReportGenerateClass
 
             $sampleCode = $row->code;
             $sampleOther = $row->name;
-            $sampleName = $row->samplename->name;
-            $sampleType = $row->sampletype->name;
+            $sampleName = $row->samplename->name ?? null;
+            $sampleType = $row->sampletype->name ?? null;
 
             $activeIndex = 0;
             $refundedIndex = 0;
@@ -71,21 +71,21 @@ class ReportGenerateClass
                 if ($analysis->addfee->count()) {
                     foreach ($analysis->addfee as $item) {
                         $fees[] = [
-                            'name' => $item->service->name,
-                            'fee' => $item->service->fee,
+                            'name' => $item->service->name ?? null,
+                            'fee' => $item->service->fee ?? null,
                             'quantity' => $item->quantity,
                             'total' => $analysis->total,
                         ];
                     }
                 }
 
-                $testName = $analysis->testservice->testname->name;
-                $testMethod = $analysis->testservice->method->method->name;
-                $testMethodShort = $analysis->testservice->method->method->short;
+                $testName = $analysis->testservice->testname->name ?? null;
+                $testMethod = $analysis->testservice->method->method->name ?? null;
+                $testMethodShort = $analysis->testservice->method->method->short ?? null;
 
                 $key = "{$sampleCode}_{$testName}_{$testMethod}";
 
-                if ($analysis->status->name === 'Refunded') {
+                if (($analysis->status->name ?? null) === 'Refunded') {
 
                     if (!isset($groupedRefunded[$key])) {
 
@@ -153,14 +153,18 @@ class ReportGenerateClass
 
         $d = !empty($address->address) ? $address->address . ', ' : '';
 
-        if (in_array($address->municipality->name, ['Zamboanga City', 'Isabela City'])) {
-            $a = $address->municipality->name;
-        } elseif ($address->municipality->name == 'Iloilo City') {
-            $a = $address->district ? $address->district->name . ', ' . $address->municipality->name : $address->municipality->name;
-        } elseif ($address->province->name == 'Sulu') {
-            $a = $address->municipality->name . ', ' . $address->province->name;
+        $municipalityName = $address->municipality->name ?? null;
+        $provinceName = $address->province->name ?? null;
+        $barangayName = $address->barangay->name ?? null;
+
+        if (in_array($municipalityName, ['Zamboanga City', 'Isabela City'])) {
+            $a = $municipalityName;
+        } elseif ($municipalityName == 'Iloilo City') {
+            $a = $address->district ? $address->district->name . ', ' . $municipalityName : $municipalityName;
+        } elseif ($provinceName == 'Sulu') {
+            $a = $municipalityName . ', ' . $provinceName;
         } else {
-            $a = $address->municipality->name . ', ' . $address->province->name;
+            $a = $municipalityName . ', ' . $provinceName;
         }
 
         $information = [
@@ -169,20 +173,20 @@ class ReportGenerateClass
             'date' => $tsr->created_at,
             'laboratory_id' => $tsr->laboratory_id,
             'due_at' => $tsr->due_at,
-            'receiver' => $tsr->received->profile->firstname . ' ' .
-                substr($tsr->received->profile->middlename, 0, 1) . '. ' .
-                $tsr->received->profile->lastname,
+            'receiver' => ($tsr->received->profile->firstname ?? '') . ' ' .
+                substr($tsr->received->profile->middlename ?? '', 0, 1) . '. ' .
+                ($tsr->received->profile->lastname ?? ''),
             'customer' => [
                 'name' => $tsr->customer->is_main
-                    ? $tsr->customer->customer_name->name
-                    : $tsr->customer->customer_name->name . ' - ' . $tsr->customer->name,
-                'address1' => $d . $address->barangay->name . ', ' . $a,
-                'address2' => $address->barangay->name . ', ' . $a,
-                'contact_no' => $tsr->customer->contact->contact_no,
-                'email' => $tsr->customer->contact->email,
+                    ? ($tsr->customer->customer_name->name ?? null)
+                    : ($tsr->customer->customer_name->name ?? null) . ' - ' . $tsr->customer->name,
+                'address1' => $d . $barangayName . ', ' . $a,
+                'address2' => $barangayName . ', ' . $a,
+                'contact_no' => $tsr->customer->contact->contact_no ?? null,
+                'email' => $tsr->customer->contact->email ?? null,
                 'conforme' => [
-                    'name' => $tsr->conforme->name,
-                    'contact_no' => $tsr->conforme->contact_no,
+                    'name' => $tsr->conforme->name ?? null,
+                    'contact_no' => $tsr->conforme->contact_no ?? null,
                 ],
             ],
             'payment' => [
