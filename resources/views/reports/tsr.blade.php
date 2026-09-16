@@ -199,16 +199,18 @@
                 </tr>
                 <tr>
                     <td width="25%">Address : </td>
-                    @if($configuration['agency']['member']['name'] == 'Department of Science and Technology - VI')
+                    @if(isset($tsr['customer']['address_parts']))
+                        <td colspan="5" width="75%"><span style="text-transform: uppercase; color: #072388;">{{ collect($configuration->addressFormat())->map(fn($key) => $tsr['customer']['address_parts'][$key] ?? null)->filter()->implode(', ') }}</span></td>
+                    @elseif($configuration['agency']['member']['name'] == 'Department of Science and Technology - VI')
                         @if(isset($tsr['customer']['address2']))
                         <td colspan="5" width="75%"><span style="text-transform: uppercase; color: #072388;">{{$tsr['customer']['address2']}}</span></td>
-                        @else 
+                        @else
                         <td colspan="5" width="75%"><span style="text-transform: uppercase; color: #072388;">{{$tsr['customer']['address']}}</span></td>
                         @endif
-                    @else 
+                    @else
                         @if(isset($tsr['customer']['address1']))
                         <td colspan="5" width="75%"><span style="text-transform: uppercase; color: #072388;">{{$tsr['customer']['address1']}}</span></td>
-                        @else 
+                        @else
                         <td colspan="5" width="75%"><span style="text-transform: uppercase; color: #072388;">{{$tsr['customer']['address']}}</span></td>
                         @endif
                     @endif

@@ -151,21 +151,14 @@ class ReportGenerateClass
 
         $address = $tsr->customer->address;
 
-        $d = !empty($address->address) ? $address->address . ', ' : '';
-
-        $municipalityName = $address->municipality->name ?? null;
-        $provinceName = $address->province->name ?? null;
-        $barangayName = $address->barangay->name ?? null;
-
-        if (in_array($municipalityName, ['Zamboanga City', 'Isabela City'])) {
-            $a = $municipalityName;
-        } elseif ($municipalityName == 'Iloilo City') {
-            $a = $address->district ? $address->district->name . ', ' . $municipalityName : $municipalityName;
-        } elseif ($provinceName == 'Sulu') {
-            $a = $municipalityName . ', ' . $provinceName;
-        } else {
-            $a = $municipalityName . ', ' . $provinceName;
-        }
+        $addressParts = [
+            'street' => $address->address ?? null,
+            'barangay' => $address->barangay->name ?? null,
+            'municipality' => $address->municipality->name ?? null,
+            'district' => $address->district->name ?? null,
+            'province' => $address->province->name ?? null,
+            'region' => $address->region->name ?? null,
+        ];
 
         $information = [
             'code' => $tsr->code,
@@ -180,8 +173,7 @@ class ReportGenerateClass
                 'name' => $tsr->customer->is_main
                     ? ($tsr->customer->customer_name->name ?? null)
                     : ($tsr->customer->customer_name->name ?? null) . ' - ' . $tsr->customer->name,
-                'address1' => $d . $barangayName . ', ' . $a,
-                'address2' => $barangayName . ', ' . $a,
+                'address_parts' => $addressParts,
                 'contact_no' => $tsr->customer->contact->contact_no ?? null,
                 'email' => $tsr->customer->contact->email ?? null,
                 'conforme' => [

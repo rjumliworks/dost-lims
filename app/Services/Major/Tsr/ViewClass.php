@@ -14,6 +14,7 @@ use App\Models\Wallet;
 use App\Models\WalletTransaction;
 use App\Models\AgencyConfiguration;
 use App\Models\AgencyFacilitySignatory;
+use App\Services\Common\FacilityVisibility;
 use App\Http\Resources\Major\Tsr\ListResource;
 use App\Http\Resources\Major\Tsr\ViewResource;
 use App\Http\Resources\Major\Tsr\AnalysisResource;
@@ -42,10 +43,14 @@ class ViewClass
         return array_unique($dates);
     }
 
-    public function counts($statuses,$year,$facilityScope = null){
+    public function counts($statuses,$year,$facilityScope = null,$agencyId = null){
         foreach($statuses as $status){
             if ($status['value'] == '2') {
-                $counts[] = Tsr::where(function ($query) {
+                $counts[] = Tsr::withoutGlobalScope('agency')
+                ->when($agencyId, function ($query, $agencyId) {
+                    $query->where('agency_id', $agencyId);
+                })
+                ->where(function ($query) {
                     $query->where('status_id', 2)
                           ->orWhere(function ($query) {
                               $query->whereIn('status_id', [3, 4])
@@ -54,38 +59,20 @@ class ViewClass
                                     });
                           });
                 })
-                ->when($facilityScope, function ($query, $facility) {
-                    (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+                ->when(is_array($facilityScope), function ($query) use ($facilityScope) {
+                    empty($facilityScope) ? $query->whereRaw('1 = 0') : $query->whereIn('facility_id',$facilityScope);
                 })
-                // ->when($this->province, function ($query) {
-                //     $query->where('received_by', \Auth::user()->id);
-                // })
-                // ->when($this->configuration->strict_mode == 1, function ($query) {
-                //     $facility = \Auth::user()->profile->facility;
-
-                //     if ($facility->is_psto || $facility->is_separated) {
-                //         $query->where('facility_id', $facility->id);
-                //     }
-                // })
-                // ->where('agency_id',$this->agency)
                 ->whereYear('created_at',$year)
                 ->count();
             } else {
-                $counts[] = Tsr::where('status_id',$status['value'])
-                ->when($facilityScope, function ($query, $facility) {
-                    (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+                $counts[] = Tsr::withoutGlobalScope('agency')
+                ->when($agencyId, function ($query, $agencyId) {
+                    $query->where('agency_id', $agencyId);
                 })
-                // ->when($this->province, function ($query){
-                //     $query->where('received_by', \Auth::user()->id);
-                // })
-                // ->when($this->configuration->strict_mode == 1, function ($query) {
-                //     $facility = \Auth::user()->profile->facility;
-
-                //     if ($facility->is_psto || $facility->is_separated) {
-                //         $query->where('facility_id', $facility->id);
-                //     }
-                // })
-                // ->where('agency_id',$this->agency)
+                ->where('status_id',$status['value'])
+                ->when(is_array($facilityScope), function ($query) use ($facilityScope) {
+                    empty($facilityScope) ? $query->whereRaw('1 = 0') : $query->whereIn('facility_id',$facilityScope);
+                })
                 ->whereYear('created_at',$year)
                 ->count();
             }
@@ -93,10 +80,15 @@ class ViewClass
         return $counts;
     }
 
-    public function typeCounts($year,$facilityScope = null){
-        $base = Tsr::when($facilityScope, function ($query, $facility) {
-            (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
-        })->whereYear('created_at',$year);
+    public function typeCounts($year,$facilityScope = null,$agencyId = null){
+        $base = Tsr::withoutGlobalScope('agency')
+            ->when($agencyId, function ($query, $agencyId) {
+                $query->where('agency_id', $agencyId);
+            })
+            ->when(is_array($facilityScope), function ($query) use ($facilityScope) {
+                empty($facilityScope) ? $query->whereRaw('1 = 0') : $query->whereIn('facility_id',$facilityScope);
+            })
+            ->whereYear('created_at',$year);
 
         return [
             'Local' => (clone $base)->where('is_referral', 0)->count(),
@@ -106,23 +98,22 @@ class ViewClass
 
     public function lists($request,$statuses){
 
-        $isLaboratoryHead = \Auth::user()->roles()
-            ->where('name', 'Laboratory Head')
-            ->where('user_roles.is_active', 1)
-            ->exists();
+        $user = \Auth::user();
+        $isAdministrator = $user->hasRole('Administrator');
+        $agencyId = $isAdministrator ? null : $user->profile?->agency_id;
 
-        $isRegionalCro = \Auth::user()->profile?->facility?->is_regional
-            && \Auth::user()->roles()
-                ->where('name', 'Customer Relation Officer')
-                ->where('user_roles.is_active', 1)
-                ->exists();
+        $facilityScope = $isAdministrator ? null : FacilityVisibility::effectiveFacilityIds($user);
 
-        $canFilterFacility = $isLaboratoryHead || $isRegionalCro;
-
-        $facilityScope = $canFilterFacility ? $request->facility : \Auth::user()->profile?->facility_id;
+        if ($request->facility) {
+            $requested = is_array($request->facility) ? $request->facility : [$request->facility];
+            $facilityScope = $isAdministrator ? $requested : array_values(array_intersect($facilityScope, $requested));
+        }
 
         $data = ListResource::collection(
-            Tsr::query()
+            Tsr::withoutGlobalScope('agency')
+            ->when($agencyId, function ($query, $agencyId) {
+                $query->where('agency_id', $agencyId);
+            })
             ->with('customer:id,name_id,name,is_main','customer.customer_name:id,name,has_branches')
             ->with('laboratory:id,name','status:id,name,color,others')
             ->with('payment:tsr_id,id,total,is_paid,is_free,paid_at,status_id,discount_id,collection_id,payment_id','payment.status:id,name,color,others')
@@ -183,8 +174,8 @@ class ViewClass
             ->when($request->laboratory , function ($query, $labtype ) {
                 (is_array($labtype)) ?  $query->whereIn('laboratory_id',$labtype ) : $query->where('laboratory_id',$labtype );
             })
-            ->when($facilityScope, function ($query, $facility) {
-                (is_array($facility)) ? $query->whereIn('facility_id',$facility) : $query->where('facility_id',$facility);
+            ->when(is_array($facilityScope), function ($query) use ($facilityScope) {
+                empty($facilityScope) ? $query->whereRaw('1 = 0') : $query->whereIn('facility_id',$facilityScope);
             })
             ->when($request->sort, function ($query, $sort) use ($request) {
                 if ($request->sortby == 'Code') {
@@ -264,8 +255,8 @@ class ViewClass
             })
             ->paginate($request->count)
         )->additional([
-            'summary' => $this->counts($statuses,$request->year,$facilityScope),
-            'typeCounts' => $this->typeCounts($request->year,$facilityScope)
+            'summary' => $this->counts($statuses,$request->year,$facilityScope,$agencyId),
+            'typeCounts' => $this->typeCounts($request->year,$facilityScope,$agencyId)
         ]);
         return $data;
     }
@@ -339,7 +330,7 @@ class ViewClass
         $tsrinfo = Tsr::where('id',$id)->with('laboratory')->first();
         $tsr = TsrReport::where('tsr_id',$id)->value('information');
         $secret = TsrReport::where('tsr_id',$id)->value('secret_key');
-        $lab = json_decode($tsr);
+        $lab = json_decode($tsr, true);
 
         $signatory = AgencyFacilitySignatory::with('cashier.profile')->where('facility_id',$tsrinfo->facility_id)->first();
 
@@ -372,7 +363,7 @@ class ViewClass
             'facility' => \Auth::user()->profile->facility_id,
             'qrCodeImage' => $base64Image,
             'configuration' => AgencyConfiguration::with('agency.member')->where('agency_id',\Auth::user()->profile->agency_id)->first(),
-            'tsr' => json_decode($tsr),
+            'tsr' => json_decode($tsr, true),
             'cashier' => $signatory->cashier->profile->firstname.' '.$signatory->cashier->profile->middlename[0].'. '.$signatory->cashier->profile->lastname,
             'manager' => ($head) ? $head->user->profile->firstname.' '.$head->user->profile->middlename[0].'. '.$head->user->profile->lastname : '',
             'user' => \Auth::user()->profile->firstname.' '.\Auth::user()->profile->middlename[0].'. '.\Auth::user()->profile->lastname,
@@ -399,7 +390,7 @@ class ViewClass
             $width = $fontMetrics->get_text_width($text, $font, $size);
             $canvas->text(106 - $width, 796, $text, $font, $size);
         });
-        return $pdf->stream($lab->code.'.pdf');
+        return $pdf->stream($lab['code'].'.pdf');
     }
 
 

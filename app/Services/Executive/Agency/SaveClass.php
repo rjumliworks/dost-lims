@@ -2,6 +2,7 @@
 
 namespace App\Services\Executive\Agency;
 
+use Hashids\Hashids;
 use App\Models\Agency;
 use App\Models\AgencyFacility;
 use App\Models\AgencyConfiguration;
@@ -9,6 +10,9 @@ use App\Models\AgencyFacilitySignatory;
 use App\Models\AgencyFacilityLaboratory;
 use App\Models\ListLaboratory;
 use App\Models\TsrSequence;
+use App\Models\User;
+use App\Models\UserFacilityVisibility;
+use App\Services\Common\FacilityVisibility;
 use App\Http\Resources\Executive\AgencyResource;
 
 class SaveClass
@@ -79,6 +83,49 @@ class SaveClass
             'data' => $data,
             'message' => 'Functionalities updated successfully!',
             'info' => "The agency's enabled modules have been updated."
+        ];
+    }
+
+    public function printing($request){
+        $data = AgencyConfiguration::where('id',$request->id)->first();
+        $data->printing = ['address_format' => $request->address_format];
+        $data->save();
+
+        return [
+            'data' => $data,
+            'message' => 'Printing settings updated successfully!',
+            'info' => "The agency's address format for printed reports has been updated."
+        ];
+    }
+
+    public function visibility($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->user)[0] ?? null;
+        $user = User::findOrFail($id);
+
+        $data = UserFacilityVisibility::updateOrCreate(
+            ['user_id' => $user->id],
+            ['facility_ids' => $request->facility_ids ?? []]
+        );
+
+        return [
+            'data' => $data,
+            'message' => 'Facility visibility updated successfully!',
+            'info' => "The user's visible facilities for the TSR list have been updated."
+        ];
+    }
+
+    public function resetVisibility($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->user)[0] ?? null;
+        $user = User::findOrFail($id);
+
+        UserFacilityVisibility::where('user_id', $user->id)->delete();
+
+        return [
+            'data' => ['facility_ids' => FacilityVisibility::defaultFacilityIds($user)],
+            'message' => 'Facility visibility reset successfully!',
+            'info' => "The user's visible facilities now follow the default rule."
         ];
     }
 

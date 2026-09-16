@@ -8,6 +8,9 @@ use App\Models\Agency;
 use App\Models\AgencyFacility;
 use App\Models\ListData;
 use App\Models\TsrSequence;
+use App\Models\User;
+use App\Models\UserFacilityVisibility;
+use App\Services\Common\FacilityVisibility;
 use App\Http\Resources\Executive\AgencyResource;
 
 class ViewClass
@@ -113,5 +116,19 @@ class ViewClass
         }
 
         return $rows;
+    }
+
+    public function visibility($request){
+        $hashids = new Hashids('krad',10);
+        $id = $hashids->decode($request->user)[0] ?? null;
+
+        $user = User::with('profile.facility')->findOrFail($id);
+
+        return [
+            'user' => $request->user,
+            'facility_ids' => FacilityVisibility::effectiveFacilityIds($user),
+            'default_facility_ids' => FacilityVisibility::defaultFacilityIds($user),
+            'is_customized' => UserFacilityVisibility::where('user_id', $user->id)->exists(),
+        ];
     }
 }

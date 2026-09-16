@@ -7,6 +7,7 @@ use App\Models\AgencyDiscount;
 use App\Models\AgencyFacility;
 use App\Models\AgencyFacilityLaboratory;
 use App\Models\TestserviceAddon;
+use App\Services\Common\FacilityVisibility;
 use Illuminate\Support\Facades\Auth;
 
 class AgencyClass
@@ -61,10 +62,36 @@ class AgencyClass
         return $data;
     }
 
+    /**
+     * The facility ids the current user is allowed to view, per the per-user
+     * facility visibility settings managed under an agency's Role Settings
+     * (defaults to their own facility, widened only for regional CRO/Lab
+     * Head, overridable by an administrator).
+     */
+    public function visibleFacilityIds(){
+        return FacilityVisibility::effectiveFacilityIds(Auth::user());
+    }
+
+    /**
+     * Facilities the current user is allowed to view. Used to scope the
+     * facility filter shown on the TSR list.
+     */
+    public function visibleFacilities(){
+        $data = AgencyFacility::whereIn('id', $this->visibleFacilityIds())
+        ->where('is_active',1)
+        ->get()->map(function ($item) {
+            return [
+                'value' => $item->id,
+                'name' => $item->name
+            ];
+        });
+        return $data;
+    }
+
     public function laboratories($facility = null){
         $data = AgencyFacilityLaboratory::with('laboratory')
         ->when($facility, function ($query) use ($facility) {
-            $query->where('facility_id', $facility);
+            is_array($facility) ? $query->whereIn('facility_id', $facility) : $query->where('facility_id', $facility);
         })
         ->select('laboratory_id')
         ->distinct()

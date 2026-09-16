@@ -40,6 +40,11 @@ class ViewClass
                 $q->where('agency_id', $agency);
             });
         })
+        ->when($request->facility, function ($query, $facility) {
+            $query->whereHas('profile', function ($q) use ($facility){
+                $q->where('facility_id', $facility);
+            });
+        })
         ->paginate($request->count);
         return UserResource::collection($data);
     }

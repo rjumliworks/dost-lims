@@ -29,6 +29,9 @@ class AgencyController extends Controller
             case 'lists':
                 return $this->view->lists($request);
             break;
+            case 'visibility':
+                return $this->view->visibility($request);
+            break;
             default:
                 return inertia('Executive/Agencies/Index',[
                     'members' => $this->view->members()
@@ -48,6 +51,15 @@ class AgencyController extends Controller
                 break;
                 case 'functionalities':
                     return $this->save->functionalities($request);
+                break;
+                case 'printing':
+                    return $this->save->printing($request);
+                break;
+                case 'visibility':
+                    return $this->save->visibility($request);
+                break;
+                case 'reset_visibility':
+                    return $this->save->resetVisibility($request);
                 break;
                 case 'activate':
                     return $this->save->activate($request);
@@ -106,6 +118,9 @@ class AgencyController extends Controller
             'discounts' =>  $this->dropdown->discounts(),
             'regions' => $this->dropdown->regions(),
             'functionalities' => collect(AgencyConfiguration::FUNCTIONALITIES)->map(function ($label, $key) {
+                return ['key' => $key, 'label' => $label];
+            })->values(),
+            'addressComponents' => collect(AgencyConfiguration::ADDRESS_COMPONENTS)->map(function ($label, $key) {
                 return ['key' => $key, 'label' => $label];
             })->values(),
             'dropdowns' => [

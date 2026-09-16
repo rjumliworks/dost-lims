@@ -32,7 +32,7 @@
                                 <Multiselect class="white" style="width: 15%;" :options="dates" v-model="filter.datetype" label="name" :allow-empty="false" :searchable="true" placeholder="Filter by date" />
                                 <Multiselect v-if="filter.laboratory == 3" class="white" style="width: 15%;" :options="['In-house','On-site']" v-model="filter.subtype" label="name" :allow-empty="false" :searchable="true" placeholder="Select Location" />
                                 <Multiselect class="white" style="width: 15%;" :options="laboratories" v-model="filter.laboratory" label="name" :allow-empty="false" :searchable="true" placeholder="Select Laboratory" />
-                                <Multiselect v-if="canFilterFacility && dropdowns.facilities && dropdowns.facilities.length > 1" class="white" style="width: 15%;" :options="dropdowns.facilities" v-model="filter.facility" label="name" :allow-empty="false" :searchable="true" placeholder="Select Facility" />
+                                <Multiselect v-if="dropdowns.facilities && dropdowns.facilities.length > 1" class="white" style="width: 15%;" :options="dropdowns.facilities" v-model="filter.facility" label="name" :allow-empty="false" :searchable="true" placeholder="Select Facility" />
                                 
                                 <Multiselect class="white" style="width: 7%;" :options="years" v-model="filter.year" label="name" :allow-empty="false" :searchable="true" placeholder="Select Year" />
                                 <span @click="filterAddress()" class="input-group-text" v-b-tooltip.hover title="Filter by Address" style="cursor: pointer;"> 
@@ -324,21 +324,17 @@ export default {
         }
     },
     computed: {
-        isLaboratoryHead() {
-            return this.$page.props.roles.includes('Laboratory Head');
-        },
-        canFilterFacility() {
-            if (this.isLaboratoryHead) return true;
-            return this.$page.props.roles.includes('Customer Relation Officer')
-                && !!this.$page.props.user?.data?.facility?.is_regional;
-        },
         hasAddressFilter() {
             return ['province', 'municipality', 'barangay']
             .some(key => this.location[key] && this.location[key] !== '');
         }
     },
     created(){
-        this.fetch();
+        if(this.dropdowns.facilities && this.dropdowns.facilities.length === 1){
+            this.filter.facility = this.dropdowns.facilities[0].value;
+        } else {
+            this.fetch();
+        }
     },
     methods: {
         checkSearchStr: _.debounce(function(string) {
@@ -466,7 +462,7 @@ export default {
                 keyword: null,
                 status: null,
                 laboratory: null,
-                facility: null,
+                facility: (this.dropdowns.facilities && this.dropdowns.facilities.length === 1) ? this.dropdowns.facilities[0].value : null,
                 sortby: 'Requested At',
                 sort: 'desc',
                 datetype: null,

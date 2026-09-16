@@ -18,11 +18,21 @@ class AgencyConfiguration extends Model
         'categories' => 'Categories',
     ];
 
+    public const ADDRESS_COMPONENTS = [
+        'street' => 'Street / House No.',
+        'barangay' => 'Barangay',
+        'municipality' => 'Municipality / City',
+        'district' => 'District',
+        'province' => 'Province',
+        'region' => 'Region',
+    ];
+
     protected $casts = [
         'laboratories' => 'array',
         'form' => 'array',
         'contact' => 'array',
         'functionalities' => 'array',
+        'printing' => 'array',
     ];
 
     public static function defaultFunctionalities(): array
@@ -35,6 +45,18 @@ class AgencyConfiguration extends Model
         $functionalities = $this->functionalities ?? [];
 
         return (bool) ($functionalities[$key] ?? true);
+    }
+
+    public static function defaultAddressFormat(): array
+    {
+        return ['street', 'barangay', 'municipality', 'province'];
+    }
+
+    public function addressFormat(): array
+    {
+        $format = $this->printing['address_format'] ?? null;
+
+        return (is_array($format) && count($format)) ? $format : self::defaultAddressFormat();
     }
 
     protected static function booted()
