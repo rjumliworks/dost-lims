@@ -378,6 +378,63 @@
                 </div><!-- end card body -->
             </div><!-- end card -->
         </div>
+        <div class="col-12 mt-n2">
+            <div class="card bg-light-subtle shadow-none border">
+                <div class="card-header bg-light-subtle">
+                    <div class="d-flex mb-n3">
+                        <div class="flex-shrink-0 me-3">
+                            <div style="height:2.5rem;width:2.5rem;">
+                                <span class="avatar-title bg-primary-subtle rounded p-2 mt-n1">
+                                    <i class="ri-user-star-line text-primary fs-24"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h5 class="mb-0 fs-14"><span class="text-body">Laboratory Analysts &amp; Calibration Officers</span></h5>
+                            <p class="text-muted text-truncate-two-lines fs-12">Accomplishment of the personnel assigned to this laboratory for {{filter.year}}.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-white rounded-bottom">
+                    <div class="table-responsive table-card">
+                        <table class="table table-nowrap align-middle mb-0">
+                            <thead class="bg-primary text-white thead-fixed">
+                                <tr class="fs-11">
+                                    <th style="width: 4%;"></th>
+                                    <th>Name</th>
+                                    <th class="text-center">Role</th>
+                                    <th class="text-center">Ongoing Test</th>
+                                    <th class="text-center">Completed Test</th>
+                                    <th class="text-center">Samples Handled</th>
+                                    <th class="text-center">Total Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="analysts.length > 0">
+                                <tr v-for="(list,index) in analysts" v-bind:key="index" class="fs-12">
+                                    <td>{{ index + 1 }}.</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img :src="list.avatar" class="avatar-xxs rounded-circle me-2" alt=""/>
+                                            {{ list.name }}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">{{ list.role }}</td>
+                                    <td class="text-center">{{ list.ongoing_tests }}</td>
+                                    <td class="text-center">{{ list.completed_tests }}</td>
+                                    <td class="text-center">{{ list.samples_handled }}</td>
+                                    <td class="text-center">{{ formatMoney(list.total_cost) }}</td>
+                                </tr>
+                            </tbody>
+                            <tbody v-else>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No analysts or calibration officers found for this laboratory.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-3 mt-n1">
             <div class="card bg-light-subtle shadow-none border">
                 
@@ -758,6 +815,7 @@ export default {
             },
             counts: [],
             reminders: [],
+            analysts: [],
             statuses: [],
             schedules: [],
             personnels: [],
@@ -812,8 +870,9 @@ export default {
             .then(response => {
                 this.fee = response.data.fee;
                 this.target = response.data.target;
-                this.counts = response.data.counts; 
-                this.reminders = response.data.reminders; 
+                this.counts = response.data.counts;
+                this.reminders = response.data.reminders;
+                this.analysts = response.data.analysts;
                 this.statuses = response.data.statuses;   
                 this.schedules = response.data.schedules; 
                 this.personnels = response.data.personnels;

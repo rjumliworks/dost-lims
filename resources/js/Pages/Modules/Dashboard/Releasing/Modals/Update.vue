@@ -54,7 +54,7 @@ export default {
             form: useForm({
                 id: null,
                 released_at: null,
-                status_id: 28,
+                status_id: 27,
                 option: 'release'
             }),
             selected: null,
